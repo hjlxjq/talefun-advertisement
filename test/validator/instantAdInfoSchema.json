@@ -1,0 +1,84 @@
+{
+  "type": "object",
+  "required": [
+    "AdControl",
+    "ConfigConstantGroup"
+  ],
+  "properties": {
+    "AdControl": {
+      "type": "object",
+      "required": [
+        "interstitial",
+        "rewardvideo"
+      ],
+      "properties": {
+        "interstitial": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "adID",
+              "channel",
+              "weight",
+              "interval",
+              "ecpm"
+            ],
+            "properties": {
+              "adID": {
+                "type": "string"
+              },
+              "channel": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              },
+              "ecpm": {
+                "type": "number"
+              },
+              "interval": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "rewardvideo": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "adID",
+              "channel",
+              "weight",
+              "interval",
+              "ecpm"
+            ],
+            "properties": {
+              "adID": {
+                "type": "string"
+              },
+              "channel": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              },
+              "ecpm": {
+                "type": "number"
+              },
+              "interval": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ConfigConstantGroup": {
+      "type": "object",
+      "additionalproperties": {
+        "type": "string"
+      }
+    }
+  }
+}

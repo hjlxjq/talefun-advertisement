@@ -1,0 +1,38 @@
+{
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "adId",
+            "interval",
+            "weight",
+            "ecpm"
+        ],
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "adId": {
+                "type": "string"
+            },
+            "loader": {
+                "type": "string"
+            },
+            "subloader": {
+                "type": "string"
+            },
+            "weight": {
+                "type": "number"
+            },
+            "ecpm": {
+                "type": "number"
+            },
+            "interval": {
+                "type": "number"
+            },
+            "status": {
+                "type": "boolean"
+            }
+        }
+    }
+}

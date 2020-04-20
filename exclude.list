@@ -1,0 +1,6 @@
+.svn
+.log
+.out
+.git
+.task
+runtime/

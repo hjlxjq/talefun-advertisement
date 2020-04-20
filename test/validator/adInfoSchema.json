@@ -1,0 +1,203 @@
+{
+  "type": "object",
+  "required": [
+    "AdControl",
+    "ConfigConstant",
+    "nativeAdTemplate",
+    "config"
+  ],
+  "properties": {
+    "AdControl": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "interstitial": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "adID",
+              "channel",
+              "weight",
+              "interval",
+              "ecpm"
+            ],
+            "properties": {
+              "adID": {
+                "type": "string"
+              },
+              "channel": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              },
+              "ecpm": {
+                "type": "number"
+              },
+              "interval": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "banner": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "adID",
+              "channel",
+              "weight",
+              "interval",
+              "ecpm"
+            ],
+            "properties": {
+              "adID": {
+                "type": "string"
+              },
+              "channel": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              },
+              "ecpm": {
+                "type": "number"
+              },
+              "interval": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "rewardvideo": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "adID",
+              "channel",
+              "weight",
+              "interval",
+              "ecpm"
+            ],
+            "properties": {
+              "adID": {
+                "type": "string"
+              },
+              "channel": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              },
+              "ecpm": {
+                "type": "number"
+              },
+              "interval": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "native": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "adID",
+              "channel",
+              "weight",
+              "interval",
+              "ecpm"
+            ],
+            "properties": {
+              "adID": {
+                "type": "string"
+              },
+              "channel": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              },
+              "ecpm": {
+                "type": "number"
+              },
+              "interval": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "additionalproperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "adID",
+            "channel",
+            "weight",
+            "interval",
+            "ecpm"
+          ],
+          "properties": {
+            "adID": {
+              "type": "string"
+            },
+            "channel": {
+              "type": "string"
+            },
+            "weight": {
+              "type": "number"
+            },
+            "ecpm": {
+              "type": "number"
+            },
+            "interval": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "ConfigConstant": {
+      "type": "object",
+      "required": [
+        "weightGroup"
+      ],
+      "properties": {
+        "weightGroup": {
+          "type": "string"
+        }
+      },
+      "additionalproperties": {
+        "type": "string"
+      }
+    },
+    "nativeAdTemplate": {
+      "type": "array",
+      "items": {
+        "key": "string",
+        "weight": "number",
+        "isFull": "boolean",
+        "clickArea": "number"
+      }
+    },
+    "config": {
+      "type": "object",
+      "required": [
+        "weightGroup"
+      ],
+      "properties": {
+        "weightGroup": {
+          "type": [
+            "string"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "name",
+            "groupId"
+        ],
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "groupId": {
+                "type": "string"
+            },
+            "begin": {
+                "type": "number"
+            },
+            "end": {
+                "type": "number"
+            }
+        }
+    }
+}

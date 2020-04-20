@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "required": [
+    "weightGroup"
+  ],
+  "properties": {
+    "weightGroup": {
+      "type": "string"
+    }
+  },
+  "additionalproperties": {
+    "type": "string"
+  }
+}
