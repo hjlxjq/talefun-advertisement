@@ -30,7 +30,7 @@ export default class ProductGroupAuthModel extends MBModel {
 
     /**
      * 根据项目组表主键 id 和 用户表主键 id 更新应用权限表
-     * @argument {string} producGrouptId 项目组表主键 id ;
+     * @argument {string} productGroupId 项目组表主键 id ;
      * @argument {string} userId 用户表主键 id;
      * @argument {ProductGroupAuthVO} productGroupAuthUpdateVo 项目组权限对象;
      * @returns {Promise<number>} 返回影响的行数
@@ -48,12 +48,12 @@ export default class ProductGroupAuthModel extends MBModel {
 
     /**
      * 根据项目组表主键 id 和 用户表主键 id 删除应用权限
-     * @argument {string} producGrouptId 项目组表主键 id ;
+     * @argument {string} productGroupId 项目组表主键 id ;
      * @argument {string} userId 用户表主键 id;
      * @returns {Promise<number>} 删除行数;
      */
-    public async delProductGroupAuth(producGrouptId: string, userId: string) {
-        return await this.where({ producGrouptId, userId }).delete();
+    public async delProductGroupAuth(productGroupId: string, userId: string) {
+        return await this.where({ productGroupId, userId }).delete();
     }
 
     /**
