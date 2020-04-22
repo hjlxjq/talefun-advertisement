@@ -1,0 +1,17 @@
+{
+    "apps": [
+        {
+            "name": "talefun-advertisement",
+            "script": "startup-debug.js",
+            "cwd": "/opt/talefun-advertisement",
+            "exec_mode": "fork",
+            "max_memory_restart": "1G",
+            "autorestart": true,
+            "node_args": [],
+            "args": [],
+            "env": {
+                "TALE_ENV": "local"
+            }
+        }
+    ]
+}
