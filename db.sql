@@ -19,10 +19,10 @@
 -- Table structure for table `ABTestGroup`
 --
 
-DROP TABLE IF EXISTS `ABTestGroup`;
+DROP TABLE IF EXISTS `abTestGroup`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ABTestGroup` (
+CREATE TABLE `abTestGroup` (
   `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `begin` tinyint(3) DEFAULT NULL,
@@ -42,10 +42,10 @@ CREATE TABLE `ABTestGroup` (
 -- Table structure for table `ABTestMap`
 --
 
-DROP TABLE IF EXISTS `ABTestMap`;
+DROP TABLE IF EXISTS `abTestMap`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ABTestMap` (
+CREATE TABLE `abTestMap` (
   `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `adGroupId` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `abTestGroupId` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,

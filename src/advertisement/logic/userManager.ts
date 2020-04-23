@@ -61,6 +61,61 @@ export default class UserManagerLogic extends AMLogic {
     }
 
     /**
+     * <br/>添加管理员--后台接口
+     */
+    public async createAdMinAction() {
+        this.allowMethods = 'post'; //  只允许 POST 请求类型
+
+        try {
+            await this.userAuth();
+        } catch (e) {
+            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        }
+
+        const rules = {
+            email: {
+                string: true,       // 字段类型为 String 类型
+                trim: true,         // 字段需要 trim 处理
+                default: 'admin@talefun.com',    // 字段默认值
+                method: 'POST'       // 指定获取数据的方式
+            },
+            name: {
+                string: true,       // 字段类型为 String 类型
+                trim: true,         // 字段需要 trim 处理
+                default: 'admin',    // 字段默认值
+                method: 'POST'       // 指定获取数据的方式
+            },
+            password: {
+                string: true,       // 字段类型为 String 类型
+                trim: true,         // 字段需要 trim 处理
+                default: 'talefun123',    // 字段默认值
+                method: 'POST'       // 指定获取数据的方式
+            },
+            userAuth: {
+                object: true,
+                children: {
+                    int: true,       // 字段类型为 Number 类型
+                    trim: true,         // 字段需要 trim 处理
+                    default: 0,    // 字段默认值
+                },
+                method: 'POST'       // 指定获取数据的方式
+            },
+            active: {
+                int: true,       // 字段类型为 Number 类型
+                trim: true,         // 字段需要 trim 处理
+                default: 1,    // 字段默认值
+                method: 'POST'       // 指定获取数据的方式
+            }
+        };
+        const flag = this.validate(rules);
+
+        if (!flag) {
+            return this.fail(TaleCode.ValidData, this.validateMsg());
+        }
+
+    }
+
+    /**
      * <br/>添加用户
      */
     public async createUserAction() {
@@ -836,6 +891,7 @@ export default class UserManagerLogic extends AMLogic {
     tokenExempts(): TokenExemptVO[] {
         const exes = super.tokenExempts();
         exes.push({ action: 'index' });
+        exes.push({ action: 'createAdMin' });
         exes.push({ action: 'login' });
         return exes;
     }

@@ -47,6 +47,52 @@ import {
 export default class UserController extends BaseController {
 
     /**
+     * <br/>添加管理员--后台接口
+     * @argument {CreateUserReqVO}
+     * @returns {CreateUserResVO}
+     */
+    public async createAdMinAction() {
+        const ucId: string = this.ctx.state.userId || '';
+        const name: string = this.post('name');
+        // const avatar: string = this.post('avatar');
+        // const telephone: string = this.post('telephone');
+        const email: string = this.post('email');
+        const password: string = this.post('password');
+        const active: number = this.post('active');
+        const userAuth: UserAuthVO = this.post('userAuth');
+
+        const userModel = this.taleModel('user', 'advertisement') as UserModel;
+        const userAuthModel = this.taleModel('userAuth', 'advertisement') as UserAuthModel;
+
+        // 判断 user 是否已经创建
+        const user = await userModel.getByEmail(email);
+
+        if (!think.isEmpty(user)) {
+            return this.fail(10, '用户已存在！！！');
+        }
+
+        const userVo: UserVO = {
+            email, name, password,
+            active,
+        };
+        const userId = await userModel.addUser(userVo);
+        think.logger.debug(`userId: ${userId}`);
+
+        const {
+            editComConf, viewComConf,
+            createProductGroup, master
+        } = userAuth;
+
+        const userAuthVo: UserAuthVO = {
+            editComConf, viewComConf, createProductGroup, master,
+            userId,
+        };
+        await userAuthModel.addUserAuth(userAuthVo);
+
+        return this.success('created');
+    }
+
+    /**
      * <br/>添加用户--只允许管理员操作
      * @argument {CreateUserReqVO}
      * @returns {CreateUserResVO}
