@@ -273,11 +273,11 @@ export default class UserManagerLogic extends AMLogic {
     public async userListAction() {
         this.allowMethods = 'get'; //  只允许 GET 请求类型
 
-        try {
-            await this.userAuth();
-        } catch (e) {
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        // try {
+        //     await this.userAuth();
+        // } catch (e) {
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
     }
 
@@ -450,11 +450,11 @@ export default class UserManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, this.validateMsg());
         }
 
-        try {
-            await this.productGroupAuth(productGroupId, 'master');
-        } catch (e) {
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        // try {
+        //     await this.productGroupAuth(productGroupId, 'master');
+        // } catch (e) {
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
     }
 
@@ -479,11 +479,11 @@ export default class UserManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, this.validateMsg());
         }
 
-        try {
-            await this.productAuth(productId, 'master');
-        } catch (e) {
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        // try {
+        //     await this.productAuth(productId, 'master');
+        // } catch (e) {
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
     }
 
