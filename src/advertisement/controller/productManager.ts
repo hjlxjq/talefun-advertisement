@@ -173,13 +173,13 @@ export default class ProductManagerController extends BaseController {
     //     const packParamId: string = this.post('id');    // 打包参数表 id
     //     const value: string = this.post('value');
     //     const productId: string = this.post('productId');
-    //     const packParamModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
+    //     const packParamConfModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
 
     //     const packParamConfVo: PackParamConfVO = {
     //         packParamId, productId,
     //         value,
     //     };
-    //     await packParamModel.addPackParamConf(packParamConfVo);
+    //     await packParamConfModel.addPackParamConf(packParamConfVo);
     //     this.success('created');
     // }
 
@@ -195,14 +195,19 @@ export default class ProductManagerController extends BaseController {
         const productId: string = this.post('productId');
         const value: string = this.post('value');
 
-        const packParamModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
+        const packParamConfModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
 
         if (!_.isNil(value)) {
-            const result = await packParamModel.updatePackParamConf(packParamId, productId, value);
+            const packParamConfUpdateVo: PackParamConfVO = {
+                value,
+                packParamId, productId
+            };
+
+            const result = await packParamConfModel.updatePackParamConf(packParamId, productId, packParamConfUpdateVo);
             think.logger.debug(`result: ${JSON.stringify(result)}`);
 
         } else {
-            await packParamModel.delPackParamConf(packParamId, productId);
+            await packParamConfModel.delPackParamConf(packParamId, productId);
 
         }
         return this.success('updated');
@@ -223,9 +228,9 @@ export default class ProductManagerController extends BaseController {
     //     const ucId: string = this.ctx.state.userId || '';
     //     const packParamId: string = this.post('id');
     //     const productId: string = this.post('productId');
-    //     const packParamModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
+    //     const packParamConfModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
 
-    //     const rows = await packParamModel.delPackParamConf(packParamId, productId);
+    //     const rows = await packParamConfModel.delPackParamConf(packParamId, productId);
 
     //     if (rows === 1) {
     //         return this.success('deleted');
@@ -292,8 +297,7 @@ export default class ProductManagerController extends BaseController {
 
         const channelParamConfUpdateVo: ChannelParamConfVO = {
             value1, value2, value3,
-            adChannelId: undefined,
-            productId: undefined
+            adChannelId, productId
         };
         await channelParamConfModel.updateChannelParamConf(
             adChannelId, productId, channelParamConfUpdateVo

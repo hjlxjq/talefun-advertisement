@@ -33,15 +33,15 @@ export default class PackParamConfModel extends MBModel {
      * 更新应用打包参数
      * @argument {string} packParamId 打包参数表 id;
      * @argument {string} productId 应用表 id;
-     * @argument {string} value 应用打包参数值;
+     * @argument {PackParamConfVO} packParamConfUpdateVo 应用打包参数对象;
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updatePackParamConf(
         packParamId: string,
         productId: string,
-        value: string
+        packParamConfUpdateVo: PackParamConfVO
     ) {
-        return await this.where({ packParamId, productId }).thenUpdate({ value });
+        return await this.where({ packParamId, productId }).thenUpdate(packParamConfUpdateVo);
     }
 
     /**
