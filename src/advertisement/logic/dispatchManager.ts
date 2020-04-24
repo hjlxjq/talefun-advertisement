@@ -26,7 +26,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productAuth = await authServer.fetchProductAuth(ucId, productId);
-        think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
+        // think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
         return productAuth;
     }
 

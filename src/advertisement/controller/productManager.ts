@@ -29,10 +29,8 @@ import {
 
 import {
     ProductListResVO, PackParamConfListReqVO, PackParamConfListResVO, GetProductReqVO, GetProductResVO,
-    CreatePackParamConfReqVO, CreatePackParamConfResVO, ChannelParamConfListReqVO, ChannelParamConfListResVO,
-    UpdatePackParamConfReqVO, UpdatePackParamConfResVO, DeletePackParamConfReqVO, DeletePackParamConfResVO,
-    CreateChannelParamConfReqVO, CreateChannelParamConfResVO, UpdateChannelParamConfReqVO, UpdateChannelParamConfResVO,
-    DeleteChannelParamConfReqVO, DeleteChannelParamConfResVO, UpdateProductReqVO, UpdateProductResVO,
+    ChannelParamConfListReqVO, ChannelParamConfListResVO, UpdatePackParamConfReqVO, UpdatePackParamConfResVO,
+    UpdateChannelParamConfReqVO, UpdateChannelParamConfResVO, UpdateProductReqVO, UpdateProductResVO,
     ProductGroupListResVO, CreateProductGroupReqVO, CreateProductGroupResVO, UpdateProductGroupReqVO,
     UpdateProductGroupResVO, ProductListInProductGroupReqVO, ProductListInProductGroupResVO, CreateProductReqVO,
     CreateProductResVO, GetProductGroupReqVO, GetProductGroupResVO,
