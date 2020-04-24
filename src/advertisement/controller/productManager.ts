@@ -197,7 +197,7 @@ export default class ProductManagerController extends BaseController {
 
         const packParamConfModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
 
-        if (!_.isNil(value)) {
+        if (!_.isEmpty(value)) {
             const packParamConfUpdateVo: PackParamConfVO = {
                 value,
                 packParamId, productId
@@ -306,9 +306,9 @@ export default class ProductManagerController extends BaseController {
         const channelParamConfVo = await channelParamConfModel.getChannelParamConf(adChannelId, productId);
 
         if (
-            _.isNil(channelParamConfVo.value1) &&
-            _.isNil(channelParamConfVo.value2) &&
-            _.isNil(channelParamConfVo.value3)
+            _.isEmpty(channelParamConfVo.value1) &&
+            _.isEmpty(channelParamConfVo.value2) &&
+            _.isEmpty(channelParamConfVo.value3)
         ) {
             await channelParamConfModel.delChannelParamConf(adChannelId, productId);
         }
