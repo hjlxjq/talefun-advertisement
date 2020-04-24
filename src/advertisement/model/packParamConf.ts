@@ -44,7 +44,7 @@ export default class PackParamConfModel extends MBModel {
         think.logger.debug(`packParamId: ${packParamId}`);
         think.logger.debug(`productId: ${productId}`);
         think.logger.debug(`packParamConfUpdateVo: ${JSON.stringify(packParamConfUpdateVo)}`);
-        return await this.where({ packParamId, productId }).thenUpdate(packParamConfUpdateVo);
+        return await this.thenUpdate(packParamConfUpdateVo, { packParamId, productId });
     }
 
     /**
