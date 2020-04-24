@@ -197,7 +197,7 @@ export default class ProductManagerController extends BaseController {
 
         const packParamModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
 
-        if (_.isNil(value)) {
+        if (!_.isNil(value)) {
             const result = await packParamModel.updatePackParamConf(packParamId, productId, value);
             think.logger.debug(`result: ${JSON.stringify(result)}`);
 
