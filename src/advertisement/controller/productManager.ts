@@ -162,26 +162,26 @@ export default class ProductManagerController extends BaseController {
         return this.success(packParamConfResVoList);
     }
 
-    /**
-     * <br/>创建应用打包参数
-     * @argument {CreatePackParamConfReqVO}
-     * @returns {CreatePackParamConfResVO}
-     * @debugger yes
-     */
-    public async createPackParamConfAction() {
-        const ucId: string = this.ctx.state.userId || '';
-        const packParamId: string = this.post('id');    // 打包参数表 id
-        const value: string = this.post('value');
-        const productId: string = this.post('productId');
-        const packParamModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
+    // /**
+    //  * <br/>创建应用打包参数
+    //  * @argument {CreatePackParamConfReqVO}
+    //  * @returns {CreatePackParamConfResVO}
+    //  * @debugger yes
+    //  */
+    // public async createPackParamConfAction() {
+    //     const ucId: string = this.ctx.state.userId || '';
+    //     const packParamId: string = this.post('id');    // 打包参数表 id
+    //     const value: string = this.post('value');
+    //     const productId: string = this.post('productId');
+    //     const packParamModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
 
-        const packParamConfVo: PackParamConfVO = {
-            packParamId, productId,
-            value,
-        };
-        await packParamModel.addPackParamConf(packParamConfVo);
-        this.success('created');
-    }
+    //     const packParamConfVo: PackParamConfVO = {
+    //         packParamId, productId,
+    //         value,
+    //     };
+    //     await packParamModel.addPackParamConf(packParamConfVo);
+    //     this.success('created');
+    // }
 
     /**
      * <br/>更新应用打包参数
@@ -191,40 +191,48 @@ export default class ProductManagerController extends BaseController {
      */
     public async updatePackParamConfAction() {
         const ucId: string = this.ctx.state.userId || '';
-        const id: string = this.post('id');
-        const productId: string = this.post('productId');
-        const value: string = this.post('value');
-        const packParamModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
-
-        const rows = await packParamModel.updatePackParamConf(id, productId, value);
-
-        if (rows === 1) {
-            return this.success('updated');
-        } else {
-            this.fail(TaleCode.DBFaild, 'update fail!!!');
-        }
-    }
-
-    /**
-     * <br/>删除应用打包参数
-     * @argument {DeletePackParamConfReqVO}
-     * @returns {DeletePackParamConfResVO}
-     * @debugger yes
-     */
-    public async deletePackParamConfAction() {
-        const ucId: string = this.ctx.state.userId || '';
         const packParamId: string = this.post('id');
         const productId: string = this.post('productId');
+        const value: string = this.post('value');
+
         const packParamModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
 
-        const rows = await packParamModel.delPackParamConf(packParamId, productId);
+        if (_.isNil(value)) {
+            const result = await packParamModel.updatePackParamConf(packParamId, productId, value);
+            think.logger.debug(`result: ${JSON.stringify(result)}`);
 
-        if (rows === 1) {
-            return this.success('deleted');
         } else {
-            this.fail(TaleCode.DBFaild, 'delete fail!!!');
+            await packParamModel.delPackParamConf(packParamId, productId);
+
         }
+        return this.success('updated');
+        // if (rows === 1) {
+        //     return this.success('updated');
+        // } else {
+        //     this.fail(TaleCode.DBFaild, 'update fail!!!');
+        // }
     }
+
+    // /**
+    //  * <br/>删除应用打包参数
+    //  * @argument {DeletePackParamConfReqVO}
+    //  * @returns {DeletePackParamConfResVO}
+    //  * @debugger yes
+    //  */
+    // public async deletePackParamConfAction() {
+    //     const ucId: string = this.ctx.state.userId || '';
+    //     const packParamId: string = this.post('id');
+    //     const productId: string = this.post('productId');
+    //     const packParamModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
+
+    //     const rows = await packParamModel.delPackParamConf(packParamId, productId);
+
+    //     if (rows === 1) {
+    //         return this.success('deleted');
+    //     } else {
+    //         this.fail(TaleCode.DBFaild, 'delete fail!!!');
+    //     }
+    // }
 
     /**
      * GET，
@@ -242,29 +250,29 @@ export default class ProductManagerController extends BaseController {
         return this.success(channelParamResVoList);
     }
 
-    /**
-     * <br/>创建应用平台参数
-     * @argument {CreateChannelParamConfReqVO}
-     * @returns {CreateChannelParamConfResVO}
-     * @debugger yes
-     */
-    public async createChannelParamConfAction() {
-        const ucId: string = this.ctx.state.userId || '';
-        const value1: string = this.post('value1');
-        const value2: string = this.post('value2');
-        const value3: string = this.post('value3');
-        const adChannelId: string = this.post('id');    // 广告平台表 id
-        const productId: string = this.post('productId');
-        const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as ChannelParamConfModel;
+    // /**
+    //  * <br/>创建应用平台参数
+    //  * @argument {CreateChannelParamConfReqVO}
+    //  * @returns {CreateChannelParamConfResVO}
+    //  * @debugger yes
+    //  */
+    // public async createChannelParamConfAction() {
+    //     const ucId: string = this.ctx.state.userId || '';
+    //     const value1: string = this.post('value1');
+    //     const value2: string = this.post('value2');
+    //     const value3: string = this.post('value3');
+    //     const adChannelId: string = this.post('id');    // 广告平台表 id
+    //     const productId: string = this.post('productId');
+    //     const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as ChannelParamConfModel;
 
-        const channelParamConfVo: ChannelParamConfVO = {
-            adChannelId, productId,
-            value1, value2, value3
-        };
+    //     const channelParamConfVo: ChannelParamConfVO = {
+    //         adChannelId, productId,
+    //         value1, value2, value3
+    //     };
 
-        await channelParamConfModel.addChannelParamConf(channelParamConfVo);
-        this.success('created');
-    }
+    //     await channelParamConfModel.addChannelParamConf(channelParamConfVo);
+    //     this.success('created');
+    // }
 
     /**
      * <br/>更新应用平台参数
@@ -279,6 +287,7 @@ export default class ProductManagerController extends BaseController {
         const value1: string = this.post('value1');
         const value2: string = this.post('value2');
         const value3: string = this.post('value3');
+
         const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as ChannelParamConfModel;
 
         const channelParamConfUpdateVo: ChannelParamConfVO = {
@@ -286,37 +295,43 @@ export default class ProductManagerController extends BaseController {
             adChannelId: undefined,
             productId: undefined
         };
-        const rows = await channelParamConfModel.updateChannelParamConf(
+        await channelParamConfModel.updateChannelParamConf(
             adChannelId, productId, channelParamConfUpdateVo
         );
 
-        if (rows === 1) {
-            return this.success('updated');
-        } else {
-            this.fail(TaleCode.DBFaild, 'update fail!!!');
+        const channelParamConfVo = await channelParamConfModel.getChannelParamConf(adChannelId, productId);
+
+        if (
+            _.isNil(channelParamConfVo.value1) &&
+            _.isNil(channelParamConfVo.value2) &&
+            _.isNil(channelParamConfVo.value3)
+        ) {
+            await channelParamConfModel.delChannelParamConf(adChannelId, productId);
         }
+
+        return this.success('updated');
     }
 
-    /**
-     * <br/>删除应用平台参数
-     * @argument {DeleteChannelParamConfReqVO}
-     * @returns {DeleteChannelParamConfResVO}
-     * @debugger yes
-     */
-    public async deleteChannelParamConfAction() {
-        const ucId: string = this.ctx.state.userId || '';
-        const adChannelId: string = this.post('id');
-        const productId: string = this.post('productId');
-        const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as ChannelParamConfModel;
+    // /**
+    //  * <br/>删除应用平台参数
+    //  * @argument {DeleteChannelParamConfReqVO}
+    //  * @returns {DeleteChannelParamConfResVO}
+    //  * @debugger yes
+    //  */
+    // public async deleteChannelParamConfAction() {
+    //     const ucId: string = this.ctx.state.userId || '';
+    //     const adChannelId: string = this.post('id');
+    //     const productId: string = this.post('productId');
+    //     const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as ChannelParamConfModel;
 
-        const rows = await channelParamConfModel.delChannelParamConf(adChannelId, productId);
+    //     const rows = await channelParamConfModel.delChannelParamConf(adChannelId, productId);
 
-        if (rows === 1) {
-            return this.success('deleted');
-        } else {
-            this.fail(TaleCode.DBFaild, 'delete fail!!!');
-        }
-    }
+    //     if (rows === 1) {
+    //         return this.success('deleted');
+    //     } else {
+    //         this.fail(TaleCode.DBFaild, 'delete fail!!!');
+    //     }
+    // }
 
     /**
      * <br/>获取项目组列表

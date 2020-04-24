@@ -362,18 +362,18 @@ export interface ChannelParamConfListResVO extends ResVO {
     }>;
 }
 
-/**
- * 创建应用打包参数 /advertisement/productManager/createPackParamConf
- */
-export interface CreatePackParamConfReqVO {
-    id: string;    // 打包参数表主键 id
-    productId: string;    // 应用表主键 id
-    value: string;    // 打包参数值
-}
+// /**
+//  * 创建应用打包参数 /advertisement/productManager/createPackParamConf
+//  */
+// export interface CreatePackParamConfReqVO {
+//     id: string;    // 打包参数表主键 id
+//     productId: string;    // 应用表主键 id
+//     value: string;    // 打包参数值
+// }
 
-export interface CreatePackParamConfResVO extends ResVO {
-    data: 'created';
-}
+// export interface CreatePackParamConfResVO extends ResVO {
+//     data: 'created';
+// }
 
 /**
  * 更新应用应用打包参数 /advertisement/productManager/updatePackParamConf
@@ -388,32 +388,32 @@ export interface UpdatePackParamConfResVO extends ResVO {
     data: 'updated';    // 更新成功
 }
 
-/**
- * 删除应用打包参数 /advertisement/productManager/deletePackParamConf
- */
-export interface DeletePackParamConfReqVO {
-    id: string;    // 打包参数表主键 id
-    productId: string;    // 应用表主键 id
-}
+// /**
+//  * 删除应用打包参数 /advertisement/productManager/deletePackParamConf
+//  */
+// export interface DeletePackParamConfReqVO {
+//     id: string;    // 打包参数表主键 id
+//     productId: string;    // 应用表主键 id
+// }
 
-export interface DeletePackParamConfResVO extends ResVO {
-    data: 'deleted';    // 删除成功
-}
+// export interface DeletePackParamConfResVO extends ResVO {
+//     data: 'deleted';    // 删除成功
+// }
 
-/**
- * 创建应用平台参数 /advertisement/productManager/createChannelParamConf
- */
-export interface CreateChannelParamConfReqVO {
-    id: string;    // 广告平台表主键 id
-    productId: string;    // 应用表主键 id
-    value1?: string;    // 应用平台参数 1 值
-    value2?: string;    // 应用平台参数 2 值
-    value3?: string;    // 应用平台参数 3 值
-}
+// /**
+//  * 创建应用平台参数 /advertisement/productManager/createChannelParamConf
+//  */
+// export interface CreateChannelParamConfReqVO {
+//     id: string;    // 广告平台表主键 id
+//     productId: string;    // 应用表主键 id
+//     value1?: string;    // 应用平台参数 1 值
+//     value2?: string;    // 应用平台参数 2 值
+//     value3?: string;    // 应用平台参数 3 值
+// }
 
-export interface CreateChannelParamConfResVO extends ResVO {
-    data: 'created';
-}
+// export interface CreateChannelParamConfResVO extends ResVO {
+//     data: 'created';
+// }
 
 /**
  * 更新应用平台参数 /advertisement/productManager/updateChannelParamConf
@@ -430,17 +430,17 @@ export interface UpdateChannelParamConfResVO extends ResVO {
     data: 'updated';    // 更新成功
 }
 
-/**
- * 删除应用平台参数 /advertisement/productManager/deleteChannelParamConf
- */
-export interface DeleteChannelParamConfReqVO {
-    id: string;    // 广告平台表主键 id
-    productId: string;    // 应用表主键 id
-}
+// /**
+//  * 删除应用平台参数 /advertisement/productManager/deleteChannelParamConf
+//  */
+// export interface DeleteChannelParamConfReqVO {
+//     id: string;    // 广告平台表主键 id
+//     productId: string;    // 应用表主键 id
+// }
 
-export interface DeleteChannelParamConfResVO extends ResVO {
-    data: 'deleted';    // 删除成功
-}
+// export interface DeleteChannelParamConfResVO extends ResVO {
+//     data: 'deleted';    // 删除成功
+// }
 
 /**
  * GET，

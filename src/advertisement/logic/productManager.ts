@@ -195,49 +195,49 @@ export default class ProductManagerLogic extends AMLogic {
     /**
      * <br/>创建应用打包参数
      */
-    public async createPackParamConfAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+    // public async createPackParamConfAction() {
+    //     this.allowMethods = 'post'; //  只允许 POST 请求类型
 
-        const rules = {
-            productId: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            id: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            value: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            }
-        };
-        const flag = this.validate(rules);
+    //     const rules = {
+    //         productId: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             required: true,     // 字段必填
+    //             method: 'POST'       // 指定获取数据的方式
+    //         },
+    //         id: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             required: true,     // 字段必填
+    //             method: 'POST'       // 指定获取数据的方式
+    //         },
+    //         value: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             required: true,     // 字段必填
+    //             method: 'POST'       // 指定获取数据的方式
+    //         }
+    //     };
+    //     const flag = this.validate(rules);
 
-        if (!flag) {
-            return this.fail(TaleCode.ValidData, this.validateMsg());
-        }
+    //     if (!flag) {
+    //         return this.fail(TaleCode.ValidData, this.validateMsg());
+    //     }
 
-        const productId: string = this.post('productId');
+    //     const productId: string = this.post('productId');
 
-        try {
-            const productAuth = await this.productAuth(productId);
-            const { master, editProduct } = productAuth;
+    //     try {
+    //         const productAuth = await this.productAuth(productId);
+    //         const { master, editProduct } = productAuth;
 
-            if (master === 0 && editProduct === 0) {
-                throw new Error('没有权限！！！');
-            }
-        } catch (e) {
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+    //         if (master === 0 && editProduct === 0) {
+    //             throw new Error('没有权限！！！');
+    //         }
+    //     } catch (e) {
+    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+    //     }
 
-    }
+    // }
 
     /**
      * <br/>更新应用打包参数
@@ -289,43 +289,43 @@ export default class ProductManagerLogic extends AMLogic {
     /**
      * <br/>删除应用打包参数
      */
-    public async deletePackParamConfAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+    // public async deletePackParamConfAction() {
+    //     this.allowMethods = 'post'; //  只允许 POST 请求类型
 
-        const rules = {
-            productId: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            id: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            }
-        };
-        const flag = this.validate(rules);
+    //     const rules = {
+    //         productId: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             required: true,     // 字段必填
+    //             method: 'POST'       // 指定获取数据的方式
+    //         },
+    //         id: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             required: true,     // 字段必填
+    //             method: 'POST'       // 指定获取数据的方式
+    //         }
+    //     };
+    //     const flag = this.validate(rules);
 
-        if (!flag) {
-            return this.fail(TaleCode.ValidData, this.validateMsg());
-        }
+    //     if (!flag) {
+    //         return this.fail(TaleCode.ValidData, this.validateMsg());
+    //     }
 
-        const productId: string = this.post('productId');
+    //     const productId: string = this.post('productId');
 
-        try {
-            const productAuth = await this.productAuth(productId);
-            const { master, editProduct } = productAuth;
+    //     try {
+    //         const productAuth = await this.productAuth(productId);
+    //         const { master, editProduct } = productAuth;
 
-            if (master === 0 && editProduct === 0) {
-                throw new Error('没有权限！！！');
-            }
-        } catch (e) {
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+    //         if (master === 0 && editProduct === 0) {
+    //             throw new Error('没有权限！！！');
+    //         }
+    //     } catch (e) {
+    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+    //     }
 
-    }
+    // }
 
     /**
      * <br/>获取应用广告平台参数列表
@@ -363,58 +363,58 @@ export default class ProductManagerLogic extends AMLogic {
     /**
      * <br/>创建应用平台参数
      */
-    public async createChannelParamConfAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+    // public async createChannelParamConfAction() {
+    //     this.allowMethods = 'post'; //  只允许 POST 请求类型
 
-        const rules = {
-            productId: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            id: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            value1: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                method: 'POST'       // 指定获取数据的方式
-            },
-            value2: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                method: 'POST'       // 指定获取数据的方式
-            },
-            value3: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                method: 'POST'       // 指定获取数据的方式
-            }
-        };
-        const flag = this.validate(rules);
+    //     const rules = {
+    //         productId: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             required: true,     // 字段必填
+    //             method: 'POST'       // 指定获取数据的方式
+    //         },
+    //         id: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             required: true,     // 字段必填
+    //             method: 'POST'       // 指定获取数据的方式
+    //         },
+    //         value1: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             method: 'POST'       // 指定获取数据的方式
+    //         },
+    //         value2: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             method: 'POST'       // 指定获取数据的方式
+    //         },
+    //         value3: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             method: 'POST'       // 指定获取数据的方式
+    //         }
+    //     };
+    //     const flag = this.validate(rules);
 
-        if (!flag) {
-            return this.fail(TaleCode.ValidData, this.validateMsg());
-        }
+    //     if (!flag) {
+    //         return this.fail(TaleCode.ValidData, this.validateMsg());
+    //     }
 
-        const productId: string = this.post('productId');
+    //     const productId: string = this.post('productId');
 
-        try {
-            const productAuth = await this.productAuth(productId);
-            const { master, editProduct } = productAuth;
+    //     try {
+    //         const productAuth = await this.productAuth(productId);
+    //         const { master, editProduct } = productAuth;
 
-            if (master === 0 && editProduct === 0) {
-                throw new Error('没有权限！！！');
-            }
-        } catch (e) {
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+    //         if (master === 0 && editProduct === 0) {
+    //             throw new Error('没有权限！！！');
+    //         }
+    //     } catch (e) {
+    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+    //     }
 
-    }
+    // }
 
     /**
      * <br/>更新应用平台参数
@@ -475,43 +475,43 @@ export default class ProductManagerLogic extends AMLogic {
     /**
      * <br/>删除应用平台参数
      */
-    public async deleteChannelParamConfAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+    // public async deleteChannelParamConfAction() {
+    //     this.allowMethods = 'post'; //  只允许 POST 请求类型
 
-        const rules = {
-            productId: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            id: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            }
-        };
-        const flag = this.validate(rules);
+    //     const rules = {
+    //         productId: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             required: true,     // 字段必填
+    //             method: 'POST'       // 指定获取数据的方式
+    //         },
+    //         id: {
+    //             string: true,       // 字段类型为 String 类型
+    //             trim: true,         // 字段需要 trim 处理
+    //             required: true,     // 字段必填
+    //             method: 'POST'       // 指定获取数据的方式
+    //         }
+    //     };
+    //     const flag = this.validate(rules);
 
-        if (!flag) {
-            return this.fail(TaleCode.ValidData, this.validateMsg());
-        }
+    //     if (!flag) {
+    //         return this.fail(TaleCode.ValidData, this.validateMsg());
+    //     }
 
-        const productId: string = this.post('productId');
+    //     const productId: string = this.post('productId');
 
-        try {
-            const productAuth = await this.productAuth(productId);
-            const { master, editProduct } = productAuth;
+    //     try {
+    //         const productAuth = await this.productAuth(productId);
+    //         const { master, editProduct } = productAuth;
 
-            if (master === 0 && editProduct === 0) {
-                throw new Error('没有权限！！！');
-            }
-        } catch (e) {
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+    //         if (master === 0 && editProduct === 0) {
+    //             throw new Error('没有权限！！！');
+    //         }
+    //     } catch (e) {
+    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+    //     }
 
-    }
+    // }
 
     /**
      * GET，

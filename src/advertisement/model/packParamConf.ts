@@ -18,16 +18,16 @@ import Utils from '../utils';
  */
 export default class PackParamConfModel extends MBModel {
 
-    /**
-     * 插入应用打包参数
-     * @argument {PackParamConfVO} packParamConfVo 应用打包参数表对象;
-     * @returns {Promise<string>} 主键 id;
-     */
-    public async addPackParamConf(packParamConfVo: PackParamConfVO) {
+    // /**
+    //  * 插入应用打包参数
+    //  * @argument {PackParamConfVO} packParamConfVo 应用打包参数表对象;
+    //  * @returns {Promise<string>} 主键 id;
+    //  */
+    // public async addPackParamConf(packParamConfVo: PackParamConfVO) {
 
-        await this.add(packParamConfVo);
-        return this.ID[0];
-    }
+    //     await this.add(packParamConfVo);
+    //     return this.ID[0];
+    // }
 
     /**
      * 更新应用打包参数
@@ -41,7 +41,7 @@ export default class PackParamConfModel extends MBModel {
         productId: string,
         value: string
     ) {
-        return await this.where({ packParamId, productId }).update({ value });
+        return await this.where({ packParamId, productId }).thenUpdate({ value });
     }
 
     /**

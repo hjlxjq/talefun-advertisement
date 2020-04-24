@@ -18,16 +18,16 @@ import Utils from '../utils';
  */
 export default class ChannelParamConfModel extends MBModel {
 
-    /**
-     * 插入应用广告平台参数
-     * @argument {ChannelParamConfVO} channelParamConfVo 应用广告平台参数表对象;
-     * @returns {Promise<string>} 主键 id;
-     */
-    public async addChannelParamConf(channelParamConfVo: ChannelParamConfVO) {
+    // /**
+    //  * 插入应用广告平台参数
+    //  * @argument {ChannelParamConfVO} channelParamConfVo 应用广告平台参数表对象;
+    //  * @returns {Promise<string>} 主键 id;
+    //  */
+    // public async addChannelParamConf(channelParamConfVo: ChannelParamConfVO) {
 
-        await this.add(channelParamConfVo);
-        return this.ID[0];
-    }
+    //     await this.add(channelParamConfVo);
+    //     return this.ID[0];
+    // }
 
     /**
      * 更新应用广告平台参数
@@ -42,7 +42,7 @@ export default class ChannelParamConfModel extends MBModel {
         channelParamConfVo: ChannelParamConfVO
     ) {
         if (!Utils.isEmptyObj(channelParamConfVo)) {
-            return await this.where({ adChannelId, productId }).update(channelParamConfVo);
+            return await this.where({ adChannelId, productId }).thenUpdate(channelParamConfVo);
         }
         return 0;
     }
