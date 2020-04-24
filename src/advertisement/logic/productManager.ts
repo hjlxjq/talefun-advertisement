@@ -261,7 +261,6 @@ export default class ProductManagerLogic extends AMLogic {
             value: {
                 string: true,       // 字段类型为 String 类型
                 trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
         };
