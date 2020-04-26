@@ -781,7 +781,7 @@ export interface CreateConfigGroupResVO extends ResVO {
 export interface CopyConfigGroupReqVO {
     name: string;    // 常量组名称
     description: string;    // 常量组描述
-    copyId: string;    // 被复制的常量组主键 id
+    id: string;    // 被复制的常量组主键 id
     dependentId: string;    // 依赖的常量组主键 id
 }
 
@@ -873,7 +873,7 @@ export interface CreateNativeTmplConfGroupResVO extends ResVO {
  * 复制应用 native 模板配置组 /advertisement/dispatchManager/copyNativeTmplConfGroup
  */
 export interface CopyNativeTmplConfGroupReqVO {
-    copyId: string;    // 被复制的常量组主键 id
+    id: string;    // 被复制的常量组主键 id
     name: string;    // 应用 native 模板配置组名称
     description: string;    // 应用 native 模板配置组描述
 }
@@ -1051,7 +1051,7 @@ export interface CreateAdGroupResVO extends ResVO {
  * 复制广告组 /advertisement/dispatchManager/copyAdGroup
  */
 export interface CopyAdGroupReqVO {
-    copyId: string;    // 被复制的广告组表主键 id
+    id: string;    // 被复制的广告组表主键 id
     name: string;    // 广告组名称
     description: string;     // 描述
 }
