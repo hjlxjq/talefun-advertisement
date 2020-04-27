@@ -82,11 +82,11 @@ export default class AbTestGroupModel extends MBModel {
 
     /**
      * 获取版本分组表主键 id 列表，
-     * @argument {string} nativeTmplGroupId native 模板组表 id;
+     * @argument {string} nativeTmplConfGroupId native 模板组表 id;
      * @returns {Promise<string[]>} 获取版本分组表主键 id 列表;
      */
-    public async getVerionGroupIdListByNative(nativeTmplGroupId: string) {
-        const abTestGroupVoList = await this.where({ nativeTmplGroupId }).select() as AbTestGroupVO[];
+    public async getVerionGroupIdListByNative(nativeTmplConfGroupId: string) {
+        const abTestGroupVoList = await this.where({ nativeTmplConfGroupId }).select() as AbTestGroupVO[];
 
         const verionGroupIdList = _.map(abTestGroupVoList, (abTestGroupVo) => {
             return abTestGroupVo.versionGroupId;
