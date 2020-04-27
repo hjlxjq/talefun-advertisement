@@ -26,7 +26,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productAuth = await authServer.fetchProductAuth(ucId, productId);
-        think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
+        // think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
         return productAuth;
     }
 
@@ -1202,16 +1202,18 @@ export default class DispatchManagerLogic extends AMLogic {
             const { productId } = nativeTmplConfGroupVo;
             const productAuth = await this.productAuth(productId);
 
+            think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
             const {
                 viewAd, master
             } = productAuth;
 
-            if (master === 0) {
+            think.logger.debug(`viewAd: ${JSON.stringify(viewAd)}`);
+            think.logger.debug(`master: ${JSON.stringify(master)}`);
 
-                if (viewAd === 0) {
-                    throw new Error('没有权限！！！');
-                }
+            if (master === 0 && viewAd === 0) {
+                throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
