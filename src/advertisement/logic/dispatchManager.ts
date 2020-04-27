@@ -1197,18 +1197,21 @@ export default class DispatchManagerLogic extends AMLogic {
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
         const nativeTmplConfGroupId: string = this.post('id');
 
+        think.logger.debug(`nativeTmplConfGroupId: ${nativeTmplConfGroupId}`);
+
         try {
             const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId);
+
+            think.logger.debug(`nativeTmplConfGroupVo: ${JSON.stringify(nativeTmplConfGroupVo)}`);
             const { productId } = nativeTmplConfGroupVo;
+            think.logger.debug(`productId: ${productId}`);
+
             const productAuth = await this.productAuth(productId);
 
             think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
             const {
                 viewAd, master
             } = productAuth;
-
-            think.logger.debug(`viewAd: ${JSON.stringify(viewAd)}`);
-            think.logger.debug(`master: ${JSON.stringify(master)}`);
 
             if (master === 0 && viewAd === 0) {
                 throw new Error('没有权限！！！');
