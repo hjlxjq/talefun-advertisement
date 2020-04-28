@@ -44,7 +44,7 @@ export interface AdTypeListResVO extends ResVO {
  * 获取广告类型 /advertisement/commonManager/adType
  */
 export interface GetAdTypeReqVO {
-    type: string;    // 类型名称
+    name: string;    // 类型名称
 }
 
 export interface GetAdTypeResVO extends ResVO {
@@ -532,7 +532,7 @@ interface AdVO {
     bidding: number;    // 实时竞价
     activeIndex: string;    // 失效时间戳
     adGroupName?: string;    // 广告组名称
-    type?: string;    // 广告类型名称
+    type?: string;    // 广告类型显示名称
     channel: string;    // 广告平台名称
     active: number;    // 是否生效
     createAt: string;    // 创建时间
@@ -667,7 +667,7 @@ export interface AbTestGroupListResVO extends ResVO {
         adGroup?: Array<{
             id: string;    // 广告组表主键 id
             name: string;    // 广告组名称
-            type: string;    // 广告类型
+            type: string;    // 广告类型显示名称
             place: string;    // 广告位
             adNum: number;    // 广告组下广告数量
             description: string;    // 描述
@@ -1022,7 +1022,7 @@ export interface AdGroupListResVO extends ResVO {
     data: Array<{
         id: string;    // 广告组表主键 id
         name: string;    // 广告组名称
-        type: string;    // 广告类型
+        type: string;    // 广告类型显示名称
         place: string;    // 广告位
         adNum: number;    // 广告组下广告数量
         description: string;    // 描述

@@ -55,10 +55,10 @@ export default class CommonManagerController extends BaseController {
      */
     public async adTypeAction() {
         const ucId: string = this.ctx.state.user.id || '';
-        const type: string = this.post('type');
+        const name: string = this.post('name');
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
 
-        const adTypeVo = await adTypeModel.getByType(type);
+        const adTypeVo = await adTypeModel.getByName(name);
 
         return this.success(adTypeVo);
     }

@@ -69,11 +69,11 @@ export default class AdTypeModel extends MBModel {
 
     /**
      * 根据广告类型获取广告类型信息
-     * @argument {string} type 广告类型;
+     * @argument {string} name 广告类型显示名称;
      * @returns {Promise<AdTypeVO>} 广告类型信息;
      */
-    public async getByType(type: string) {
-        return await this.where({ type }).find() as AdTypeVO;
+    public async getByName(name: string) {
+        return await this.where({ name }).find() as AdTypeVO;
     }
 
     /**

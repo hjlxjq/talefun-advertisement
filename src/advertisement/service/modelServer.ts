@@ -406,7 +406,7 @@ export default class ModelService extends BaseService {
                 return;
             }
 
-            const { type } = adTypeVo;
+            const { name: type } = adTypeVo;
 
             const adNum = await adModel.getNum(id, 1);
             const verionGroupIdList = await abTestMapModel.getAbTestGroupIdByAdGrroup(id);
@@ -455,7 +455,7 @@ export default class ModelService extends BaseService {
                 return;
             }
 
-            const { type } = adTypeVo;
+            const { name: type } = adTypeVo;
             const { channel } = adChannelVo;
             const { name: adGroupName } = adGroupVo;
 
@@ -768,7 +768,7 @@ export default class ModelService extends BaseService {
                     };
                 }
 
-                const { type } = adTypeVo;
+                const { name: type } = adTypeVo;
 
                 const [adNum, verionGroupIdList] = await Promise.all([
                     adModel.getNum(id, 1),

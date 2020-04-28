@@ -423,7 +423,7 @@ export interface NativeTmplConfResVO extends NativeTmplConfVO {
 }
 
 export interface AdGroupResVO extends AdGroupVO {
-    type: string;    // 广告类型
+    type: string;    // 广告类型显示名称
     adNum: number;    // 广告组下广告数量
     versionGroup: string[];    // 支持的条件组
     place?: string;    // 广告位
@@ -432,7 +432,7 @@ export interface AdGroupResVO extends AdGroupVO {
 
 export interface AdResVO extends AdVO {
     adGroupName?: string;    // 广告组名称
-    type?: string;    // 广告类型
+    type?: string;    // 广告类型显示名称
     channel: string;    // 广告平台名称
 }
 
