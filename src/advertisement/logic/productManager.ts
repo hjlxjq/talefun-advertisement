@@ -56,7 +56,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>获取全部应用列表
      */
     public async productListAction() {
-        this.allowMethods = 'get'; //  只允许 GET 请求类型
+        this.allowMethods = 'get';    // 只允许 GET 请求类型
 
     }
 
@@ -64,7 +64,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>获取应用详情
      */
     public async productAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -98,7 +98,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>更新应用
      */
     public async updateProductAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -163,7 +163,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>获取应用打包参数
      */
     public async packParamConfListAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -196,7 +196,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>创建应用打包参数
      */
     // public async createPackParamConfAction() {
-    //     this.allowMethods = 'post'; //  只允许 POST 请求类型
+    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
 
     //     const rules = {
     //         productId: {
@@ -243,7 +243,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>更新应用打包参数
      */
     public async updatePackParamConfAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             productId: {
@@ -289,7 +289,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>删除应用打包参数
      */
     // public async deletePackParamConfAction() {
-    //     this.allowMethods = 'post'; //  只允许 POST 请求类型
+    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
 
     //     const rules = {
     //         productId: {
@@ -330,7 +330,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>获取应用广告平台参数列表
      */
     public async channelParamConfListAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -363,7 +363,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>创建应用平台参数
      */
     // public async createChannelParamConfAction() {
-    //     this.allowMethods = 'post'; //  只允许 POST 请求类型
+    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
 
     //     const rules = {
     //         productId: {
@@ -419,7 +419,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>更新应用平台参数
      */
     public async updateChannelParamConfAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             productId: {
@@ -475,7 +475,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>删除应用平台参数
      */
     // public async deleteChannelParamConfAction() {
-    //     this.allowMethods = 'post'; //  只允许 POST 请求类型
+    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
 
     //     const rules = {
     //         productId: {
@@ -517,7 +517,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>获取项目组列表
      */
     public async productGroupListAction() {
-        this.allowMethods = 'get'; //  只允许 GET 请求类型
+        this.allowMethods = 'get';    // 只允许 GET 请求类型
 
     }
 
@@ -525,7 +525,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>获取项目组详情
      */
     public async productGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -560,7 +560,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>创建项目组
      */
     public async createProductGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             name: {
@@ -605,7 +605,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>更新项目组
      */
     public async updateProductGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -655,7 +655,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>获取项目组下应用列表
      */
     public async productListInProductGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -689,7 +689,7 @@ export default class ProductManagerLogic extends AMLogic {
      * <br/>项目组下创建应用
      */
     public async createProductAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {

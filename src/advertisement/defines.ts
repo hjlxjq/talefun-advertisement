@@ -152,7 +152,6 @@ export interface AdGroupVO extends BaseVO {
 export interface AdVO extends BaseVO {
     name: string;    // 广告名称
     placementID: string;    // 广告唯一 id
-    price: string;    // 真实底价
     ecpm: number;    // 分层控制
     loader: string;    // 加载器
     subloader: string;    // 子加载器
@@ -231,6 +230,14 @@ export interface NationVO extends BaseVO {
     code: string;    // 国家代码
     include: number;    // 是否包含
     versionGroupId: string;    // 版本分组控制表 id
+}
+
+/**
+ * 国家代码定义表基本字段
+ */
+export interface NationDefineVO extends BaseVO {
+    name: string;    // 国家名称
+    code: string;    // 国家代码
 }
 
 /**
@@ -391,8 +398,6 @@ export interface ChannelParamConfResVO extends AdChannelVO {
 }
 
 export interface ProductGroupResVO extends ProductGroupVO {
-    productNum: number;    // 应用数量
-    userNum: number;    // 人员数量
     productGroupAuth?: ProductAuthVO;    // 用户在项目组下权限
 }
 
@@ -403,7 +408,6 @@ export interface VersionGroupResVO extends VersionGroupVO {
 export interface ConfigGroupResVO extends ConfigGroupVO {
     versionGroup: string[];    // 支持的条件组
     dependent: string;    // 依赖的常量组名
-    configNum: number;    // 常量组下常量数量
     configList?: ConfigResVO[];    // 常量列表
 }
 
@@ -413,7 +417,6 @@ export interface ConfigResVO extends ConfigVO {
 
 export interface NativeTmplConfGroupResVO extends NativeTmplConfGroupVO {
     versionGroup: string[];    // 支持的条件组
-    nativeTmplConfNum: number;    // native 模板组下 native 模板数量
     nativeTmplConfList?: NativeTmplConfResVO[];
 }
 
@@ -424,7 +427,6 @@ export interface NativeTmplConfResVO extends NativeTmplConfVO {
 
 export interface AdGroupResVO extends AdGroupVO {
     type: string;    // 广告类型显示名称
-    adNum: number;    // 广告组下广告数量
     versionGroup: string[];    // 支持的条件组
     place?: string;    // 广告位
     adList?: AdResVO[];    // 广告列表

@@ -342,21 +342,23 @@ export default class ProductManagerController extends BaseController {
      */
     public async productGroupListAction() {
         const ucId: string = this.ctx.state.userId || '';
-        const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
+        const productGroupModel = this.taleModel('productGroup', 'advertisement') as ProductGroupModel;
+        const productGroupAuthModel = this.taleModel('productGroupAuth', 'advertisement') as ProductGroupAuthModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const userAuth = await authServer.fetchUserAuth(ucId);
         const { master } = userAuth;
 
-        let productGroupResVoList: ProductGroupVO[];
+        let productGroupVoList: ProductGroupVO[];
         if (master === 1) {    // 管理员获取全部应用
-            productGroupResVoList = await modelServer.getProductGroupList();
+            productGroupVoList = await productGroupModel.getList();
 
         } else {    // 获取用户有权查看的全部应用
-            productGroupResVoList = await modelServer.getProductGroupList(ucId);
+            const productGroupIdList = await productGroupAuthModel.getIdListByUser(ucId);
+            productGroupVoList = await productGroupModel.getListByAuth(productGroupIdList);
         }
 
-        return this.success(productGroupResVoList);
+        return this.success(productGroupVoList);
     }
 
     /**
@@ -370,13 +372,12 @@ export default class ProductManagerController extends BaseController {
         const productGroupId: string = this.post('id');
 
         const productGroupModel = this.taleModel('productGroup', 'advertisement') as ProductGroupModel;
-        const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const [
             productGroupVo, productGroupAuth
         ] = await Promise.all([
-            modelServer.getProductGroup(productGroupId),
+            productGroupModel.getProductGroup(productGroupId),
             authServer.fetchProductGroupAuth(ucId, productGroupId)
         ]);
 

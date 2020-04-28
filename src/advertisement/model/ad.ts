@@ -100,11 +100,11 @@ export default class AdModel extends MBModel {
      * @argument {number} active 是否生效;
      * @returns {Promise<number>} 广告数量;
      */
-    public async getNum(adGroupId: string, active?: number) {
-        if (!_.isUndefined(active)) {
-            return await this.where({ adGroupId, active }).count('id');
+    // public async getNum(adGroupId: string, active?: number) {
+    //     if (!_.isUndefined(active)) {
+    //         return await this.where({ adGroupId, active }).count('id');
 
-        }
-        return await this.where({ adGroupId }).count('id');
-    }
+    //     }
+    //     return await this.where({ adGroupId }).count('id');
+    // }
 }

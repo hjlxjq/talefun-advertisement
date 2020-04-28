@@ -24,8 +24,8 @@ export default class ManagerBaseModel extends BaseModel {
     }
 
     /**
-     * 为需要添加的新数据增加主键id以及createAt和updateAt字段
-     * @argument {any} modelVo 需要添加的新数据;
+     * 为需要创建的新数据增加主键 id 以及 createAt 和 updateAt 字段
+     * @argument {any} modelVo 需要创建的新数据;
      */
     protected beforeAdd(modelVo: any) {
         modelVo.id = Utils.generateId();

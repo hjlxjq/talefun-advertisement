@@ -47,7 +47,7 @@ import {
 export default class UserController extends BaseController {
 
     /**
-     * <br/>添加管理员--后台接口
+     * <br/>创建管理员--后台接口
      * @argument {CreateUserReqVO}
      * @returns {CreateUserResVO}
      */
@@ -93,7 +93,7 @@ export default class UserController extends BaseController {
     }
 
     /**
-     * <br/>添加用户--只允许管理员操作
+     * <br/>创建用户--只允许管理员操作
      * @argument {CreateUserReqVO}
      * @returns {CreateUserResVO}
      */
@@ -439,7 +439,7 @@ export default class UserController extends BaseController {
     }
 
     /**
-     * <br/>项目组添加成员---管理员或者项目组管理员
+     * <br/>项目组创建成员---管理员或者项目组管理员
      * @argument {CreateUserToProductGroupReqVO}
      * @returns {CreateUserToProductGroupResVO}
      */
@@ -477,7 +477,7 @@ export default class UserController extends BaseController {
     }
 
     /**
-     * <br/>应用添加成员---管理员或者项目组管理员
+     * <br/>应用创建成员---管理员或者项目组管理员
      * @argument {CreateUserToProductReqVO}
      * @returns {CreateUserToProductResVO}
      */

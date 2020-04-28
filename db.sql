@@ -68,7 +68,6 @@ CREATE TABLE `ad` (
   `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `placementID` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `price` decimal(6,2) unsigned DEFAULT NULL,
   `ecpm` decimal(6,2) unsigned NOT NULL,
   `loader` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `subloader` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,

@@ -61,10 +61,10 @@ export default class UserManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>添加管理员--后台接口
+     * <br/>创建管理员--后台接口
      */
     public async createAdMinAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             await this.userAuth();
@@ -116,10 +116,10 @@ export default class UserManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>添加用户
+     * <br/>创建用户
      */
     public async createUserAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             await this.userAuth();
@@ -174,7 +174,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>修改用户密码
      */
     public async updateUserAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -202,7 +202,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>禁用或者解禁用户--只允许管理员操作
      */
     public async disableUserAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             await this.userAuth();
@@ -236,7 +236,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>重置密码--只允许管理员操作
      */
     public async resetPasswordAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             await this.userAuth();
@@ -271,7 +271,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>获取用户列表
      */
     public async userListAction() {
-        this.allowMethods = 'get'; //  只允许 GET 请求类型
+        this.allowMethods = 'get';    // 只允许 GET 请求类型
 
         // try {
         //     await this.userAuth();
@@ -285,7 +285,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>获取用户权限
      */
     public async userAuthAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             await this.userAuth();
@@ -313,7 +313,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>获取用户在项目组下权限
      */
     public async userAuthInProductGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -335,7 +335,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>获取用户在应用下权限
      */
     public async userAuthInProductAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -357,7 +357,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>更新用户权限
      */
     public async updateUserAuthAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             await this.userAuth();
@@ -405,7 +405,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>登陆,
      */
     public async loginAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             email: {
@@ -433,7 +433,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>获取项目组下用户列表--管理员或者项目组管理员
      */
     public async userListInProductGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
         const productGroupId: string = this.post('id');
 
         const rules = {
@@ -462,7 +462,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>获取应用下用户列表---管理员或者项目组管理员
      */
     public async userListInProductAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
         const productId: string = this.post('id');
 
         const rules = {
@@ -488,10 +488,10 @@ export default class UserManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>项目组添加成员---管理员或者项目组管理员
+     * <br/>项目组创建成员---管理员或者项目组管理员
      */
     public async createUserToProductGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
         const productGroupId: string = this.post('id');
 
         const rules = {
@@ -577,10 +577,10 @@ export default class UserManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>应用添加成员---管理员或者项目组管理员
+     * <br/>应用创建成员---管理员或者项目组管理员
      */
     public async createUserToProductAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
         const productId: string = this.post('id');
 
         const rules = {
@@ -663,7 +663,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>更新应用成员权限---管理员或者项目组管理员
      */
     public async updateUserAuthInProductAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
         const productId: string = this.post('id');
 
         const rules = {
@@ -738,7 +738,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>更新项目组成员权限---管理员或者项目组管理员
      */
     public async updateUserAuthInProductGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
         const productGroupId: string = this.post('id');
 
         const rules = {
@@ -818,7 +818,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>删除应用下成员---管理员或者项目组管理员
      */
     public async deleteUserFromProductAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
         const productId: string = this.post('id');
 
         const rules = {
@@ -853,7 +853,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>删除项目组下成员---管理员或者项目组管理员
      */
     public async deleteUserFromProductGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
         const productGroupId: string = this.post('id');
 
         const rules = {

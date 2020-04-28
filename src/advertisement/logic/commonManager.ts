@@ -25,7 +25,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>获取广告类型列表
      */
     public async adTypeListAction() {
-        this.allowMethods = 'get'; //  只允许 GET 请求类型
+        this.allowMethods = 'get';    // 只允许 GET 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -43,7 +43,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>获取广告类型
      */
     public async adTypeAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -76,7 +76,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>创建广告类型
      */
     public async createAdTypeAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -127,7 +127,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>更新广告类型
      */
     public async updateAdTypeAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -181,7 +181,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>获取广告平台列表
      */
     public async adChannelListAction() {
-        this.allowMethods = 'get'; //  只允许 GET 请求类型
+        this.allowMethods = 'get';    // 只允许 GET 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -200,7 +200,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>获取广告平台
      */
     public async adChannelAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -233,7 +233,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>创建广告平台
      */
     public async createAdChannelAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -293,7 +293,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>更新广告平台
      */
     public async updateAdChannelAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -365,7 +365,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>获取 native 模板列表
      */
     public async nativeTmplListAction() {
-        this.allowMethods = 'get'; //  只允许 GET 请求类型
+        this.allowMethods = 'get';    // 只允许 GET 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -383,7 +383,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>创建 native 模板列表
      */
     public async createNativeTmplAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -434,7 +434,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>更新 native 模板
      */
     public async updateNativeTmplAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -488,7 +488,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>获取基础常量列表
      */
     public async baseConfigListAction() {
-        this.allowMethods = 'get'; //  只允许 GET 请求类型
+        this.allowMethods = 'get';    // 只允许 GET 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -507,7 +507,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>创建基础常量列表
      */
     public async createBaseConfigAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -564,7 +564,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>更新基础常量
      */
     public async updateBaseConfigAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -623,7 +623,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>获取打包参数列表
      */
     public async packParamListAction() {
-        this.allowMethods = 'get'; //  只允许 GET 请求类型
+        this.allowMethods = 'get';    // 只允许 GET 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -642,7 +642,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>创建打包参数
      */
     public async createPackParamAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();
@@ -693,7 +693,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>更新打包参数
      */
     public async updatePackParamAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         try {
             const userAuth = await this.comAuth();

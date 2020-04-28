@@ -16,6 +16,7 @@ import BaseController from '../../common/tale/BaseController';
 
 import VersionGroupModel from '../model/versionGroup';
 import NationModel from '../model/nation';
+import NationDefineModel from '../model/nationDefine';
 import AbTestGroupModel from '../model/abTestGroup';
 import AbTestMapModel from '../model/abTestMap';
 import ConfigGroupModel from '../model/configGroup';
@@ -28,7 +29,7 @@ import AdModel from '../model/ad';
 import {
     VersionGroupVO, AbTestGroupVO, ConfigGroupVO, ConfigVO, NativeTmplConfGroupVO, NativeTmplConfVO,
     AbTestMapVO, AdGroupVO, AdVO, ConfigGroupResVO, NativeTmplConfResVO, NativeTmplConfGroupResVO,
-    AdResVO, AbTestGroupResVO
+    AdResVO, AbTestGroupResVO, NationDefineVO
 } from '../defines';
 
 import {
@@ -47,7 +48,7 @@ import {
     UnbindAdGroupReqVO, UnbindAdGroupResVO, AdGroupListReqVO, AdGroupListResVO,
     CreateAdGroupReqVO, CreateAdGroupResVO, UpdateAdGroupReqVO, UpdateAdGroupResVO,
     AdListReqVO, AdListResVO, AdListInAdGroupReqVO, AdListInAdGroupResVO, CreateAdReqVO, CreateAdResVO,
-    CopyAdGroupReqVO, CopyAdGroupResVO, UpdateAdReqVO, UpdateAdResVO,
+    CopyAdGroupReqVO, CopyAdGroupResVO, UpdateAdReqVO, UpdateAdResVO, NationDefineListResVO,
     DeleteAdReqVO, DeleteAdResVO, CopyConfigGroupReqVO, CopyConfigGroupResVO, CreateNativeTmplConfListResVO,
     CopyVersionGroupReqVO, CopyVersionGroupResVO, CompletePlaceReqVO, CompletePlaceResVO,
     CreateDefaultAbTestGroupReqVO, CreateDefaultAbTestGroupResVO,
@@ -69,6 +70,52 @@ export default class DispatchManagerController extends BaseController {
 
         const versionGroupResVoList = await modelServer.getVersionGroupList(productId, type);
         return this.success(versionGroupResVoList);
+    }
+
+    /**
+     * <br/>获取国家代码定义列表
+     * @returns {NationDefineListResVO}
+     * @debugger yes
+     */
+    public async nationListAction() {
+        const ucId: string = this.ctx.state.userId || '';
+        const nationDefineModel = this.taleModel('nationDefine', 'advertisement') as NationDefineModel;
+
+        const nationDefineVoList = await nationDefineModel.getList();
+        return this.success(nationDefineVoList);
+    }
+
+    /**
+     * <br/>插入国家代码定义列表 --- 一次性
+     */
+    public async createNationListAction() {
+        const nationDefineList: NationDefineVO[] = this.post('nationDefineList');
+        const nationDefineModel = this.taleModel('nationDefine', 'advertisement') as NationDefineModel;
+
+        const rows = await nationDefineModel.addList(nationDefineList);
+
+        if (rows.length === nationDefineList.length) {
+            this.success('created');
+        } else {
+            this.fail(TaleCode.DBFaild, 'create fail!!!');
+        }
+    }
+
+    /**
+     * <br/>更新国家代码定义列表
+     */
+    public async updateNationListAction() {
+        const name: string = this.post('name');
+        const code: string = this.post('code');
+
+        const nationDefineModel = this.taleModel('nationDefine', 'advertisement') as NationDefineModel;
+
+        const rows = await nationDefineModel.updateNationDefine(code, name);
+        if (rows === 1) {
+            this.success('updated');
+        } else {
+            this.fail(TaleCode.DBFaild, 'update fail!!!');
+        }
     }
 
     /**
@@ -569,7 +616,7 @@ export default class DispatchManagerController extends BaseController {
     }
 
     /**
-     * <br/>添加常量
+     * <br/>创建常量
      * @argument {CreateConfigReqVO}
      * @returns {CreateConfigResVO}
      * @debugger yes
@@ -657,7 +704,7 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupVo: AbTestGroupVO = {
             nativeTmplConfGroupId,
             name: undefined, begin: undefined, end: undefined, description: undefined,
-            versionGroupId: undefined,  configGroupId: undefined
+            versionGroupId: undefined, configGroupId: undefined
         };
         const rows = await abTestGroupModel.updateAbTestGroup(abTestGroupId, abTestGroupVo);
 
@@ -800,7 +847,7 @@ export default class DispatchManagerController extends BaseController {
     }
 
     /**
-     * <br/>添加应用 native 模板配置
+     * <br/>创建应用 native 模板配置
      * @argument {CreateNativeTmplConfReqVO}
      * @returns {CreateNativeTmplConfResVO}
      * @debugger yes
@@ -1102,12 +1149,7 @@ export default class DispatchManagerController extends BaseController {
         const adChannelId: string = this.post('adChannelId');
         const name: string = this.post('name');
         const placementID: string = this.post('placementID');
-        const price: string = this.post('price');
-        const loader: string = this.post('loader');
-        const subloader: string = this.post('subloader');
         const ecpm: number = this.post('ecpm');
-        const interval: number = this.post('interval');
-        const weight: number = this.post('weight');
         const bidding: number = this.post('bidding');
         const active: number = this.post('active');
 
@@ -1118,8 +1160,9 @@ export default class DispatchManagerController extends BaseController {
 
         const adVo: AdVO = {
             productId, adGroupId, adChannelId, adTypeId,
-            name, placementID, price, loader, subloader, ecpm, interval, weight, bidding,
-            active, activeIndex: undefined
+            name, placementID, ecpm, bidding,
+            active, activeIndex: undefined,
+            loader: undefined, subloader: undefined, interval: undefined, weight: undefined
         };
 
         await modelServer.addAd(adGroupId, adVo);
@@ -1137,7 +1180,6 @@ export default class DispatchManagerController extends BaseController {
         const id: string = this.post('id');
         const name: string = this.post('name');
         const placementID: string = this.post('placementID');
-        const price: string = this.post('price');
         const loader: string = this.post('loader');
         const subloader: string = this.post('subloader');
         const ecpm: number = this.post('ecpm');
@@ -1151,7 +1193,7 @@ export default class DispatchManagerController extends BaseController {
         const adVo: AdVO = {
             productId: undefined, adGroupId: undefined, adChannelId: undefined, adTypeId: undefined,
             activeIndex: undefined,
-            placementID, name, price, ecpm, interval, subloader, loader, weight, bidding,
+            placementID, name, ecpm, interval, subloader, loader, weight, bidding,
             active
         };
 

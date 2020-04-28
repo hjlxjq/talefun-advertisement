@@ -47,13 +47,13 @@ export default class ProductModel extends MBModel {
      * @argument {number} active 是否生效;
      * @returns {Promise<number>} 应用数量;
      */
-    public async getNum(productGroupId: string, active?: number) {
-        if (!_.isUndefined(active)) {
-            return await this.where({ productGroupId, active }).count('id');
+    // public async getNum(productGroupId: string, active?: number) {
+    //     if (!_.isUndefined(active)) {
+    //         return await this.where({ productGroupId, active }).count('id');
 
-        }
-        return await this.where({ productGroupId }).count('id');
-    }
+    //     }
+    //     return await this.where({ productGroupId }).count('id');
+    // }
 
     /**
      * 获取全部应用列表

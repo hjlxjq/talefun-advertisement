@@ -33,10 +33,8 @@ import ProductGroupAuthModel from '../model/productGroupAuth';
 import BaseService from '../../common/tale/BaseService';
 
 import {
-    AdVO, AdChannelResVO, PackParamConfResVO, ChannelParamConfResVO, ProductGroupResVO, ProductGroupVO, VersionGroupVO,
-    ConfigGroupResVO, ConfigResVO, NativeTmplConfResVO, VersionGroupResVO, NativeTmplConfGroupResVO, AdGroupResVO,
-    AdResVO,
-    BaseConfigVO,
+    AdVO, AdChannelResVO, PackParamConfResVO, ChannelParamConfResVO, ConfigGroupResVO, ConfigResVO,
+    NativeTmplConfResVO, VersionGroupResVO, NativeTmplConfGroupResVO, AdGroupResVO, AdResVO,
 } from '../defines';
 
 /**
@@ -65,7 +63,7 @@ export default class ModelService extends BaseService {
                 const adTypeVo = await adTypeModel.getAdType(adTypeId, 1);
 
                 if (adTypeVo) {
-                    return adTypeVo.type;
+                    return adTypeVo.name;
                 }
             });
 
@@ -97,7 +95,7 @@ export default class ModelService extends BaseService {
             const adTypeVo = await adTypeModel.getAdType(adTypeId, 1);
 
             if (adTypeVo) {
-                return adTypeVo.type;
+                return adTypeVo.name;
             }
         });
 
@@ -212,81 +210,6 @@ export default class ModelService extends BaseService {
     }
 
     /**
-     * 查询 productGroup, product, productGroupAuth 三张表,
-     * <br/>获取所有项目组列表信息，或者用户拥有权限的项目组列表信息
-     * @argument {string} userId 用户表 id;
-     */
-    public async getProductGroupList(userId?: string) {
-        const productGroupModel = this.taleModel('productGroup', 'advertisement') as ProductGroupModel;
-        const productModel = this.taleModel('product', 'advertisement') as ProductModel;
-        const productGroupAuthModel = this.taleModel('productGroupAuth', 'advertisement') as ProductGroupAuthModel;
-
-        let productGroupVoList: ProductGroupVO[];
-
-        if (userId) {    // 用户拥有权限的项目组列表信息
-            const productGroupIdList = await productGroupAuthModel.getIdListByUser(userId);
-            productGroupVoList = await productGroupModel.getListByAuth(productGroupIdList);
-
-        } else {    // 所有项目组列表信息
-            productGroupVoList = await productGroupModel.getList();
-        }
-
-        const productGroupResVoList = await Bluebird.map(productGroupVoList, async (productGroupVo) => {
-
-            const [
-                productNum,
-                userNum
-            ] = await Promise.all([
-                productModel.getNum(productGroupVo.id, 1),
-                productGroupAuthModel.getNum(productGroupVo.id, 1),
-            ]);
-
-            const productGroupResVo: ProductGroupResVO = _.defaults(
-                {
-                    productNum,
-                    userNum
-                },
-                productGroupVo
-            );
-
-            return productGroupResVo;
-        });
-
-        return productGroupResVoList;
-    }
-
-    /**
-     * 查询 productGroup, product, productGroupAuth 三张表,
-     * <br/>获取所有项目组列表信息，或者用户拥有权限的项目组列表信息
-     * @argument {string} productGroupId 项目组表 id;
-     */
-    public async getProductGroup(productGroupId: string) {
-        const productGroupModel = this.taleModel('productGroup', 'advertisement') as ProductGroupModel;
-        const productModel = this.taleModel('product', 'advertisement') as ProductModel;
-        const productGroupAuthModel = this.taleModel('productGroupAuth', 'advertisement') as ProductGroupAuthModel;
-
-        const productGroupVo = await productGroupModel.getProductGroup(productGroupId);
-        const [
-            productNum,
-            userNum
-        ] = await Promise.all([
-            productModel.getNum(productGroupVo.id, 1),
-            productGroupAuthModel.getNum(productGroupVo.id, 1),
-        ]);
-
-        const productGroupResVo: ProductGroupResVO = _.defaults(
-            {
-                productNum,
-                userNum
-            },
-            productGroupVo
-        );
-
-        return productGroupResVo;
-
-    }
-
-    /**
      * 查询 versionGroup, nation 两张表,
      * <br/>获取版本分组控制列表信息
      * @argument {string} productId 应用表 id;
@@ -310,14 +233,13 @@ export default class ModelService extends BaseService {
     }
 
     /**
-     * 查询 nativeTmplConfGroup, nativeTmplConf, abTestGroup, versionGroup 四张表,
+     * 查询 nativeTmplConfGroup, abTestGroup, versionGroup 三张表,
      * <br/>获取 native 模板组列表信息
      * @argument {string} productId 应用表 id;
      */
     public async getNativeTmplConfGroupList(productId: string) {
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
-        const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
@@ -326,13 +248,12 @@ export default class ModelService extends BaseService {
             await Bluebird.map(nativeTmplConfGroupVoList, async (nativeTmplConfGroupVo) => {
                 const { id } = nativeTmplConfGroupVo;
 
-                const nativeTmplConfNum = await nativeTmplConfModel.getNum(id, 1);
                 const verionGroupIdList = await abTestGroupModel.getVerionGroupIdListByNative(id);
                 const versionGroupNameList = await versionGroupModel.getVersionGroupNameList(verionGroupIdList, 1);
 
                 delete nativeTmplConfGroupVo.productId;
                 const nativeTmplConfGroupResVo: NativeTmplConfGroupResVO = _.defaults({
-                    nativeTmplConfNum, versionGroup: versionGroupNameList,
+                    versionGroup: versionGroupNameList,
                 }, nativeTmplConfGroupVo);
 
                 return nativeTmplConfGroupResVo;
@@ -383,13 +304,12 @@ export default class ModelService extends BaseService {
     }
 
     /**
-     * 查询 adGroup, ad, abTestMap, versionGroup, adType, product 六张表,
+     * 查询 adGroup, abTestMap, versionGroup, adType, product 五张表,
      * <br/>获取广告组列表信息
      * @argument {string} productId 应用表 id;
      */
     public async getAdGroupList(productId: string) {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
-        const adModel = this.taleModel('ad', 'advertisement') as AdModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
@@ -408,7 +328,6 @@ export default class ModelService extends BaseService {
 
             const { name: type } = adTypeVo;
 
-            const adNum = await adModel.getNum(id, 1);
             const verionGroupIdList = await abTestMapModel.getAbTestGroupIdByAdGrroup(id);
             const versionGroupNameList = await versionGroupModel.getVersionGroupNameList(verionGroupIdList, 1);
 
@@ -416,7 +335,7 @@ export default class ModelService extends BaseService {
             delete adGroupVo.adTypeId;
 
             const adGroupResVo: AdGroupResVO = _.defaults({
-                type, adNum, versionGroup: versionGroupNameList,
+                type, versionGroup: versionGroupNameList,
             }, adGroupVo);
 
             return adGroupResVo;
@@ -652,17 +571,11 @@ export default class ModelService extends BaseService {
                 dependent = (await configGroupModel.getConfigGroup(dependentId)).name;
             }
 
-            const [
-                configNum, verionGroupIdList
-            ] = await Promise.all([
-                configModel.getNum(id, 1),
-                abTestGroupModel.getVerionGroupIdListByConfig(id)
-            ]);
-
+            const verionGroupIdList = await abTestGroupModel.getVerionGroupIdListByConfig(id);
             const versionGroupNameList = await versionGroupModel.getVersionGroupNameList(verionGroupIdList, 1);
 
             const configGroupResVo: ConfigGroupResVO = _.defaults({
-                dependent, configNum, versionGroup: versionGroupNameList
+                dependent, versionGroup: versionGroupNameList
             }, configGroupVo);
 
             return configGroupResVo;
@@ -671,14 +584,13 @@ export default class ModelService extends BaseService {
     }
 
     /**
-     * 查询 configGroup, config, abTestGroup, versionGroup 四张表,
+     * 查询 configGroup, abTestGroup, versionGroup 三张表,
      * <br/>获取常量组数据
      * @argument {string} id 常量组主键 id
      */
     public async getConfigGroup(configGroupId: string) {
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-        const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
 
         const configGroupVo = await configGroupModel.getConfigGroup(configGroupId);
@@ -689,44 +601,37 @@ export default class ModelService extends BaseService {
             dependent = (await configGroupModel.getConfigGroup(dependentId)).name;
         }
 
-        const [
-            configNum, verionGroupIdList
-        ] = await Promise.all([
-            configModel.getNum(id, 1),
-            abTestGroupModel.getVerionGroupIdListByConfig(id)
-        ]);
-
+        const verionGroupIdList = await abTestGroupModel.getVerionGroupIdListByConfig(id);
         const versionGroupNameList = await versionGroupModel.getVersionGroupNameList(verionGroupIdList, 1);
 
         const configGroupResVo: ConfigGroupResVO = _.defaults({
-            dependent, configNum, versionGroup: versionGroupNameList
+            dependent, versionGroup: versionGroupNameList
         }, configGroupVo);
 
         return configGroupResVo;
     }
 
     /**
-     * 查询 nativeTmplConfGroup, nativeTmplConf, abTestGroup, versionGroup 四张表,
+     * 查询 nativeTmplConfGroup, abTestGroup, versionGroup 三张表,
      * <br/>获取 native 模板组信息
      * @argument {string} nativeTmplConfGroupId  native 模板组表 id;
      */
     public async getNativeTmplConfGroup(nativeTmplConfGroupId: string) {
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
-        const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId);
         const { id } = nativeTmplConfGroupVo;
 
-        const nativeTmplConfNum = await nativeTmplConfModel.getNum(id, 1);
         const verionGroupIdList = await abTestGroupModel.getVerionGroupIdListByNative(id);
         const versionGroupNameList = await versionGroupModel.getVersionGroupNameList(verionGroupIdList, 1);
 
         delete nativeTmplConfGroupVo.productId;
+
         const nativeTmplConfGroupResVo: NativeTmplConfGroupResVO = _.defaults({
-            nativeTmplConfNum, versionGroup: versionGroupNameList,
+            versionGroup: versionGroupNameList,
         }, nativeTmplConfGroupVo);
 
         return nativeTmplConfGroupResVo;
@@ -763,31 +668,28 @@ export default class ModelService extends BaseService {
                 if (think.isEmpty(adTypeVo)) {
                     return {
                         place,
-                        type: undefined, adNum: undefined, versionGroup: undefined,
+                        type: undefined, versionGroup: undefined,
                         name: undefined, description: undefined, active: undefined
                     };
                 }
 
                 const { name: type } = adTypeVo;
 
-                const [adNum, verionGroupIdList] = await Promise.all([
-                    adModel.getNum(id, 1),
-                    abTestMapModel.getAbTestGroupIdByAdGrroup(id)
-                ]);
+                const verionGroupIdList = await abTestMapModel.getAbTestGroupIdByAdGrroup(id);
                 const versionGroupNameList = await versionGroupModel.getVersionGroupNameList(verionGroupIdList, 1);
 
                 delete adGroupVo.productId;
                 delete adGroupVo.adTypeId;
 
                 const adGroupResVo: AdGroupResVO = _.defaults({
-                    type, adNum, versionGroup: versionGroupNameList, place, adList
+                    type, versionGroup: versionGroupNameList, place, adList
                 }, adGroupVo);
 
                 return adGroupResVo;
             }
             return {
                 place,
-                type: undefined, adNum: undefined, versionGroup: undefined,
+                type: undefined, versionGroup: undefined,
                 name: undefined, description: undefined, active: undefined
             };
         });

@@ -82,13 +82,13 @@ export default class ConfigModel extends MBModel {
      * @argument {number} active 是否生效;
      * @returns {Promise<number>} 常量组下常量数量;
      */
-    public async getNum(configGroupId: string, active?: number) {
-        if (!_.isUndefined(active)) {
-            return await this.where({ configGroupId, active }).count('id');
+    // public async getNum(configGroupId: string, active?: number) {
+    //     if (!_.isUndefined(active)) {
+    //         return await this.where({ configGroupId, active }).count('id');
 
-        }
-        return await this.where({ configGroupId }).count('id');
-    }
+    //     }
+    //     return await this.where({ configGroupId }).count('id');
+    // }
 
     /**
      * 按常量组主键获取常量信息

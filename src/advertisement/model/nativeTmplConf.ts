@@ -90,12 +90,12 @@ export default class NativeTmplConfModel extends MBModel {
      * @argument {number} active 是否生效;
      * @returns {Promise<number>} 应用 native 模板数量;
      */
-    public async getNum(nativeTmplConfGroupId: string, active?: number) {
-        if (!_.isUndefined(active)) {
-            return await this.where({ nativeTmplConfGroupId, active }).count('id');
+    // public async getNum(nativeTmplConfGroupId: string, active?: number) {
+    //     if (!_.isUndefined(active)) {
+    //         return await this.where({ nativeTmplConfGroupId, active }).count('id');
 
-        }
-        return await this.where({ nativeTmplConfGroupId }).count('id');
-    }
+    //     }
+    //     return await this.where({ nativeTmplConfGroupId }).count('id');
+    // }
 
 }

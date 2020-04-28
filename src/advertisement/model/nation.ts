@@ -24,10 +24,10 @@ export default class NationModel extends MBModel {
      * @returns {Promise<string[]>} 国家列表;
      */
     public async getList(versionGroupId: string) {
-        const nationVOList: NationVO[] = await this.where({ versionGroupId }).select();
+        const nationVoList: NationVO[] = await this.where({ versionGroupId }).select();
 
-        return _.map(nationVOList, (nationVO) => {
-            return nationVO.code;
+        return _.map(nationVoList, (nationVo) => {
+            return nationVo.code;
         });
     }
 

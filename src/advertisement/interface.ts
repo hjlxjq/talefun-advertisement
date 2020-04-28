@@ -26,7 +26,7 @@ interface AdChannelVO {
     key2: string;    // 启动参数 2
     key3: string;    // 启动参数 3
     test: number;    // 是否测试 app 可见
-    adTypeList: string[];    // 支持的广告类型列表
+    adTypeList: string[];    // 支持的广告类型显示名称列表
     active: number;    // 是否生效
     createAt: string;    // 创建时间
     updateAt: string;    // 修改时间
@@ -284,8 +284,6 @@ interface ProductGroupVO {
     id: string;    // 项目组表主键 id
     name: string;    // 项目组名
     description: string;    // 项目组描述
-    productNum: number;    // 应用数量
-    userNum: number;    // 人员数量
     active: number;    // 是否生效
     createAt: string;    // 创建时间
     updateAt: string;    // 修改时间
@@ -523,7 +521,6 @@ interface AdVO {
     id: string;    // 广告表主键 id
     name: string;    // 广告名称
     placementID: string;    // 广告唯一 ID
-    price: string;    // 真实底价
     ecpm: number;    // 分层控制
     loader: string;    // 加载器
     subloader: string;    // 子加载器
@@ -582,6 +579,16 @@ export interface VersionGroupListResVO extends ResVO {
         active: number;    // 是否生效
         createAt: string;    // 创建时间
         updateAt: string;    // 修改时间
+    }>;
+}
+
+/**GET
+ * </br>获取国家代码定义列表 /advertisement/dispatchManager/nationList
+ */
+export interface NationDefineListResVO extends ResVO {
+    data: Array<{
+        name: string;    // 国家名称
+        code: string;    // 国家代码
     }>;
 }
 
@@ -657,7 +664,6 @@ export interface AbTestGroupListResVO extends ResVO {
             type: number;    // 0 广告 1 游戏常量
             versionGroup: string[];    // 支持的条件组
             dependent: string;    // 依赖的常量组名
-            configNum: number;    // 常量组下常量数量
             description: string;    // 描述
             active: number;    // 是否生效
             createAt: string;    // 创建时间
@@ -669,7 +675,6 @@ export interface AbTestGroupListResVO extends ResVO {
             name: string;    // 广告组名称
             type: string;    // 广告类型显示名称
             place: string;    // 广告位
-            adNum: number;    // 广告组下广告数量
             description: string;    // 描述
             versionGroup: string[];    // 支持的条件组
             active: number;    // 是否生效
@@ -703,7 +708,7 @@ export interface CreateDefaultAbTestGroupResVO extends ResVO {
  */
 export interface CreateAbTestGroupReqVO {
     id: string;    // 版本分组表主键 id
-    name: string;    // 添加的 ab 分组名, 逗号分隔
+    name: string;    // 创建的 ab 分组名
     description: string;    // 描述
     groupNum: number;    // 测试组数
     begin: number;    // 开始用户范围
@@ -741,7 +746,6 @@ export interface ConfigGroupListResVO extends ResVO {
         type: number;    // 0 广告 1 游戏常量
         versionGroup: string[];    // 支持的条件组
         dependent: string;    // 依赖的常量组名
-        configNum: number;    // 常量组下常量数量
         description: string;    // 描述
         active: number;    // 是否生效
         createAt: string;    // 创建时间
@@ -805,7 +809,7 @@ export interface UpdateConfigGroupResVO extends ResVO {
 }
 
 /**
- * 添加常量 /advertisement/dispatchManager/createConfig
+ * 创建常量 /advertisement/dispatchManager/createConfig
  */
 export interface CreateConfigReqVO {
     id: string;    // 常量组主键 id
@@ -897,7 +901,7 @@ export interface UpdateNativeTmplConfGroupResVO extends ResVO {
 }
 
 /**
- * 添加应用 native 模板配置 /advertisement/dispatchManager/createNativeTmplConf
+ * 创建应用 native 模板配置 /advertisement/dispatchManager/createNativeTmplConf
  */
 export interface CreateNativeTmplConfReqVO {
     id: string;    // 应用 native 模板配置组表主键 id
@@ -954,7 +958,6 @@ export interface NativeTmplConfGroupListResVO extends ResVO {
         name: string;    // native 模板配置组表名称
         versionGroup: string[];    // 支持的条件组
         description: string;    // 描述
-        nativeTmplConfNum: number;    // native 模板组下 native 模板数量
         active: number;    // 是否生效
         createAt: string;    // 创建时间
         updateAt: string;    // 修改时间
@@ -975,7 +978,7 @@ export interface NativeTmplConfListResVO extends ResVO {
 }
 
 /**
- * 向 ab 分组添加广告位(绑定广告组) /advertisement/dispatchManager/bindAdGroup
+ * 向 ab 分组创建广告位(绑定广告组) /advertisement/dispatchManager/bindAdGroup
  */
 export interface BindAdGroupReqVO {
     id: string;    // ab 分组表主键 id
@@ -1024,7 +1027,6 @@ export interface AdGroupListResVO extends ResVO {
         name: string;    // 广告组名称
         type: string;    // 广告类型显示名称
         place: string;    // 广告位
-        adNum: number;    // 广告组下广告数量
         description: string;    // 描述
         versionGroup: string[];    // 支持的条件组
         active: number;    // 是否生效
@@ -1105,12 +1107,7 @@ export interface CreateAdReqVO {
     adChannelId: string;    // 广告平台主键 id
     name: string;    // 广告名称
     placementID: string;    // 广告唯一 ID
-    price: string;    // 真实底价
     ecpm: number;    // 分层控制
-    loader: string;    // 加载器
-    subloader: string;    // 子加载器
-    interval: number;    // 间隔
-    weight: number;    // 权重
     bidding: number;    // 实时竞价
 }
 
@@ -1124,7 +1121,6 @@ export interface CreateAdResVO extends ResVO {
 export interface UpdateAdReqVO {
     id: string;    // 广告表主键 id
     name?: string;    // 广告名称
-    price?: string;    // 真实底价
     ecpm?: number;    // 分层控制
     loader?: string;    // 加载器
     subloader?: string;    // 子加载器
@@ -1335,7 +1331,7 @@ export interface UserListInProductResVO extends ResVO {
 }
 
 /**
- * 项目组添加成员 /advertisement/userManager/createUserToProductGroup
+ * 项目组创建成员 /advertisement/userManager/createUserToProductGroup
  */
 export interface CreateUserToProductGroupReqVO {
     id: string;    // 项目组表主键 id
@@ -1353,12 +1349,12 @@ export interface CreateUserToProductGroupReqVO {
 
 export interface CreateUserToProductGroupResVO extends ResVO {
     data: {
-        data: 'created';    // 项目组添加成员成功
+        data: 'created';    // 项目组创建成员成功
     };
 }
 
 /**
- * 应用添加成员 /advertisement/userManager/createUserToProduct
+ * 应用创建成员 /advertisement/userManager/createUserToProduct
  */
 export interface CreateUserToProductReqVO {
     id: string;    // 应用表主键 id
@@ -1375,7 +1371,7 @@ export interface CreateUserToProductReqVO {
 
 export interface CreateUserToProductResVO extends ResVO {
     data: {
-        data: 'created';    // 应用添加成员成功
+        data: 'created';    // 应用创建成员成功
     };
 }
 

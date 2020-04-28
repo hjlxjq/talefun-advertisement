@@ -34,7 +34,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>获取版本分组控制列表信息
      */
     public async versionGroupListAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -85,10 +85,18 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
+     * <br/>获取国家代码
+     */
+    public async nationListAction() {
+        this.allowMethods = 'get';    // 只允许 GET 请求类型
+
+    }
+
+    /**
      * <br/>创建版本分组控制
      */
     public async createVersionGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -179,7 +187,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>复制版本分组控制
      */
     public async copyVersionGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -266,7 +274,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>更新版本分组控制
      */
     public async updateVersionGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -348,7 +356,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>获取版本分组下 ab 分组列表
      */
     public async abTestGroupListAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -397,7 +405,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>向版本分组下创建默认 ab 分组
      */
     public async createDefaultAbTestGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -446,7 +454,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>向版本分组下创建 ab 分组
      */
     public async createAbTestGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -525,7 +533,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>向 ab 分组绑定常量组
      */
     public async bindConfigGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -581,7 +589,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>获取常量组列表
      */
     public async configGroupListAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -632,7 +640,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>获取常量组下常量列表
      */
     public async configListAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -679,7 +687,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>创建常量组
      */
     public async createConfigGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -752,7 +760,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>复制常量组
      */
     public async copyConfigGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             name: {
@@ -824,7 +832,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>更新常量组
      */
     public async updateConfigGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -889,10 +897,10 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>添加常量
+     * <br/>创建常量
      */
     public async createConfigAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -964,7 +972,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>更新常量
      */
     public async updateConfigAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1034,7 +1042,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>删除常量
      */
     public async deleteConfigAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1084,7 +1092,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>向 ab 分组绑定 native 组
      */
     public async bindNativeTmplConfGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1137,7 +1145,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>获取应用 native 模板组列表
      */
     public async nativeTmplConfGroupListAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1177,7 +1185,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>获取应用 native 模板组下模板列表
      */
     public async nativeTmplConfListAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1227,7 +1235,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>创建应用 native 模板配置组
      */
     public async createNativeTmplConfGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1285,7 +1293,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>复制应用 native 模板配置组
      */
     public async copyNativeTmplConfGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1347,7 +1355,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>更新应用 native 模板组
      */
     public async updateNativeTmplConfGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1404,10 +1412,10 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>添加应用 native 模板配置
+     * <br/>创建应用 native 模板配置
      */
     public async createNativeTmplConfAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1482,7 +1490,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>更新应用 native 模板
      */
     public async updateNativeTmplConfAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1549,7 +1557,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>删除应用 native 模板
      */
     public async deleteNativeTmplConfAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1596,7 +1604,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>向 ab 分组绑定广告组
      */
     public async bindAdGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1655,7 +1663,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>删除 ab 分组下广告位
      */
     public async unbindAdGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1708,7 +1716,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>全量 ab 分组下广告位到默认组
      */
     public async completePlaceAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1761,7 +1769,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>获取广告组列表
      */
     public async adGroupListAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1801,7 +1809,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>创建广告组
      */
     public async createAdGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1865,7 +1873,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>复制广告组
      */
     public async copyAdGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1925,7 +1933,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>更新广告组
      */
     public async updateAdGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -1982,7 +1990,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>获取广告列表
      */
     public async adListAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -2022,7 +2030,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>获取广告组下广告列表
      */
     public async adListInAdGroupAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -2064,7 +2072,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>创建广告
      */
     public async createAdAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -2085,37 +2093,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
-            price: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            loader: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            subloader: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
             ecpm: {
-                int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            interval: {
-                int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            weight: {
                 int: true,       // 字段类型为 Number 类型
                 trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
@@ -2166,7 +2144,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>更新广告
      */
     public async updateAdAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -2181,11 +2159,6 @@ export default class DispatchManagerLogic extends AMLogic {
                 method: 'POST'       // 指定获取数据的方式
             },
             placementID: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                method: 'POST'       // 指定获取数据的方式
-            },
-            price: {
                 string: true,       // 字段类型为 String 类型
                 trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
@@ -2259,7 +2232,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>删除广告组下广告
      */
     public async deleteAdAction() {
-        this.allowMethods = 'post'; //  只允许 POST 请求类型
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
             id: {
@@ -2304,7 +2277,11 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     tokenExempts(): TokenExemptVO[] {
         const exes = super.tokenExempts();
+
         exes.push({ action: 'index' });
+        exes.push({ action: 'createNationList' });
+        exes.push({ action: 'updateNationList' });
+
         return exes;
     }
 
