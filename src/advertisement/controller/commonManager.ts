@@ -255,16 +255,20 @@ export default class CommonManagerController extends BaseController {
         think.logger.debug(`file: ${fireName}`);
         think.logger.debug(`file: ${file.path}`);
 
+        const CTR_ENV = process.env.CTR_ENV;
+        const domain: string = think.config(CTR_ENV + '_domain');
+
         const PreviewDir = path.resolve(think.ROOT_PATH, '..', think.config('PreviewDir'));
         const filepath = path.resolve(PreviewDir, fireName);
 
         await rename(file.path, filepath);
 
-        this.success({ preview: filepath });
+        const preview = domain + '/image/preview/' + fireName;
+        this.success({ preview });
     }
 
     /**
-     * <br/>创建 native 模板列表
+     * <br/>创建 native 模板
      * @argument {CreateNativeTmplReqVO}
      * @returns {CreateNativeTmplResVO}
      * @debugger yes
@@ -275,7 +279,11 @@ export default class CommonManagerController extends BaseController {
         const preview: string = this.post('preview');
         const test: number = this.post('test');
         const active: number = this.post('active');
+
         const nativeTmplModel = this.taleModel('nativeTmpl', 'advertisement') as NativeTmplModel;
+
+        const CTR_ENV = process.env.CTR_ENV;
+        const domain: string = think.config(CTR_ENV + '_domain');
 
         const nativeTmplVo: NativeTmplVO = {
             key, preview,

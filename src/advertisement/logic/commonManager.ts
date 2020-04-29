@@ -399,7 +399,7 @@ export default class CommonManagerLogic extends AMLogic {
     // }
 
     /**
-     * <br/>创建 native 模板列表
+     * <br/>创建 native 模板
      */
     public async createNativeTmplAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型

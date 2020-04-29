@@ -10,7 +10,8 @@
             "node_args": [],
             "args": [],
             "env": {
-                "TALE_ENV": "local"
+                "TALE_ENV": "local",
+                "CTR_ENV": "local"
             }
         }
     ]
