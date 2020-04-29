@@ -241,7 +241,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async uploadPreviewAction() {
-        const file = this.file('preview');
+        const file = this.file('image');
         think.logger.debug(`file: ${JSON.stringify(file)}`);
 
         if (!file || !file.type.startsWith('image') || !file.name) {

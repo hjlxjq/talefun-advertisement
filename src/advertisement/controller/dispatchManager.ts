@@ -405,53 +405,58 @@ export default class DispatchManagerController extends BaseController {
      * @returns {CreateAbTestGroupResVO}
      * @debugger yes
      */
-    // public async createAbTestGroupAction() {
-    //     const ucId: string = this.ctx.state.userId || '';
-    //     const name: string = this.post('name');
-    //     const versionGroupId: string = this.post('id');
-    //     const description: string = this.post('description');
-    //     let begin: number = this.post('begin');
-    //     let end: number = this.post('end');
-    //     const groupNum: number = this.post('groupNum');
+    public async createAbTestGroupAction() {
+        const ucId: string = this.ctx.state.userId || '';
+        const name: string = this.post('name');
+        const versionGroupId: string = this.post('id');
+        const description: string = this.post('description');
+        let begin: number = this.post('begin');
+        let end: number = this.post('end');
+        const groupNum: number = this.post('groupNum');
 
-    //     const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const nameList = [
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+        ];
 
-    //     if (groupNum && groupNum > 1) {
+        if (groupNum && groupNum > 1) {
 
-    //         if ((end - begin) % groupNum !== 0) {
-    //             return this.fail(10, '分组失败，无法分组');
-    //         }
-    //         const abTestGroupVoList: AbTestGroupVO[] = [];
-    //         const step = (end - begin + 1) / groupNum;
-    //         end = begin + step - 1;
+            if ((end - begin) % groupNum !== 0) {
+                return this.fail(10, '分组失败，无法分组');
+            }
+            const abTestGroupVoList: AbTestGroupVO[] = [];
+            const step = (end - begin + 1) / groupNum;
+            end = begin + step - 1;
 
-    //         for (let i = 0; i < groupNum; i++) {
+            for (let i = 0; i < groupNum; i++) {
+                const abTestGroupName = name + '_' + nameList[i + 1];
 
-    //             const abTestGroupVo: AbTestGroupVO = {
-    //                 name: _.trim(nameList[i]), begin, end,
-    //                 description, versionGroupId, configGroupId: null, nativeTmplConfGroupId: null
-    //             };
+                const abTestGroupVo: AbTestGroupVO = {
+                    name: abTestGroupName, begin, end,
+                    description, versionGroupId, configGroupId: null, nativeTmplConfGroupId: null
+                };
 
-    //             abTestGroupVoList.push(abTestGroupVo);
-    //             begin = end;
-    //             end += step;
-    //         }
+                abTestGroupVoList.push(abTestGroupVo);
+                begin = end + 1;
+                end += step;
+            }
 
-    //         think.logger.debug(`abTestGroupVoList: ${JSON.stringify(abTestGroupVoList)}`);
+            think.logger.debug(`abTestGroupVoList: ${JSON.stringify(abTestGroupVoList)}`);
 
-    //         const rows = (await abTestGroupModel.addList(abTestGroupVoList)).length;
-    //         if (rows === groupNum) {
-    //             this.success('created');
-    //         } else {
-    //             this.fail(TaleCode.DBFaild, 'create fail!!!');
-    //         }
+            const rows = (await abTestGroupModel.addList(abTestGroupVoList)).length;
+            if (rows === groupNum) {
+                this.success('created');
+            } else {
+                this.fail(TaleCode.DBFaild, 'create fail!!!');
+            }
 
-    //     } else {
-    //         return this.fail(10, '分组失败，没有指定大于 1 的组数');
-    //     }
+        } else {
+            return this.fail(10, '分组失败，没有指定大于 1 的组数');
+        }
 
-    //     this.success('created');
-    // }
+        this.success('created');
+    }
 
     /**
      * <br/>向 ab 分组绑定常量组
