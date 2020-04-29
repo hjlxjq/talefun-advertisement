@@ -786,7 +786,7 @@ export interface CopyConfigGroupReqVO {
     name: string;    // 常量组名称
     description: string;    // 常量组描述
     id: string;    // 被复制的常量组主键 id
-    dependentId: string;    // 依赖的常量组主键 id
+    dependentId?: string;    // 依赖的常量组主键 id
 }
 
 export interface CopyConfigGroupResVO extends ResVO {
