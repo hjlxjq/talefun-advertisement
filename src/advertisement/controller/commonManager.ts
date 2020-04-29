@@ -279,15 +279,26 @@ export default class CommonManagerController extends BaseController {
      */
     public async createNativeTmplAction() {
         const ucId: string = this.ctx.state.user.id || '';
+        const file = this.file('file');
         const key: string = this.post('key');
-        const preview: string = this.post('preview');
+        // const preview: string = this.post('preview');
         const test: number = this.post('test');
         const active: number = this.post('active');
 
         const nativeTmplModel = this.taleModel('nativeTmpl', 'advertisement') as NativeTmplModel;
 
+        if (!file || !file.type.startsWith('image')) {
+            return this.fail(10, '上传失败');
+        }
+
         const CTR_ENV = process.env.CTR_ENV;
         const domain: string = think.config(CTR_ENV + '_domain');
+        const PreviewDir = path.resolve(think.ROOT_PATH, '..', think.config('PreviewDir'));
+        const filepath = path.resolve(PreviewDir, key);
+
+        await rename(file.path, filepath);
+
+        const preview = domain + '/image/preview/' + key;
 
         const nativeTmplVo: NativeTmplVO = {
             key, preview,

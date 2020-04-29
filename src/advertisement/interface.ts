@@ -148,7 +148,7 @@ export interface NativeTmplListResVO extends ResVO {
  */
 export interface CreateNativeTmplReqVO {
     key: string;    // 模板编号
-    preview: string;    // 预览图地址
+    // preview: string;    // 预览图地址
 }
 
 export interface CreateNativeTmplResVO extends ResVO {
