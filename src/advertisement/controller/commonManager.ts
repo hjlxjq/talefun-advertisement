@@ -256,7 +256,11 @@ export default class CommonManagerController extends BaseController {
         think.logger.debug(`file: ${file.path}`);
 
         const CTR_ENV = process.env.CTR_ENV;
+        think.logger.debug(`file: ${CTR_ENV}`);
+
         const domain: string = think.config(CTR_ENV + '_domain');
+
+        think.logger.debug(`domain: ${domain}`);
 
         const PreviewDir = path.resolve(think.ROOT_PATH, '..', think.config('PreviewDir'));
         const filepath = path.resolve(PreviewDir, fireName);
