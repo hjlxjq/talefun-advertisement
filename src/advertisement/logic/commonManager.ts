@@ -767,7 +767,10 @@ export default class CommonManagerLogic extends AMLogic {
      */
     tokenExempts(): TokenExemptVO[] {
         const exes = super.tokenExempts();
+
         exes.push({ action: 'index' });
+        exes.push({ action: 'uploadPreview' });
+
         return exes;
     }
 
