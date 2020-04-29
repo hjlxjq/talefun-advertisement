@@ -242,6 +242,7 @@ export default class CommonManagerController extends BaseController {
      */
     public async uploadPreviewAction() {
         const file = this.file('preview');
+        think.logger.debug(`file: ${JSON.stringify(file)}`);
 
         if (!file || !file.type.startsWith('image') || !file.name) {
             return this.fail(10, '上传失败');
@@ -249,7 +250,6 @@ export default class CommonManagerController extends BaseController {
 
         const fireName: string = file.name;
 
-        think.logger.debug(`file: ${JSON.stringify(file)}`);
         think.logger.debug(`file: ${fireName}`);
         think.logger.debug(`file: ${file.path}`);
 

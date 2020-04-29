@@ -137,6 +137,7 @@ export default class DispatchManagerController extends BaseController {
 
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const nationModel = this.taleModel('nation', 'advertisement') as NationModel;
+        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
 
         const versionGroupVo: VersionGroupVO = {
             name,
@@ -148,6 +149,13 @@ export default class DispatchManagerController extends BaseController {
         };
         const versionGroupId = await versionGroupModel.addVersionGroup(versionGroupVo);
         const rows = (await nationModel.updateList(versionGroupId, codeList, include)).length;
+
+        const abTestGroupVo: AbTestGroupVO = {
+            versionGroupId,
+            name: 'default', begin: -1, end: -1, description: '默认组',
+            configGroupId: null, nativeTmplConfGroupId: null,
+        };
+        await abTestGroupModel.addAbTestGroup(abTestGroupVo);
 
         if (rows === codeList.length) {
             this.success('created');
@@ -397,54 +405,53 @@ export default class DispatchManagerController extends BaseController {
      * @returns {CreateAbTestGroupResVO}
      * @debugger yes
      */
-    public async createAbTestGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
-        const name: string = this.post('name');
-        const versionGroupId: string = this.post('id');
-        const description: string = this.post('description');
-        let begin: number = this.post('begin');
-        let end: number = this.post('end');
-        const groupNum: number = this.post('groupNum');
+    // public async createAbTestGroupAction() {
+    //     const ucId: string = this.ctx.state.userId || '';
+    //     const name: string = this.post('name');
+    //     const versionGroupId: string = this.post('id');
+    //     const description: string = this.post('description');
+    //     let begin: number = this.post('begin');
+    //     let end: number = this.post('end');
+    //     const groupNum: number = this.post('groupNum');
 
-        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+    //     const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
 
-        if (groupNum && groupNum > 1) {
+    //     if (groupNum && groupNum > 1) {
 
-            if ((end - begin) % groupNum !== 0) {
-                return this.fail(10, '分组失败，无法分组');
-            }
-            const abTestGroupVoList: AbTestGroupVO[] = [];
-            const nameList = name.split(',');
-            const step = (end - begin) / groupNum;
-            end = begin + step;
+    //         if ((end - begin) % groupNum !== 0) {
+    //             return this.fail(10, '分组失败，无法分组');
+    //         }
+    //         const abTestGroupVoList: AbTestGroupVO[] = [];
+    //         const step = (end - begin + 1) / groupNum;
+    //         end = begin + step - 1;
 
-            for (let i = 0; i < groupNum; i++) {
+    //         for (let i = 0; i < groupNum; i++) {
 
-                const abTestGroupVo: AbTestGroupVO = {
-                    name: _.trim(nameList[i]), begin, end,
-                    description, versionGroupId, configGroupId: null, nativeTmplConfGroupId: null
-                };
+    //             const abTestGroupVo: AbTestGroupVO = {
+    //                 name: _.trim(nameList[i]), begin, end,
+    //                 description, versionGroupId, configGroupId: null, nativeTmplConfGroupId: null
+    //             };
 
-                abTestGroupVoList.push(abTestGroupVo);
-                begin = end;
-                end += step;
-            }
+    //             abTestGroupVoList.push(abTestGroupVo);
+    //             begin = end;
+    //             end += step;
+    //         }
 
-            think.logger.debug(`abTestGroupVoList: ${JSON.stringify(abTestGroupVoList)}`);
+    //         think.logger.debug(`abTestGroupVoList: ${JSON.stringify(abTestGroupVoList)}`);
 
-            const rows = (await abTestGroupModel.addList(abTestGroupVoList)).length;
-            if (rows === groupNum) {
-                this.success('created');
-            } else {
-                this.fail(TaleCode.DBFaild, 'create fail!!!');
-            }
+    //         const rows = (await abTestGroupModel.addList(abTestGroupVoList)).length;
+    //         if (rows === groupNum) {
+    //             this.success('created');
+    //         } else {
+    //             this.fail(TaleCode.DBFaild, 'create fail!!!');
+    //         }
 
-        } else {
-            return this.fail(10, '分组失败，没有指定大于 1 的组数');
-        }
+    //     } else {
+    //         return this.fail(10, '分组失败，没有指定大于 1 的组数');
+    //     }
 
-        this.success('created');
-    }
+    //     this.success('created');
+    // }
 
     /**
      * <br/>向 ab 分组绑定常量组
