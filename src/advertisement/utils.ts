@@ -2,11 +2,12 @@
 import { think } from 'thinkjs';
 import * as _ from 'lodash';
 const uuid = require('node-uuid');
-import { exec, ExecOptions } from "shelljs";
+import { exec, ExecOptions } from 'shelljs';
 import * as Bluebird from 'bluebird';
 const rp = require('request-promise');
 import * as moment from 'moment-mini-ts';
 import * as fs from 'fs';
+import * as path from 'path';
 
 const fsPromises = fs.promises;
 
@@ -83,7 +84,7 @@ export default class Utils {
         const body = {
             msgtype: 'markdown',
             markdown: {
-                content: `<font color=\"warning\">${appName}单元测试失败</font>，请相关同事注意。
+                content: `<font color=\'warning\'>${appName}单元测试失败</font>，请相关同事注意。
                     >原因：[测试结果](http://ad-manager.weplayer.cc/testReport/mochawesome.html)`
             }
         };
@@ -152,6 +153,18 @@ export default class Utils {
             verifiCode += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         return verifiCode;
+    }
+
+    /**
+     * 检查目录，不存在则创建目录
+     */
+    public static async thenCreateDir(DirPath: string) {
+        try {
+            await fsPromises.access(DirPath, fs.constants.F_OK);
+
+        } catch (e) {
+            await fsPromises.mkdir(DirPath, { recursive: true });
+        }
     }
 
 }

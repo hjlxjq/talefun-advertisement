@@ -1,6 +1,6 @@
 'use strict';
 import { Context } from 'koa';
-import { think } from "thinkjs";
+import { think } from 'thinkjs';
 import { TaleCode } from '../tale/TaleDefine';
 
 /**

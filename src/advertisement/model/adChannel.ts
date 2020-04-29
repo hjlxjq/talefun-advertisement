@@ -81,8 +81,9 @@ export default class AdChannelModel extends MBModel {
      * </br>按广告平台从小到大排序
      * @argument {number} active 是否生效;
      * @argument {number} test 是否测试 app 可见;
+     * @argument {string[]} idList 查询的主键列表;
      */
-    public async getList(active?: number, test?: number) {
+    public async getList(active?: number, test?: number, idList?: string[]) {
         const queryStrings: string[] = [];
         queryStrings.push('1=1');
 
@@ -92,6 +93,15 @@ export default class AdChannelModel extends MBModel {
 
         if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
+        }
+
+        if (!think.isEmpty(idList)) {
+            idList.push('');    // 为空数组报错
+            const idStr = (_.map(idList, (id) => {
+                return `'${id}'`;
+            })).join();
+
+            queryStrings.push(`id in (${idStr})`);
         }
 
         const queryString: string = queryStrings.join(' AND ');

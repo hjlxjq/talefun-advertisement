@@ -7,14 +7,23 @@
  */
 import BaseController from '../../common/tale/BaseController';
 import { TaleCode } from '../../common/tale/TaleDefine';
+
 import AdTypeModel from '../model/AdType';
 import AdChannelModel from '../model/adChannel';
 import AdChannelMapModel from '../model/adChannelMap';
 import NativeTmplModel from '../model/nativeTmpl';
 import BaseConfigModel from '../model/baseConfig';
 import PackParamModel from '../model/PackParam';
+
 import ModelServer from '../service/modelServer';
+
+import Utils from '../utils';
+
+import { think } from 'thinkjs';
 import * as _ from 'lodash';
+import * as fs from 'fs';
+import * as path from 'path';
+const rename = think.promisify(fs.rename, fs); // 通过 promisify 方法把 rename 方法包装成 Promise 接口
 
 import {
     AdTypeVO, AdChannelVO, NativeTmplVO, BaseConfigVO, PackParamVO
@@ -29,7 +38,6 @@ import {
     CreateBaseConfigResVO, UpdateBaseConfigReqVO, UpdateBaseConfigResVO, PackParamListResVO,
     CreatePackParamReqVO, CreatePackParamResVO, UpdatePackParamReqVO, UpdatePackParamResVO,
 } from '../interface';
-import { think } from 'thinkjs';
 
 export default class CommonManagerController extends BaseController {
 
@@ -226,6 +234,31 @@ export default class CommonManagerController extends BaseController {
         const nativeTmplVoList = await nativeTmplModel.getList();
 
         return this.success(nativeTmplVoList);
+    }
+
+    /**
+     * <br/>上传 native 模板预览图
+     * @debugger yes
+     */
+    public async uploadPreviewAction() {
+        const file = this.file('preview');
+
+        if (!file || !file.type.startsWith('image') || !file.name) {
+            return this.fail(10, '上传失败');
+        }
+
+        const fireName: string = file.name;
+
+        think.logger.debug(`file: ${JSON.stringify(file)}`);
+        think.logger.debug(`file: ${fireName}`);
+        think.logger.debug(`file: ${file.path}`);
+
+        const PreviewDir = path.resolve(think.ROOT_PATH, '..', think.config('PreviewDir'));
+        const filepath = path.resolve(PreviewDir, fireName);
+
+        await rename(file.path, filepath);
+
+        this.success({ preview: filepath });
     }
 
     /**

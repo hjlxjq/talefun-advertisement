@@ -345,6 +345,7 @@ export interface PackParamConfListResVO extends ResVO {
  */
 export interface ChannelParamConfListReqVO {
     id: string;    // 应用表主键 id
+    type?: string;    // 广告类型显示名称
 }
 
 export interface ChannelParamConfListResVO extends ResVO {

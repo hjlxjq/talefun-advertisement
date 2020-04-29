@@ -42,10 +42,10 @@ CREATE TABLE `abTestGroup` (
 -- Table structure for table `ABTestMap`
 --
 
-DROP TABLE IF EXISTS `abTestMap`;
+DROP TABLE IF EXISTS `ABTestMap`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `abTestMap` (
+CREATE TABLE `ABTestMap` (
   `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `adGroupId` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `abTestGroupId` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -121,7 +121,6 @@ CREATE TABLE `adChannelMap` (
   `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `adChannelId` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `adTypeId` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `creatorId` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `updateAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `createAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -142,7 +141,6 @@ CREATE TABLE `adGroup` (
   `description` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `adTypeId` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `productId` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `creatorId` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `active` tinyint(1) unsigned DEFAULT '1',
   `updateAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `createAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -546,4 +544,4 @@ CREATE TABLE `versionGroup` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-22 10:41:33
+-- Dump completed on 2020-04-29 18:10:36

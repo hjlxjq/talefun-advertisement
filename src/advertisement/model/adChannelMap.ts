@@ -32,6 +32,19 @@ export default class AdChannelMapModel extends MBModel {
     }
 
     /**
+     * 获取某个广告类型下所有的广告平台主键 id 列表
+     * @argument {string} adTypeId 广告类型表 id;
+     * @returns {Promise<string[]>} 主键 id 列表;
+     */
+    public async getAdChannelIdList(adTypeId: string) {
+        const adChannelMapVOList: AdChannelMapVO[] = await this.where({ adTypeId }).select();
+
+        return _.map(adChannelMapVOList, (adChannelMapVO) => {
+            return adChannelMapVO.adChannelId;
+        });
+    }
+
+    /**
      * 批量更新,
      * <br/>更新某个广告平台下所有的广告类型
      * @argument {string} adChannelId 广告平台表主键 id;

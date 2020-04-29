@@ -4,7 +4,7 @@
  * 
  */
 var shell = require('shelljs');
-var fs = require("fs");  
-var data = fs.readFileSync("./package.json", "utf-8");
+var fs = require('fs');  
+var data = fs.readFileSync('./package.json', 'utf-8');
 var package = JSON.parse(data);
 console.log(package)

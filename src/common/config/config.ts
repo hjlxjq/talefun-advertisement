@@ -6,7 +6,7 @@ module.exports = {
     TLF_TokenSecret: 'www.talefun.com',
     XXTEA_KEY_2: '):NGnA.>L5yO',
     XXTEA_KEY: 'gn:g>-7WSWN/',
-    IPIP_NET_Token: 'e183a67ba43e3d2c3734e2db667f370e808a8a81',
+    PreviewDir: "preview",
     redis_config: {
         redis1: {
             port: 6379,

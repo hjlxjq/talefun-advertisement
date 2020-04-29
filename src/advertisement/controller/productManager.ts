@@ -247,9 +247,10 @@ export default class ProductManagerController extends BaseController {
     public async channelParamConfListAction() {
         const ucId: string = this.ctx.state.userId || '';
         const productId: string = this.post('id');
+        const adType: string = this.post('type');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
-        const channelParamResVoList = await modelServer.getChannelParamConfList(productId);
+        const channelParamResVoList = await modelServer.getChannelParamConfList(productId, adType);
         return this.success(channelParamResVoList);
     }
 
