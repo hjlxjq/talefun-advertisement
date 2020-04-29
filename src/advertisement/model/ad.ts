@@ -35,9 +35,14 @@ export default class AdModel extends MBModel {
      * @returns {Promise<string[]>} 主键 id 列表;
      */
     public async addList(adVolist: AdVO[]) {
+        let idList: string[] = [];
 
-        await this.addMany(adVolist);
-        return this.ID;
+        if (!think.isEmpty(adVolist)) {
+
+            await this.addMany(adVolist);
+            idList = this.ID;
+        }
+        return idList;
     }
 
     /**

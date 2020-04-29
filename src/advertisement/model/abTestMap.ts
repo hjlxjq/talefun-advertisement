@@ -36,12 +36,14 @@ export default class AbTestMapModel extends MBModel {
      * @returns {Promise<string[]>} 主键列表;
      */
     public async addList(abTestMapVoList: AbTestMapVO[]) {
+        let idList: string[] = [];
+
         if (!think.isEmpty(abTestMapVoList)) {
 
             await this.addMany(abTestMapVoList);
-            return this.ID;
+            idList = this.ID;
         }
-        return [];
+        return idList;
     }
 
     /**

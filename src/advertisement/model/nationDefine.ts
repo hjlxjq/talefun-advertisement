@@ -24,10 +24,14 @@ export default class NationDefineDefineModel extends MBModel {
      * @returns {Promise<string[]>} 主键 id 列表;
      */
     public async addList(nationDefineVoList: NationDefineVO[]) {
+        let idList: string[] = [];
 
-        await this.addMany(nationDefineVoList);
-        think.logger.debug(`插入国家代码定义列表返回主键 id 列表： ${JSON.stringify(this.ID)}`);
-        return this.ID;
+        if (!think.isEmpty(nationDefineVoList)) {
+
+            await this.addMany(nationDefineVoList);
+            idList = this.ID;
+        }
+        return idList;
     }
 
     /**

@@ -36,10 +36,15 @@ export default class AbTestGroupModel extends MBModel {
      * @returns {Promise<string[]>} 主键 id 列表;
      */
     public async addList(abTestGroupVoList: AbTestGroupVO[]) {
+        let idList: string[] = [];
 
-        await this.addMany(abTestGroupVoList);
-        think.logger.debug(`插入ab 测试分组列表返回主键 id 列表： ${JSON.stringify(this.ID)}`);
-        return this.ID;
+        if (!think.isEmpty(abTestGroupVoList)) {
+
+            await this.addMany(abTestGroupVoList);
+            think.logger.debug(`插入ab 测试分组列表返回主键 id 列表： ${JSON.stringify(this.ID)}`);
+            idList = this.ID;
+        }
+        return idList;
     }
 
     /**

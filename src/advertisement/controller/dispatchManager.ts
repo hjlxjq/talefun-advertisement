@@ -1073,6 +1073,7 @@ export default class DispatchManagerController extends BaseController {
             return adVo;
         });
 
+        think.logger.debug(`adVoList: ${JSON.stringify(adVoList)}`);
         const rows = (await adModel.addList(adVoList)).length;
 
         if (rows === copyedAdVoList.length) {
