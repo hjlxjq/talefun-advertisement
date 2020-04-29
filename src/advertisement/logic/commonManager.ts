@@ -382,21 +382,21 @@ export default class CommonManagerLogic extends AMLogic {
     /**
      * <br/>上传 native 模板预览图
      */
-    public async uploadPreviewAction() {
-        this.allowMethods = 'post';    // 只允许 POST 请求类型
+    // public async uploadPreviewAction() {
+    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
 
-        try {
-            const userAuth = await this.comAuth();
-            const { master, editComConf } = userAuth;
+    //     try {
+    //         const userAuth = await this.comAuth();
+    //         const { master, editComConf } = userAuth;
 
-            if (master === 0 && editComConf === 0) {
-                throw new Error('没有权限！！！');
-            }
-        } catch (e) {
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+    //         if (master === 0 && editComConf === 0) {
+    //             throw new Error('没有权限！！！');
+    //         }
+    //     } catch (e) {
+    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+    //     }
 
-    }
+    // }
 
     /**
      * <br/>创建 native 模板列表
