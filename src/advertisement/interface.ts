@@ -824,6 +824,20 @@ export interface CreateConfigResVO extends ResVO {
 }
 
 /**
+ * 更新广告常量 /advertisement/dispatchManager/updateAdConfig
+ */
+export interface UpdateAdConfigReqVO {
+    id: string;    // 常量组主键 id
+    key: string;    // 唯一名称 key
+    value: string;    // 对应值 value
+    description: string;    // 描述
+}
+
+export interface UpdateAdConfigResVO extends ResVO {
+    data: 'updated';
+}
+
+/**
  * 更新常量 /advertisement/dispatchManager/updateConfig
  */
 export interface UpdateConfigReqVO {

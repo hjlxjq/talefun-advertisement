@@ -46,6 +46,20 @@ export default class ConfigModel extends MBModel {
     }
 
     /**
+     * 更新广告常量
+     * @argument {string} key 常量 key;
+     * @argument {string} configGroupId 常量组表 id;
+     * @argument {ConfigVO} configVo 常量表对象;
+     * @returns {Promise<number>} 返回影响的行数
+     */
+    public async updateAdConfig(key: string, configGroupId: string, configVo: ConfigVO) {
+        if (!Utils.isEmptyObj(configVo)) {
+            return await this.thenUpdate(configVo, { key, configGroupId });
+        }
+        return 0;
+    }
+
+    /**
      * 更新常量
      * @argument {string} id 常量表 id;
      * @argument {ConfigVO} configVo 常量表对象;
@@ -92,7 +106,7 @@ export default class ConfigModel extends MBModel {
 
     /**
      * 按常量组主键获取常量信息
-     * @argument {string} configGroupId 常量组表id;
+     * @argument {string} configGroupId 常量组表 id;
      * @argument {number} active 是否生效;
      * @returns {Promise<ConfigVO[]>} 常量数据列表;
      */

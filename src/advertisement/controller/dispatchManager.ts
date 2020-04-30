@@ -51,7 +51,7 @@ import {
     CopyAdGroupReqVO, CopyAdGroupResVO, UpdateAdReqVO, UpdateAdResVO, NationDefineListResVO,
     DeleteAdReqVO, DeleteAdResVO, CopyConfigGroupReqVO, CopyConfigGroupResVO, CreateNativeTmplConfListResVO,
     CopyVersionGroupReqVO, CopyVersionGroupResVO, CompletePlaceReqVO, CompletePlaceResVO,
-    CreateDefaultAbTestGroupReqVO, CreateDefaultAbTestGroupResVO,
+    CreateDefaultAbTestGroupReqVO, CreateDefaultAbTestGroupResVO, UpdateAdConfigReqVO, UpdateAdConfigResVO,
 } from '../interface';
 
 export default class DispatchManagerController extends BaseController {
@@ -628,6 +628,32 @@ export default class DispatchManagerController extends BaseController {
     }
 
     /**
+     * <br/>更新广告常量
+     * @argument {UpdateAdConfigReqVO}
+     * @returns {UpdateAdConfigResVO}
+     * @debugger yes
+     */
+    public async updateAdConfigAction() {
+        const ucId: string = this.ctx.state.userId || '';
+        const configGroupId: string = this.post('id');
+        const key: string = this.post('key');
+        const value: string = this.post('value');
+        const description: string = this.post('description');
+        const active: number = this.post('active');
+
+        const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+
+        const configVo: ConfigVO = {
+            configGroupId,
+            key, value, description,
+            active
+        };
+        await configModel.updateAdConfig(key, configGroupId, configVo);
+
+        return this.success('updated');
+    }
+
+    /**
      * <br/>创建常量
      * @argument {CreateConfigReqVO}
      * @returns {CreateConfigResVO}
@@ -642,13 +668,14 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
 
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+
         const configVo: ConfigVO = {
             configGroupId,
             key, value, description,
             active
         };
-
         await configModel.addConfig(configVo);
+
         this.success('created');
     }
 
@@ -667,6 +694,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
 
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+
         const configVo: ConfigVO = {
             configGroupId: undefined,
             key, value, description,
