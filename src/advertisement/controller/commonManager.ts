@@ -294,11 +294,14 @@ export default class CommonManagerController extends BaseController {
         const CTR_ENV = process.env.CTR_ENV;
         const domain: string = think.config(CTR_ENV + '_domain');
         const PreviewDir = path.resolve(think.ROOT_PATH, '..', think.config('PreviewDir'));
-        const filepath = path.resolve(PreviewDir, key);
+
+        const extname = path.extname(file.path);
+        const newFileName = key + extname;
+        const filepath = path.resolve(PreviewDir, newFileName);
 
         await rename(file.path, filepath);
 
-        const preview = domain + 'image/preview/' + key;
+        const preview = domain + 'image/preview/' + newFileName;
 
         const nativeTmplVo: NativeTmplVO = {
             key, preview,
