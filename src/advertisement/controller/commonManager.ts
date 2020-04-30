@@ -278,7 +278,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async createNativeTmplAction() {
-        // const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id || '';
         const file = this.file('file');
         const key: string = this.post('key');
         // const preview: string = this.post('preview');
