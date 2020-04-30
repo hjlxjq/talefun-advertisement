@@ -267,7 +267,7 @@ export default class CommonManagerController extends BaseController {
 
         await rename(file.path, filepath);
 
-        const preview = domain + '/image/preview/' + fireName;
+        const preview = domain + 'image/preview/' + fireName;
         this.success({ preview });
     }
 
@@ -298,7 +298,7 @@ export default class CommonManagerController extends BaseController {
 
         await rename(file.path, filepath);
 
-        const preview = domain + '/image/preview/' + key;
+        const preview = domain + 'image/preview/' + key;
 
         const nativeTmplVo: NativeTmplVO = {
             key, preview,
