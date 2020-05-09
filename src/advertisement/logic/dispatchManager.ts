@@ -557,7 +557,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         const abTestGroupId: string = this.post('id');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const versionGroupModel = this.taleModel('VersionGroup', 'advertisement') as VersionGroupModel;
+        const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
             const { versionGroupId } = await abTestGroupModel.getAbTestGroup(abTestGroupId);
