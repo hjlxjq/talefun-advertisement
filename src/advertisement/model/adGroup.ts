@@ -61,7 +61,7 @@ export default class AdGroupModel extends MBModel {
      * @argument {string} productId 应用表 id;
      */
     public async getList(productId: string) {
-        return await this.order('name').select({ productId }) as AdGroupVO[];
+        return await this.where({ productId }).order('name').select() as AdGroupVO[];
     }
 
 }
