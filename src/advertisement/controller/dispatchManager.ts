@@ -1262,7 +1262,7 @@ export default class DispatchManagerController extends BaseController {
             adVo.activeIndex = now;
         }
         if (active === 1) {
-            adVo.activeIndex = null;
+            adVo.activeIndex = undefined;
         }
 
         const rows = await adModel.updateAd(id, adVo);
