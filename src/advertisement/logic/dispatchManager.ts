@@ -1041,7 +1041,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>更新常量
+     * <br/>更新游戏常量
      */
     public async updateConfigAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
@@ -2166,7 +2166,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 method: 'POST'       // 指定获取数据的方式
             },
             ecpm: {
-                int: true,       // 字段类型为 Number 类型
+                float: true,       // 字段类型为 Number 类型
                 trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
@@ -2247,7 +2247,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 method: 'POST'       // 指定获取数据的方式
             },
             ecpm: {
-                int: true,       // 字段类型为 Number 类型
+                float: true,       // 字段类型为 Number 类型
                 trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },

@@ -60,7 +60,7 @@ export default class ConfigModel extends MBModel {
     }
 
     /**
-     * 更新常量
+     * 更新游戏常量
      * @argument {string} id 常量表 id;
      * @argument {ConfigVO} configVo 常量表对象;
      * @returns {Promise<number>} 返回影响的行数

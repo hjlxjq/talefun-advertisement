@@ -680,7 +680,7 @@ export default class DispatchManagerController extends BaseController {
     }
 
     /**
-     * <br/>更新常量
+     * <br/>更新游戏常量
      * @argument {UpdateConfigReqVO}
      * @returns {UpdateConfigResVO}
      * @debugger yes

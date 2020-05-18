@@ -838,7 +838,7 @@ export interface UpdateAdConfigResVO extends ResVO {
 }
 
 /**
- * 更新常量 /advertisement/dispatchManager/updateConfig
+ * 更新游戏常量 /advertisement/dispatchManager/updateConfig
  */
 export interface UpdateConfigReqVO {
     id: string;    // 常量主键 id
