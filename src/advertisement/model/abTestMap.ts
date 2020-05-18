@@ -20,13 +20,18 @@ export default class AbTestMapModel extends MBModel {
 
     /**
      * 插入 ab 测试分组与广告组关系表对象
+     * @argument {string} abTestGroupId 分组表 id;
+     * @argument {string} place 广告位;
      * @argument {AbTestMapVO} abTestMapVo ab 测试分组与广告组关系表对象;
-     * @returns {Promise<string>} 主键 id;
      */
-    public async addAbTestMap(abTestMapVo: AbTestMapVO) {
+    public async addAbTestMap(
+        abTestGroupId: string, place: string, abTestMapVo: AbTestMapVO
+    ) {
+        if (!Utils.isEmptyObj(abTestMapVo)) {
+            return await this.thenUpdate(abTestMapVo, { place, abTestGroupId });
+        }
 
-        await this.add(abTestMapVo);
-        return this.ID[0];
+        return 0;
     }
 
     /**

@@ -979,7 +979,7 @@ export default class DispatchManagerController extends BaseController {
             adGroupId
         };
 
-        await abTestMapModel.addAbTestMap(abTestMapVo);
+        await abTestMapModel.addAbTestMap(abTestGroupId, place, abTestMapVo);
         this.success('binded');
     }
 
