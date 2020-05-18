@@ -422,21 +422,6 @@ export default class ModelService extends BaseService {
     }
 
     /**
-     * <br/>创建广告
-     * @argument {string} adGroupId 广告组表 id;
-     * @argument {AdVO} adVo 广告表对象;
-     */
-    public async addAd(adGroupId: string, adVo: AdVO) {
-        const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-        const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
-
-        const adGroupVo = await adGroupModel.getAdGroup(adGroupId);
-        adVo.adTypeId = adGroupVo.adTypeId;
-
-        return adModel.addAd(adVo);
-    }
-
-    /**
      * 获取关联组下常量数据,
      * <br/>迭代查询关联组下的常量，一起返回
      * @argument {string} dependent 关联组名

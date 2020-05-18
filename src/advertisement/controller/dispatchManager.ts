@@ -1208,9 +1208,12 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
 
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
-        const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
+        const adModel = this.taleModel('ad', 'advertisement') as AdModel;
 
         const { adTypeId, productId } = await adGroupModel.getAdGroup(adGroupId);
+
+        think.logger.debug(`adTypeId: ${adTypeId}`);
+        think.logger.debug(`productId: ${productId}`);
 
         const adVo: AdVO = {
             productId, adGroupId, adChannelId, adTypeId,
@@ -1219,8 +1222,11 @@ export default class DispatchManagerController extends BaseController {
             loader: undefined, subloader: undefined, interval: undefined, weight: undefined
         };
 
-        await modelServer.addAd(adGroupId, adVo);
-        return this.success('created');
+        const adId = await adModel.addAd(adVo);
+
+        think.logger.debug(`adId: ${adId}`);
+
+        this.success('created');
     }
 
     /**
