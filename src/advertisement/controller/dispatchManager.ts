@@ -1025,6 +1025,10 @@ export default class DispatchManagerController extends BaseController {
                 abTestMapModel.getAbTestMap(id, place)
             ]);
 
+            think.logger.debug(`versionGroupId : ${versionGroupId}`);
+            think.logger.debug(`adGroupId : ${adGroupId}`);
+            think.logger.debug(`place : ${place}`);
+
             const { id: defaultId } = await abTestGroupModel.getDefault(versionGroupId);
             await abTestMapModel.updateAbTestMap(defaultId, place, adGroupId);
 
