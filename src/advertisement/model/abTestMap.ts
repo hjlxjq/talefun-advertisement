@@ -19,22 +19,6 @@ import Utils from '../utils';
 export default class AbTestMapModel extends MBModel {
 
     /**
-     * 插入 ab 测试分组与广告组关系表对象
-     * @argument {string} abTestGroupId 分组表 id;
-     * @argument {string} place 广告位;
-     * @argument {AbTestMapVO} abTestMapVo ab 测试分组与广告组关系表对象;
-     */
-    public async addAbTestMap(
-        abTestGroupId: string, place: string, abTestMapVo: AbTestMapVO
-    ) {
-        if (!Utils.isEmptyObj(abTestMapVo)) {
-            return await this.thenUpdate(abTestMapVo, { place, abTestGroupId });
-        }
-
-        return 0;
-    }
-
-    /**
      * 批量，
      * <br/>插入 ab 测试分组与广告组关系表对象
      * @argument {AbTestMapVO[]} abTestMapVoList ab 测试分组与广告组关系表对象列表;
@@ -55,13 +39,16 @@ export default class AbTestMapModel extends MBModel {
      * 更新 ab 测试分组与广告组关系表
      * @argument {string} abTestGroupId 分组表 id;
      * @argument {string} place 广告位;
-     * @argument {string} adGroupId 广告组表主键 id;
+     * @argument {AbTestMapVO} abTestMapVo ab 测试分组与广告组关系表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateAbTestMap(abTestGroupId: string, place: string, adGroupId: string) {
-        if (adGroupId) {
-            return await this.where({ abTestGroupId, place }).update({ adGroupId });
+    public async updateAbTestMap(
+        abTestGroupId: string, place: string, abTestMapVo: AbTestMapVO
+    ) {
+        if (!Utils.isEmptyObj(abTestMapVo)) {
+            return await this.thenUpdate(abTestMapVo, { place, abTestGroupId });
         }
+
         return 0;
     }
 

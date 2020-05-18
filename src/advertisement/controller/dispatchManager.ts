@@ -979,7 +979,7 @@ export default class DispatchManagerController extends BaseController {
             adGroupId
         };
 
-        await abTestMapModel.addAbTestMap(abTestGroupId, place, abTestMapVo);
+        await abTestMapModel.updateAbTestMap(abTestGroupId, place, abTestMapVo);
         this.success('binded');
     }
 
@@ -1032,7 +1032,12 @@ export default class DispatchManagerController extends BaseController {
             think.logger.debug(`place : ${place}`);
             think.logger.debug(`defaultId : ${defaultId}`);
 
-            await abTestMapModel.updateAbTestMap(defaultId, place, adGroupId);
+            const abTestMapVo: AbTestMapVO = {
+                abTestGroupId: defaultId,
+                place,
+                adGroupId
+            };
+            await abTestMapModel.updateAbTestMap(defaultId, place, abTestMapVo);
 
             this.success('completed');
 
