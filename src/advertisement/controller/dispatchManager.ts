@@ -1016,20 +1016,22 @@ export default class DispatchManagerController extends BaseController {
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
 
-        const [
-            { versionGroupId },
-            { adGroupId }
-        ] = await Promise.all([
-            abTestGroupModel.getAbTestGroup(id),
-            abTestMapModel.getAbTestMap(id, place)
-        ]);
+        try {
+            const [
+                { versionGroupId },
+                { adGroupId }
+            ] = await Promise.all([
+                abTestGroupModel.getAbTestGroup(id),
+                abTestMapModel.getAbTestMap(id, place)
+            ]);
 
-        const { id: defaultId } = await abTestGroupModel.getDefault(versionGroupId);
-        const rows = await abTestMapModel.updateAbTestMap(defaultId, place, adGroupId);
+            const { id: defaultId } = await abTestGroupModel.getDefault(versionGroupId);
+            await abTestMapModel.updateAbTestMap(defaultId, place, adGroupId);
 
-        if (rows === 1) {
             this.success('completed');
-        } else {
+
+        } catch (e) {
+            think.logger.debug(`complete place fail error : ${e}`);
             this.fail(TaleCode.DBFaild, 'complete place fail!!!');
         }
     }
