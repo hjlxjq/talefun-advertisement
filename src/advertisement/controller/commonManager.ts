@@ -8,7 +8,7 @@
 import BaseController from '../../common/tale/BaseController';
 import { TaleCode } from '../../common/tale/TaleDefine';
 
-import AdTypeModel from '../model/AdType';
+import AdTypeModel from '../model/adType';
 import AdChannelModel from '../model/adChannel';
 import AdChannelMapModel from '../model/adChannelMap';
 import NativeTmplModel from '../model/nativeTmpl';
