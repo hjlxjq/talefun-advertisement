@@ -323,7 +323,7 @@ export default class DispatchManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, this.validateMsg());
         }
 
-        const versionGroupId: string = this.post('versionGroupId');
+        const versionGroupId: string = this.post('id');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
