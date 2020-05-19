@@ -430,7 +430,7 @@ export default class DispatchManagerController extends BaseController {
             end = begin + step - 1;
 
             for (let i = 0; i < groupNum; i++) {
-                const abTestGroupName = name + '_' + nameList[i + 1];
+                const abTestGroupName = name + '_' + nameList[i];
 
                 const abTestGroupVo: AbTestGroupVO = {
                     name: abTestGroupName, begin, end,
