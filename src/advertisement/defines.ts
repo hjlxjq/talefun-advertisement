@@ -104,9 +104,9 @@ export interface ProductVO extends BaseVO {
     packageName: string;     // 包名
     platform: string;    // 平台名
     pid: string;    // 苹果 id
-    productGroupId?: string;    // 项目组表 id
     test: number;    // 是否测试 app 可见
     active: number;    // 是否生效
+    productGroupId?: string;    // 项目组表 id
 }
 
 /**
@@ -141,9 +141,10 @@ export interface ChannelParamConfVO extends BaseVO {
 export interface AdGroupVO extends BaseVO {
     name: string;    // 广告组名称
     description: string; // 广告组描述
+    active: number;    // 是否生效
+    creatorId: string;    // 创建者 id
     adTypeId?: string;    // 广告类型表 id
     productId?: string;    // 应用表 id
-    active: number;    // 是否生效
 }
 
 /**
@@ -159,11 +160,11 @@ export interface AdVO extends BaseVO {
     weight: number;    // 权重
     bidding: number;    // 实时竞价
     activeIndex: string;    // 失效时间戳
+    active: number;    // 控制生效
     adChannelId?: string;    // 广告平台表 id
     adTypeId?: string;    // 广告类型表 id
     adGroupId?: string;    // 广告组表 id
     productId?: string;    // 应用表 id
-    active: number;    // 控制生效
 }
 
 /**
@@ -172,8 +173,8 @@ export interface AdVO extends BaseVO {
 export interface NativeTmplConfGroupVO extends BaseVO {
     name: string;    // native 模板配置组名称
     description: string; // native 模板配置组描述
-    productId?: string;    // 应用表 id
     active: number;    // 控制生效
+    productId?: string;    // 应用表 id
 }
 
 /**
@@ -183,9 +184,9 @@ export interface NativeTmplConfVO extends BaseVO {
     weight: number;    // 权重
     clickArea: number;    // 点击区域配置
     isFull: number;    // 是否支持全屏点击
+    active: number;    // 控制生效
     nativeTmplId?: string;    // native 模板表 id
     nativeTmplConfGroupId?: string;    // native 模板配置组表 id
-    active: number;    // 控制生效
 }
 
 /**
@@ -195,9 +196,9 @@ export interface ConfigGroupVO extends BaseVO {
     name: string;    // 常量组名称
     description: string; // 常量组描述
     type: number;    // 0 广告 1 游戏常量
+    active: number;    // 控制生效
     dependentId?: string;    // 依赖的常量组表 id
     productId?: string;    // 应用表 id
-    active: number;    // 控制生效
 }
 
 /**
@@ -207,8 +208,8 @@ export interface ConfigVO extends BaseVO {
     key: string;    // 键
     value: string; // 值
     description: string; // 描述
-    configGroupId?: string;    // 常量组表 id
     active: number;    // 控制生效
+    configGroupId?: string;    // 常量组表 id
 }
 
 /**
@@ -219,8 +220,8 @@ export interface VersionGroupVO extends BaseVO {
     begin: number;    // 起始版本
     description: string; // 描述
     type: number;    // 0 广告 1 游戏常量 2 商店
-    productId?: string;    // 应用表 id
     active: number;    // 控制生效
+    productId?: string;    // 应用表 id
 }
 
 /**
@@ -276,8 +277,8 @@ export interface UserVO extends BaseVO {
     email: string;    // 邮箱
     // avatar: string;    // 头像
     // telephone: string;    // 手机号
-    password?: string;    // 密码
     active: number;    // 控制生效
+    password?: string;    // 密码
 }
 
 /**
@@ -433,9 +434,9 @@ export interface AdGroupResVO extends AdGroupVO {
 }
 
 export interface AdResVO extends AdVO {
+    channel: string;    // 广告平台名称
     adGroupName?: string;    // 广告组名称
     type?: string;    // 广告类型显示名称
-    channel: string;    // 广告平台名称
 }
 
 export interface AbTestGroupResVO extends AbTestGroupVO {

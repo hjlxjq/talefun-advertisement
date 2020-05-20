@@ -266,8 +266,6 @@ export interface UpdatePackParamResVO extends ResVO {
  */
 
 interface ProductVO {
-    productGroupName?: string;    // 项目组名
-    productAuth?: ProductAuthVO;    // 用户在应用下权限
     id: string;    // 应用表主键 id
     name: string;    // 应用名
     packageName: string;     // 包名
@@ -277,16 +275,18 @@ interface ProductVO {
     active: number;    // 是否生效
     createAt: string;    // 创建时间
     updateAt: string;    // 修改时间
+    productGroupName?: string;    // 项目组名
+    productAuth?: ProductAuthVO;    // 用户在应用下权限
 }
 
 interface ProductGroupVO {
-    productGroupAuth?: ProductAuthVO;    // 用户在项目组下权限
     id: string;    // 项目组表主键 id
     name: string;    // 项目组名
     description: string;    // 项目组描述
     active: number;    // 是否生效
     createAt: string;    // 创建时间
     updateAt: string;    // 修改时间
+    productGroupAuth?: ProductAuthVO;    // 用户在项目组下权限
 }
 
 /**
@@ -529,12 +529,12 @@ interface AdVO {
     weight: number;    // 权重
     bidding: number;    // 实时竞价
     activeIndex: string;    // 失效时间戳
-    adGroupName?: string;    // 广告组名称
-    type?: string;    // 广告类型显示名称
     channel: string;    // 广告平台名称
     active: number;    // 是否生效
     createAt: string;    // 创建时间
     updateAt: string;    // 修改时间
+    adGroupName?: string;    // 广告组名称
+    type?: string;    // 广告类型显示名称
 }
 
 interface NativeTmplConfVO {
@@ -600,10 +600,10 @@ export interface CreateVersionGroupReqVO {
     id: string;    // 应用表主键 id
     name: string;    // 分组名
     begin: number;    // 起始版本
-    codeList?: string[];    // 支持的国家代码列表
-    include?: number;    // 国家代码是否包含
     type: number;    // 0 广告 1 游戏常量 2 商店
     description: string;    // 描述
+    codeList?: string[];    // 支持的国家代码列表
+    include?: number;    // 国家代码是否包含
 }
 
 export interface CreateVersionGroupResVO extends ResVO {
@@ -617,9 +617,9 @@ export interface CopyVersionGroupReqVO {
     id: string;    // 被版本分组表主键 id
     name: string;    // 分组名
     begin: number;    // 起始版本
+    description: string;    // 描述
     codeList?: string[];    // 支持的国家代码列表
     include?: number;    // 国家代码是否包含
-    description: string;    // 描述
 }
 
 export interface CopyVersionGroupResVO extends ResVO {
@@ -997,8 +997,8 @@ export interface NativeTmplConfListResVO extends ResVO {
  */
 export interface BindAdGroupReqVO {
     id: string;    // ab 分组表主键 id
-    adGroupId?: string;    // 广告组表主键 id
     place: string;    // 广告位
+    adGroupId?: string;    // 广告组表主键 id
 }
 
 export interface BindAdGroupResVO extends ResVO {
@@ -1170,12 +1170,12 @@ interface UserVO {
     id: string;    // 用户 id
     name: string;    // 用户名
     email: string;    // 邮箱
-    userAuth?: UserAuthVO;    // 用户权限
-    productGroupAuth?: ProductGroupAuthVO;    // 用户在项目组权限
-    productAuth?: ProductAuthVO;    // 用户在应用下权限
     active: number;    // 控制生效
     createAt: string;    // 创建时间
     updateAt: string;    // 修改时间
+    userAuth?: UserAuthVO;    // 用户权限
+    productGroupAuth?: ProductGroupAuthVO;    // 用户在项目组权限
+    productAuth?: ProductAuthVO;    // 用户在应用下权限
 }
 
 interface UserAuthVO {
