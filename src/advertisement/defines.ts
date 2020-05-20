@@ -142,7 +142,7 @@ export interface AdGroupVO extends BaseVO {
     name: string;    // 广告组名称
     description: string; // 广告组描述
     active: number;    // 是否生效
-    creatorId: string;    // 创建者 id
+    // creatorId: string;    // 创建者 id
     adTypeId?: string;    // 广告类型表 id
     productId?: string;    // 应用表 id
 }
@@ -435,6 +435,9 @@ export interface AdGroupResVO extends AdGroupVO {
 
 export interface AdResVO extends AdVO {
     channel: string;    // 广告平台名称
+    isEcpm: boolean;    // 分层控制更改失焦 - 前端需求字段
+    isLoader: boolean;    // 加载器失焦 - 前端需求字段
+    isSubloader: boolean;    // 子加载器失焦 - 前端需求字段
     adGroupName?: string;    // 广告组名称
     type?: string;    // 广告类型显示名称
 }

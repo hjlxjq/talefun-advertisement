@@ -377,7 +377,7 @@ export default class ModelService extends BaseService {
             delete adVo.adChannelId;
 
             const adResVo: AdResVO = _.defaults({
-                type, channel, adGroupName
+                type, channel, adGroupName, isEcpm: false, isLoader: false, isSubloader: false
             }, adVo);
 
             return adResVo;
@@ -412,7 +412,7 @@ export default class ModelService extends BaseService {
             delete adVo.adChannelId;
 
             const adResVo: AdResVO = _.defaults({
-                channel
+                channel, isEcpm: false, isLoader: false, isSubloader: false
             }, adVo);
 
             return adResVo;
