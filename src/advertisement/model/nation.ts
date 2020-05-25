@@ -36,6 +36,7 @@ export default class NationModel extends MBModel {
      * <br/>更新某个版本控制分组下所有的国家
      * @argument {string} versionGroupId 版本控制分组表 id;
      * @argument {string[]} codeList 国家代码列表;
+     * @argument {number} include 是否包含;
      * @returns {Promise<string[]>} 主键 id 列表;
      */
     public async updateList(
@@ -48,12 +49,14 @@ export default class NationModel extends MBModel {
         if (!think.isEmpty(codeList)) {
             await this.where({ versionGroupId }).delete();
 
-            const nationVoList: NationVO[] = _.map(codeList, (code) => {
-                return {
+            const nationVoList = _.map(codeList, (code) => {
+
+                const nationVo: NationVO = {
                     versionGroupId,
                     code,
                     include
                 };
+                return nationVo;
             });
             await this.addMany(nationVoList);
 

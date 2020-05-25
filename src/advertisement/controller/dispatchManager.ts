@@ -15,7 +15,6 @@ import { TaleCode } from '../../common/tale/TaleDefine';
 import BaseController from '../../common/tale/BaseController';
 
 import VersionGroupModel from '../model/versionGroup';
-import NationModel from '../model/nation';
 import NationDefineModel from '../model/nationDefine';
 import AbTestGroupModel from '../model/abTestGroup';
 import AbTestMapModel from '../model/abTestMap';
@@ -26,10 +25,11 @@ import NativeTmplConfModel from '../model/nativeTmplConf';
 import AdGroupModel from '../model/adGroup';
 import AdModel from '../model/ad';
 
+import CacheService from '../service/cacheServer';
+
 import {
     VersionGroupVO, AbTestGroupVO, ConfigGroupVO, ConfigVO, NativeTmplConfGroupVO, NativeTmplConfVO,
-    AbTestMapVO, AdGroupVO, AdVO, ConfigGroupResVO, NativeTmplConfResVO, NativeTmplConfGroupResVO,
-    AdResVO, AbTestGroupResVO, NationDefineVO
+    AbTestMapVO, AdGroupVO, AdVO, ConfigGroupResVO, NativeTmplConfGroupResVO, AbTestGroupResVO, NationDefineVO
 } from '../defines';
 
 import {
@@ -68,7 +68,7 @@ export default class DispatchManagerController extends BaseController {
         const type: number = this.post('type');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
-        const versionGroupResVoList = await modelServer.getVersionGroupList(productId, type);
+        const versionGroupResVoList = await modelServer.getVersionGroupList(productId, type, ucId);
         return this.success(versionGroupResVoList);
     }
 
@@ -104,7 +104,7 @@ export default class DispatchManagerController extends BaseController {
     /**
      * <br/>更新国家代码定义列表
      */
-    public async updateNationListAction() {
+    public async updateNationAction() {
         const name: string = this.post('name');
         const code: string = this.post('code');
 
@@ -136,32 +136,38 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
 
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-        const nationModel = this.taleModel('nation', 'advertisement') as NationModel;
+        // const nationModel = this.taleModel('nation', 'advertisement') as NationModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
 
         const versionGroupVo: VersionGroupVO = {
             name,
             begin,
             description,
-            active,
             type,
+            code: JSON.stringify(codeList),
+            include,
+            active,
+            creatorId: ucId,
             productId
         };
         const versionGroupId = await versionGroupModel.addVersionGroup(versionGroupVo);
-        const rows = (await nationModel.updateList(versionGroupId, codeList, include)).length;
+        // 创建版本分组下的国家代码
+        // const rows = (await nationModel.updateList(versionGroupId, codeList, include)).length;
 
+        // 向版本分组下创建默认 ab 分组
         const abTestGroupVo: AbTestGroupVO = {
             versionGroupId,
             name: 'default', begin: -1, end: -1, description: '默认组',
-            configGroupId: null, nativeTmplConfGroupId: null,
+            creatorId: null, configGroupId: null, nativeTmplConfGroupId: null,
         };
         await abTestGroupModel.addAbTestGroup(abTestGroupVo);
 
-        if (rows === codeList.length) {
-            this.success('created');
-        } else {
-            this.fail(TaleCode.DBFaild, 'create fail!!!');
-        }
+        this.success('created');
+        // if (rows === codeList.length) {
+        //     this.success('created');
+        // } else {
+        //     this.fail(TaleCode.DBFaild, 'create fail!!!');
+        // }
     }
 
     /**
@@ -174,24 +180,17 @@ export default class DispatchManagerController extends BaseController {
         const ucId: string = this.ctx.state.userId || '';
         const copyId: string = this.post('id');
         const name: string = this.post('name');
-        const begin: number = this.post('begin');
         const description: string = this.post('description');
-        const codeList: string[] = this.post('codeList') || [];
-        const include: number = this.post('include');
         const active: number = this.post('active');
 
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-        const nationModel = this.taleModel('nation', 'advertisement') as NationModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
 
         // 被复制组的默认配置
         const [
-            { productId, type },
-            {
-                id: copyedAbTestGroupId, description: AbTestGroupDescription,
-                configGroupId, nativeTmplConfGroupId
-            }
+            { begin, description: copyedDescription, type, code, include, productId },
+            { id: copyedAbTestGroupId, configGroupId, nativeTmplConfGroupId }
         ] = await Promise.all([
             versionGroupModel.getVersionGroup(copyId),
             abTestGroupModel.getDefault(copyId)
@@ -201,35 +200,37 @@ export default class DispatchManagerController extends BaseController {
         const versionGroupVo: VersionGroupVO = {
             name,
             begin,
-            description,
-            active,
+            description: description || copyedDescription,
             type,
+            code,
+            include,
+            active,
+            creatorId: ucId,
             productId
         };
         const versionGroupId = await versionGroupModel.addVersionGroup(versionGroupVo);
-        const rows = (await nationModel.updateList(versionGroupId, codeList, include)).length;
 
         // 再创建版本分组下默认 ab 测试
         const defaultAbTestGroupVo: AbTestGroupVO = {
-            name: 'default', begin: -1, end: -1, description: AbTestGroupDescription,
-            nativeTmplConfGroupId, configGroupId, versionGroupId
+            name: 'default', begin: -1, end: -1, description: '默认组',
+            creatorId: null, nativeTmplConfGroupId, configGroupId, versionGroupId
         };
         const defaultAbTestGroupId = await abTestGroupModel.addAbTestGroup(defaultAbTestGroupVo);
 
-        // 再创建版本分组下默认 ab 测试下广告测试
-        const copyedAbTestMapVoList = await abTestMapModel.getList(copyedAbTestGroupId);
+        // 再创建版本分组下默认 ab 测试下的广告测试
+        const copyedAbTestMapVoList = await abTestMapModel.getList(copyedAbTestGroupId, ucId);
         const defaultAbTestMapVoList = _.map(copyedAbTestMapVoList, (copyedAbTestMapVo) => {
             const { place, adGroupId } = copyedAbTestMapVo;
 
             const defaultAbTestMapVo: AbTestMapVO = {
-                place, adGroupId, abTestGroupId: defaultAbTestGroupId
+                place, adGroupId, abTestGroupId: defaultAbTestGroupId, creatorId: null
             };
             return defaultAbTestMapVo;
         });
-        const abTestMapRows = (await abTestMapModel.addList(defaultAbTestMapVoList)).length;
+        const rows = (await abTestMapModel.addList(defaultAbTestMapVoList)).length;
 
         // 比较创建成功与否
-        if (rows === codeList.length && abTestMapRows === copyedAbTestMapVoList.length) {
+        if (rows === copyedAbTestMapVoList.length) {
             this.success('copyed');
         } else {
             this.fail(TaleCode.DBFaild, 'copy fail!!!');
@@ -252,23 +253,26 @@ export default class DispatchManagerController extends BaseController {
         const include: number = this.post('include');
         const active: number = this.post('action');
 
-        const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-        const nationModel = this.taleModel('nation', 'advertisement') as NationModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+
+        let code: string;
+
+        if (codeList) {
+            code = JSON.stringify(codeList);
+        }
 
         const versionGroupVo: VersionGroupVO = {
-            name, begin, description,
-            active,
-            type: undefined, productId: undefined
+            name, begin, description, code, include, active,
+            type: undefined, productId: undefined, creatorId: null
         };
-        const list = await Promise.all([
-            versionGroupModel.updateVersionGroup(id, versionGroupVo),
-            nationModel.updateList(id, codeList, include)
-        ]);
 
-        if (list[0] === 0 || (codeList.length !== list[1].length)) {
-            this.fail(TaleCode.DBFaild, 'update fail!!!');
-        } else {
+        try {
+            await cacheServer.setCacheData(ucId, 'versionGroupModel', id, versionGroupVo);
             this.success('updated');
+
+        } catch (e) {
+            think.logger.debug(e);
+            this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
     }
 
@@ -279,14 +283,24 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async abTestGroupListAction() {
+        const ucId: string = this.ctx.state.userId || '';
         const versionGroupId: string = this.post('id');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        const abTestGroupVoList = await abTestGroupModel.getList(versionGroupId);
+        // 数据库里的 ab 分组对象
+        const abTestGroupVoList = await abTestGroupModel.getList(versionGroupId, ucId);
+        // 未发布更新在缓存里的 ab 分组对象
+        const cacheAbTestGroupVoHash = await cacheServer.fetchCacheDataHash(ucId, 'abTestGroup');
 
         const abTestGroupResVoList = await Bluebird.map(abTestGroupVoList, async (abTestGroupVo) => {
 
-            const abTestGroupId: string = abTestGroupVo.id;
+            const abTestGroupId = abTestGroupVo.id;
+            // 更新的缓存数据
+            const cacheAbTestGroupVo = cacheAbTestGroupVoHash[abTestGroupId] as AbTestGroupVO;
+            // 返回线上数据和未发布的数据，以未发布数据为准
+            const currentAbTestGroupResVo: AbTestGroupVO = _.assign(abTestGroupVo, cacheAbTestGroupVo);
+
             const {
                 configGroupId, nativeTmplConfGroupId
             } = await abTestGroupModel.getAbTestGroup(abTestGroupId);
@@ -297,16 +311,14 @@ export default class DispatchManagerController extends BaseController {
                 configGroupResVo,
                 nativeTmplConfGroupResVo
             ] = await Promise.all([
-                this.adInAb(abTestGroupId),
-                this.configInAb(configGroupId),
-                this.nativeTmplConfInAb(nativeTmplConfGroupId)
+                this.adInAb(abTestGroupId, ucId),
+                this.configInAb(configGroupId, ucId),
+                this.nativeTmplConfInAb(nativeTmplConfGroupId, ucId)
             ]);
-            delete abTestGroupVo.configGroupId;
-            delete abTestGroupVo.nativeTmplConfGroupId;
 
             const abTestGroupResVo: AbTestGroupResVO = _.defaults({
                 configGroup: configGroupResVo,
-            }, abTestGroupVo);
+            }, currentAbTestGroupResVo);
 
             if (!think.isEmpty(nativeTmplConfGroupResVo)) {
                 abTestGroupResVo.nativeTmplConfGroup = nativeTmplConfGroupResVo;
@@ -315,6 +327,11 @@ export default class DispatchManagerController extends BaseController {
             if (!think.isEmpty(adGroupResVoList)) {
                 abTestGroupResVo.adGroup = adGroupResVoList;
             }
+
+            delete abTestGroupResVo.configGroupId;
+            delete abTestGroupResVo.nativeTmplConfGroupId;
+            delete abTestGroupResVo.createAt;
+            delete abTestGroupResVo.updateAt;
 
             return abTestGroupResVo;
         });
@@ -326,13 +343,14 @@ export default class DispatchManagerController extends BaseController {
      * <br/>获取 ab 分组下常量组信息
      * @argument {string} configGroupId 常量组表 id
      * @returns {ConfigGroupResVO} ab 分组下的常量配置
+     * @argument {string} creatorId 创建者 id
      */
-    private async configInAb(configGroupId: string) {
+    private async configInAb(configGroupId: string, creatorId: string) {
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
         if (configGroupId) {
-            const configGroupVo = await modelServer.getConfigGroup(configGroupId);
-            const configResVoList = await modelServer.getConfigList(configGroupVo.id);
+            const configGroupVo = await modelServer.getConfigGroup(configGroupId, creatorId);
+            const configResVoList = await modelServer.getConfigList(configGroupVo.id, creatorId);
 
             const configGroupResVo: ConfigGroupResVO = _.defaults({ configList: configResVoList }, configGroupVo);
             return configGroupResVo;
@@ -345,15 +363,21 @@ export default class DispatchManagerController extends BaseController {
      * <br/>获取 ab 分组下 native 模板信息
      * @argument {string} nativeTmplConfGroupId 应用下的 native 模板组 id
      * @returns {NativeTmplConfGroupResVO}  ab 分组下的应用下的 native 模板配置
+     * @argument {string} creatorId 创建者 id
      */
-    private async nativeTmplConfInAb(nativeTmplConfGroupId: string) {
+    private async nativeTmplConfInAb(nativeTmplConfGroupId: string, creatorId: string) {
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
         if (nativeTmplConfGroupId) {
-            const nativeTmplConfGroupVo = await modelServer.getNativeTmplConfGroup(nativeTmplConfGroupId);
-            const { productId } = nativeTmplConfGroupVo;
-            const nativeTmplConfResVoList = await modelServer.getNativeTmplConfList(nativeTmplConfGroupId, productId);
+            // 模板组数据
+            const nativeTmplConfGroupVo =
+                await modelServer.getNativeTmplConfGroup(nativeTmplConfGroupId, creatorId);
 
+            // 模板数据
+            const nativeTmplConfResVoList =
+                await modelServer.getNativeTmplConfList(nativeTmplConfGroupId, creatorId);
+
+            // 返回数据
             const nativeTmplConfGroupResVo: NativeTmplConfGroupResVO = _.defaults({
                 nativeTmplConfList: nativeTmplConfResVoList
             }, nativeTmplConfGroupVo);
@@ -368,11 +392,12 @@ export default class DispatchManagerController extends BaseController {
      * <br/>获取 ab 分组下广告位信息
      * @argument {string} abTestGroupId ab 分组 id
      * @returns {AdGroupResVO[]} ab 分组下的广告位配置
+     * @argument {string} creatorId 创建者 id
      */
-    private async adInAb(abTestGroupId: string) {
+    private async adInAb(abTestGroupId: string, creatorId: string) {
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
-        const adGroupResVoList = await modelServer.getAdGroupListInAb(abTestGroupId);
+        const adGroupResVoList = await modelServer.getAdGroupListInAb(abTestGroupId, creatorId);
         return adGroupResVoList;
 
     }
@@ -392,7 +417,7 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupVo: AbTestGroupVO = {
             versionGroupId,
             name: 'default', begin: -1, end: -1, description: '默认组',
-            configGroupId: null, nativeTmplConfGroupId: null,
+            creatorId: null, configGroupId: null, nativeTmplConfGroupId: null,
         };
         await abTestGroupModel.addAbTestGroup(abTestGroupVo);
 

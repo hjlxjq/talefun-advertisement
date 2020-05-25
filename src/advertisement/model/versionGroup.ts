@@ -55,12 +55,14 @@ export default class VersionGroupModel extends MBModel {
     /**获取版本分组控制信息列表
      * @argument {string} productId 应用表 id;
      * @argument {string} type 版本分组控制表类型;
+     * @argument {string} creatorId 创建者 id
      */
-    public async getList(productId: string, type: number) {
+    public async getList(productId: string, type: number, creatorId: string ) {
 
-        return await this.where({
-            productId, type
-        }).select() as VersionGroupVO[];
+        const query = `productId = '${productId}' AND type = '${type}' AND
+        (creatorId IS NULL OR creatorId = '${creatorId}')`;
+
+        return await this.where(query).select() as VersionGroupVO[];
     }
 
     /**

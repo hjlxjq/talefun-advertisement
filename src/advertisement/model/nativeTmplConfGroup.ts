@@ -45,10 +45,20 @@ export default class NativeTmplConfGroupModel extends MBModel {
     /**
      * 根据主键 id 获取应用下 native 模板组信息
      * @argument {string} id应用下 native 模板组表 id;
+     * @argument {string} creatorId 创建者 id
+     * @argument {number} active 是否生效;
      * @returns {Promise<nativeTmplConfGroupVO>}应用下 native 模板组信息;
      */
-    public async getNativeTmplConfGroup(id: string) {
-        return await this.where({ id }).find() as NativeTmplConfGroupVO;
+    public async getNativeTmplConfGroup(id: string, creatorId: string, active?: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`id='${id}'`);
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
+        }
+        const queryString: string = queryStrings.join(' AND ');
+        return await this.where(queryString).find() as NativeTmplConfGroupVO;
     }
 
     /**

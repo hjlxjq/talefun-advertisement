@@ -45,10 +45,16 @@ export default class ConfigGroupModel extends MBModel {
     /**
      * 按常量组 id 获取常量组
      * @argument {string} id 常量组 id;
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<ConfigGroupVO>} 常量组数据;
      */
-    public async getConfigGroup(id: string) {
-        return await this.where({ id }).find() as ConfigGroupVO;
+    public async getConfigGroup(id: string, creatorId: string) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`id='${id}'`);
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        const queryString: string = queryStrings.join(' AND ');
+        return await this.where(queryString).find() as ConfigGroupVO;
     }
 
     /**

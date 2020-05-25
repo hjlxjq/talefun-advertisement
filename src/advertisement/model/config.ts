@@ -107,15 +107,20 @@ export default class ConfigModel extends MBModel {
     /**
      * 按常量组主键获取常量信息
      * @argument {string} configGroupId 常量组表 id;
+     * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;
      * @returns {Promise<ConfigVO[]>} 常量数据列表;
      */
-    public async getList(configGroupId: string, active?: number) {
-        if (active !== undefined) {
-            return await this.where({ configGroupId, active }).select() as ConfigVO[];
-        }
+    public async getList(configGroupId: string, creatorId: string , active?: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`configGroupId='${configGroupId}'`);
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
-        return await this.where({ configGroupId }).select() as ConfigVO[];
+        if (active !== undefined) {
+            queryStrings.push(`active=${active}`);
+        }
+        const queryString: string = queryStrings.join(' AND ');
+        return await this.where(queryString).select() as ConfigVO[];
     }
 
 }

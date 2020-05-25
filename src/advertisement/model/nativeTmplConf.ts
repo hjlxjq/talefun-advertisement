@@ -79,9 +79,13 @@ export default class NativeTmplConfModel extends MBModel {
     /**
      * 根据 native 模板组表主键 id 获取应用下 native 模板信息列表
      * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表 id;
+     * @argument {string} creatorId 创建者 id
      */
-    public async getList(nativeTmplConfGroupId: string) {
-        return await this.where({ nativeTmplConfGroupId }).select() as NativeTmplConfVO[];
+    public async getList(nativeTmplConfGroupId: string, creatorId: string) {
+        const query = `nativeTmplConfGroupId = '${nativeTmplConfGroupId}' AND
+        (creatorId IS NULL OR creatorId = '${creatorId}')`;
+
+        return await this.where(query).select() as NativeTmplConfVO[];
     }
 
     /**

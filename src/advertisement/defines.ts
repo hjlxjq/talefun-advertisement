@@ -142,7 +142,7 @@ export interface AdGroupVO extends BaseVO {
     name: string;    // 广告组名称
     description: string; // 广告组描述
     active: number;    // 是否生效
-    // creatorId: string;    // 创建者 id
+    creatorId: string;    // 创建者 id
     adTypeId?: string;    // 广告类型表 id
     productId?: string;    // 应用表 id
 }
@@ -197,6 +197,7 @@ export interface ConfigGroupVO extends BaseVO {
     description: string; // 常量组描述
     type: number;    // 0 广告 1 游戏常量
     active: number;    // 控制生效
+    creatorId: string;    // 创建者 id
     dependentId?: string;    // 依赖的常量组表 id
     productId?: string;    // 应用表 id
 }
@@ -220,7 +221,10 @@ export interface VersionGroupVO extends BaseVO {
     begin: number;    // 起始版本
     description: string; // 描述
     type: number;    // 0 广告 1 游戏常量 2 商店
+    code: string; // 国家代码列表 json 字符串
+    include: number;    // 是否包含
     active: number;    // 控制生效
+    creatorId: string;    // 创建者 id
     productId?: string;    // 应用表 id
 }
 
@@ -249,6 +253,7 @@ export interface AbTestGroupVO extends BaseVO {
     begin: number;    // 开始范围
     end: number;    // 结束范围
     description: string; // 描述
+    creatorId: string;    // 创建者 id
     nativeTmplConfGroupId?: string;    // native 模板组表 id
     configGroupId?: string;    // 常量组表 id
     versionGroupId?: string;    // 版本分组控制表 id
@@ -261,6 +266,7 @@ export interface AbTestMapVO extends BaseVO {
     place: string; // 广告位
     abTestGroupId: string;    // ab 分组测试表 id
     adGroupId: string;    // 广告组表 id
+    creatorId: string;    // 创建者 id
 }
 
 /**
@@ -403,7 +409,7 @@ export interface ProductGroupResVO extends ProductGroupVO {
 }
 
 export interface VersionGroupResVO extends VersionGroupVO {
-    codeList: string[];    // 支持的国家代码列表
+    codeList: string[]; // 国家代码列表
 }
 
 export interface ConfigGroupResVO extends ConfigGroupVO {

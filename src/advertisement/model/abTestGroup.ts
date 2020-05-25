@@ -72,9 +72,12 @@ export default class AbTestGroupModel extends MBModel {
     /**
      * 获取 ab 测试分组信息列表,
      * @argument {string} versionGroupId 分组条件表 id;
+     * @argument {string} creatorId 创建者 id
      */
-    public async getList(versionGroupId: string) {
-        return await this.where({ versionGroupId }).order('begin').select() as AbTestGroupVO[];
+    public async getList(versionGroupId: string, creatorId: string) {
+        const query = `versionGroupId = '${versionGroupId}' AND
+        (creatorId IS NULL OR creatorId = '${creatorId}')`;
+        return await this.where(query).order('begin').select() as AbTestGroupVO[];
     }
 
     /**
@@ -102,10 +105,12 @@ export default class AbTestGroupModel extends MBModel {
     /**
      * 获取版本分组表主键 id 列表，
      * @argument {string} configGroupId 常量组表 id;
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<string[]>} 获取版本分组表主键 id 列表;
      */
-    public async getVerionGroupIdListByConfig(configGroupId: string) {
-        const abTestGroupVoList = await this.where({ configGroupId }).select() as AbTestGroupVO[];
+    public async getVerionGroupIdListByConfig(configGroupId: string, creatorId: string) {
+        const query = `configGroupId = '${configGroupId}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
+        const abTestGroupVoList = await this.where(query).select() as AbTestGroupVO[];
 
         const verionGroupIdList = _.map(abTestGroupVoList, (abTestGroupVo) => {
             return abTestGroupVo.versionGroupId;

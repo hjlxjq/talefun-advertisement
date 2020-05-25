@@ -123,7 +123,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
-            codeList: {
+            code: {
                 array: true,
                 children: {
                     string: true,       // 字段类型为 String 类型
@@ -140,6 +140,7 @@ export default class DispatchManagerLogic extends AMLogic {
             include: {
                 int: true,       // 字段类型为 Number 类型
                 trim: true,         // 字段需要 trim 处理
+                default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
@@ -202,29 +203,10 @@ export default class DispatchManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
-            begin: {
-                int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
             description: {
                 string: true,       // 字段类型为 String 类型
                 trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            codeList: {
-                array: true,
-                children: {
-                    string: true,       // 字段类型为 String 类型
-                    trim: true,         // 字段需要 trim 处理
-                },
-                method: 'POST'       // 指定获取数据的方式
-            },
-            include: {
-                int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {

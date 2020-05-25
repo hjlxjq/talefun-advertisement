@@ -1,6 +1,6 @@
 /**
  * advertisement authService
- * @module advertisement/service/AuthServer
+ * @module advertisement/service/authServer
  * @see module:../../common/tale/BaseService
  */
 import { think } from 'thinkjs';
@@ -17,7 +17,7 @@ import ProductGroupAuthModel from '../model/productGroupAuth';
 import { UserAuthVO, CusProductAuth, CusProductGroupAuth } from '../defines';
 
 /**
- * 用户权限处理相关service
+ * 用户权限处理相关 service
  * @class authService
  * @extends @link:common/tale/BaseService
  * @author jianlong <jianlong@talefun.com>
@@ -25,6 +25,7 @@ import { UserAuthVO, CusProductAuth, CusProductGroupAuth } from '../defines';
 export default class AuthService extends BaseService {
 
     private redis: Redis.Redis;
+    private oneDaySeconds = 24 * 60 * 60;
     private productAuthKeyPrefix = 'p:';
     private productGroupAuthKeyPrefix = 'pg:';
     private userAuthKeyPrefix = 'u:';
@@ -119,7 +120,6 @@ export default class AuthService extends BaseService {
     public async fetchProductAuth(userId: string, productId: string) {
         let productAuth: CusProductAuth;
 
-        const oneDaySeconds = 24 * 60 * 60;
         const productAuthKey = this.productAuthKeyPrefix + userId;
         const field = productId;
         const productAuthStr = await this.redis.hget(productAuthKey, field);
@@ -129,7 +129,7 @@ export default class AuthService extends BaseService {
         } else {
             productAuth = await this.getProductAuth(userId, productId);
             await this.redis.hset(productAuthKey, field, JSON.stringify(productAuth));
-            await this.redis.expire(productAuthKey, oneDaySeconds);
+            await this.redis.expire(productAuthKey, this.oneDaySeconds);
         }
 
         return productAuth;
@@ -145,7 +145,6 @@ export default class AuthService extends BaseService {
     public async fetchProductGroupAuth(userId: string, productGroupId: string) {
         let productGroupAuth: CusProductGroupAuth;
 
-        const oneDaySeconds = 24 * 60 * 60;
         const productGroupAuthKey = this.productGroupAuthKeyPrefix + userId;
         const field = productGroupId;
         think.logger.debug(`productGroupAuthKey: ${productGroupAuthKey}`);
@@ -157,7 +156,7 @@ export default class AuthService extends BaseService {
         } else {
             productGroupAuth = await this.getProductGroupAuth(userId, productGroupId);
             await this.redis.hset(productGroupAuthKey, field, JSON.stringify(productGroupAuth));
-            await this.redis.expire(productGroupAuthKey, oneDaySeconds);
+            await this.redis.expire(productGroupAuthKey, this.oneDaySeconds);
         }
 
         return productGroupAuth;
@@ -172,7 +171,6 @@ export default class AuthService extends BaseService {
     public async fetchUserAuth(userId: string) {
         let userAuth: UserAuthVO;
 
-        const oneDaySeconds = 24 * 60 * 60;
         const userAuthKey = this.userAuthKeyPrefix + userId;
         const userAuthStr = await this.redis.get(userAuthKey);
 
@@ -180,7 +178,7 @@ export default class AuthService extends BaseService {
             userAuth = JSON.parse(userAuthStr);
         } else {
             userAuth = await this.getUserAuth(userId);
-            await this.redis.setex(userAuthKey, oneDaySeconds, JSON.stringify(userAuth));
+            await this.redis.setex(userAuthKey, this.oneDaySeconds, JSON.stringify(userAuth));
         }
 
         return userAuth;

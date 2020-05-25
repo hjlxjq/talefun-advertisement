@@ -75,10 +75,13 @@ export default class AbTestMapModel extends MBModel {
     /**
      * 根据 ab 测试分组表主键 id 获取 ab 测试分组与广告组关系表列表
      * @argument {string} abTestGroupId ab 测试分组表 id;
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestMapVO[]>} ab 测试分组与广告组关系表列表;
      */
-    public async getList(abTestGroupId: string) {
-        return await this.where({ abTestGroupId }).select() as AbTestMapVO[];
+    public async getList(abTestGroupId: string, creatorId: string) {
+        const query = `abTestGroupId = '${abTestGroupId}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
+
+        return await this.where(query).select() as AbTestMapVO[];
     }
 
     /**

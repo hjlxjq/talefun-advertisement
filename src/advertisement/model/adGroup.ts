@@ -45,15 +45,20 @@ export default class AdGroupModel extends MBModel {
     /**
      * 根据主键 id 获取广告组信息
      * @argument {string} id 广告组表 id;
+     * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;
      * @returns {Promise<AdGroupVO>} 广告组信息;
      */
-    public async getAdGroup(id: string, active?: number) {
-        if (!_.isUndefined(active)) {
+    public async getAdGroup(id: string, creatorId: string , active?: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`id='${id}'`);
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
-            return await this.where({ id, active }).find() as AdGroupVO;
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
         }
-        return await this.where({ id }).find() as AdGroupVO;
+        const queryString: string = queryStrings.join(' AND ');
+        return await this.where(queryString).find() as AdGroupVO;
     }
 
     /**
