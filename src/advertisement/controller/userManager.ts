@@ -319,6 +319,9 @@ export default class UserController extends BaseController {
         const rows = await userAuthModel.updateUserAuth(userId, userAuthVo);
         const success = await authServer.deleteAllAuthFromRedis(userId);
 
+        think.logger.debug(`updateUserAuth rows: ${rows}`);
+        think.logger.debug(`updateUserAuth success: ${success}`);
+
         if (rows === 1 && success === true) {
             return this.success('updated');
         }
