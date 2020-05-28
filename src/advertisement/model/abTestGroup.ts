@@ -5,6 +5,7 @@
  */
 import { think } from 'thinkjs';
 import * as _ from 'lodash';
+import * as moment from 'moment-mini-ts';
 
 import MBModel from './managerBaseModel';
 import { AbTestGroupVO } from '../defines';
@@ -56,6 +57,21 @@ export default class AbTestGroupModel extends MBModel {
     public async updateVo(id: string, abTestGroupVo: AbTestGroupVO) {
         if (!Utils.isEmptyObj(abTestGroupVo)) {
             return await this.where({ id }).update(abTestGroupVo);
+        }
+        return 0;
+    }
+
+    /**
+     * 结束 ab 测试分组,
+     * <br/>
+     * @argument {string} name ab 测试分组表 id;
+     * @returns {Promise<number>} 返回影响的行数
+     */
+    public async updateByName(name: string) {
+        if (name) {
+            const now = moment().format('YYYY-MM-DD HH:mm:ss');
+            return await this.where({ name: ['like', `%${name}_`] }).update({ active: 0, activeTime: now });
+
         }
         return 0;
     }

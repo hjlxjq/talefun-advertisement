@@ -484,6 +484,22 @@ export default class DispatchManagerController extends BaseController {
     }
 
     /**
+     * <br/>测试结束
+     * @argument {DeleteAdReqVO}
+     * @returns {DeleteAdReqVO}
+     * @debugger yes
+     */
+    public async deleteABTestAction() {
+        const ucId: string = this.ctx.state.userId;
+        const name: string = this.post('name');
+
+        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        await abTestGroupModel.updateByName(ucId);
+
+        this.success('deleted');
+    }
+
+    /**
      * <br/>向 ab 分组绑定常量组
      * @argument {BindConfigGroupReqVO}
      * @returns {BindConfigGroupResVO}

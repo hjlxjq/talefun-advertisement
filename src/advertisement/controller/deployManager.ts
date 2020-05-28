@@ -32,13 +32,10 @@ import {
     AbTestMapVO, AdGroupVO, AdVO, ConfigGroupResVO, NativeTmplConfGroupResVO, AbTestGroupResVO, NationDefineVO
 } from '../defines';
 
-import { DeployResVO } from '../interface';
-
 export default class DeployManagerController extends BaseController {
 
     /**
      * <br/>发布到正式环境
-     * @returns {DeployResVO}
      * @debugger yes
      */
     public async deployAction() {
@@ -74,12 +71,11 @@ export default class DeployManagerController extends BaseController {
                 await deployModel.updateList(modelVoList);
                 await deployModel.deployVo(ucId);
             });
+            this.success('发布成功！！！');
 
         } catch (e) {
-
+            this.fail(10, '发布失败！！！');
         }
-
-        this.success('created');
     }
 
 }
