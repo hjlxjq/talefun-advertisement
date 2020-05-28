@@ -159,8 +159,9 @@ export interface AdVO extends BaseVO {
     interval: number;    // 间隔
     weight: number;    // 权重
     bidding: number;    // 实时竞价
-    activeIndex: string;    // 失效时间戳
+    activeTime: string;    // 失效时间戳
     active: number;    // 控制生效
+    creatorId: string;    // 创建者 id
     adChannelId?: string;    // 广告平台表 id
     adTypeId?: string;    // 广告类型表 id
     adGroupId?: string;    // 广告组表 id
@@ -174,6 +175,7 @@ export interface NativeTmplConfGroupVO extends BaseVO {
     name: string;    // native 模板配置组名称
     description: string; // native 模板配置组描述
     active: number;    // 控制生效
+    creatorId: string;    // 创建者 id
     productId?: string;    // 应用表 id
 }
 
@@ -185,6 +187,8 @@ export interface NativeTmplConfVO extends BaseVO {
     clickArea: number;    // 点击区域配置
     isFull: number;    // 是否支持全屏点击
     active: number;    // 控制生效
+    activeTime: string;    // 失效时间戳
+    creatorId: string;    // 创建者 id
     nativeTmplId?: string;    // native 模板表 id
     nativeTmplConfGroupId?: string;    // native 模板配置组表 id
 }
@@ -210,6 +214,8 @@ export interface ConfigVO extends BaseVO {
     value: string; // 值
     description: string; // 描述
     active: number;    // 控制生效
+    activeTime: string;    // 失效时间戳
+    creatorId: string;    // 创建者 id
     configGroupId?: string;    // 常量组表 id
 }
 

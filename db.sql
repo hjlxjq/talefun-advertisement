@@ -78,13 +78,13 @@ CREATE TABLE `ad` (
   `adTypeId` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `adGroupId` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `productId` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `activeIndex` timestamp NULL DEFAULT NULL,
+  `activeTime` timestamp NULL DEFAULT NULL,
   `active` tinyint(1) unsigned DEFAULT '1',
   `updateAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `createAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `activeIndex_adGroupId_placementId` (`activeIndex`,`adGroupId`,`placementID`),
-  UNIQUE KEY `name_activeIndex_adGroupId_adChannelId` (`name`,`activeIndex`,`adGroupId`,`adChannelId`)
+  UNIQUE KEY `activeIndex_adGroupId_placementId` (`activeTime`,`adGroupId`,`placementID`),
+  UNIQUE KEY `name_activeIndex_adGroupId_adChannelId` (`name`,`activeTime`,`adGroupId`,`adChannelId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

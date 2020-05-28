@@ -48,7 +48,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async adTypeListAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
 
         const adTypeVoList = await adTypeModel.getList();
@@ -62,7 +62,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async adTypeAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const name: string = this.post('name');
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
 
@@ -78,7 +78,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async createAdTypeAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const type: string = this.post('type');
         const name: string = this.post('name');
         const test: number = this.post('test');
@@ -100,7 +100,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async updateAdTypeAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const id: string = this.post('id');
         const type: string = this.post('type');
         const name: string = this.post('name');
@@ -127,7 +127,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async adChannelListAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
         const adChannelResVoList = await modelServer.getAdChannelList();
@@ -141,7 +141,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async adChannelAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const channel: string = this.post('channel');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
@@ -157,7 +157,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async createAdChannelAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const channel: string = this.post('channel');
         const key1: string = this.post('key1');
         const key2: string = this.post('key2');
@@ -182,7 +182,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async updateAdChannelAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const id: string = this.post('id');
         const channel: string = this.post('channel');
         const key1: string = this.post('key1');
@@ -228,7 +228,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async nativeTmplListAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const nativeTmplModel = this.taleModel('nativeTmpl', 'advertisement') as NativeTmplModel;
 
         const nativeTmplVoList = await nativeTmplModel.getList();
@@ -278,7 +278,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async createNativeTmplAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const file = this.file('file');
         const key: string = this.post('key');
         // const preview: string = this.post('preview');
@@ -318,7 +318,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async updateNativeTmplAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const id: string = this.post('id');
         const key: string = this.post('key');
         const preview: string = this.post('preview');
@@ -346,7 +346,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async baseConfigListAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
         const baseConfigVoList = await baseConfigModel.getList();
 
@@ -360,7 +360,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async createBaseConfigAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const key: string = this.post('key');
         const value: string = this.post('value');
         const description: string = this.post('description');
@@ -383,7 +383,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async updateBaseConfigAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const id: string = this.post('id');
         const key: string = this.post('key');
         const value: string = this.post('value');
@@ -412,7 +412,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async packParamListAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const packParamModel = this.taleModel('packParam', 'advertisement') as PackParamModel;
 
         const packParamVoList = await packParamModel.getList();
@@ -427,7 +427,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async createPackParamAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const key: string = this.post('key');
         const description: string = this.post('description');
         const test: number = this.post('test');
@@ -449,7 +449,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async updatePackParamAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const id: string = this.post('id');
         const key: string = this.post('key');
         const description: string = this.post('description');

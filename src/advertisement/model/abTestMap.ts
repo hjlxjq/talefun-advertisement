@@ -19,6 +19,16 @@ import Utils from '../utils';
 export default class AbTestMapModel extends MBModel {
 
     /**
+     * <br/>插入 ab 测试分组与广告组关系表对象
+     * @argument {AbTestMapVO[]} abTestMapVo ab 测试分组与广告组关系表对象;
+     * @returns {Promise<string>} 主键 id;
+     */
+    public async addAbTestMap(abTestMapVo: AbTestMapVO) {
+        await this.add(abTestMapVo);
+        return this.ID[0];
+    }
+
+    /**
      * 批量，
      * <br/>插入 ab 测试分组与广告组关系表对象
      * @argument {AbTestMapVO[]} abTestMapVoList ab 测试分组与广告组关系表对象列表;
@@ -66,10 +76,13 @@ export default class AbTestMapModel extends MBModel {
      * 根据主键 id 获取 ab 测试分组与广告组关系信息
      * @argument {string} abTestGroupId 分组表 id;
      * @argument {string} place 广告位;
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestMapVO>} ab 测试分组与广告组关系信息;
      */
-    public async getAbTestMap(abTestGroupId: string, place: string) {
-        return await this.where({ abTestGroupId, place }).find() as AbTestMapVO;
+    public async getAbTestMap(abTestGroupId: string, place: string, creatorId: string) {
+        const query = `abTestGroupId = '${abTestGroupId}' AND place = '${place}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
+
+        return await this.where(query).find() as AbTestMapVO;
     }
 
     /**
@@ -87,10 +100,13 @@ export default class AbTestMapModel extends MBModel {
     /**
      * 根据广告组表主键 id 获取 ab 测试分组主键 id 列表
      * @argument {string} adGroupId 广告组表 id;
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestMapVO>} ab 测试分组主键 id 列表
      */
-    public async getAbTestGroupIdByAdGrroup(adGroupId: string) {
-        const abTestMapVoList = await this.where({ adGroupId }).select() as AbTestMapVO[];
+    public async getAbTestGroupIdByAdGroup(adGroupId: string, creatorId: string) {
+        const query = `adGroupId = '${adGroupId}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
+
+        const abTestMapVoList = await this.where(query).select() as AbTestMapVO[];
 
         return _.map(abTestMapVoList, (abTestMapVo) => {
             return abTestMapVo.abTestGroupId;

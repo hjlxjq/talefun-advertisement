@@ -22,7 +22,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>应用权限
      */
     private async productAuth(productId: string) {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productAuth = await authServer.fetchProductAuth(ucId, productId);
@@ -623,6 +623,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async configListAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -642,7 +643,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
 
         try {
-            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId);
+            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, ucId);
             const { type, productId } = configGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -743,17 +744,13 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async copyConfigGroupAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             name: {
                 string: true,       // 字段类型为 String 类型
                 trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            dependentId: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
@@ -785,7 +782,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
 
         try {
-            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId);
+            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, ucId);
             const { type, productId } = configGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -814,6 +811,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async updateConfigGroupAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -853,7 +851,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
 
         try {
-            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId);
+            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, ucId);
             const { type, productId } = configGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -881,6 +879,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>更新广告常量
      */
     public async updateAdConfigAction() {
+        const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -925,7 +924,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
 
         try {
-            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId);
+            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, ucId);
             const { type, productId } = configGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -955,6 +954,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async createConfigAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -998,7 +998,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
 
         try {
-            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId);
+            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, ucId);
             const { type, productId } = configGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -1027,6 +1027,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async updateConfigAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -1068,7 +1069,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         try {
             const { configGroupId } = await configModel.getConfig(configId);
-            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId);
+            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, ucId);
             const { type, productId } = configGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -1097,6 +1098,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async deleteConfigAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -1118,7 +1120,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         try {
             const { configGroupId } = await configModel.getConfig(configId);
-            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId);
+            const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, ucId);
             const { type, productId } = configGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -1240,6 +1242,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async nativeTmplConfListAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -1262,7 +1265,8 @@ export default class DispatchManagerLogic extends AMLogic {
         think.logger.debug(`nativeTmplConfGroupId: ${nativeTmplConfGroupId}`);
 
         try {
-            const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId);
+            const nativeTmplConfGroupVo =
+                await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId, ucId);
 
             think.logger.debug(`nativeTmplConfGroupVo: ${JSON.stringify(nativeTmplConfGroupVo)}`);
             const { productId } = nativeTmplConfGroupVo;
@@ -1348,6 +1352,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async copyNativeTmplConfGroupAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -1386,7 +1391,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const nativeTmplConfGroupId: string = this.post('id');
 
         try {
-            const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId);
+            const nativeTmplConfGroupVo =
+                await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId, ucId);
             const { productId } = nativeTmplConfGroupVo;
             const productAuth = await this.productAuth(productId);
             const {
@@ -1410,6 +1416,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async updateNativeTmplConfGroupAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -1445,7 +1452,8 @@ export default class DispatchManagerLogic extends AMLogic {
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
 
         try {
-            const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId);
+            const nativeTmplConfGroupVo =
+                await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId, ucId);
             const { productId } = nativeTmplConfGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -1470,6 +1478,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async createNativeTmplConfAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -1520,7 +1529,8 @@ export default class DispatchManagerLogic extends AMLogic {
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
 
         try {
-            const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId);
+            const nativeTmplConfGroupVo =
+                await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId, ucId);
             const { productId } = nativeTmplConfGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -1545,6 +1555,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async updateNativeTmplConfAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -1587,7 +1598,8 @@ export default class DispatchManagerLogic extends AMLogic {
 
         try {
             const { nativeTmplConfGroupId } = await nativeTmplConfModel.getNativeTmplConf(nativeTmplConfId);
-            const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId);
+            const nativeTmplConfGroupVo =
+                await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId, ucId);
             const { productId } = nativeTmplConfGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -1612,6 +1624,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async deleteNativeTmplConfAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -1634,7 +1647,8 @@ export default class DispatchManagerLogic extends AMLogic {
 
         try {
             const { nativeTmplConfGroupId } = await nativeTmplConfModel.getNativeTmplConf(nativeTmplConfId);
-            const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId);
+            const nativeTmplConfGroupVo =
+                await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId, ucId);
             const { productId } = nativeTmplConfGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -1928,6 +1942,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async copyAdGroupAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -1965,7 +1980,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
 
         try {
-            const { productId } = await adGroupModel.getAdGroup(adGroupId);
+            const { productId } = await adGroupModel.getAdGroup(adGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, master
@@ -1988,6 +2003,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async updateAdGroupAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -2022,7 +2038,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
 
         try {
-            const { productId } = await adGroupModel.getAdGroup(adGroupId);
+            const { productId } = await adGroupModel.getAdGroup(adGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, master
@@ -2085,6 +2101,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async adListInAdGroupAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -2104,7 +2121,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
 
         try {
-            const { productId } = await adGroupModel.getAdGroup(adGroupId);
+            const { productId } = await adGroupModel.getAdGroup(adGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 viewAd, master
@@ -2127,6 +2144,7 @@ export default class DispatchManagerLogic extends AMLogic {
      */
     public async createAdAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
+        const ucId: string = this.ctx.state.user.id;
 
         const rules = {
             id: {
@@ -2176,7 +2194,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
 
         try {
-            const { productId } = await adGroupModel.getAdGroup(adGroupId);
+            const { productId } = await adGroupModel.getAdGroup(adGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, master

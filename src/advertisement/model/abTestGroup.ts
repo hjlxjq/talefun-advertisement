@@ -63,10 +63,14 @@ export default class AbTestGroupModel extends MBModel {
     /**
      * 根据主键 id 获取 ab 测试分组信息
      * @argument {string} id ab 测试分组表 id;
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestGroupVO>} ab 测试分组信息;
      */
-    public async getAbTestGroup(id: string) {
-        return await this.where({ id }).find() as AbTestGroupVO;
+    public async getAbTestGroup(id: string, creatorId: string) {
+        const query = `id = '${id}' AND
+        (creatorId IS NULL OR creatorId = '${creatorId}')`;
+
+        return await this.where(query).find() as AbTestGroupVO;
     }
 
     /**
@@ -77,24 +81,31 @@ export default class AbTestGroupModel extends MBModel {
     public async getList(versionGroupId: string, creatorId: string) {
         const query = `versionGroupId = '${versionGroupId}' AND
         (creatorId IS NULL OR creatorId = '${creatorId}')`;
+
         return await this.where(query).order('begin').select() as AbTestGroupVO[];
     }
 
     /**
      * 获取默认 ab 测试分组信息列表
      * @argument {string} versionGroupId 分组条件表 id;
+     * @argument {string} creatorId 创建者 id
      */
-    public async getDefault(versionGroupId: string) {
-        return await this.where({ versionGroupId, name: 'default' }).find() as AbTestGroupVO;
+    public async getDefault(versionGroupId: string, creatorId: string) {
+        const query = `versionGroupId = '${versionGroupId}' AND name = 'default' AND
+        (creatorId IS NULL OR creatorId = '${creatorId}')`;
+
+        return await this.where(query).find() as AbTestGroupVO;
     }
 
     /**
      * 获取版本分组表主键 id 列表，
      * @argument {string} nativeTmplConfGroupId native 模板组表 id;
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<string[]>} 获取版本分组表主键 id 列表;
      */
-    public async getVerionGroupIdListByNative(nativeTmplConfGroupId: string) {
-        const abTestGroupVoList = await this.where({ nativeTmplConfGroupId }).select() as AbTestGroupVO[];
+    public async getVerionGroupIdListByNative(nativeTmplConfGroupId: string, creatorId: string) {
+        const query = `nativeTmplConfGroupId = '${nativeTmplConfGroupId}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
+        const abTestGroupVoList = await this.where(query).select() as AbTestGroupVO[];
 
         const verionGroupIdList = _.map(abTestGroupVoList, (abTestGroupVo) => {
             return abTestGroupVo.versionGroupId;

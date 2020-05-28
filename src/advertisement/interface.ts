@@ -528,7 +528,7 @@ interface AdVO {
     interval: number;    // 间隔
     weight: number;    // 权重
     bidding: number;    // 实时竞价
-    activeIndex: string;    // 失效时间戳
+    activeTime: string;    // 失效时间戳
     channel: string;    // 广告平台名称
     active: number;    // 是否生效
     createAt: string;    // 创建时间
@@ -784,7 +784,6 @@ export interface CopyConfigGroupReqVO {
     name: string;    // 常量组名称
     description: string;    // 常量组描述
     id: string;    // 被复制的常量组主键 id
-    dependentId?: string;    // 依赖的常量组主键 id
 }
 
 export interface CopyConfigGroupResVO extends ResVO {
@@ -807,7 +806,7 @@ export interface UpdateConfigGroupResVO extends ResVO {
 }
 
 /**
- * 创建常量 /advertisement/dispatchManager/createConfig
+ * 创建游戏常量 /advertisement/dispatchManager/createConfig
  */
 export interface CreateConfigReqVO {
     id: string;    // 常量组主键 id

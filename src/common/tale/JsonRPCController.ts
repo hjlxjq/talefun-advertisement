@@ -100,7 +100,7 @@ export default class JsonRPCController extends BaseController {
                 this.fail_jsonrpc(id, -32602, "PARAMS IS NULL");
             } else {
                 if (think.isEmpty(this[method])) {
-                    this.fail_jsonrpc(id, -32603, "METHOD IS UNDEFINED");
+                    this.fail_jsonrpc(id, -32603, "METHOD IS undefined");
                 } else {
                     await this[method](id, params);
                 }

@@ -79,24 +79,37 @@ export default class AdModel extends MBModel {
     /**
      * 根据广告组表主键 id 获取广告信息
      * @argument {string} adGroupId 广告组表 id;
+     * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;
      * 获取广告组下广告信息列表
      */
-    public async getListByAdGroup(adGroupId: string, active?: number) {
-        if (!_.isUndefined(active)) {
-            return await this.where({ adGroupId, active }).order('name ASC').select() as AdVO[];
+    public async getListByAdGroup(adGroupId: string, creatorId: string, active?: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`adGroupId='${adGroupId}'`);
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
         }
-        return await this.where({ adGroupId }).order('name ASC').select() as AdVO[];
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).order('name ASC').select() as AdVO[];
     }
 
     /**
      * 根据应用表主键 id 获取广告信息
      * @argument {string} productId 应用表 id;
+     * @argument {string} creatorId 创建者 id
      * 获取应用下广告信息列表
      */
-    public async getListByProduct(productId: string) {
-        return await this.where({ productId }).order('name ASC').select() as AdVO[];
+    public async getListByProduct(productId: string, creatorId: string) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`productId='${productId}'`);
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as AdVO[];
     }
 
     /**

@@ -49,7 +49,7 @@ export default class AdGroupModel extends MBModel {
      * @argument {number} active 是否生效;
      * @returns {Promise<AdGroupVO>} 广告组信息;
      */
-    public async getAdGroup(id: string, creatorId: string , active?: number) {
+    public async getAdGroup(id: string, creatorId: string, active?: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
@@ -58,15 +58,23 @@ export default class AdGroupModel extends MBModel {
             queryStrings.push(`active=${active}`);
         }
         const queryString: string = queryStrings.join(' AND ');
+
         return await this.where(queryString).find() as AdGroupVO;
     }
 
     /**
      * 根据应用主键 id 获取广告组信息列表
      * @argument {string} productId 应用表 id;
+     * @argument {string} creatorId 创建者 id
      */
-    public async getList(productId: string) {
-        return await this.where({ productId }).order('name').select() as AdGroupVO[];
+    public async getList(productId: string, creatorId: string) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`productId='${productId}'`);
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as AdGroupVO[];
     }
 
 }

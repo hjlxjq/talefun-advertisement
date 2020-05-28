@@ -12,7 +12,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>用户权限
      */
     private async userAuth() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const userAuth = await authServer.fetchUserAuth(ucId);
@@ -30,7 +30,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>用户在项目组下权限
      */
     private async productGroupAuth(productGroupId: string, authKey: string) {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productGroupAuth = await authServer.fetchProductGroupAuth(ucId, productGroupId);
@@ -48,7 +48,7 @@ export default class UserManagerLogic extends AMLogic {
      * <br/>用户在应用下权限
      */
     private async productAuth(productId: string, authKey: string) {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productAuth = await authServer.fetchProductAuth(ucId, productId);

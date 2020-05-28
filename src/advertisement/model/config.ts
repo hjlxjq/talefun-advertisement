@@ -82,6 +82,23 @@ export default class ConfigModel extends MBModel {
     }
 
     /**
+     * 根据常量组表主键 id 和 key 获取常量
+     * @argument {string} key 常量 key;
+     * @argument {string} configGroupId 常量组表 id;
+     * @argument {string} creatorId 创建者 id
+     * @returns {Promise<ConfigVO>} 常量表信息;
+     */
+    public async getByGroupAndKey(key: string, configGroupId: string, creatorId: string) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`key='${key}'`);
+        queryStrings.push(`configGroupId='${configGroupId}'`);
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        const queryString: string = queryStrings.join(' AND ');
+        return await this.where(queryString).find() as ConfigVO;
+    }
+
+    /**
      * 删除常量
      * @argument {string} id 常量表 id;
      * @returns {Promise<number>} 删除行数;
@@ -116,7 +133,7 @@ export default class ConfigModel extends MBModel {
         queryStrings.push(`configGroupId='${configGroupId}'`);
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
-        if (active !== undefined) {
+        if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
         }
         const queryString: string = queryStrings.join(' AND ');

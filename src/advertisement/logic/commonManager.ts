@@ -12,7 +12,7 @@ export default class CommonManagerLogic extends AMLogic {
      * <br/>常规配置权限
      */
     private async comAuth() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const userAuth = await authServer.fetchUserAuth(ucId);

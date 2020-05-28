@@ -71,10 +71,18 @@ export default class ConfigGroupModel extends MBModel {
      * </br> 按常量组名称从小到大排序
      * @argument {string} productId 应用表 id;
      * @argument {number} type 0 广告 1 游戏常量
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<AdTypeVO[]>} 常量组列表;
      */
-    public async getListByProductAndType(productId: string, type: number) {
-        return await this.where({ productId, type }).order('name').select() as ConfigGroupVO[];
+    public async getListByProductAndType(productId: string, type: number, creatorId: string) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`productId='${productId}'`);
+        queryStrings.push(`type='${type}'`);
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as ConfigGroupVO[];
     }
 
 }

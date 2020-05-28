@@ -45,7 +45,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async productListAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
         const productGroupModel = this.taleModel('productGroup', 'advertisement') as ProductGroupModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
@@ -92,7 +92,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async productAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const productId: string = this.post('id');
 
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
@@ -121,7 +121,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async updateProductAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const packageName: string = this.post('packageName');
         const platform: string = this.post('platform');
@@ -152,7 +152,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async packParamConfListAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const productId: string = this.post('id');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
@@ -167,7 +167,7 @@ export default class ProductManagerController extends BaseController {
     //  * @debugger yes
     //  */
     // public async createPackParamConfAction() {
-    //     const ucId: string = this.ctx.state.userId || '';
+    //     const ucId: string = this.ctx.state.userId;
     //     const packParamId: string = this.post('id');    // 打包参数表 id
     //     const value: string = this.post('value');
     //     const productId: string = this.post('productId');
@@ -188,7 +188,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async updatePackParamConfAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const packParamId: string = this.post('id');
         const productId: string = this.post('productId');
         const value: string = this.post('value');
@@ -223,7 +223,7 @@ export default class ProductManagerController extends BaseController {
     //  * @debugger yes
     //  */
     // public async deletePackParamConfAction() {
-    //     const ucId: string = this.ctx.state.userId || '';
+    //     const ucId: string = this.ctx.state.userId;
     //     const packParamId: string = this.post('id');
     //     const productId: string = this.post('productId');
     //     const packParamConfModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
@@ -245,7 +245,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async channelParamConfListAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const productId: string = this.post('id');
         const adType: string = this.post('type');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
@@ -261,7 +261,7 @@ export default class ProductManagerController extends BaseController {
     //  * @debugger yes
     //  */
     // public async createChannelParamConfAction() {
-    //     const ucId: string = this.ctx.state.userId || '';
+    //     const ucId: string = this.ctx.state.userId;
     //     const value1: string = this.post('value1');
     //     const value2: string = this.post('value2');
     //     const value3: string = this.post('value3');
@@ -285,7 +285,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async updateChannelParamConfAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const adChannelId: string = this.post('id');
         const productId: string = this.post('productId');
         const value1: string = this.post('value1');
@@ -322,7 +322,7 @@ export default class ProductManagerController extends BaseController {
     //  * @debugger yes
     //  */
     // public async deleteChannelParamConfAction() {
-    //     const ucId: string = this.ctx.state.userId || '';
+    //     const ucId: string = this.ctx.state.userId;
     //     const adChannelId: string = this.post('id');
     //     const productId: string = this.post('productId');
     //     const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as ChannelParamConfModel;
@@ -342,7 +342,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async productGroupListAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const productGroupModel = this.taleModel('productGroup', 'advertisement') as ProductGroupModel;
         const productGroupAuthModel = this.taleModel('productGroupAuth', 'advertisement') as ProductGroupAuthModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
@@ -369,7 +369,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async productGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const productGroupId: string = this.post('id');
 
         const productGroupModel = this.taleModel('productGroup', 'advertisement') as ProductGroupModel;
@@ -396,7 +396,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async createProductGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const description: string = this.post('description');
         const active: number = this.post('active');
@@ -428,7 +428,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async updateProductGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const description: string = this.post('description');
         const productGroupId: string = this.post('id');
@@ -455,7 +455,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async productListInProductGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const productGroupId: string = this.post('id');
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
 
@@ -477,7 +477,7 @@ export default class ProductManagerController extends BaseController {
      * @debugger yes
      */
     public async createProductAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const packageName: string = this.post('packageName');
         const platform: string = this.post('platform');

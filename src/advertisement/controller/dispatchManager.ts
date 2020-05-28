@@ -63,7 +63,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async versionGroupListAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const productId: string = this.post('id');
         const type: number = this.post('type');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
@@ -78,7 +78,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async nationListAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const nationDefineModel = this.taleModel('nationDefine', 'advertisement') as NationDefineModel;
 
         const nationDefineVoList = await nationDefineModel.getList();
@@ -125,7 +125,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async createVersionGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const productId: string = this.post('id');
         const name: string = this.post('name');
         const begin: number = this.post('begin');
@@ -136,7 +136,6 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
 
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-        // const nationModel = this.taleModel('nation', 'advertisement') as NationModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
 
         const versionGroupVo: VersionGroupVO = {
@@ -151,23 +150,16 @@ export default class DispatchManagerController extends BaseController {
             productId
         };
         const versionGroupId = await versionGroupModel.addVersionGroup(versionGroupVo);
-        // 创建版本分组下的国家代码
-        // const rows = (await nationModel.updateList(versionGroupId, codeList, include)).length;
 
         // 向版本分组下创建默认 ab 分组
         const abTestGroupVo: AbTestGroupVO = {
             versionGroupId,
             name: 'default', begin: -1, end: -1, description: '默认组',
-            creatorId: null, configGroupId: null, nativeTmplConfGroupId: null,
+            creatorId: ucId, configGroupId: null, nativeTmplConfGroupId: null,
         };
         await abTestGroupModel.addAbTestGroup(abTestGroupVo);
 
         this.success('created');
-        // if (rows === codeList.length) {
-        //     this.success('created');
-        // } else {
-        //     this.fail(TaleCode.DBFaild, 'create fail!!!');
-        // }
     }
 
     /**
@@ -177,7 +169,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async copyVersionGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const copyId: string = this.post('id');
         const name: string = this.post('name');
         const description: string = this.post('description');
@@ -189,12 +181,20 @@ export default class DispatchManagerController extends BaseController {
 
         // 被复制组的默认配置
         const [
-            { begin, description: copyedDescription, type, code, include, productId },
-            { id: copyedAbTestGroupId, configGroupId, nativeTmplConfGroupId }
+            copyedVersionGroupVo,
+            copyedAbTestGroupVo
         ] = await Promise.all([
-            versionGroupModel.getVersionGroup(copyId),
-            abTestGroupModel.getDefault(copyId)
+            versionGroupModel.getVersionGroup(copyId, ucId),
+            abTestGroupModel.getDefault(copyId, ucId)
         ]);
+
+        // 复制组不存在
+        if (_.isEmpty(copyedVersionGroupVo) || _.isEmpty(copyedAbTestGroupVo)) {
+            this.fail(TaleCode.DBFaild, '复制组不存在！！！');
+        }
+
+        const { begin, description: copyedDescription, type, code, include, productId } = copyedVersionGroupVo;
+        const { id: copyedAbTestGroupId, configGroupId, nativeTmplConfGroupId } = copyedAbTestGroupVo;
 
         // 先创建版本分组和对应的国家代码表
         const versionGroupVo: VersionGroupVO = {
@@ -213,7 +213,7 @@ export default class DispatchManagerController extends BaseController {
         // 再创建版本分组下默认 ab 测试
         const defaultAbTestGroupVo: AbTestGroupVO = {
             name: 'default', begin: -1, end: -1, description: '默认组',
-            creatorId: null, nativeTmplConfGroupId, configGroupId, versionGroupId
+            creatorId: ucId, nativeTmplConfGroupId, configGroupId, versionGroupId
         };
         const defaultAbTestGroupId = await abTestGroupModel.addAbTestGroup(defaultAbTestGroupVo);
 
@@ -223,7 +223,7 @@ export default class DispatchManagerController extends BaseController {
             const { place, adGroupId } = copyedAbTestMapVo;
 
             const defaultAbTestMapVo: AbTestMapVO = {
-                place, adGroupId, abTestGroupId: defaultAbTestGroupId, creatorId: null
+                place, adGroupId, abTestGroupId: defaultAbTestGroupId, creatorId: ucId
             };
             return defaultAbTestMapVo;
         });
@@ -244,7 +244,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async updateVersionGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
         const name: string = this.post('name');
         const begin: number = this.post('begin');
@@ -252,7 +252,6 @@ export default class DispatchManagerController extends BaseController {
         const codeList: string[] = this.post('codeList');
         const include: number = this.post('include');
         const active: number = this.post('action');
-
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         let code: string;
@@ -263,7 +262,7 @@ export default class DispatchManagerController extends BaseController {
 
         const versionGroupVo: VersionGroupVO = {
             name, begin, description, code, include, active,
-            type: undefined, productId: undefined, creatorId: null
+            type: undefined, productId: undefined, creatorId: undefined
         };
 
         try {
@@ -283,7 +282,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async abTestGroupListAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const versionGroupId: string = this.post('id');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
@@ -295,15 +294,9 @@ export default class DispatchManagerController extends BaseController {
 
         const abTestGroupResVoList = await Bluebird.map(abTestGroupVoList, async (abTestGroupVo) => {
 
-            const abTestGroupId = abTestGroupVo.id;
+            const { id: abTestGroupId, configGroupId, nativeTmplConfGroupId } = abTestGroupVo;
             // 更新的缓存数据
             const cacheAbTestGroupVo = cacheAbTestGroupVoHash[abTestGroupId] as AbTestGroupVO;
-            // 返回线上数据和未发布的数据，以未发布数据为准
-            const currentAbTestGroupResVo: AbTestGroupVO = _.assign(abTestGroupVo, cacheAbTestGroupVo);
-
-            const {
-                configGroupId, nativeTmplConfGroupId
-            } = await abTestGroupModel.getAbTestGroup(abTestGroupId);
 
             // 获取 ab 分组下的广告，常量， native模板配置
             const [
@@ -316,9 +309,10 @@ export default class DispatchManagerController extends BaseController {
                 this.nativeTmplConfInAb(nativeTmplConfGroupId, ucId)
             ]);
 
-            const abTestGroupResVo: AbTestGroupResVO = _.defaults({
+            // 返回线上数据和未发布的数据，以未发布数据为准
+            const abTestGroupResVo: AbTestGroupResVO = _.assign({
                 configGroup: configGroupResVo,
-            }, currentAbTestGroupResVo);
+            }, abTestGroupVo, cacheAbTestGroupVo);
 
             if (!think.isEmpty(nativeTmplConfGroupResVo)) {
                 abTestGroupResVo.nativeTmplConfGroup = nativeTmplConfGroupResVo;
@@ -350,7 +344,7 @@ export default class DispatchManagerController extends BaseController {
 
         if (configGroupId) {
             const configGroupVo = await modelServer.getConfigGroup(configGroupId, creatorId);
-            const configResVoList = await modelServer.getConfigList(configGroupVo.id, creatorId);
+            const configResVoList = await modelServer.getConfigList(configGroupId, creatorId);
 
             const configGroupResVo: ConfigGroupResVO = _.defaults({ configList: configResVoList }, configGroupVo);
             return configGroupResVo;
@@ -409,7 +403,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async createDefaultAbTestGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const versionGroupId: string = this.post('id');
 
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
@@ -431,7 +425,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async createAbTestGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const versionGroupId: string = this.post('id');
         const description: string = this.post('description');
@@ -440,26 +434,29 @@ export default class DispatchManagerController extends BaseController {
         const groupNum: number = this.post('groupNum');
 
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        // 分组后缀，默认最大 26 个字母
         const nameList = [
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
             'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
         ];
-
+        // 最少分 2 组
         if (groupNum && groupNum > 1) {
 
+            // 分组要均分，整除
             if ((end - begin) % groupNum !== 0) {
                 return this.fail(10, '分组失败，无法分组');
             }
             const abTestGroupVoList: AbTestGroupVO[] = [];
             const step = (end - begin + 1) / groupNum;
+            // 分组左右均包含
             end = begin + step - 1;
 
             for (let i = 0; i < groupNum; i++) {
                 const abTestGroupName = name + '_' + nameList[i];
 
                 const abTestGroupVo: AbTestGroupVO = {
-                    name: abTestGroupName, begin, end,
-                    description, versionGroupId, configGroupId: null, nativeTmplConfGroupId: null
+                    name: abTestGroupName, begin, end, description,
+                    versionGroupId, creatorId: ucId, configGroupId: null, nativeTmplConfGroupId: null
                 };
 
                 abTestGroupVoList.push(abTestGroupVo);
@@ -479,8 +476,6 @@ export default class DispatchManagerController extends BaseController {
         } else {
             return this.fail(10, '分组失败，没有指定大于 1 的组数');
         }
-
-        this.success('created');
     }
 
     /**
@@ -490,22 +485,24 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async bindConfigGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const abTestGroupId: string = this.post('id');
         const configGroupId: string = this.post('configGroupId');
-        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const abTestGroupVo: AbTestGroupVO = {
             configGroupId,
             name: undefined, begin: undefined, end: undefined,
             description: undefined, versionGroupId: undefined,
-            nativeTmplConfGroupId: undefined
+            nativeTmplConfGroupId: undefined, creatorId: undefined
         };
-        const rows = await abTestGroupModel.updateAbTestGroup(abTestGroupId, abTestGroupVo);
 
-        if (rows === 1) {
-            return this.success('binded');
-        } else {
+        try {
+            await cacheServer.setCacheData(ucId, 'abTestGroupModel', abTestGroupId, abTestGroupVo);
+            this.success('binded');
+
+        } catch (e) {
+            think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'bind fail!!!');
         }
     }
@@ -517,12 +514,12 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async configGroupListAction() {
-        const ucId: string = this.ctx.state.user.id || '';
+        const ucId: string = this.ctx.state.user.id;
         const productId: string = this.post('id');
         const type: number = this.post('type');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
-        const configGroupResVoList = await modelServer.getConfigGroupList(productId, type);
+        const configGroupResVoList = await modelServer.getConfigGroupList(productId, type, ucId);
 
         return this.success(configGroupResVoList);
     }
@@ -534,10 +531,11 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async configListAction() {
+        const ucId: string = this.ctx.state.user.id;
         const configGroupId: string = this.post('id');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
-        const configResVoList = await modelServer.getConfigList(configGroupId);
+        const configResVoList = await modelServer.getConfigList(configGroupId, ucId);
         return this.success(configResVoList);
     }
 
@@ -548,7 +546,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async createConfigGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const dependentId: string = this.post('dependentId');
         const productId: string = this.post('id');
@@ -558,8 +556,8 @@ export default class DispatchManagerController extends BaseController {
 
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const configGroupVo: ConfigGroupVO = {
-            name, description, type,
-            dependentId, productId, active
+            name, description, type, active,
+            dependentId, productId, creatorId: ucId
         };
         await configGroupModel.addConfigGroup(configGroupVo);
 
@@ -573,12 +571,11 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async copyConfigGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const copyId: string = this.post('id');
-        const configGroupDescription: string = this.post('description');
-        const configGroupActive: number = this.post('active');
-        let dependentId: string = this.post('dependentId');
+        const description: string = this.post('description');
+        const active: number = this.post('active');
 
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
@@ -586,21 +583,17 @@ export default class DispatchManagerController extends BaseController {
         const [
             copyedConfigGroupVo, copyedConfigVoList
         ] = await Promise.all([
-            configGroupModel.getConfigGroup(copyId),
-            configModel.getList(copyId)
+            configGroupModel.getConfigGroup(copyId, ucId),
+            configModel.getList(copyId, ucId)
         ]);
 
         const {
-            dependentId: copyedDependentId, productId, type
+            dependentId, productId, type
         } = copyedConfigGroupVo;
 
-        if (!dependentId) {
-            dependentId = copyedDependentId;
-        }
-
         const configGroupVo: ConfigGroupVO = {
-            name, description: configGroupDescription, type,
-            dependentId, productId, active: configGroupActive
+            name, description, type, active,
+            dependentId, productId, creatorId: ucId
         };
         const configGroupId = await configGroupModel.addConfigGroup(configGroupVo);
 
@@ -610,8 +603,9 @@ export default class DispatchManagerController extends BaseController {
                 'id', 'createAt', 'updateAt', 'configGroupId'
             ]);
             configVo.configGroupId = configGroupId;
-
+            configVo.creatorId = ucId;
             return configVo;
+
         });
         const rows = (await configModel.addList(configVoList)).length;
 
@@ -629,25 +623,25 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async updateConfigGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const id: string = this.post('id');
         const dependentId: string = this.post('dependentId');
         const description: string = this.post('description');
         const active: number = this.post('active');
-
-        const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const configGroupVo: ConfigGroupVO = {
-            name, description, dependentId,
-            type: undefined, productId: undefined,
-            active
+            name, description, dependentId, active,
+            type: undefined, productId: undefined, creatorId: undefined
         };
-        const rows = await configGroupModel.updateConfigGroup(id, configGroupVo);
 
-        if (rows === 1) {
+        try {
+            await cacheServer.setCacheData(ucId, 'configGroupModel', id, configGroupVo);
             this.success('updated');
-        } else {
+
+        } catch (e) {
+            think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
     }
@@ -659,33 +653,49 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async updateAdConfigAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const configGroupId: string = this.post('id');
         const key: string = this.post('key');
         const value: string = this.post('value');
         const description: string = this.post('description');
         const active: number = this.post('active');
-
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        const configVo: ConfigVO = {
-            configGroupId,
-            key, value, description,
-            active
+        const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId);
+
+        const updateConfigVo: ConfigVO = {
+            key, value, description, active,
+            configGroupId, activeTime: undefined, creatorId: undefined
         };
-        await configModel.updateAdConfig(key, configGroupId, configVo);
 
-        return this.success('updated');
+        try {
+            // 数据库不存在，怎插入，同事创建者暂时设置为当前操作用户
+            if (_.isEmpty(configVo)) {
+                updateConfigVo.creatorId = ucId;
+                await configModel.addConfig(updateConfigVo);
+
+            // 存在加入缓存
+            } else {
+                await cacheServer.setCacheData(ucId, 'configModel', configVo.id, updateConfigVo);
+
+            }
+            this.success('updated');
+
+        } catch (e) {
+            think.logger.debug(e);
+            this.fail(TaleCode.DBFaild, 'update fail!!!');
+        }
     }
 
     /**
-     * <br/>创建常量
+     * <br/>创建游戏常量
      * @argument {CreateConfigReqVO}
      * @returns {CreateConfigResVO}
      * @debugger yes
      */
     public async createConfigAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const configGroupId: string = this.post('id');
         const key: string = this.post('key');
         const value: string = this.post('value');
@@ -695,9 +705,9 @@ export default class DispatchManagerController extends BaseController {
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
 
         const configVo: ConfigVO = {
-            configGroupId,
+            configGroupId, creatorId: ucId,
             key, value, description,
-            active
+            active, activeTime: null
         };
         await configModel.addConfig(configVo);
 
@@ -711,25 +721,30 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async updateConfigAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
         const key: string = this.post('key');
         const value: string = this.post('value');
         const description: string = this.post('description');
         const active: number = this.post('active');
-
-        const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const configVo: ConfigVO = {
-            configGroupId: undefined,
+            configGroupId: undefined, creatorId: undefined,
             key, value, description,
-            active
+            active, activeTime: undefined
         };
+        if (active === 0) {
+            const now = moment().format('YYYY-MM-DD HH:mm:ss');
+            configVo.activeTime = now;
+        }
 
-        const rows = await configModel.updateConfig(id, configVo);
-        if (rows === 1) {
+        try {
+            await cacheServer.setCacheData(ucId, 'configModel', id, configVo);
             this.success('updated');
-        } else {
+
+        } catch (e) {
+            think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
     }
@@ -741,7 +756,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async deleteConfigAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
 
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
@@ -761,21 +776,22 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async bindNativeTmplConfGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const abTestGroupId: string = this.post('id');
         const nativeTmplConfGroupId: string = this.post('nativeTmplConfGroupId');
-        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const abTestGroupVo: AbTestGroupVO = {
             nativeTmplConfGroupId,
             name: undefined, begin: undefined, end: undefined, description: undefined,
-            versionGroupId: undefined, configGroupId: undefined
+            versionGroupId: undefined, configGroupId: undefined, creatorId: undefined
         };
-        const rows = await abTestGroupModel.updateAbTestGroup(abTestGroupId, abTestGroupVo);
+        try {
+            await cacheServer.setCacheData(ucId, 'abTestGroupModel', abTestGroupId, abTestGroupVo);
+            this.success('binded');
 
-        if (rows === 1) {
-            return this.success('binded');
-        } else {
+        } catch (e) {
+            think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'bind fail!!!');
         }
     }
@@ -787,10 +803,11 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async nativeTmplConfGroupListAction() {
+        const ucId: string = this.ctx.state.userId;
         const productId: string = this.post('id');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
-        const nativeTmplConfGroupResVoList = await modelServer.getNativeTmplConfGroupList(productId);
+        const nativeTmplConfGroupResVoList = await modelServer.getNativeTmplConfGroupList(productId, ucId);
         return this.success(nativeTmplConfGroupResVoList);
     }
 
@@ -801,15 +818,11 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async nativeTmplConfListAction() {
+        const ucId: string = this.ctx.state.userId;
         const nativeTmplConfGroupId: string = this.post('id');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
-        const nativeTmplConfGroupModel =
-            this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
 
-        const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId);
-        const { productId } = nativeTmplConfGroupVo;
-
-        const nativeTmplConfResVoList = await modelServer.getNativeTmplConfList(nativeTmplConfGroupId, productId);
+        const nativeTmplConfResVoList = await modelServer.getNativeTmplConfList(nativeTmplConfGroupId, ucId);
         return this.success(nativeTmplConfResVoList);
     }
 
@@ -820,7 +833,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async createNativeTmplConfGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const productId: string = this.post('id');
         const description: string = this.post('description');
@@ -830,7 +843,7 @@ export default class DispatchManagerController extends BaseController {
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
 
         const nativeTmplConfGroupVo: NativeTmplConfGroupVO = {
-            name, description, productId, active
+            name, description, productId, active, creatorId: ucId
         };
         await nativeTmplConfGroupModel.addNativeTmplConfGroup(nativeTmplConfGroupVo);
 
@@ -844,11 +857,11 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async copyNativeTmplConfGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const copyId: string = this.post('id');
         const description: string = this.post('description');
-        const nativeTmplConfGroupActive: number = this.post('active');
+        const active: number = this.post('active');
 
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
@@ -857,12 +870,12 @@ export default class DispatchManagerController extends BaseController {
         const [
             { productId }, copyedNativeTmplConfVoList
         ] = await Promise.all([
-            nativeTmplConfGroupModel.getNativeTmplConfGroup(copyId),
-            nativeTmplConfModel.getList(copyId)
+            nativeTmplConfGroupModel.getNativeTmplConfGroup(copyId, ucId),
+            nativeTmplConfModel.getList(copyId, ucId)
         ]);
 
         const nativeTmplConfGroupVo: NativeTmplConfGroupVO = {
-            name, description, productId, active: nativeTmplConfGroupActive
+            name, description, productId, active, creatorId: ucId
         };
         const nativeTmplConfGroupId = await nativeTmplConfGroupModel.addNativeTmplConfGroup(nativeTmplConfGroupVo);
 
@@ -871,8 +884,9 @@ export default class DispatchManagerController extends BaseController {
                 'id', 'createAt', 'updateAt', 'nativeTmplConfGroupId'
             ]);
             nativeTmplConfVo.nativeTmplConfGroupId = nativeTmplConfGroupId;
-
+            nativeTmplConfVo.creatorId = ucId;
             return nativeTmplConfVo;
+
         });
         const rows = (await nativeTmplConfModel.addList(nativeTmplConfVoList)).length;
 
@@ -890,23 +904,23 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async updateNativeTmplConfGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const id: string = this.post('id');
         const description: string = this.post('description');
         const active: number = this.post('active');
-
-        const nativeTmplConfGroupModel =
-            this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const nativeTmplConfGroupVo: NativeTmplConfGroupVO = {
-            name, description, active, productId: undefined
+            name, description, active, productId: undefined, creatorId: undefined
         };
-        const rows = await nativeTmplConfGroupModel.updateNativeTmplConfGroup(id, nativeTmplConfGroupVo);
 
-        if (rows === 1) {
+        try {
+            await cacheServer.setCacheData(ucId, 'nativeTmplConfGroupModel', id, nativeTmplConfGroupVo);
             this.success('updated');
-        } else {
+
+        } catch (e) {
+            think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
     }
@@ -918,20 +932,19 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async createNativeTmplConfAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const nativeTmplConfGroupId: string = this.post('id');
         const nativeTmplId: string = this.post('nativeTmplId');
         const weight: number = this.post('weight');
         const clickArea: number = this.post('clickArea');
         const isFull: number = this.post('isFull');
         const active: number = this.post('active');
-
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
 
         const nativeTmplConfVo: NativeTmplConfVO = {
-            nativeTmplConfGroupId, nativeTmplId,
+            nativeTmplConfGroupId, nativeTmplId, creatorId: ucId,
             weight, clickArea, isFull,
-            active
+            active, activeTime: undefined
         };
         await nativeTmplConfModel.addNativeTmplConf(nativeTmplConfVo);
         this.success('created');
@@ -944,24 +957,31 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async updateNativeTmplConfAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
         const nativeTmplConfGroupId: string = this.post('nativeTmplConfGroupId');
         const weight: number = this.post('weight');
         const clickArea: number = this.post('clickArea');
         const isFull: number = this.post('isFull');
         const active: number = this.post('active');
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
         const nativeTmplConfVo: NativeTmplConfVO = {
-            nativeTmplConfGroupId, nativeTmplId: undefined,
+            nativeTmplConfGroupId, nativeTmplId: undefined, activeTime: undefined, creatorId: undefined,
             weight, clickArea, isFull, active
         };
-        const rows = await nativeTmplConfModel.updateNativeTmplConf(id, nativeTmplConfVo);
 
-        if (rows === 1) {
+        if (active === 0) {
+            const now = moment().format('YYYY-MM-DD HH:mm:ss');
+            nativeTmplConfVo.activeTime = now;
+        }
+
+        try {
+            await cacheServer.setCacheData(ucId, 'nativeTmplConfModel', id, nativeTmplConfVo);
             this.success('updated');
-        } else {
+
+        } catch (e) {
+            think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
     }
@@ -973,7 +993,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async deleteNativeTmplConfAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
 
@@ -992,20 +1012,35 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async bindAdGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const abTestGroupId: string = this.post('id');
         const adGroupId: string = this.post('adGroupId');
         const place: string = this.post('place');
-
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const abTestMapVo: AbTestMapVO = {
-            abTestGroupId,
-            place,
-            adGroupId
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+
+        const updateAbTestMapVo: AbTestMapVO = {
+            abTestGroupId, place, adGroupId, creatorId: undefined
         };
 
-        await abTestMapModel.updateAbTestMap(abTestGroupId, place, abTestMapVo);
-        this.success('binded');
+        try {
+            const abTestMapVo = await abTestMapModel.getAbTestMap(abTestGroupId, place, ucId);
+
+            if (_.isEmpty(abTestMapVo)) {
+                updateAbTestMapVo.creatorId = ucId;
+                await abTestMapModel.addAbTestMap(updateAbTestMapVo);
+
+            } else {
+                const id = abTestMapVo.id;
+                await cacheServer.setCacheData(ucId, 'abTestMapModel', id, updateAbTestMapVo);
+
+            }
+            this.success('binded');
+
+        } catch (e) {
+            think.logger.debug(e);
+            this.fail(TaleCode.DBFaild, 'bind fail!!!');
+        }
     }
 
     /**
@@ -1015,7 +1050,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async unbindAdGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
         const place: string = this.post('place');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
@@ -1035,35 +1070,39 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async completePlaceAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
         const place: string = this.post('place');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         try {
             const [
                 { versionGroupId },
                 { adGroupId }
             ] = await Promise.all([
-                abTestGroupModel.getAbTestGroup(id),
-                abTestMapModel.getAbTestMap(id, place)
+                abTestGroupModel.getAbTestGroup(id, ucId),
+                abTestMapModel.getAbTestMap(id, place, ucId)
             ]);
 
-            const { id: defaultId } = await abTestGroupModel.getDefault(versionGroupId);
+            const { id: defaultId } = await abTestGroupModel.getDefault(versionGroupId, ucId);
+            const defaultAbTestMapVo = await abTestMapModel.getAbTestMap(defaultId, place, ucId);
 
-            think.logger.debug(`versionGroupId : ${versionGroupId}`);
-            think.logger.debug(`adGroupId : ${adGroupId}`);
-            think.logger.debug(`place : ${place}`);
-            think.logger.debug(`defaultId : ${defaultId}`);
-
-            const abTestMapVo: AbTestMapVO = {
-                abTestGroupId: defaultId,
+            const updateDefaultAbTestMapVo: AbTestMapVO = {
+                abTestGroupId: defaultId, creatorId: undefined,
                 place,
                 adGroupId
             };
-            await abTestMapModel.updateAbTestMap(defaultId, place, abTestMapVo);
 
+            if (_.isEmpty(defaultAbTestMapVo)) {
+                updateDefaultAbTestMapVo.creatorId = ucId;
+                await abTestMapModel.addAbTestMap(updateDefaultAbTestMapVo);
+
+            } else {
+                await cacheServer.setCacheData(ucId, 'abTestMapModel', defaultId, updateDefaultAbTestMapVo);
+
+            }
             this.success('completed');
 
         } catch (e) {
@@ -1079,10 +1118,11 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async adGroupListAction() {
+        const ucId: string = this.ctx.state.userId;
         const productId: string = this.post('id');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
-        const adGroupResVoList = await modelServer.getAdGroupList(productId);
+        const adGroupResVoList = await modelServer.getAdGroupList(productId, ucId);
         return this.success(adGroupResVoList);
     }
 
@@ -1093,7 +1133,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async createAdGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         const productId: string = this.post('id');
         const adTypeId: string = this.post('adTypeId');
@@ -1102,7 +1142,7 @@ export default class DispatchManagerController extends BaseController {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
 
         const adGroupVo: AdGroupVO = {
-            name, description,
+            name, description, creatorId: ucId,
             adTypeId, productId, active
         };
 
@@ -1117,7 +1157,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async copyAdGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const copyId: string = this.post('id');
         const name: string = this.post('name');
         const description: string = this.post('description');
@@ -1129,14 +1169,14 @@ export default class DispatchManagerController extends BaseController {
         const [
             copyedAdGroupVo, copyedAdVoList
         ] = await Promise.all([
-            adGroupModel.getAdGroup(copyId),
-            adModel.getListByAdGroup(copyId)
+            adGroupModel.getAdGroup(copyId, ucId),
+            adModel.getListByAdGroup(copyId, ucId)
         ]);
 
         const { productId, adTypeId } = copyedAdGroupVo;
 
         const adGroupVo: AdGroupVO = {
-            name, description,
+            name, description, creatorId: ucId,
             adTypeId, productId, active
         };
         const adGroupId = await adGroupModel.addAdGroup(adGroupVo);
@@ -1147,7 +1187,7 @@ export default class DispatchManagerController extends BaseController {
             ]);
 
             adVo.adGroupId = adGroupId;
-
+            adVo.creatorId = ucId;
             return adVo;
         });
 
@@ -1168,23 +1208,24 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async updateAdGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
         const name: string = this.post('name');
         const description: string = this.post('description');
         const active: number = this.post('active');
-
-        const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const adGroupVo: AdGroupVO = {
             name, description,
-            adTypeId: undefined, productId: undefined, active
+            creatorId: undefined, adTypeId: undefined, productId: undefined, active
         };
 
-        const rows = await adGroupModel.updateAdGroup(id, adGroupVo);
-        if (rows === 1) {
+        try {
+            await cacheServer.setCacheData(ucId, 'adGroupModel', id, adGroupVo);
             this.success('updated');
-        } else {
+
+        } catch (e) {
+            think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
     }
@@ -1196,10 +1237,11 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async adListAction() {
+        const ucId: string = this.ctx.state.userId;
         const productId: string = this.post('id');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
-        const adResVoList = await modelServer.getAdList(productId);
+        const adResVoList = await modelServer.getAdList(productId, ucId);
         return this.success(adResVoList);
     }
 
@@ -1210,10 +1252,11 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async adListInAdGroupAction() {
+        const ucId: string = this.ctx.state.userId;
         const adGroupId: string = this.post('id');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
-        const adResVoList = await modelServer.getAdListInAdGroup(adGroupId);
+        const adResVoList = await modelServer.getAdListInAdGroup(adGroupId, ucId);
         return this.success(adResVoList);
     }
 
@@ -1224,6 +1267,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async createAdAction() {
+        const ucId: string = this.ctx.state.userId;
         const adGroupId: string = this.post('id');
         const adChannelId: string = this.post('adChannelId');
         const name: string = this.post('name');
@@ -1235,21 +1279,15 @@ export default class DispatchManagerController extends BaseController {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
 
-        const { adTypeId, productId } = await adGroupModel.getAdGroup(adGroupId);
-
-        think.logger.debug(`adTypeId: ${adTypeId}`);
-        think.logger.debug(`productId: ${productId}`);
+        const { adTypeId, productId } = await adGroupModel.getAdGroup(adGroupId, ucId);
 
         const adVo: AdVO = {
             productId, adGroupId, adChannelId, adTypeId,
-            name, placementID, ecpm, bidding,
-            active, activeIndex: undefined,
+            name, placementID, ecpm, bidding, creatorId: ucId,
+            active, activeTime: undefined,
             loader: undefined, subloader: undefined, interval: undefined, weight: undefined
         };
-
-        const adId = await adModel.addAd(adVo);
-
-        think.logger.debug(`adId: ${adId}`);
+        await adModel.addAd(adVo);
 
         this.success('created');
     }
@@ -1261,7 +1299,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async updateAdAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
         const name: string = this.post('name');
         const placementID: string = this.post('placementID');
@@ -1272,28 +1310,26 @@ export default class DispatchManagerController extends BaseController {
         const weight: number = this.post('weight');
         const bidding: number = this.post('bidding');
         const active: number = this.post('active');
-
-        const adModel = this.taleModel('ad', 'advertisement') as AdModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const adVo: AdVO = {
             productId: undefined, adGroupId: undefined, adChannelId: undefined, adTypeId: undefined,
-            activeIndex: undefined,
+            activeTime: undefined, creatorId: null,
             placementID, name, ecpm, interval, subloader, loader, weight, bidding,
             active
         };
 
         if (active === 0) {
             const now = moment().format('YYYY-MM-DD HH:mm:ss');
-            adVo.activeIndex = now;
-        }
-        if (active === 1) {
-            adVo.activeIndex = undefined;
+            adVo.activeTime = now;
         }
 
-        const rows = await adModel.updateAd(id, adVo);
-        if (rows === 1) {
+        try {
+            await cacheServer.setCacheData(ucId, 'adModel', id, adVo);
             this.success('updated');
-        } else {
+
+        } catch (e) {
+            think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
     }
@@ -1305,7 +1341,7 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async deleteAdAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
 
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;

@@ -52,7 +52,7 @@ export default class UserController extends BaseController {
      * @returns {CreateUserResVO}
      */
     public async createAdMinAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         // const avatar: string = this.post('avatar');
         // const telephone: string = this.post('telephone');
@@ -98,7 +98,7 @@ export default class UserController extends BaseController {
      * @returns {CreateUserResVO}
      */
     public async createUserAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const name: string = this.post('name');
         // const avatar: string = this.post('avatar');
         // const telephone: string = this.post('telephone');
@@ -144,7 +144,7 @@ export default class UserController extends BaseController {
      * @returns {UpdateUserResVO}
      */
     public async updateUserAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
         const password: string = this.post('password');
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
@@ -172,7 +172,7 @@ export default class UserController extends BaseController {
      * @returns {DisableUserResVO}
      */
     public async disableUserAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
         const active: number = this.post('active');
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
@@ -205,7 +205,7 @@ export default class UserController extends BaseController {
      * @returns {ResetPasswordResVO}
      */
     public async resetPasswordAction() {
-        const ucId: string = this.ctx.state.userId || '';
+        const ucId: string = this.ctx.state.userId;
         const password: string = this.post('password');
         const id: string = this.post('id');
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
@@ -238,7 +238,7 @@ export default class UserController extends BaseController {
      * @returns {UserListResVO}
      */
     public async userListAction() {
-        const ucId: string = this.ctx.state.userId || '';    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
         const userAuthModel = this.taleModel('userAuth', 'advertisement') as UserAuthModel;
 
@@ -260,7 +260,7 @@ export default class UserController extends BaseController {
      * @returns {UserAuthResVO}
      */
     public async userAuthAction() {
-        const ucId: string = this.ctx.state.userId || '';    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
         const userId: string = this.post('id');
         const userAuthModel = this.taleModel('userAuth', 'advertisement') as UserAuthModel;
 
@@ -274,7 +274,7 @@ export default class UserController extends BaseController {
      * @returns {UserAuthInProductGroupResVO}
      */
     public async userAuthInProductGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
         const productGroupId: string = this.post('id');
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
@@ -288,7 +288,7 @@ export default class UserController extends BaseController {
      * @returns {UserAuthInProductGroupResVO}
      */
     public async userAuthInProductAction() {
-        const ucId: string = this.ctx.state.userId || '';    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
         const productId: string = this.post('id');
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
@@ -302,7 +302,7 @@ export default class UserController extends BaseController {
      * @returns {UpdateUserAuthResVO}
      */
     public async updateUserAuthAction() {
-        const ucId: string = this.ctx.state.userId || '';    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
         const userId: string = this.post('id');
         const editComConf: number = this.post('editComConf');
         const viewComConf: number = this.post('viewComConf');
@@ -444,7 +444,7 @@ export default class UserController extends BaseController {
      * @returns {CreateUserToProductGroupResVO}
      */
     public async createUserToProductGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
         const productGroupId: string = this.post('id');
         const userId: string = this.post('userId');
         const editAd: number = this.post('editAd');
@@ -482,7 +482,7 @@ export default class UserController extends BaseController {
      * @returns {CreateUserToProductResVO}
      */
     public async createUserToProductAction() {
-        const ucId: string = this.ctx.state.userId || '';    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
         const productId: string = this.post('id');
         const userId: string = this.post('userId');
         const editAd: number = this.post('editAd');
@@ -518,7 +518,7 @@ export default class UserController extends BaseController {
      * @returns {UpdateUserAuthInProductReqVO}
      */
     public async updateUserAuthInProductAction() {
-        const ucId: string = this.ctx.state.userId || '';    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
         const productId: string = this.post('id');
         const userId: string = this.post('userId');
         const editAd: number = this.post('editAd');
@@ -553,7 +553,7 @@ export default class UserController extends BaseController {
      * @returns {UpdateUserAuthInProductGroupReqVO}
      */
     public async updateUserAuthInProductGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
         const productGroupId: string = this.post('id');
         const userId: string = this.post('userId');
         const editAd: number = this.post('editAd');
@@ -590,7 +590,7 @@ export default class UserController extends BaseController {
      * @returns {DeleteUserFromProductReqVO}
      */
     public async deleteUserFromProductAction() {
-        const ucId: string = this.ctx.state.userId || '';    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
         const productId: string = this.post('id');
         const userId: string = this.post('userId');
         const productAuthModel = this.taleModel('productAuth', 'advertisement') as ProductAuthModel;
@@ -611,7 +611,7 @@ export default class UserController extends BaseController {
      * @returns {DeleteUserFromProductGroupReqVO}
      */
     public async deleteUserFromProductGroupAction() {
-        const ucId: string = this.ctx.state.userId || '';    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
         const productGroupId: string = this.post('id');
         const userId: string = this.post('userId');
 

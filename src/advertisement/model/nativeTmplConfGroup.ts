@@ -63,10 +63,16 @@ export default class NativeTmplConfGroupModel extends MBModel {
 
     /**
      * 获取应用下 native 模板组信息列表
-     * </br> 按常量组名称从小到大排序
      * @argument {string} productId 应用表 id;
+     * @argument {string} creatorId 创建者 id
      */
-    public async getList(productId: string) {
-        return await this.where({ productId }).order('name').select() as NativeTmplConfGroupVO[];
+    public async getList(productId: string, creatorId: string) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`productId='${productId}'`);
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as NativeTmplConfGroupVO[];
     }
 }

@@ -46,10 +46,13 @@ export default class VersionGroupModel extends MBModel {
     /**
      * 根据主键 id 获取版本分组控制信息
      * @argument {string} id 版本分组控制表 id;
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<VersionGroupVO>} 版本分组控制信息;
      */
-    public async getVersionGroup(id: string) {
-        return await this.where({ id }).find() as VersionGroupVO;
+    public async getVersionGroup(id: string, creatorId: string ) {
+        const query = `id = '${id}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
+
+        return await this.where(query).find() as VersionGroupVO;
     }
 
     /**获取版本分组控制信息列表
@@ -68,18 +71,30 @@ export default class VersionGroupModel extends MBModel {
     /**
      * 获取版本分组控制名列表,
      * @argument {string[]} idList 版本分组控制表 id 列表;
+     * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;
      * @returns {Promise<string[]>} 版本分组控制名列表;
      */
-    public async getVersionGroupNameList(idList: string[], active?: number) {
-        idList.push('');    // 为空数组报错
-        let versionGroupVoList: VersionGroupVO[];
+    public async getVersionGroupNameList(idList: string[] = [], creatorId: string, active?: number) {
+        // 为空数组
+        if (_.isEmpty(idList)) {
+            return [];
+        }
+
+        const queryStrings: string[] = [];
+        // 条件单字段查询
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        // in 查询逻辑
+        const idListString = idList.join();
+        queryStrings.push(`id IN (${idListString})`);
 
         if (!_.isUndefined(active)) {
-            versionGroupVoList = await this.where({ id: ['IN', idList], active }).select();
-
+            queryStrings.push(`active=${active}`);
         }
-        versionGroupVoList = await this.where({ id: ['IN', idList], active }).select();
+
+        const queryString: string = queryStrings.join(' AND ');
+        const versionGroupVoList = await this.where(queryString).select() as VersionGroupVO[];
 
         const versionGroupNameList = _.map(versionGroupVoList, (versionGroupVo) => {
             return versionGroupVo.name;
