@@ -188,6 +188,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>复制版本分组控制
      */
     public async copyVersionGroupAction() {
+        const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -227,7 +228,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         try {
             // 被复制组的默认配置
-            const { productId, type } = await versionGroupModel.getVersionGroup(copyId);
+            const { productId, type } = await versionGroupModel.getVersionGroup(copyId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, editGameConfig, editPurchase, master
@@ -256,6 +257,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>更新版本分组控制
      */
     public async updateVersionGroupAction() {
+        const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -309,7 +311,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId);
+            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, editGameConfig, editPurchase, master
@@ -338,6 +340,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>获取版本分组下 ab 分组列表
      */
     public async abTestGroupListAction() {
+        const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -358,7 +361,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId);
+            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 viewAd, viewGameConfig, viewPurchase, master
@@ -387,6 +390,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>向版本分组下创建默认 ab 分组
      */
     public async createDefaultAbTestGroupAction() {
+        const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -407,7 +411,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId);
+            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, editGameConfig, editPurchase, master
@@ -436,6 +440,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>向版本分组下创建 ab 分组
      */
     public async createAbTestGroupAction() {
+        const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -486,7 +491,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId);
+            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, editGameConfig, editPurchase, master
@@ -515,6 +520,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>向 ab 分组绑定常量组
      */
     public async bindConfigGroupAction() {
+        const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -542,8 +548,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
-            const { versionGroupId } = await abTestGroupModel.getAbTestGroup(abTestGroupId);
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId);
+            const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
 
             const productAuth = await this.productAuth(productId);
             const {
@@ -1148,6 +1154,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>向 ab 分组绑定 native 组
      */
     public async bindNativeTmplConfGroupAction() {
+        const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -1175,8 +1182,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
-            const { versionGroupId } = await abTestGroupModel.getAbTestGroup(abTestGroupId);
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId);
+            const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
 
             const {
@@ -1672,6 +1679,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>向 ab 分组绑定广告组
      */
     public async bindAdGroupAction() {
+        const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -1705,8 +1713,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
-            const { versionGroupId } = await abTestGroupModel.getAbTestGroup(abTestGroupId);
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId);
+            const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
 
             const {
@@ -1731,6 +1739,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>删除 ab 分组下广告位
      */
     public async unbindAdGroupAction() {
+        const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -1758,8 +1767,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
-            const { versionGroupId } = await abTestGroupModel.getAbTestGroup(abTestGroupId);
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId);
+            const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
 
             const {
@@ -1784,6 +1793,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>全量 ab 分组下广告位到默认组
      */
     public async completePlaceAction() {
+        const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -1811,8 +1821,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
-            const { versionGroupId } = await abTestGroupModel.getAbTestGroup(abTestGroupId);
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId);
+            const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
 
             const {
@@ -1980,7 +1990,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
 
         try {
-            const { productId } = await adGroupModel.getAdGroup(adGroupId, ucId);
+            const { productId } = await adGroupModel.getVo(adGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, master
@@ -2038,7 +2048,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
 
         try {
-            const { productId } = await adGroupModel.getAdGroup(adGroupId, ucId);
+            const { productId } = await adGroupModel.getVo(adGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, master
@@ -2121,7 +2131,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
 
         try {
-            const { productId } = await adGroupModel.getAdGroup(adGroupId, ucId);
+            const { productId } = await adGroupModel.getVo(adGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 viewAd, master
@@ -2194,7 +2204,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
 
         try {
-            const { productId } = await adGroupModel.getAdGroup(adGroupId, ucId);
+            const { productId } = await adGroupModel.getVo(adGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, master
@@ -2281,7 +2291,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
 
         try {
-            const { productId } = await adModel.getAd(adId);
+            const { productId } = await adModel.getVo(adId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, master
@@ -2323,7 +2333,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
 
         try {
-            const { productId } = await adModel.getAd(adId);
+            const { productId } = await adModel.getVo(adId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, master

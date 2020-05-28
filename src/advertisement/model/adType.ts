@@ -22,7 +22,7 @@ export default class AdTypeModel extends MBModel {
      * @argument {AdTypeVO} adTypeVo 广告类型表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addAdType(adTypeVo: AdTypeVO) {
+    public async addVo(adTypeVo: AdTypeVO) {
 
         await this.add(adTypeVo);
         return this.ID[0];
@@ -34,7 +34,7 @@ export default class AdTypeModel extends MBModel {
      * @argument {AdTypeVO} adTypeVo 广告类型表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateAdType(id: string, adTypeVo: AdTypeVO) {
+    public async updateVo(id: string, adTypeVo: AdTypeVO) {
         if (!Utils.isEmptyObj(adTypeVo)) {
             return await this.where({ id }).update(adTypeVo);
         }
@@ -48,7 +48,7 @@ export default class AdTypeModel extends MBModel {
      * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<AdTypeVO>} 广告类型信息;
      */
-    public async getAdType(id: string, active?: number, test?: number) {
+    public async getVo(id: string, active?: number, test?: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
 

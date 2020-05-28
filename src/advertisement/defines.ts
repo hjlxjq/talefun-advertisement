@@ -230,6 +230,7 @@ export interface VersionGroupVO extends BaseVO {
     code: string; // 国家代码列表 json 字符串
     include: number;    // 是否包含
     active: number;    // 控制生效
+    activeTime: string;    // 失效时间戳
     creatorId: string;    // 创建者 id
     productId?: string;    // 应用表 id
 }
@@ -260,6 +261,8 @@ export interface AbTestGroupVO extends BaseVO {
     end: number;    // 结束范围
     description: string; // 描述
     creatorId: string;    // 创建者 id
+    active: number;    // 控制生效
+    activeTime: string;    // 失效时间戳
     nativeTmplConfGroupId?: string;    // native 模板组表 id
     configGroupId?: string;    // 常量组表 id
     versionGroupId?: string;    // 版本分组控制表 id

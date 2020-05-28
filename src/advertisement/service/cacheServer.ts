@@ -85,4 +85,36 @@ export default class CacheService extends BaseService {
         return await this.redis.hgetall(cacheKey);
     }
 
+    /**
+     * 批量获取用户缓存的更新数据
+     */
+    public async fetchDeployModelList(
+        userId: string,
+    ): Promise<string[]> {
+        const pattern = this.cacheKeyPrefix + userId + ':' + '*';
+        const stream = this.redis.scanStream({
+            // only returns keys following the pattern
+            match: pattern,
+            // returns approximately 9 elements per call
+            count: 9,
+        });
+
+        return new Promise((resolve, reject) => {
+            stream.on('data', (resultKeys: string[]) => {
+                // `resultKeys` is an array of strings representing key names.
+                // Note that resultKeys may contain 0 keys, and that it will sometimes
+                // contain duplicates due to SCAN's implementation in Redis.
+                const tableNameList = _.map(resultKeys, (resultKey) => {
+                    // cacheKeyPrefix 长度为 2， userId 长度为 36
+                    return resultKey.substr(39);
+                });
+                think.logger.debug(`fetchDeployModelList: ${JSON.stringify(tableNameList)}`);
+                resolve(tableNameList);
+            });
+
+            stream.on('end', () => {
+                think.logger.debug('all keys have been visited');
+            });
+        });
+    }
 }

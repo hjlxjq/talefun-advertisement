@@ -23,7 +23,7 @@ export default class AdModel extends MBModel {
      * @argument {AdVO} adVo 广告组下广告表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addAd(adVo: AdVO) {
+    public async addVo(adVo: AdVO) {
 
         await this.add(adVo);
         return this.ID[0];
@@ -51,7 +51,7 @@ export default class AdModel extends MBModel {
      * @argument {AdVO} adVo 广告组下广告表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateAd(id: string, adVo: AdVO) {
+    public async updateVo(id: string, adVo: AdVO) {
         if (!Utils.isEmptyObj(adVo)) {
             return await this.where({ id }).update(adVo);
         }
@@ -63,7 +63,7 @@ export default class AdModel extends MBModel {
      * @argument {string} id 广告表 id;
      * @returns {Promise<number>} 删除行数;
      */
-    public async delAd(id: string) {
+    public async delVo(id: string) {
         return await this.where({ id }).delete();
     }
 
@@ -72,7 +72,7 @@ export default class AdModel extends MBModel {
      * @argument {string} id 广告表 id;
      * @returns {Promise<AdVO>} 广告信息;
      */
-    public async getAd(id: string) {
+    public async getVo(id: string) {
         return await this.where({ id }).find() as AdVO;
     }
 

@@ -61,7 +61,7 @@ export default class ModelService extends BaseService {
 
             // 获取支持的广告类型
             const adTypeList = await Bluebird.map(adTypeIdList, async (adTypeId) => {
-                const adTypeVo = await adTypeModel.getAdType(adTypeId, 1, test);
+                const adTypeVo = await adTypeModel.getVo(adTypeId, 1, test);
 
                 if (adTypeVo) {
                     return adTypeVo.name;
@@ -96,7 +96,7 @@ export default class ModelService extends BaseService {
 
         // 获取支持的广告类型
         const adTypeList = await Bluebird.map(adTypeIdList, async (adTypeId) => {
-            const adTypeVo = await adTypeModel.getAdType(adTypeId, 1, test);
+            const adTypeVo = await adTypeModel.getVo(adTypeId, 1, test);
 
             if (adTypeVo) {
                 return adTypeVo.name;
@@ -353,7 +353,7 @@ export default class ModelService extends BaseService {
             const { id, adTypeId } = adGroupVo;
 
             const cacheAdGroupVo = cacheAdGroupVoHash[id] as AdGroupVO;
-            const adTypeVo = await adTypeModel.getAdType(adTypeId);
+            const adTypeVo = await adTypeModel.getVo(adTypeId);
 
             if (think.isEmpty(adTypeVo)) {
                 return;
@@ -406,9 +406,9 @@ export default class ModelService extends BaseService {
             const [
                 adTypeVo, adChannelVo, adGroupVo
             ] = await Promise.all([
-                adTypeModel.getAdType(adTypeId),
-                adChannelModel.getAdChannel(adChannelId),
-                adGroupModel.getAdGroup(adGroupId, creatorId)
+                adTypeModel.getVo(adTypeId),
+                adChannelModel.getVo(adChannelId),
+                adGroupModel.getVo(adGroupId, creatorId)
             ]);
 
             if (think.isEmpty(adTypeVo) || think.isEmpty(adChannelVo) || think.isEmpty(adGroupVo)) {
@@ -453,7 +453,7 @@ export default class ModelService extends BaseService {
         const adResVoList = await Bluebird.map(adVoList, async (adVo) => {
             const { adChannelId } = adVo;
 
-            const adChannelVo = await adChannelModel.getAdChannel(adChannelId);
+            const adChannelVo = await adChannelModel.getVo(adChannelId);
 
             if (think.isEmpty(adChannelVo)) {
                 return;
@@ -768,12 +768,12 @@ export default class ModelService extends BaseService {
 
             if (adGroupId) {
                 const [adGroupVo, adList] = await Promise.all([
-                    adGroupModel.getAdGroup(adGroupId, creatorId),
+                    adGroupModel.getVo(adGroupId, creatorId),
                     this.getAdListInAdGroup(adGroupId, creatorId)
                 ]);
                 const { adTypeId } = adGroupVo;
 
-                const adTypeVo = await adTypeModel.getAdType(adTypeId);
+                const adTypeVo = await adTypeModel.getVo(adTypeId);
 
                 if (!think.isEmpty(adTypeVo)) {
                     // 获取缓存中未发布更新，redis 哈希域为广告组表主键 id

@@ -23,7 +23,7 @@ export default class BaseConfigModel extends MBModel {
      * @argument {BaseConfigVO} baseConfigVo 基础常量表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addBaseConfig(baseConfigVo: BaseConfigVO) {
+    public async addVo(baseConfigVo: BaseConfigVO) {
 
         await this.add(baseConfigVo);
         return this.ID[0];
@@ -35,7 +35,7 @@ export default class BaseConfigModel extends MBModel {
      * @argument {BaseConfigVO} baseConfigVo 基础常量表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateBaseConfig(id: string, baseConfigVo: BaseConfigVO) {
+    public async updateVo(id: string, baseConfigVo: BaseConfigVO) {
         if (!Utils.isEmptyObj(baseConfigVo)) {
             return await this.where({ id }).update(baseConfigVo);
         }

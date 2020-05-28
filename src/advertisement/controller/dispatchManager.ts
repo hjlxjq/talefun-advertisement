@@ -145,7 +145,7 @@ export default class DispatchManagerController extends BaseController {
             type,
             code: JSON.stringify(codeList),
             include,
-            active,
+            active, activeTime: undefined,
             creatorId: ucId,
             productId
         };
@@ -153,11 +153,11 @@ export default class DispatchManagerController extends BaseController {
 
         // 向版本分组下创建默认 ab 分组
         const abTestGroupVo: AbTestGroupVO = {
-            versionGroupId,
+            versionGroupId, active,
             name: 'default', begin: -1, end: -1, description: '默认组',
-            creatorId: ucId, configGroupId: null, nativeTmplConfGroupId: null,
+            creatorId: ucId, configGroupId: null, nativeTmplConfGroupId: null, activeTime: null
         };
-        await abTestGroupModel.addAbTestGroup(abTestGroupVo);
+        await abTestGroupModel.addVo(abTestGroupVo);
 
         this.success('created');
     }
@@ -204,7 +204,7 @@ export default class DispatchManagerController extends BaseController {
             type,
             code,
             include,
-            active,
+            active, activeTime: undefined,
             creatorId: ucId,
             productId
         };
@@ -212,10 +212,10 @@ export default class DispatchManagerController extends BaseController {
 
         // 再创建版本分组下默认 ab 测试
         const defaultAbTestGroupVo: AbTestGroupVO = {
-            name: 'default', begin: -1, end: -1, description: '默认组',
+            name: 'default', begin: -1, end: -1, description: '默认组', active, activeTime: null,
             creatorId: ucId, nativeTmplConfGroupId, configGroupId, versionGroupId
         };
-        const defaultAbTestGroupId = await abTestGroupModel.addAbTestGroup(defaultAbTestGroupVo);
+        const defaultAbTestGroupId = await abTestGroupModel.addVo(defaultAbTestGroupVo);
 
         // 再创建版本分组下默认 ab 测试下的广告测试
         const copyedAbTestMapVoList = await abTestMapModel.getList(copyedAbTestGroupId, ucId);
@@ -261,12 +261,17 @@ export default class DispatchManagerController extends BaseController {
         }
 
         const versionGroupVo: VersionGroupVO = {
-            name, begin, description, code, include, active,
+            name, begin, description, code, include, active, activeTime: undefined,
             type: undefined, productId: undefined, creatorId: undefined
         };
 
+        if (active === 0) {
+            const now = moment().format('YYYY-MM-DD HH:mm:ss');
+            versionGroupVo.activeTime = now;
+        }
+
         try {
-            await cacheServer.setCacheData(ucId, 'versionGroupModel', id, versionGroupVo);
+            await cacheServer.setCacheData(ucId, 'versionGroup', id, versionGroupVo);
             this.success('updated');
 
         } catch (e) {
@@ -409,11 +414,11 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
 
         const abTestGroupVo: AbTestGroupVO = {
-            versionGroupId,
+            versionGroupId, active: 1, activeTime: undefined,
             name: 'default', begin: -1, end: -1, description: '默认组',
             creatorId: null, configGroupId: null, nativeTmplConfGroupId: null,
         };
-        await abTestGroupModel.addAbTestGroup(abTestGroupVo);
+        await abTestGroupModel.addVo(abTestGroupVo);
 
         this.success('created');
     }
@@ -455,7 +460,7 @@ export default class DispatchManagerController extends BaseController {
                 const abTestGroupName = name + '_' + nameList[i];
 
                 const abTestGroupVo: AbTestGroupVO = {
-                    name: abTestGroupName, begin, end, description,
+                    name: abTestGroupName, begin, end, description, activeTime: undefined, active: 1,
                     versionGroupId, creatorId: ucId, configGroupId: null, nativeTmplConfGroupId: null
                 };
 
@@ -491,14 +496,14 @@ export default class DispatchManagerController extends BaseController {
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const abTestGroupVo: AbTestGroupVO = {
-            configGroupId,
+            configGroupId, active: undefined, activeTime: undefined,
             name: undefined, begin: undefined, end: undefined,
             description: undefined, versionGroupId: undefined,
             nativeTmplConfGroupId: undefined, creatorId: undefined
         };
 
         try {
-            await cacheServer.setCacheData(ucId, 'abTestGroupModel', abTestGroupId, abTestGroupVo);
+            await cacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupId, abTestGroupVo);
             this.success('binded');
 
         } catch (e) {
@@ -637,7 +642,7 @@ export default class DispatchManagerController extends BaseController {
         };
 
         try {
-            await cacheServer.setCacheData(ucId, 'configGroupModel', id, configGroupVo);
+            await cacheServer.setCacheData(ucId, 'configGroup', id, configGroupVo);
             this.success('updated');
 
         } catch (e) {
@@ -664,6 +669,8 @@ export default class DispatchManagerController extends BaseController {
 
         const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId);
 
+        const {id} = configVo;
+
         const updateConfigVo: ConfigVO = {
             key, value, description, active,
             configGroupId, activeTime: undefined, creatorId: undefined
@@ -677,7 +684,7 @@ export default class DispatchManagerController extends BaseController {
 
             // 存在加入缓存
             } else {
-                await cacheServer.setCacheData(ucId, 'configModel', configVo.id, updateConfigVo);
+                await cacheServer.setCacheData(ucId, 'config', id, updateConfigVo);
 
             }
             this.success('updated');
@@ -740,7 +747,7 @@ export default class DispatchManagerController extends BaseController {
         }
 
         try {
-            await cacheServer.setCacheData(ucId, 'configModel', id, configVo);
+            await cacheServer.setCacheData(ucId, 'config', id, configVo);
             this.success('updated');
 
         } catch (e) {
@@ -782,12 +789,12 @@ export default class DispatchManagerController extends BaseController {
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const abTestGroupVo: AbTestGroupVO = {
-            nativeTmplConfGroupId,
+            nativeTmplConfGroupId, active: undefined, activeTime: undefined,
             name: undefined, begin: undefined, end: undefined, description: undefined,
             versionGroupId: undefined, configGroupId: undefined, creatorId: undefined
         };
         try {
-            await cacheServer.setCacheData(ucId, 'abTestGroupModel', abTestGroupId, abTestGroupVo);
+            await cacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupId, abTestGroupVo);
             this.success('binded');
 
         } catch (e) {
@@ -916,7 +923,7 @@ export default class DispatchManagerController extends BaseController {
         };
 
         try {
-            await cacheServer.setCacheData(ucId, 'nativeTmplConfGroupModel', id, nativeTmplConfGroupVo);
+            await cacheServer.setCacheData(ucId, 'nativeTmplConfGroup', id, nativeTmplConfGroupVo);
             this.success('updated');
 
         } catch (e) {
@@ -977,7 +984,7 @@ export default class DispatchManagerController extends BaseController {
         }
 
         try {
-            await cacheServer.setCacheData(ucId, 'nativeTmplConfModel', id, nativeTmplConfVo);
+            await cacheServer.setCacheData(ucId, 'nativeTmplConf', id, nativeTmplConfVo);
             this.success('updated');
 
         } catch (e) {
@@ -1024,15 +1031,15 @@ export default class DispatchManagerController extends BaseController {
         };
 
         try {
-            const abTestMapVo = await abTestMapModel.getAbTestMap(abTestGroupId, place, ucId);
+            const abTestMapVo = await abTestMapModel.getVo(abTestGroupId, place, ucId);
 
             if (_.isEmpty(abTestMapVo)) {
                 updateAbTestMapVo.creatorId = ucId;
-                await abTestMapModel.addAbTestMap(updateAbTestMapVo);
+                await abTestMapModel.addVo(updateAbTestMapVo);
 
             } else {
                 const id = abTestMapVo.id;
-                await cacheServer.setCacheData(ucId, 'abTestMapModel', id, updateAbTestMapVo);
+                await cacheServer.setCacheData(ucId, 'abTestMap', id, updateAbTestMapVo);
 
             }
             this.success('binded');
@@ -1055,7 +1062,7 @@ export default class DispatchManagerController extends BaseController {
         const place: string = this.post('place');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
 
-        const rows = await abTestMapModel.delAbTestMap(id, place);
+        const rows = await abTestMapModel.delVo(id, place);
         if (rows === 1) {
             this.success('unbinded');
         } else {
@@ -1082,12 +1089,12 @@ export default class DispatchManagerController extends BaseController {
                 { versionGroupId },
                 { adGroupId }
             ] = await Promise.all([
-                abTestGroupModel.getAbTestGroup(id, ucId),
-                abTestMapModel.getAbTestMap(id, place, ucId)
+                abTestGroupModel.getVo(id, ucId),
+                abTestMapModel.getVo(id, place, ucId)
             ]);
 
             const { id: defaultId } = await abTestGroupModel.getDefault(versionGroupId, ucId);
-            const defaultAbTestMapVo = await abTestMapModel.getAbTestMap(defaultId, place, ucId);
+            const defaultAbTestMapVo = await abTestMapModel.getVo(defaultId, place, ucId);
 
             const updateDefaultAbTestMapVo: AbTestMapVO = {
                 abTestGroupId: defaultId, creatorId: undefined,
@@ -1097,10 +1104,10 @@ export default class DispatchManagerController extends BaseController {
 
             if (_.isEmpty(defaultAbTestMapVo)) {
                 updateDefaultAbTestMapVo.creatorId = ucId;
-                await abTestMapModel.addAbTestMap(updateDefaultAbTestMapVo);
+                await abTestMapModel.addVo(updateDefaultAbTestMapVo);
 
             } else {
-                await cacheServer.setCacheData(ucId, 'abTestMapModel', defaultId, updateDefaultAbTestMapVo);
+                await cacheServer.setCacheData(ucId, 'abTestMap', defaultId, updateDefaultAbTestMapVo);
 
             }
             this.success('completed');
@@ -1146,7 +1153,7 @@ export default class DispatchManagerController extends BaseController {
             adTypeId, productId, active
         };
 
-        await adGroupModel.addAdGroup(adGroupVo);
+        await adGroupModel.addVo(adGroupVo);
         this.success('created');
     }
 
@@ -1169,7 +1176,7 @@ export default class DispatchManagerController extends BaseController {
         const [
             copyedAdGroupVo, copyedAdVoList
         ] = await Promise.all([
-            adGroupModel.getAdGroup(copyId, ucId),
+            adGroupModel.getVo(copyId, ucId),
             adModel.getListByAdGroup(copyId, ucId)
         ]);
 
@@ -1179,7 +1186,7 @@ export default class DispatchManagerController extends BaseController {
             name, description, creatorId: ucId,
             adTypeId, productId, active
         };
-        const adGroupId = await adGroupModel.addAdGroup(adGroupVo);
+        const adGroupId = await adGroupModel.addVo(adGroupVo);
 
         const adVoList = _.map(copyedAdVoList, (copyedAdVo) => {
             const adVo: AdVO = _.omit(copyedAdVo, [
@@ -1221,7 +1228,7 @@ export default class DispatchManagerController extends BaseController {
         };
 
         try {
-            await cacheServer.setCacheData(ucId, 'adGroupModel', id, adGroupVo);
+            await cacheServer.setCacheData(ucId, 'adGroup', id, adGroupVo);
             this.success('updated');
 
         } catch (e) {
@@ -1279,7 +1286,7 @@ export default class DispatchManagerController extends BaseController {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
 
-        const { adTypeId, productId } = await adGroupModel.getAdGroup(adGroupId, ucId);
+        const { adTypeId, productId } = await adGroupModel.getVo(adGroupId, ucId);
 
         const adVo: AdVO = {
             productId, adGroupId, adChannelId, adTypeId,
@@ -1287,7 +1294,7 @@ export default class DispatchManagerController extends BaseController {
             active, activeTime: undefined,
             loader: undefined, subloader: undefined, interval: undefined, weight: undefined
         };
-        await adModel.addAd(adVo);
+        await adModel.addVo(adVo);
 
         this.success('created');
     }
@@ -1325,7 +1332,7 @@ export default class DispatchManagerController extends BaseController {
         }
 
         try {
-            await cacheServer.setCacheData(ucId, 'adModel', id, adVo);
+            await cacheServer.setCacheData(ucId, 'ad', id, adVo);
             this.success('updated');
 
         } catch (e) {
@@ -1345,7 +1352,7 @@ export default class DispatchManagerController extends BaseController {
         const id: string = this.post('id');
 
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-        const rows = await adModel.delAd(id);
+        const rows = await adModel.delVo(id);
 
         if (rows === 1) {
             this.success('deleted');

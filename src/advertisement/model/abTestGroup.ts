@@ -23,7 +23,7 @@ export default class AbTestGroupModel extends MBModel {
      * @argument {AbTestGroupVO} abTestGroupVo ab 测试分组表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addAbTestGroup(abTestGroupVo: AbTestGroupVO) {
+    public async addVo(abTestGroupVo: AbTestGroupVO) {
 
         await this.add(abTestGroupVo);
         return this.ID[0];
@@ -53,7 +53,7 @@ export default class AbTestGroupModel extends MBModel {
      * @argument {AbTestGroupVO} abTestGroupVo ab 测试分组表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateAbTestGroup(id: string, abTestGroupVo: AbTestGroupVO) {
+    public async updateVo(id: string, abTestGroupVo: AbTestGroupVO) {
         if (!Utils.isEmptyObj(abTestGroupVo)) {
             return await this.where({ id }).update(abTestGroupVo);
         }
@@ -66,7 +66,7 @@ export default class AbTestGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestGroupVO>} ab 测试分组信息;
      */
-    public async getAbTestGroup(id: string, creatorId: string) {
+    public async getVo(id: string, creatorId: string) {
         const query = `id = '${id}' AND
         (creatorId IS NULL OR creatorId = '${creatorId}')`;
 

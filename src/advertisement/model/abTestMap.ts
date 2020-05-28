@@ -23,7 +23,7 @@ export default class AbTestMapModel extends MBModel {
      * @argument {AbTestMapVO[]} abTestMapVo ab 测试分组与广告组关系表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addAbTestMap(abTestMapVo: AbTestMapVO) {
+    public async addVo(abTestMapVo: AbTestMapVO) {
         await this.add(abTestMapVo);
         return this.ID[0];
     }
@@ -52,7 +52,7 @@ export default class AbTestMapModel extends MBModel {
      * @argument {AbTestMapVO} abTestMapVo ab 测试分组与广告组关系表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateAbTestMap(
+    public async updateVo(
         abTestGroupId: string, place: string, abTestMapVo: AbTestMapVO
     ) {
         if (!Utils.isEmptyObj(abTestMapVo)) {
@@ -68,7 +68,7 @@ export default class AbTestMapModel extends MBModel {
      * @argument {string} place 广告位;
      * @returns {Promise<number>} 删除行数;
      */
-    public async delAbTestMap(abTestGroupId: string, place: string) {
+    public async delVo(abTestGroupId: string, place: string) {
         return await this.where({ abTestGroupId, place }).delete();
     }
 
@@ -79,7 +79,7 @@ export default class AbTestMapModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestMapVO>} ab 测试分组与广告组关系信息;
      */
-    public async getAbTestMap(abTestGroupId: string, place: string, creatorId: string) {
+    public async getVo(abTestGroupId: string, place: string, creatorId: string) {
         const query = `abTestGroupId = '${abTestGroupId}' AND place = '${place}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
 
         return await this.where(query).find() as AbTestMapVO;

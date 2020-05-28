@@ -23,7 +23,7 @@ export default class AdChannelModel extends MBModel {
      * @argument {AdChannelVO} adChannelVo 广告平台表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addAdChannel(adChannelVo: AdChannelVO) {
+    public async addVo(adChannelVo: AdChannelVO) {
 
         await this.add(adChannelVo);
         return this.ID[0];
@@ -35,7 +35,7 @@ export default class AdChannelModel extends MBModel {
      * @argument {AdChannelVO} adChannelVo 广告平台表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateAdChannel(id: string, adChannelVo: AdChannelVO) {
+    public async updateVo(id: string, adChannelVo: AdChannelVO) {
         if (!Utils.isEmptyObj(adChannelVo)) {
             return await this.where({ id }).update(adChannelVo);
 
@@ -50,7 +50,7 @@ export default class AdChannelModel extends MBModel {
      * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<AdChannelVO>} 广告平台信息;
      */
-    public async getAdChannel(id: string, active?: number, test?: number) {
+    public async getVo(id: string, active?: number, test?: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
 

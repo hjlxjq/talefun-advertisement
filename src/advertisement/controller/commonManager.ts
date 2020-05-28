@@ -89,7 +89,7 @@ export default class CommonManagerController extends BaseController {
             type, name,
             test, active,
         };
-        await adTypeModel.addAdType(adTypeVo);
+        await adTypeModel.addVo(adTypeVo);
         this.success('created');
     }
 
@@ -112,7 +112,7 @@ export default class CommonManagerController extends BaseController {
             type, name,
             test, active
         };
-        const rows = await adTypeModel.updateAdType(id, adTypeUpdateVo);
+        const rows = await adTypeModel.updateVo(id, adTypeUpdateVo);
         if (rows === 1) {
             return this.success('updated');
         } else {
@@ -171,7 +171,7 @@ export default class CommonManagerController extends BaseController {
             key1, key2, key3,
             test, active,
         };
-        await adChannelModel.addAdChannel(adChannelVo);
+        await adChannelModel.addVo(adChannelVo);
         this.success('created');
     }
 
@@ -211,7 +211,7 @@ export default class CommonManagerController extends BaseController {
                 key1, key2, key3,
                 test, active
             };
-            rows = await adChannelModel.updateAdChannel(id, adChannelUpdateVo);
+            rows = await adChannelModel.updateVo(id, adChannelUpdateVo);
 
             if (rows === 1) {
                 return this.success('updated');
@@ -372,7 +372,7 @@ export default class CommonManagerController extends BaseController {
             key, value, description,
             test, active,
         };
-        await baseConfigModel.addBaseConfig(baseConfigVo);
+        await baseConfigModel.addVo(baseConfigVo);
         this.success('created');
     }
 
@@ -396,7 +396,7 @@ export default class CommonManagerController extends BaseController {
             key, value, description,
             test, active
         };
-        const rows = await baseConfigModel.updateBaseConfig(id, baseConfigUpdateVo);
+        const rows = await baseConfigModel.updateVo(id, baseConfigUpdateVo);
 
         if (rows === 1) {
             return this.success('updated');

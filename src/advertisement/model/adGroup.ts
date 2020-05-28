@@ -23,7 +23,7 @@ export default class AdGroupModel extends MBModel {
      * @argument {AdGroupVO} adGroupVo 广告组表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addAdGroup(adGroupVo: AdGroupVO) {
+    public async addVo(adGroupVo: AdGroupVO) {
 
         await this.add(adGroupVo);
         return this.ID[0];
@@ -35,7 +35,7 @@ export default class AdGroupModel extends MBModel {
      * @argument {AdGroupVO} adGroupVo 广告组表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateAdGroup(id: string, adGroupVo: AdGroupVO) {
+    public async updateVo(id: string, adGroupVo: AdGroupVO) {
         if (!Utils.isEmptyObj(adGroupVo)) {
             return await this.where({ id }).update(adGroupVo);
         }
@@ -49,7 +49,7 @@ export default class AdGroupModel extends MBModel {
      * @argument {number} active 是否生效;
      * @returns {Promise<AdGroupVO>} 广告组信息;
      */
-    public async getAdGroup(id: string, creatorId: string, active?: number) {
+    public async getVo(id: string, creatorId: string, active?: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
