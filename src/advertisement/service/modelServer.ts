@@ -575,6 +575,7 @@ export default class ModelService extends BaseService {
         if (dependentId) {
             const { name: dependent } = await configGroupModel.getConfigGroup(dependentId, creatorId);    // 关联组名
             dpdConfigVoHash = await this.getDpdConfigVoHash(dependent, dependentId, creatorId);
+            _.defaults(configVoHash, dpdConfigVoHash);
 
         }
         // 广告常量依赖于基础常量
@@ -599,8 +600,15 @@ export default class ModelService extends BaseService {
                 ) as ConfigResVO;
             });
 
+            // 以基础常量 key 为准， 基础常量关闭则不返回
+            for (const key in configVoHash) {
+
+                if (baseConfigVoHash[key]) {
+                    configVoHash[key] = baseConfigVoHash[key];
+
+                }
+            }
         }
-        _.defaults(configVoHash, dpdConfigVoHash, baseConfigVoHash);
 
         return _.values(configVoHash);
     }
