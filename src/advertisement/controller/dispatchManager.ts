@@ -451,6 +451,14 @@ export default class DispatchManagerController extends BaseController {
             if ((end - begin) % groupNum !== 0) {
                 return this.fail(10, '分组失败，无法分组');
             }
+
+            const currentAbTestGroupVoList = await abTestGroupModel.getList(versionGroupId);
+
+            for (let i = 0, l = currentAbTestGroupVoList.length; i < l; i++) {
+                const { begin: currentBegin, end: currentEnd } = currentAbTestGroupVoList[i];
+                
+            }
+
             const abTestGroupVoList: AbTestGroupVO[] = [];
             const step = (end - begin + 1) / groupNum;
             // 分组左右均包含
