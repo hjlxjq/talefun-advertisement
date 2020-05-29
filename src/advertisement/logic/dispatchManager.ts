@@ -511,7 +511,7 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         // 分组要均分，整除
-        if ((end - begin) % groupNum !== 0) {
+        if ((end - begin + 1) % groupNum !== 0) {
             return this.fail(TaleCode.ValidData, '分组失败，分组范围不能均分！！！');
         }
 
