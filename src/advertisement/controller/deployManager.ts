@@ -40,16 +40,16 @@ export default class DeployManagerController extends BaseController {
      */
     public async deployAction() {
         const ucId: string = this.ctx.state.userId;
-        const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-        const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
-        const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
-        const nativeTmplConfGroupModel =
-            this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
-        const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
-        const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const abTestGroupModel = this.taleModel('abTestMapGroup', 'advertisement') as AbTestGroupModel;
-        const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
+        // const adModel = this.taleModel('ad', 'advertisement') as AdModel;
+        // const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
+        // const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
+        // const nativeTmplConfGroupModel =
+        //     this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
+        // const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+        // const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
+        // const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
+        // const abTestGroupModel = this.taleModel('abTestMapGroup', 'advertisement') as AbTestGroupModel;
+        // const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const deployTableNameList = await cacheServer.fetchDeployModelList(ucId);
