@@ -82,15 +82,15 @@ export default class ProductManagerLogic extends AMLogic {
 
         const productId: string = this.post('id');
 
-        try {
-            const productAuth = await this.productAuth(productId);
-            if (think.isEmpty(productAuth)) {
-                throw new Error('没有权限！！！');
-            }
+        // try {
+        //     const productAuth = await this.productAuth(productId);
+        //     if (think.isEmpty(productAuth)) {
+        //         throw new Error('没有权限！！！');
+        //     }
 
-        } catch (e) {
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        // } catch (e) {
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
     }
 
@@ -546,18 +546,18 @@ export default class ProductManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, this.validateMsg());
         }
 
-        const productGroupId: string = this.post('id');
+        // const productGroupId: string = this.post('id');
 
-        try {
-            const producrGroupAuth = await this.productGroupAuth(productGroupId);
-            const { master } = producrGroupAuth;
+        // try {
+        //     const producrGroupAuth = await this.productGroupAuth(productGroupId);
+        //     const { master } = producrGroupAuth;
 
-            if (master === 0) {
-                throw new Error('没有权限！！！');
-            }
-        } catch (e) {
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        //     if (master === 0) {
+        //         throw new Error('没有权限！！！');
+        //     }
+        // } catch (e) {
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
     }
 
