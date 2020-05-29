@@ -851,13 +851,13 @@ export interface UpdateConfigResVO extends ResVO {
 /**
  * 删除常量 /advertisement/dispatchManager/deleteConfig
  */
-export interface DeleteConfigReqVO {
-    id: string;    // 常量主键 id
-}
+// export interface DeleteConfigReqVO {
+//     id: string;    // 常量主键 id
+// }
 
-export interface DeleteConfigResVO extends ResVO {
-    data: 'deleted';    // 删除成功
-}
+// export interface DeleteConfigResVO extends ResVO {
+//     data: 'deleted';    // 删除成功
+// }
 
 /**
  * 向 ab 分组绑定 native 组 /advertisement/dispatchManager/bindNativeTmplConfGroup
@@ -948,13 +948,13 @@ export interface UpdateNativeTmplConfResVO extends ResVO {
 /**
  * 删除应用 native 模板 /advertisement/dispatchManager/deleteNativeTmplConf
  */
-export interface DeleteNativeTmplConfReqVO {
-    id: string;    // 应用 native 模板配置表主键 id
-}
+// export interface DeleteNativeTmplConfReqVO {
+//     id: string;    // 应用 native 模板配置表主键 id
+// }
 
-export interface DeleteNativeTmplConfResVO extends ResVO {
-    data: 'deleted';    // 删除成功
-}
+// export interface DeleteNativeTmplConfResVO extends ResVO {
+//     data: 'deleted';    // 删除成功
+// }
 
 /**
  * 获取应用 native 模板组列表 /advertisement/dispatchManager/nativeTmplConfGroupList
@@ -1004,14 +1004,14 @@ export interface BindAdGroupResVO extends ResVO {
 /**
  * 删除 ab 分组下广告位 /advertisement/dispatchManager/unbindAdGroup
  */
-export interface UnbindAdGroupReqVO {
-    id: string;    // ab 分组表主键 id
-    place: string;    // 广告位
-}
+// export interface UnbindAdGroupReqVO {
+//     id: string;    // ab 分组表主键 id
+//     place: string;    // 广告位
+// }
 
-export interface UnbindAdGroupResVO extends ResVO {
-    data: 'unbinded';    // 删除成功
-}
+// export interface UnbindAdGroupResVO extends ResVO {
+//     data: 'unbinded';    // 删除成功
+// }
 
 /**
  * 全量 ab 分组下广告位到默认组 /advertisement/dispatchManager/completePlace
@@ -1022,7 +1022,7 @@ export interface CompletePlaceReqVO {
 }
 
 export interface CompletePlaceResVO extends ResVO {
-    data: 'unbinded';    // 删除成功
+    data: 'completed';    // 全量成功
 }
 
 /**
@@ -1148,13 +1148,13 @@ export interface UpdateAdResVO extends ResVO {
 /**
  * 删除广告组下广告 /advertisement/dispatchManager/deleteAd
  */
-export interface DeleteAdReqVO {
-    id: string;    // 广告表主键 id
-}
+// export interface DeleteAdReqVO {
+//     id: string;    // 广告表主键 id
+// }
 
-export interface DeleteAdResVO extends ResVO {
-    data: 'deleted';    // 删除成功
-}
+// export interface DeleteAdResVO extends ResVO {
+//     data: 'deleted';    // 删除成功
+// }
 
 /**
  * *********************************************************************************************************************

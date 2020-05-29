@@ -447,16 +447,40 @@ export default class DispatchManagerController extends BaseController {
         // 最少分 2 组
         if (groupNum && groupNum > 1) {
 
+            // 用户范围结束大于开始
+            if (begin >= end) {
+                return this.fail(10, '分组失败，结束范围必须大于开始范围！！！');
+            }
+
             // 分组要均分，整除
             if ((end - begin) % groupNum !== 0) {
-                return this.fail(10, '分组失败，无法分组');
+                return this.fail(10, '分组失败，分组范围不能均分！！！');
             }
 
             const currentAbTestGroupVoList = await abTestGroupModel.getList(versionGroupId);
+            // 终止判断条件
+            currentAbTestGroupVoList[currentAbTestGroupVoList.length] = {
+                begin: 100, end: 100,
+                name: undefined, description: undefined, creatorId: undefined, active: undefined, activeTime: undefined
+            };
 
+            let correct = false;
             for (let i = 0, l = currentAbTestGroupVoList.length; i < l; i++) {
-                const { begin: currentBegin, end: currentEnd } = currentAbTestGroupVoList[i];
-                
+                const currentAbTestGroupVo = currentAbTestGroupVoList[i];
+                let lastAbTestGroupVo = { begin: 1, end: 1 };
+
+                if (i > 0) {
+                    lastAbTestGroupVo = currentAbTestGroupVoList[i - 1];
+                }
+                // 范围正确，跳出循环
+                if (end < currentAbTestGroupVo.begin && begin > lastAbTestGroupVo.end) {
+                    correct = true;
+                    break;
+                }
+            }
+
+            if (!correct) {
+                return this.fail(10, '分组失败，范围重叠！！！');
             }
 
             const abTestGroupVoList: AbTestGroupVO[] = [];
@@ -693,7 +717,7 @@ export default class DispatchManagerController extends BaseController {
 
         const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId);
 
-        const {id} = configVo;
+        const { id } = configVo;
 
         const updateConfigVo: ConfigVO = {
             key, value, description, active,
@@ -706,7 +730,7 @@ export default class DispatchManagerController extends BaseController {
                 updateConfigVo.creatorId = ucId;
                 await configModel.addConfig(updateConfigVo);
 
-            // 存在加入缓存
+                // 存在加入缓存
             } else {
                 await cacheServer.setCacheData(ucId, 'config', id, updateConfigVo);
 
@@ -786,19 +810,19 @@ export default class DispatchManagerController extends BaseController {
      * @returns {DeleteConfigResVO}
      * @debugger yes
      */
-    public async deleteConfigAction() {
-        const ucId: string = this.ctx.state.userId;
-        const id: string = this.post('id');
+    // public async deleteConfigAction() {
+    //     const ucId: string = this.ctx.state.userId;
+    //     const id: string = this.post('id');
 
-        const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+    //     const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
 
-        const rows = await configModel.delConfig(id);
-        if (rows === 1) {
-            this.success('deleted');
-        } else {
-            this.fail(TaleCode.DBFaild, 'delete fail!!!');
-        }
-    }
+    //     const rows = await configModel.delConfig(id);
+    //     if (rows === 1) {
+    //         this.success('deleted');
+    //     } else {
+    //         this.fail(TaleCode.DBFaild, 'delete fail!!!');
+    //     }
+    // }
 
     /**
      * <br/>向 ab 分组绑定 native 组
@@ -1023,18 +1047,18 @@ export default class DispatchManagerController extends BaseController {
      * @returns {DeleteNativeTmplConfResVO}
      * @debugger yes
      */
-    public async deleteNativeTmplConfAction() {
-        const ucId: string = this.ctx.state.userId;
-        const id: string = this.post('id');
-        const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
+    // public async deleteNativeTmplConfAction() {
+    //     const ucId: string = this.ctx.state.userId;
+    //     const id: string = this.post('id');
+    //     const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
 
-        const rows = await nativeTmplConfModel.delNativeTmplConf(id);
-        if (rows === 1) {
-            this.success('deleted');
-        } else {
-            this.fail(TaleCode.DBFaild, 'delete fail!!!');
-        }
-    }
+    //     const rows = await nativeTmplConfModel.delNativeTmplConf(id);
+    //     if (rows === 1) {
+    //         this.success('deleted');
+    //     } else {
+    //         this.fail(TaleCode.DBFaild, 'delete fail!!!');
+    //     }
+    // }
 
     /**
      * <br/>向 ab 分组绑定广告组
@@ -1080,19 +1104,19 @@ export default class DispatchManagerController extends BaseController {
      * @returns {UnbindAdGroupResVO}
      * @debugger yes
      */
-    public async unbindAdGroupAction() {
-        const ucId: string = this.ctx.state.userId;
-        const id: string = this.post('id');
-        const place: string = this.post('place');
-        const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
+    // public async unbindAdGroupAction() {
+    //     const ucId: string = this.ctx.state.userId;
+    //     const id: string = this.post('id');
+    //     const place: string = this.post('place');
+    //     const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
 
-        const rows = await abTestMapModel.delVo(id, place);
-        if (rows === 1) {
-            this.success('unbinded');
-        } else {
-            this.fail(TaleCode.DBFaild, 'unbind fail!!!');
-        }
-    }
+    //     const rows = await abTestMapModel.delVo(id, place);
+    //     if (rows === 1) {
+    //         this.success('unbinded');
+    //     } else {
+    //         this.fail(TaleCode.DBFaild, 'unbind fail!!!');
+    //     }
+    // }
 
     /**
      * <br/>全量 ab 分组下广告位到默认组
@@ -1111,7 +1135,7 @@ export default class DispatchManagerController extends BaseController {
         try {
             const [
                 { versionGroupId },
-                { adGroupId }
+                { id: abTestMapId, adGroupId }
             ] = await Promise.all([
                 abTestGroupModel.getVo(id, ucId),
                 abTestMapModel.getVo(id, place, ucId)
@@ -1125,14 +1149,19 @@ export default class DispatchManagerController extends BaseController {
                 place,
                 adGroupId
             };
+            const updateAbTestMapVo: AbTestMapVO = {
+                abTestGroupId: id, creatorId: undefined,
+                place,
+                adGroupId: undefined
+            };
 
             if (_.isEmpty(defaultAbTestMapVo)) {
                 updateDefaultAbTestMapVo.creatorId = ucId;
                 await abTestMapModel.addVo(updateDefaultAbTestMapVo);
 
             } else {
-                await cacheServer.setCacheData(ucId, 'abTestMap', defaultId, updateDefaultAbTestMapVo);
-
+                await cacheServer.setCacheData(ucId, 'abTestMap', defaultAbTestMapVo.id, updateDefaultAbTestMapVo);
+                await cacheServer.setCacheData(ucId, 'abTestMap', abTestMapId, updateAbTestMapVo);
             }
             this.success('completed');
 
@@ -1371,18 +1400,18 @@ export default class DispatchManagerController extends BaseController {
      * @returns {DeleteAdReqVO}
      * @debugger yes
      */
-    public async deleteAdAction() {
-        const ucId: string = this.ctx.state.userId;
-        const id: string = this.post('id');
+    // public async deleteAdAction() {
+    //     const ucId: string = this.ctx.state.userId;
+    //     const id: string = this.post('id');
 
-        const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-        const rows = await adModel.delVo(id);
+    //     const adModel = this.taleModel('ad', 'advertisement') as AdModel;
+    //     const rows = await adModel.delVo(id);
 
-        if (rows === 1) {
-            this.success('deleted');
-        } else {
-            this.fail(TaleCode.DBFaild, 'delete fail!!!');
-        }
-    }
+    //     if (rows === 1) {
+    //         this.success('deleted');
+    //     } else {
+    //         this.fail(TaleCode.DBFaild, 'delete fail!!!');
+    //     }
+    // }
 
 }
