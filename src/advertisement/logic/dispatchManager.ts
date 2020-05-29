@@ -493,8 +493,53 @@ export default class DispatchManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, this.validateMsg());
         }
 
+        const begin: number = this.post('begin');
+        const end: number = this.post('end');
+        const groupNum: number = this.post('groupNum');
         const versionGroupId: string = this.post('id');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
+        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+
+        // 最少分 2 组
+        if (!groupNum || groupNum < 2) {
+            return this.fail(TaleCode.ValidData, '分组失败，没有指定大于 1 的组数');
+        }
+
+        // 用户范围结束大于开始
+        if (begin >= end) {
+            return this.fail(TaleCode.ValidData, '分组失败，结束范围必须大于开始范围！！！');
+        }
+
+        // 分组要均分，整除
+        if ((end - begin) % groupNum !== 0) {
+            return this.fail(TaleCode.ValidData, '分组失败，分组范围不能均分！！！');
+        }
+
+        const currentAbTestGroupVoList = await abTestGroupModel.getList(versionGroupId);
+        // 终止判断条件
+        currentAbTestGroupVoList[currentAbTestGroupVoList.length] = {
+            begin: 100, end: 100,
+            name: undefined, description: undefined, creatorId: undefined, active: undefined, activeTime: undefined
+        };
+
+        let correct = false;
+        for (let i = 0, l = currentAbTestGroupVoList.length; i < l; i++) {
+            const currentAbTestGroupVo = currentAbTestGroupVoList[i];
+            let lastAbTestGroupVo = { begin: 1, end: 1 };
+
+            if (i > 0) {
+                lastAbTestGroupVo = currentAbTestGroupVoList[i - 1];
+            }
+            // 范围正确，跳出循环
+            if (end < currentAbTestGroupVo.begin && begin > lastAbTestGroupVo.end) {
+                correct = true;
+                break;
+            }
+        }
+
+        if (!correct) {
+            return this.fail(TaleCode.ValidData, '分组失败，范围重叠！！！');
+        }
 
         try {
             const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
@@ -2236,6 +2281,16 @@ export default class DispatchManagerLogic extends AMLogic {
 
         if (!flag) {
             return this.fail(TaleCode.ValidData, this.validateMsg());
+        }
+
+        const ecpm: number = this.post('ecpm');
+        const bidding: number = this.post('bidding');
+
+        if (ecpm < 0) {
+            return this.fail(TaleCode.ValidData, 'ecpm 必须为非负数！！！');
+        }
+        if (bidding === 1) {
+            this.post('ecpm', 0);
         }
 
         const adGroupId: string = this.post('id');

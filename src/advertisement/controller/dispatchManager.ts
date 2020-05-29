@@ -445,75 +445,34 @@ export default class DispatchManagerController extends BaseController {
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
             'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
         ];
-        // 最少分 2 组
-        if (groupNum && groupNum > 1) {
 
-            // 用户范围结束大于开始
-            if (begin >= end) {
-                return this.fail(10, '分组失败，结束范围必须大于开始范围！！！');
-            }
+        const abTestGroupVoList: AbTestGroupVO[] = [];
+        const step = (end - begin + 1) / groupNum;
+        // 分组左右均包含
+        end = begin + step - 1;
 
-            // 分组要均分，整除
-            if ((end - begin) % groupNum !== 0) {
-                return this.fail(10, '分组失败，分组范围不能均分！！！');
-            }
+        for (let i = 0; i < groupNum; i++) {
+            const abTestGroupName = name + '_' + nameList[i];
 
-            const currentAbTestGroupVoList = await abTestGroupModel.getList(versionGroupId);
-            // 终止判断条件
-            currentAbTestGroupVoList[currentAbTestGroupVoList.length] = {
-                begin: 100, end: 100,
-                name: undefined, description: undefined, creatorId: undefined, active: undefined, activeTime: undefined
+            const abTestGroupVo: AbTestGroupVO = {
+                name: abTestGroupName, begin, end, description, activeTime: undefined, active: 1,
+                versionGroupId, creatorId: ucId, configGroupId: null, nativeTmplConfGroupId: null
             };
 
-            let correct = false;
-            for (let i = 0, l = currentAbTestGroupVoList.length; i < l; i++) {
-                const currentAbTestGroupVo = currentAbTestGroupVoList[i];
-                let lastAbTestGroupVo = { begin: 1, end: 1 };
-
-                if (i > 0) {
-                    lastAbTestGroupVo = currentAbTestGroupVoList[i - 1];
-                }
-                // 范围正确，跳出循环
-                if (end < currentAbTestGroupVo.begin && begin > lastAbTestGroupVo.end) {
-                    correct = true;
-                    break;
-                }
-            }
-
-            if (!correct) {
-                return this.fail(10, '分组失败，范围重叠！！！');
-            }
-
-            const abTestGroupVoList: AbTestGroupVO[] = [];
-            const step = (end - begin + 1) / groupNum;
-            // 分组左右均包含
-            end = begin + step - 1;
-
-            for (let i = 0; i < groupNum; i++) {
-                const abTestGroupName = name + '_' + nameList[i];
-
-                const abTestGroupVo: AbTestGroupVO = {
-                    name: abTestGroupName, begin, end, description, activeTime: undefined, active: 1,
-                    versionGroupId, creatorId: ucId, configGroupId: null, nativeTmplConfGroupId: null
-                };
-
-                abTestGroupVoList.push(abTestGroupVo);
-                begin = end + 1;
-                end += step;
-            }
-
-            think.logger.debug(`abTestGroupVoList: ${JSON.stringify(abTestGroupVoList)}`);
-
-            const rows = (await abTestGroupModel.addList(abTestGroupVoList)).length;
-            if (rows === groupNum) {
-                this.success('created');
-            } else {
-                this.fail(TaleCode.DBFaild, 'create fail!!!');
-            }
-
-        } else {
-            return this.fail(10, '分组失败，没有指定大于 1 的组数');
+            abTestGroupVoList.push(abTestGroupVo);
+            begin = end + 1;
+            end += step;
         }
+
+        think.logger.debug(`abTestGroupVoList: ${JSON.stringify(abTestGroupVoList)}`);
+
+        const rows = (await abTestGroupModel.addList(abTestGroupVoList)).length;
+        if (rows === groupNum) {
+            this.success('created');
+        } else {
+            this.fail(TaleCode.DBFaild, 'create fail!!!');
+        }
+
     }
 
     /**
