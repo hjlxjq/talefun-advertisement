@@ -11,22 +11,7 @@ import * as _ from 'lodash';
 import BaseController from '../../common/tale/BaseController';
 
 import MBModel from '../model/managerBaseModel';
-import VersionGroupModel from '../model/versionGroup';
-import AbTestGroupModel from '../model/abTestGroup';
-import AbTestMapModel from '../model/abTestMap';
-import ConfigGroupModel from '../model/configGroup';
-import ConfigModel from '../model/config';
-import NativeTmplConfGroupModel from '../model/nativeTmplConfGroup';
-import NativeTmplConfModel from '../model/nativeTmplConf';
-import AdGroupModel from '../model/adGroup';
-import AdModel from '../model/ad';
-
 import CacheService from '../service/cacheServer';
-
-import {
-    VersionGroupVO, AbTestGroupVO, ConfigGroupVO, ConfigVO, NativeTmplConfGroupVO, NativeTmplConfVO,
-    AbTestMapVO, AdGroupVO, AdVO, ConfigGroupResVO, NativeTmplConfGroupResVO, AbTestGroupResVO, NationDefineVO
-} from '../defines';
 
 export default class DeployManagerController extends BaseController {
 

@@ -15,8 +15,6 @@ interface AdTypeVO {
     name: string;    // 显示名称
     test: number;    // 是否测试 app 可见
     active: number;    // 是否生效
-    createAt: string;    // 创建时间
-    updateAt: string;    // 修改时间
 }
 
 interface AdChannelVO {
@@ -28,8 +26,6 @@ interface AdChannelVO {
     test: number;    // 是否测试 app 可见
     adTypeList: string[];    // 支持的广告类型显示名称列表
     active: number;    // 是否生效
-    createAt: string;    // 创建时间
-    updateAt: string;    // 修改时间
 }
 
 /**
@@ -182,8 +178,6 @@ export interface BaseConfigListResVO extends ResVO {
         description: string;    // 描述
         test: number;    // 是否测试 app 可见
         active: number;    // 是否生效
-        createAt: string;    // 创建时间
-        updateAt: string;    // 修改时间
     }>;
 }
 
@@ -227,8 +221,6 @@ export interface PackParamListResVO extends ResVO {
         description: string;    // 描述
         test: number;    // 是否测试 app 可见
         active: number;    // 是否生效
-        createAt: string;    // 创建时间
-        updateAt: string;    // 修改时间
     }>;
 }
 
@@ -273,8 +265,6 @@ interface ProductVO {
     pid: string;    // 苹果 id
     test: number;    // 是否测试 app 可见
     active: number;    // 是否生效
-    createAt: string;    // 创建时间
-    updateAt: string;    // 修改时间
     productGroupName?: string;    // 项目组名
     productAuth?: ProductAuthVO;    // 用户在应用下权限
 }
@@ -284,8 +274,6 @@ interface ProductGroupVO {
     name: string;    // 项目组名
     description: string;    // 项目组描述
     active: number;    // 是否生效
-    createAt: string;    // 创建时间
-    updateAt: string;    // 修改时间
     productGroupAuth?: ProductAuthVO;    // 用户在项目组下权限
 }
 
@@ -531,8 +519,6 @@ interface AdVO {
     activeTime: string;    // 失效时间戳
     channel: string;    // 广告平台名称
     active: number;    // 是否生效
-    createAt: string;    // 创建时间
-    updateAt: string;    // 修改时间
     adGroupName?: string;    // 广告组名称
     type?: string;    // 广告类型显示名称
 }
@@ -546,8 +532,6 @@ interface NativeTmplConfVO {
     preview: string;    // 预览
     test: number;    // 是否测试 app 可见
     active: number;    // 是否生效
-    createAt: string;    // 创建时间
-    updateAt: string;    // 修改时间
 }
 
 interface ConfigVO {
@@ -557,8 +541,6 @@ interface ConfigVO {
     value: string;    // 值
     description: string;    // 描述
     active: number;    // 是否生效
-    createAt: string;    // 创建时间
-    updateAt: string;    // 修改时间
 }
 
 /**
@@ -578,12 +560,11 @@ export interface VersionGroupListResVO extends ResVO {
         type: number;    // 0 广告 1 游戏常量 2 商店
         description: string;    // 描述
         active: number;    // 是否生效
-        createAt: string;    // 创建时间
-        updateAt: string;    // 修改时间
     }>;
 }
 
-/**GET
+/**
+ * GET
  * </br>获取国家代码定义列表 /advertisement/dispatchManager/nationList
  */
 export interface NationDefineListResVO extends ResVO {
@@ -654,8 +635,6 @@ export interface AbTestGroupListResVO extends ResVO {
         description: string;    // 描述
         begin: number;    // 用户开始范围
         end: number;    // 用户结束范围
-        createAt: string;    // 创建时间
-        updateAt: string;    // 修改时间
         configGroup: {
             id: string;    // 常量组表主键 id
             name: string;    // 常量组名称
@@ -664,8 +643,6 @@ export interface AbTestGroupListResVO extends ResVO {
             dependent: string;    // 依赖的常量组名
             description: string;    // 描述
             active: number;    // 是否生效
-            createAt: string;    // 创建时间
-            updateAt: string;    // 修改时间
             configList: ConfigVO[];    // 常量列表
         };
         adGroup?: Array<{
@@ -676,8 +653,6 @@ export interface AbTestGroupListResVO extends ResVO {
             description: string;    // 描述
             versionGroup: string[];    // 支持的条件组
             active: number;    // 是否生效
-            createAt: string;    // 创建时间
-            updateAt: string;    // 修改时间
             adList: AdVO[];    // 广告列表
         }>;
         nativeTmplConfGroup?: {
@@ -746,8 +721,6 @@ export interface ConfigGroupListResVO extends ResVO {
         dependent: string;    // 依赖的常量组名
         description: string;    // 描述
         active: number;    // 是否生效
-        createAt: string;    // 创建时间
-        updateAt: string;    // 修改时间
     }>;
 }
 
@@ -970,8 +943,6 @@ export interface NativeTmplConfGroupListResVO extends ResVO {
         versionGroup: string[];    // 支持的条件组
         description: string;    // 描述
         active: number;    // 是否生效
-        createAt: string;    // 创建时间
-        updateAt: string;    // 修改时间
     }>;
 }
 
@@ -1041,8 +1012,6 @@ export interface AdGroupListResVO extends ResVO {
         description: string;    // 描述
         versionGroup: string[];    // 支持的条件组
         active: number;    // 是否生效
-        createAt: string;    // 创建时间
-        updateAt: string;    // 修改时间
     }>;
 }
 
@@ -1167,8 +1136,6 @@ interface UserVO {
     name: string;    // 用户名
     email: string;    // 邮箱
     active: number;    // 控制生效
-    createAt: string;    // 创建时间
-    updateAt: string;    // 修改时间
     userAuth?: UserAuthVO;    // 用户权限
     productGroupAuth?: ProductGroupAuthVO;    // 用户在项目组权限
     productAuth?: ProductAuthVO;    // 用户在应用下权限
@@ -1264,7 +1231,8 @@ export interface ResetPasswordResVO extends ResVO {
     data: 'reseted';    // 重置成功
 }
 
-/**GET
+/**
+ * GET
  * </br>获取用户列表 /advertisement/userManager/userList
  */
 export interface UserListResVO extends ResVO {
@@ -1449,4 +1417,26 @@ export interface DeleteUserFromProductReqVO {
 
 export interface DeleteUserFromProductResVO extends ResVO {
     data: 'deleted';    // 删除成功
+}
+
+/**
+ * *********************************************************************************************************************
+ * 发布相关
+ * *********************************************************************************************************************
+ */
+
+/**
+ * GET
+ * </br>获取用户列表 /advertisement/deployManager/deploy
+ */
+export interface DeployResVO extends ResVO {
+    data: 'deployed';    // 发布成功！！！
+}
+
+/**
+ * GET
+ * </br>获取用户列表 /advertisement/deployManager/rollBack
+ */
+export interface RollBackResVO extends ResVO {
+    data: 'rollbacked';    // 回滚成功！！！
 }
