@@ -69,6 +69,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.userAuth();
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -124,6 +125,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.userAuth();
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -207,6 +209,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.userAuth();
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -241,6 +244,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.userAuth();
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -276,6 +280,7 @@ export default class UserManagerLogic extends AMLogic {
         // try {
         //     await this.userAuth();
         // } catch (e) {
+        //     think.logger.debug(e);
         //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         // }
 
@@ -290,6 +295,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.userAuth();
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -362,6 +368,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.userAuth();
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -453,6 +460,7 @@ export default class UserManagerLogic extends AMLogic {
         // try {
         //     await this.productGroupAuth(productGroupId, 'master');
         // } catch (e) {
+        //     think.logger.debug(e);
         //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         // }
 
@@ -482,6 +490,7 @@ export default class UserManagerLogic extends AMLogic {
         // try {
         //     await this.productAuth(productId, 'master');
         // } catch (e) {
+        //     think.logger.debug(e);
         //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         // }
 
@@ -571,6 +580,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.productGroupAuth(productGroupId, 'master');
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -654,6 +664,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.productAuth(productId, 'master');
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -729,6 +740,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.productAuth(productId, 'master');
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -809,6 +821,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.productGroupAuth(productGroupId, 'master');
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -844,6 +857,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.productGroupAuth(productId, 'master');
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -879,6 +893,7 @@ export default class UserManagerLogic extends AMLogic {
         try {
             await this.productGroupAuth(productGroupId, 'master');
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 

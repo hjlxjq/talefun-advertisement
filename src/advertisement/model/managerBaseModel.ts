@@ -39,8 +39,17 @@ export default class ManagerBaseModel extends BaseModel {
      * @argument {any[]} modelVoList 数据库对象列表;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateList(modelVoList: any[]): Promise<number> {
+    public async updateModelVoList(modelVoList: any[]): Promise<number> {
         return await this.updateMany(modelVoList);
+    }
+
+    /**
+     * 批量删除
+     * @argument {string} creatorId 创建者 id
+     * @returns {Promise<number>} 返回影响的行数
+     */
+    public async delModelVoList(creatorId: string): Promise<number> {
+        return await this.where({ creatorId }).delete();
     }
 
     /**

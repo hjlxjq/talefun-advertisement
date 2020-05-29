@@ -89,6 +89,7 @@ export default class ProductManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -154,6 +155,7 @@ export default class ProductManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -187,6 +189,7 @@ export default class ProductManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -234,6 +237,7 @@ export default class ProductManagerLogic extends AMLogic {
     //             throw new Error('没有权限！！！');
     //         }
     //     } catch (e) {
+    //         think.logger.debug(e);
     //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
     //     }
 
@@ -280,6 +284,7 @@ export default class ProductManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -321,6 +326,7 @@ export default class ProductManagerLogic extends AMLogic {
     //             throw new Error('没有权限！！！');
     //         }
     //     } catch (e) {
+    //         think.logger.debug(e);
     //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
     //     }
 
@@ -359,6 +365,7 @@ export default class ProductManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -415,6 +422,7 @@ export default class ProductManagerLogic extends AMLogic {
     //             throw new Error('没有权限！！！');
     //         }
     //     } catch (e) {
+    //         think.logger.debug(e);
     //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
     //     }
 
@@ -471,6 +479,7 @@ export default class ProductManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -512,6 +521,7 @@ export default class ProductManagerLogic extends AMLogic {
     //             throw new Error('没有权限！！！');
     //         }
     //     } catch (e) {
+    //         think.logger.debug(e);
     //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
     //     }
 
@@ -556,6 +566,7 @@ export default class ProductManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -601,6 +612,7 @@ export default class ProductManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -651,6 +663,7 @@ export default class ProductManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -685,6 +698,7 @@ export default class ProductManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -757,6 +771,7 @@ export default class ProductManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 

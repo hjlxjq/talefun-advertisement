@@ -82,7 +82,36 @@ export default class CacheService extends BaseService {
     ) {
         const cacheKey = this.cacheKeyPrefix + userId + ':' + tableName;
 
-        return await this.redis.hgetall(cacheKey);
+        const jsonhash = await this.redis.hgetall(cacheKey);
+        const cacheDataHash = {};
+
+        for (const key in jsonhash) {
+
+            if (jsonhash.hasOwnProperty(key)) {
+                const preJsonStr = jsonhash[key];
+                let preModelVo;
+                if (preJsonStr) {
+                    preModelVo = JSON.parse(preJsonStr);
+                }
+                cacheDataHash[key] = preModelVo;
+            }
+        }
+        return cacheDataHash;
+    }
+
+    /**
+     * 批量删除用户缓存的更新数据
+     */
+    public async delCacheDataList(tableNameList: string[], userId: string) {
+        const pipeline = this.redis.pipeline();
+
+        tableNameList.forEach((tableName) => {
+            const cacheKey = this.cacheKeyPrefix + userId + ':' + tableName;
+            pipeline.del(cacheKey);
+
+        });
+        return await pipeline.exec();
+        // return await this.redis.del(cachetKeyList);
     }
 
     /**
@@ -90,8 +119,9 @@ export default class CacheService extends BaseService {
      */
     public async fetchDeployModelList(
         userId: string,
-    ): Promise<string[]> {
+    ): Promise<{ tableNameList: string[], cachetKeyList: string[] }> {
         const pattern = this.cacheKeyPrefix + userId + ':' + '*';
+        think.logger.debug(`pattern: ${pattern}`);
         const stream = this.redis.scanStream({
             // only returns keys following the pattern
             match: pattern,
@@ -100,16 +130,16 @@ export default class CacheService extends BaseService {
         });
 
         return new Promise((resolve, reject) => {
-            stream.on('data', (resultKeys: string[]) => {
+            stream.on('data', (cachetKeyList: string[]) => {
                 // `resultKeys` is an array of strings representing key names.
                 // Note that resultKeys may contain 0 keys, and that it will sometimes
                 // contain duplicates due to SCAN's implementation in Redis.
-                const tableNameList = _.map(resultKeys, (resultKey) => {
+                const tableNameList = _.map(cachetKeyList, (resultKey) => {
                     // cacheKeyPrefix 长度为 2， userId 长度为 36
                     return resultKey.substr(39);
                 });
                 think.logger.debug(`fetchDeployModelList: ${JSON.stringify(tableNameList)}`);
-                resolve(tableNameList);
+                resolve({ tableNameList, cachetKeyList });
             });
 
             stream.on('end', () => {

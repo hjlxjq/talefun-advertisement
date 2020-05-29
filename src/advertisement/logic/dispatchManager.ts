@@ -79,6 +79,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -179,6 +180,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -248,6 +250,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -331,6 +334,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -381,6 +385,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -431,6 +436,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -511,6 +517,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -568,6 +575,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -619,6 +627,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -668,6 +677,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
     }
@@ -741,6 +751,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
     }
@@ -807,6 +818,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -876,6 +888,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -931,6 +944,9 @@ export default class DispatchManagerLogic extends AMLogic {
 
         try {
             const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, ucId);
+            // think.logger.debug(`configGroupId: ${configGroupId}`);
+            // think.logger.debug(`ucId: ${ucId}`);
+            // think.logger.debug(`configGroupVo: ${JSON.stringify(configGroupVo)}`);
             const { type, productId } = configGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -950,6 +966,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1023,6 +1040,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1094,6 +1112,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1145,6 +1164,7 @@ export default class DispatchManagerLogic extends AMLogic {
     //             }
     //         }
     //     } catch (e) {
+    //         think.logger.debug(e);
     //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
     //     }
 
@@ -1199,6 +1219,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1239,6 +1260,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1291,6 +1313,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1349,6 +1372,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1413,6 +1437,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1475,6 +1500,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1552,6 +1578,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1621,6 +1648,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1670,6 +1698,7 @@ export default class DispatchManagerLogic extends AMLogic {
     //             }
     //         }
     //     } catch (e) {
+    //         think.logger.debug(e);
     //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
     //     }
 
@@ -1730,6 +1759,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1784,6 +1814,7 @@ export default class DispatchManagerLogic extends AMLogic {
     //         }
 
     //     } catch (e) {
+    //         think.logger.debug(e);
     //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
     //     }
 
@@ -1838,6 +1869,7 @@ export default class DispatchManagerLogic extends AMLogic {
             }
 
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1878,6 +1910,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -1942,6 +1975,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -2003,6 +2037,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -2061,6 +2096,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -2101,6 +2137,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -2144,6 +2181,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -2217,6 +2255,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -2304,6 +2343,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 }
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -2347,6 +2387,7 @@ export default class DispatchManagerLogic extends AMLogic {
     //         }
 
     //     } catch (e) {
+    //         think.logger.debug(e);
     //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
     //     }
 

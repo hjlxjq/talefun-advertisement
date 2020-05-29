@@ -510,13 +510,7 @@ export default class ModelService extends BaseService {
 
         const configVoHash: { [propName: string]: ConfigResVO; } = {};
         configVoList.map((configVo) => {
-
             const { key } = configVo;
-
-            delete configVo.configGroupId;
-            delete configVo.createAt;
-            delete configVo.updateAt;
-
             configVoHash[key] = _.defaults({ dependent }, configVo);
         });
 
@@ -542,6 +536,10 @@ export default class ModelService extends BaseService {
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+
+        // 未发布更新在缓存里的常量对象
+        const cacheConfigVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'config');
 
         const [
             configVoList,
@@ -560,15 +558,11 @@ export default class ModelService extends BaseService {
         const configVoHash: { [propName: string]: ConfigResVO; } = {};
 
         configVoList.map((configVo) => {
-
             const { key } = configVo;
-
-            delete configVo.configGroupId;
-            delete configVo.createAt;
-            delete configVo.updateAt;
-
             configVoHash[key] = _.defaults({ dependent: null }, configVo) as ConfigResVO;
         });
+
+        // think.logger.debug(`configVoHash: ${JSON.stringify(configVoHash)}`);
 
         // 依赖组常量
         let dpdConfigVoHash: { [propName: string]: ConfigResVO; } = {};
@@ -578,6 +572,8 @@ export default class ModelService extends BaseService {
             _.defaults(configVoHash, dpdConfigVoHash);
 
         }
+        // think.logger.debug(`configVoHash: ${JSON.stringify(configVoHash)}`);
+
         // 广告常量依赖于基础常量
         const baseConfigVoHash: { [propName: string]: ConfigResVO; } = {};
         if (type === 0) {
@@ -589,8 +585,6 @@ export default class ModelService extends BaseService {
                 const { key } = baseConfigVo;
 
                 delete baseConfigVo.test;
-                delete baseConfigVo.createAt;
-                delete baseConfigVo.updateAt;
 
                 baseConfigVoHash[key] = _.defaults(
                     {
@@ -599,18 +593,33 @@ export default class ModelService extends BaseService {
                     baseConfigVo
                 ) as ConfigResVO;
             });
+            // think.logger.debug(`baseConfigVoHash: ${JSON.stringify(baseConfigVoHash)}`);
 
             // 以基础常量 key 为准， 基础常量关闭则不返回
-            for (const key in configVoHash) {
+            for (const key in baseConfigVoHash) {
 
-                if (baseConfigVoHash[key]) {
-                    configVoHash[key] = baseConfigVoHash[key];
-
+                if (baseConfigVoHash.hasOwnProperty(key)) {
+                    configVoHash[key] = configVoHash[key] || baseConfigVoHash[key];
                 }
             }
         }
 
-        return _.values(configVoHash);
+        const configResVoList = _.values(configVoHash);
+
+        return _.map(configResVoList, (configVo) => {
+
+            // think.logger.debug(`configVo: ${JSON.stringify(configVo)}`);
+            // 缓存中数据
+            const cacheConfigVo = cacheConfigVoHash[configVo.id] as ConfigResVO;
+            // think.logger.debug(`cacheConfigVo: ${JSON.stringify(cacheConfigVo)}`);
+            const configResVo = _.assign(configVo, cacheConfigVo);
+            // think.logger.debug(`configResVo: ${JSON.stringify(configResVo)}`);
+            delete configResVo.configGroupId;
+            delete configResVo.createAt;
+            delete configResVo.updateAt;
+            return configResVo;
+        });
+        // return _.values(configVoHash);
     }
 
     /**

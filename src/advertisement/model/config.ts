@@ -90,11 +90,14 @@ export default class ConfigModel extends MBModel {
      */
     public async getByGroupAndKey(key: string, configGroupId: string, creatorId: string) {
         const queryStrings: string[] = [];
-        queryStrings.push(`key='${key}'`);
+
+        queryStrings.push(`\`key\`='${key}'`);    // key 为 mysql 关键字
         queryStrings.push(`configGroupId='${configGroupId}'`);
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
         const queryString: string = queryStrings.join(' AND ');
+        think.logger.debug(`queryString: ${queryString}`);
+
         return await this.where(queryString).find() as ConfigVO;
     }
 

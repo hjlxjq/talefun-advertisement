@@ -35,6 +35,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
     }
@@ -53,6 +54,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -86,6 +88,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -137,6 +140,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -191,6 +195,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -210,6 +215,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -243,6 +249,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -303,6 +310,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -375,6 +383,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
     }
@@ -393,6 +402,7 @@ export default class CommonManagerLogic extends AMLogic {
     //             throw new Error('没有权限！！！');
     //         }
     //     } catch (e) {
+    //         think.logger.debug(e);
     //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
     //     }
 
@@ -412,6 +422,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -462,6 +473,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -516,6 +528,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -535,6 +548,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -592,6 +606,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -651,6 +666,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -670,6 +686,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
@@ -721,6 +738,7 @@ export default class CommonManagerLogic extends AMLogic {
                 throw new Error('没有权限！！！');
             }
         } catch (e) {
+            think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 

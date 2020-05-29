@@ -38,20 +38,21 @@ import {
     CreateAbTestGroupReqVO, CreateAbTestGroupResVO, BindConfigGroupReqVO, BindConfigGroupResVO,
     ConfigGroupListReqVO, ConfigGroupListResVO, ConfigListReqVO, ConfigListResVO,
     CreateConfigGroupReqVO, CreateConfigGroupResVO, UpdateConfigGroupReqVO, UpdateConfigGroupResVO,
-    CreateConfigReqVO, CreateConfigResVO, UpdateConfigReqVO, UpdateConfigResVO, DeleteConfigReqVO, DeleteConfigResVO,
+    CreateConfigReqVO, CreateConfigResVO, UpdateConfigReqVO, UpdateConfigResVO,
     BindNativeTmplConfGroupReqVO, BindNativeTmplConfGroupResVO, NativeTmplConfGroupListReqVO,
     NativeTmplConfGroupListResVO, NativeTmplConfListReqVO, NativeTmplConfListResVO, CreateNativeTmplConfGroupReqVO,
     CreateNativeTmplConfGroupResVO, UpdateNativeTmplConfGroupReqVO, UpdateNativeTmplConfGroupResVO,
     CreateNativeTmplConfReqVO, CreateNativeTmplConfResVO, CopyNativeTmplConfGroupReqVO,
-    CopyNativeTmplConfGroupResVO, UpdateNativeTmplConfReqVO, UpdateNativeTmplConfResVO,
-    DeleteNativeTmplConfReqVO, DeleteNativeTmplConfResVO, BindAdGroupReqVO, BindAdGroupResVO,
-    UnbindAdGroupReqVO, UnbindAdGroupResVO, AdGroupListReqVO, AdGroupListResVO,
+    CopyNativeTmplConfGroupResVO, UpdateNativeTmplConfReqVO, UpdateNativeTmplConfResVO, BindAdGroupReqVO,
+    BindAdGroupResVO, AdGroupListReqVO, AdGroupListResVO,
     CreateAdGroupReqVO, CreateAdGroupResVO, UpdateAdGroupReqVO, UpdateAdGroupResVO,
     AdListReqVO, AdListResVO, AdListInAdGroupReqVO, AdListInAdGroupResVO, CreateAdReqVO, CreateAdResVO,
     CopyAdGroupReqVO, CopyAdGroupResVO, UpdateAdReqVO, UpdateAdResVO, NationDefineListResVO,
-    DeleteAdReqVO, DeleteAdResVO, CopyConfigGroupReqVO, CopyConfigGroupResVO, CreateNativeTmplConfListResVO,
+    CopyConfigGroupReqVO, CopyConfigGroupResVO, CreateNativeTmplConfListResVO,
     CopyVersionGroupReqVO, CopyVersionGroupResVO, CompletePlaceReqVO, CompletePlaceResVO,
     CreateDefaultAbTestGroupReqVO, CreateDefaultAbTestGroupResVO, UpdateAdConfigReqVO, UpdateAdConfigResVO,
+    // DeleteConfigReqVO, DeleteConfigResVO, DeleteNativeTmplConfReqVO, DeleteNativeTmplConfResVO,
+    // UnbindAdGroupReqVO, UnbindAdGroupResVO,DeleteAdReqVO, DeleteAdResVO,
 } from '../interface';
 
 export default class DispatchManagerController extends BaseController {
@@ -716,6 +717,7 @@ export default class DispatchManagerController extends BaseController {
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId);
+        think.logger.debug(`configVo: ${JSON.stringify(configVo)}`);
 
         const { id } = configVo;
 
@@ -1166,7 +1168,7 @@ export default class DispatchManagerController extends BaseController {
             this.success('completed');
 
         } catch (e) {
-            think.logger.debug(`complete place fail error : ${e}`);
+            think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'complete place fail!!!');
         }
     }

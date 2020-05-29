@@ -7,11 +7,7 @@
  */
 import { think } from 'thinkjs';
 import * as Bluebird from 'bluebird';
-import ModelServer from '../service/modelServer';
 import * as _ from 'lodash';
-import * as moment from 'moment-mini-ts';
-
-import { TaleCode } from '../../common/tale/TaleDefine';
 import BaseController from '../../common/tale/BaseController';
 
 import MBModel from '../model/managerBaseModel';
@@ -35,11 +31,13 @@ import {
 export default class DeployManagerController extends BaseController {
 
     /**
+     * GET
      * <br/>发布到正式环境
      * @debugger yes
      */
     public async deployAction() {
         const ucId: string = this.ctx.state.userId;
+        think.logger.debug(`ucId: ${ucId}`);
         // const adModel = this.taleModel('ad', 'advertisement') as AdModel;
         // const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         // const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
@@ -48,15 +46,20 @@ export default class DeployManagerController extends BaseController {
         // const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
         // const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         // const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        // const abTestGroupModel = this.taleModel('abTestMapGroup', 'advertisement') as AbTestGroupModel;
+        // const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         // const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        const deployTableNameList = await cacheServer.fetchDeployModelList(ucId);
+        // 下发相关的所有表
+        const tableNameList = [
+            'adGroup', 'ad', 'configGroup', 'config', 'nativeTmplConf', 'nativeTmplConfGroup',
+            'abTestMap', 'abTestGroup', 'versionGroup',
+        ];
 
         try {
-            await Bluebird.map(deployTableNameList, async (deployTableName) => {
-                const modelVohash = await cacheServer.fetchCacheDataHash(ucId, deployTableName);
+            await Bluebird.map(tableNameList, async (tableName) => {
+                // 待更新的表数据对象
+                const modelVohash = await cacheServer.fetchCacheDataHash(ucId, tableName);
 
                 // 待更新的数据库表对象列表组装，需要包含主键
                 const modelVoList = [];
@@ -67,14 +70,56 @@ export default class DeployManagerController extends BaseController {
                         modelVoList.push(modelVo);
                     }
                 }
-                const deployModel = this.taleModel(deployTableName, 'advertisement') as MBModel;
-                await deployModel.updateList(modelVoList);
-                await deployModel.deployVo(ucId);
+                // think.logger.debug(`modelVoList: ${JSON.stringify(modelVoList)}`);
+                // think.logger.debug(`tableName: ${tableName}`);
+                const deployModel = this.taleModel(tableName, 'advertisement') as MBModel;
+
+                await Promise.all([
+                    deployModel.updateModelVoList(modelVoList),
+                    deployModel.deployVo(ucId)
+                ]);
+
+                await deployModel.updateModelVoList(modelVoList);
+                await cacheServer.delCacheDataList(tableNameList, ucId);
+
             });
             this.success('发布成功！！！');
 
         } catch (e) {
+            think.logger.debug(e);
             this.fail(10, '发布失败！！！');
+        }
+    }
+
+    /**
+     * GET
+     * <br/>回滚用户操作
+     * @debugger yes
+     */
+    public async rollBackAction() {
+        const ucId: string = this.ctx.state.userId;
+        think.logger.debug(`ucId: ${ucId}`);
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+
+        // const {tableNameList, cachetKeyList } = await cacheServer.fetchDeployModelList(ucId);
+        const tableNameList = [
+            'adGroup', 'ad', 'configGroup', 'config', 'nativeTmplConf', 'nativeTmplConfGroup',
+            'abTestMap', 'abTestGroup', 'versionGroup',
+        ];
+
+        try {
+            await Bluebird.map(tableNameList, async (tableName) => {
+                const deployModel = this.taleModel(tableName, 'advertisement') as MBModel;
+                await  deployModel.delModelVoList(ucId);
+
+            });
+            await cacheServer.delCacheDataList(tableNameList, ucId);
+
+            this.success('回滚成功！！！');
+
+        } catch (e) {
+            think.logger.debug(e);
+            this.fail(10, '回滚失败！！！');
         }
     }
 
