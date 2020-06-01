@@ -313,6 +313,7 @@ export default class DispatchManagerController extends BaseController {
 
             if (abTestGroupId === 'aaab5835-fd12-410e-a737-ce424ef10794') {
                 think.logger.debug(`configGroupId: ${configGroupId}`);
+                think.logger.debug(`abTestGroupVo: ${JSON.stringify(abTestGroupVo)}`);
                 think.logger.debug(`cacheAbTestGroupVo: ${JSON.stringify(cacheAbTestGroupVo)}`);
             }
             // 获取 ab 分组下的广告，常量， native模板配置
