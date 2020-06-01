@@ -300,10 +300,16 @@ export default class DispatchManagerController extends BaseController {
         const cacheAbTestGroupVoHash = await cacheServer.fetchCacheDataHash(ucId, 'abTestGroup');
 
         const abTestGroupResVoList = await Bluebird.map(abTestGroupVoList, async (abTestGroupVo) => {
-
-            const { id: abTestGroupId, configGroupId, nativeTmplConfGroupId } = abTestGroupVo;
+            const { id: abTestGroupId } = abTestGroupVo;
             // 更新的缓存数据
             const cacheAbTestGroupVo = cacheAbTestGroupVoHash[abTestGroupId] as AbTestGroupVO;
+
+            // 返回线上数据和未发布的数据，以未发布数据为准
+            let abTestGroupResVo: AbTestGroupResVO = _.assign({
+                configGroup: null,
+            }, abTestGroupVo, cacheAbTestGroupVo);
+
+            const { configGroupId, nativeTmplConfGroupId } = abTestGroupVo;
 
             // 获取 ab 分组下的广告，常量， native模板配置
             const [
@@ -317,9 +323,9 @@ export default class DispatchManagerController extends BaseController {
             ]);
 
             // 返回线上数据和未发布的数据，以未发布数据为准
-            const abTestGroupResVo: AbTestGroupResVO = _.assign({
+            abTestGroupResVo = _.assign({
                 configGroup: configGroupResVo,
-            }, abTestGroupVo, cacheAbTestGroupVo);
+            }, abTestGroupResVo);
 
             if (!think.isEmpty(nativeTmplConfGroupResVo)) {
                 abTestGroupResVo.nativeTmplConfGroup = nativeTmplConfGroupResVo;
