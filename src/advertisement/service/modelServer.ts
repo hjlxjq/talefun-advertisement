@@ -675,7 +675,7 @@ export default class ModelService extends BaseService {
         const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, creatorId);
         // 未发布更新在缓存里的常量组组对象
         const cacheConfigGroupVo =
-            await cacheServer.fetchCacheData(creatorId, 'configGroupModel', configGroupId);
+            await cacheServer.fetchCacheData(creatorId, 'configGroup', configGroupId);
 
         // 不能看到其他人创建的组
         if (!configGroupVo) {
@@ -720,7 +720,7 @@ export default class ModelService extends BaseService {
             await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId, creatorId);
         // 未发布更新在缓存里的 native 模板组对象
         const cacheNativeTmplConfGroupVo =
-            await cacheServer.fetchCacheData(creatorId, 'nativeTmplConfGroupModel', nativeTmplConfGroupId);
+            await cacheServer.fetchCacheData(creatorId, 'nativeTmplConfGroup', nativeTmplConfGroupId);
 
         if (!nativeTmplConfGroupVo) {
             return;
@@ -752,8 +752,8 @@ export default class ModelService extends BaseService {
         const [
             cacheAbTestMapVoHash, cacheAdGroupVoHash
         ] = await Promise.all([
-            cacheServer.fetchCacheDataHash(creatorId, 'abTestMapModel'),
-            cacheServer.fetchCacheDataHash(creatorId, 'adGroupModel')
+            cacheServer.fetchCacheDataHash(creatorId, 'abTestMap'),
+            cacheServer.fetchCacheDataHash(creatorId, 'adGroup')
         ]);
 
         const adGroupResVoList: AdGroupResVO[] = await Bluebird.map(abTestMapVoList, async (abTestMapVo) => {
