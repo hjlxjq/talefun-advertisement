@@ -86,7 +86,9 @@ export default class VersionGroupModel extends MBModel {
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
         // in 查询逻辑
-        const idListString = idList.join();
+        const idListString = _.map(idList, (id) => {
+            return `'id'`;
+        });
         queryStrings.push(`id IN (${idListString})`);
 
         if (!_.isUndefined(active)) {

@@ -177,6 +177,11 @@ export default class UserController extends BaseController {
         const active: number = this.post('active');
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
 
+        // 不能操作自己
+        if (ucId !== id) {
+            return this.fail(TaleCode.AuthFaild, '不能禁用自己！！！');
+        }
+
         const user = await userModel.getUser(id);
 
         if (think.isEmpty(user)) {
