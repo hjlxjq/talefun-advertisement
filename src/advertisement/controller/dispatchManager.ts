@@ -309,7 +309,7 @@ export default class DispatchManagerController extends BaseController {
                 configGroup: null,
             }, abTestGroupVo, cacheAbTestGroupVo);
 
-            const { configGroupId, nativeTmplConfGroupId } = abTestGroupVo;
+            const { configGroupId, nativeTmplConfGroupId } = abTestGroupResVo;
 
             if (abTestGroupId === 'aaab5835-fd12-410e-a737-ce424ef10794') {
                 think.logger.debug(`configGroupId: ${configGroupId}`);
