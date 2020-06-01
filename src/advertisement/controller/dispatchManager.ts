@@ -224,7 +224,7 @@ export default class DispatchManagerController extends BaseController {
             const { place, adGroupId } = copyedAbTestMapVo;
 
             const defaultAbTestMapVo: AbTestMapVO = {
-                place, adGroupId, abTestGroupId: defaultAbTestGroupId, creatorId: ucId
+                place, adGroupId, abTestGroupId: defaultAbTestGroupId, creatorId: ucId, active: 1
             };
             return defaultAbTestMapVo;
         });
@@ -1032,11 +1032,12 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupId: string = this.post('id');
         const adGroupId: string = this.post('adGroupId');
         const place: string = this.post('place');
+        const active: number = this.post('active');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const updateAbTestMapVo: AbTestMapVO = {
-            abTestGroupId, place, adGroupId, creatorId: undefined
+            abTestGroupId, place, adGroupId, creatorId: undefined, active
         };
 
         try {
@@ -1106,14 +1107,12 @@ export default class DispatchManagerController extends BaseController {
             const defaultAbTestMapVo = await abTestMapModel.getVo(defaultId, place, ucId);
 
             const updateDefaultAbTestMapVo: AbTestMapVO = {
-                abTestGroupId: defaultId, creatorId: undefined,
-                place,
-                adGroupId
+                abTestGroupId: defaultId, creatorId: undefined, active: 1,
+                place, adGroupId
             };
             const updateAbTestMapVo: AbTestMapVO = {
-                abTestGroupId: id, creatorId: undefined,
-                place,
-                adGroupId: undefined
+                abTestGroupId: id, creatorId: undefined, active: 0,
+                place, adGroupId
             };
 
             if (_.isEmpty(defaultAbTestMapVo)) {

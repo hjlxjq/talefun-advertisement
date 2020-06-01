@@ -965,6 +965,7 @@ export interface NativeTmplConfListResVO extends ResVO {
 export interface BindAdGroupReqVO {
     id: string;    // ab 分组表主键 id
     place: string;    // 广告位
+    active: number;    // 是否生效
     adGroupId?: string;    // 广告组表主键 id
 }
 

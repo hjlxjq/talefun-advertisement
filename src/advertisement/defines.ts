@@ -276,6 +276,7 @@ export interface AbTestMapVO extends BaseVO {
     abTestGroupId: string;    // ab 分组测试表 id
     adGroupId: string;    // 广告组表 id
     creatorId: string;    // 创建者 id
+    active: number;    // 控制生效
 }
 
 /**
