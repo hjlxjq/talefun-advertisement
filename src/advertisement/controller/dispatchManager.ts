@@ -323,9 +323,12 @@ export default class DispatchManagerController extends BaseController {
             ]);
 
             // 返回线上数据和未发布的数据，以未发布数据为准
-            abTestGroupResVo = _.assign({
+            abTestGroupResVo = _.assign(
+                abTestGroupResVo,
+                {
                 configGroup: configGroupResVo,
-            }, abTestGroupResVo);
+                }
+            );
 
             if (!think.isEmpty(nativeTmplConfGroupResVo)) {
                 abTestGroupResVo.nativeTmplConfGroup = nativeTmplConfGroupResVo;
