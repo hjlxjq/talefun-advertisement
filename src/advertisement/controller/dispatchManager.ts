@@ -1047,7 +1047,7 @@ export default class DispatchManagerController extends BaseController {
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        const { name: type } = await adTypeModel.getVo(place);
+        const { name: type } = await adTypeModel.getByType(place);
 
         const updateAbTestMapVo: AbTestMapVO = {
             place, type, abTestGroupId, adGroupId, creatorId: undefined, active
