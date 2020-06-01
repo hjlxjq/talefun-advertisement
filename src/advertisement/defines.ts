@@ -273,6 +273,7 @@ export interface AbTestGroupVO extends BaseVO {
  */
 export interface AbTestMapVO extends BaseVO {
     place: string; // 广告位
+    type: string; // 广告类型
     abTestGroupId: string;    // ab 分组测试表 id
     adGroupId: string;    // 广告组表 id
     creatorId: string;    // 创建者 id

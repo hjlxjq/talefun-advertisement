@@ -54,6 +54,7 @@ import {
     // DeleteConfigReqVO, DeleteConfigResVO, DeleteNativeTmplConfReqVO, DeleteNativeTmplConfResVO,
     // UnbindAdGroupReqVO, UnbindAdGroupResVO,DeleteAdReqVO, DeleteAdResVO,
 } from '../interface';
+import AdTypeModel from '../model/adType';
 
 export default class DispatchManagerController extends BaseController {
 
@@ -221,10 +222,10 @@ export default class DispatchManagerController extends BaseController {
         // 再创建版本分组下默认 ab 测试下的广告测试
         const copyedAbTestMapVoList = await abTestMapModel.getList(copyedAbTestGroupId, ucId);
         const defaultAbTestMapVoList = _.map(copyedAbTestMapVoList, (copyedAbTestMapVo) => {
-            const { place, adGroupId } = copyedAbTestMapVo;
+            const { place, type: adType, adGroupId } = copyedAbTestMapVo;
 
             const defaultAbTestMapVo: AbTestMapVO = {
-                place, adGroupId, abTestGroupId: defaultAbTestGroupId, creatorId: ucId, active: 1
+                place, type: adType, adGroupId, abTestGroupId: defaultAbTestGroupId, creatorId: ucId, active: 1
             };
             return defaultAbTestMapVo;
         });
@@ -1034,10 +1035,13 @@ export default class DispatchManagerController extends BaseController {
         const place: string = this.post('place');
         const active: number = this.post('active');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
+        const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
+        const { name: type } = await adTypeModel.getVo(place);
+
         const updateAbTestMapVo: AbTestMapVO = {
-            abTestGroupId, place, adGroupId, creatorId: undefined, active
+            place, type, abTestGroupId, adGroupId, creatorId: undefined, active
         };
 
         try {
@@ -1097,7 +1101,7 @@ export default class DispatchManagerController extends BaseController {
         try {
             const [
                 { versionGroupId },
-                { id: abTestMapId, adGroupId }
+                { id: abTestMapId, adGroupId, type }
             ] = await Promise.all([
                 abTestGroupModel.getVo(id, ucId),
                 abTestMapModel.getVo(id, place, ucId)
@@ -1108,11 +1112,11 @@ export default class DispatchManagerController extends BaseController {
 
             const updateDefaultAbTestMapVo: AbTestMapVO = {
                 abTestGroupId: defaultId, creatorId: undefined, active: 1,
-                place, adGroupId
+                place, type, adGroupId
             };
             const updateAbTestMapVo: AbTestMapVO = {
                 abTestGroupId: id, creatorId: undefined, active: 0,
-                place, adGroupId
+                place, type, adGroupId
             };
 
             if (_.isEmpty(defaultAbTestMapVo)) {

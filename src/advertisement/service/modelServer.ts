@@ -744,7 +744,6 @@ export default class ModelService extends BaseService {
     public async getAdGroupListInAb(abTestGroupId: string, creatorId: string) {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 数据库里的版本条件分组对象
@@ -758,7 +757,7 @@ export default class ModelService extends BaseService {
         ]);
 
         const adGroupResVoList: AdGroupResVO[] = await Bluebird.map(abTestMapVoList, async (abTestMapVo) => {
-            const place = abTestMapVo.place;
+            const { type, place } = abTestMapVo;
             let adGroupId = abTestMapVo.adGroupId;
 
             // 获取缓存中未发布更新
@@ -770,8 +769,7 @@ export default class ModelService extends BaseService {
             }
 
             let adGroupResVo: AdGroupResVO = {
-                place, creatorId: null,
-                type: undefined, versionGroup: undefined,
+                place, type, creatorId: null, versionGroup: undefined,
                 name: undefined, description: undefined, active: undefined
             };
 
@@ -780,25 +778,18 @@ export default class ModelService extends BaseService {
                     adGroupModel.getVo(adGroupId, creatorId),
                     this.getAdListInAdGroup(adGroupId, creatorId)
                 ]);
-                const { adTypeId } = adGroupVo;
 
-                const adTypeVo = await adTypeModel.getVo(adTypeId);
+                // 获取缓存中未发布更新，redis 哈希域为广告组表主键 id
+                const cacheAdGroupVo = cacheAdGroupVoHash[adGroupId] as AdGroupVO;
 
-                if (!think.isEmpty(adTypeVo)) {
-                    // 获取缓存中未发布更新，redis 哈希域为广告组表主键 id
-                    const cacheAdGroupVo = cacheAdGroupVoHash[adGroupId] as AdGroupVO;
+                adGroupResVo = _.assign({
+                    adList, versionGroup: undefined
+                }, adGroupResVo, adGroupVo, cacheAdGroupVo);
 
-                    const { name: type } = adTypeVo;
-
-                    adGroupResVo = _.assign({
-                        type, place, adList, versionGroup: undefined
-                    }, adGroupVo, cacheAdGroupVo);
-
-                    delete adGroupResVo.productId;
-                    delete adGroupResVo.adTypeId;
-                    delete adGroupResVo.createAt;
-                    delete adGroupResVo.updateAt;
-                }
+                delete adGroupResVo.productId;
+                delete adGroupResVo.adTypeId;
+                delete adGroupResVo.createAt;
+                delete adGroupResVo.updateAt;
             }
 
             return adGroupResVo;
