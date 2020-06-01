@@ -305,12 +305,15 @@ export default class DispatchManagerController extends BaseController {
             const cacheAbTestGroupVo = cacheAbTestGroupVoHash[abTestGroupId] as AbTestGroupVO;
 
             // 返回线上数据和未发布的数据，以未发布数据为准
-            let abTestGroupResVo: AbTestGroupResVO = _.assign({
+            const abTestGroupResVo: AbTestGroupResVO = _.assign({
                 configGroup: null,
             }, abTestGroupVo, cacheAbTestGroupVo);
 
+            think.logger.debug(`abTestGroupResVo1: ${JSON.stringify(abTestGroupResVo)}`);
             const { configGroupId, nativeTmplConfGroupId } = abTestGroupVo;
 
+            think.logger.debug(`configGroupId: ${configGroupId}`);
+            think.logger.debug(`nativeTmplConfGroupId: ${nativeTmplConfGroupId}`);
             // 获取 ab 分组下的广告，常量， native模板配置
             const [
                 adGroupResVoList,
@@ -323,13 +326,9 @@ export default class DispatchManagerController extends BaseController {
             ]);
 
             // 返回线上数据和未发布的数据，以未发布数据为准
-            abTestGroupResVo = _.assign(
-                abTestGroupResVo,
-                {
-                configGroup: configGroupResVo,
-                }
-            );
+            abTestGroupResVo.configGroup = configGroupResVo;
 
+            think.logger.debug(`abTestGroupResVo2: ${JSON.stringify(abTestGroupResVo)}`);
             if (!think.isEmpty(nativeTmplConfGroupResVo)) {
                 abTestGroupResVo.nativeTmplConfGroup = nativeTmplConfGroupResVo;
             }
