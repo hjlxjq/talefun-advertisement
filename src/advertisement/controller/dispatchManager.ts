@@ -1059,6 +1059,7 @@ export default class DispatchManagerController extends BaseController {
 
         try {
             const abTestMapVo = await abTestMapModel.getVo(abTestGroupId, place, ucId);
+            think.logger.debug(`abTestMapVo3 : ${JSON.stringify(abTestMapVo)}`);
 
             if (_.isEmpty(abTestMapVo)) {
                 updateAbTestMapVo.creatorId = ucId;
