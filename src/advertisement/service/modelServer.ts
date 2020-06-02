@@ -795,9 +795,10 @@ export default class ModelService extends BaseService {
                 delete adGroupResVo.createAt;
                 delete adGroupResVo.updateAt;
 
-                _.defaults(placeResVo, {
-                    adGroup: adGroupResVo
-                });
+                // _.defaults(placeResVo, {
+                //     adGroup: adGroupResVo
+                // });
+                placeResVo.adGroup = adGroupResVo || null;
             }
 
             delete placeResVo.abTestGroupId;

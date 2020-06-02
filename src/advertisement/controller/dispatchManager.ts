@@ -332,15 +332,17 @@ export default class DispatchManagerController extends BaseController {
             abTestGroupResVo.configGroup = configGroupResVo;
 
             if (!think.isEmpty(nativeTmplConfGroupResVo)) {
-                _.defaults(abTestGroupResVo, {
-                    nativeTmplConfGroup: nativeTmplConfGroupResVo
-                });
+                abTestGroupResVo.nativeTmplConfGroup = nativeTmplConfGroupResVo || null;
+                // _.defaults(abTestGroupResVo, {
+                //     nativeTmplConfGroup: nativeTmplConfGroupResVo
+                // });
             }
 
             if (!think.isEmpty(adGroupResVoList)) {
-                _.defaults(abTestGroupResVo, {
-                    placeGroup: adGroupResVoList
-                });
+                abTestGroupResVo.placeGroup = adGroupResVoList || null;
+                // _.defaults(abTestGroupResVo, {
+                //     placeGroup: adGroupResVoList
+                // });
             }
 
             delete abTestGroupResVo.configGroupId;
