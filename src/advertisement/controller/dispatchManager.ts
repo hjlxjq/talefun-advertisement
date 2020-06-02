@@ -306,7 +306,7 @@ export default class DispatchManagerController extends BaseController {
 
             // 返回线上数据和未发布的数据，以未发布数据为准
             const abTestGroupResVo: AbTestGroupResVO = _.assign({
-                configGroup: null,
+                configGroup: null, nativeTmplConfGroup: null, placeGroup: null
             }, abTestGroupVo, cacheAbTestGroupVo);
 
             const { configGroupId, nativeTmplConfGroupId } = abTestGroupResVo;
@@ -331,11 +331,15 @@ export default class DispatchManagerController extends BaseController {
             abTestGroupResVo.configGroup = configGroupResVo;
 
             if (!think.isEmpty(nativeTmplConfGroupResVo)) {
-                abTestGroupResVo.nativeTmplConfGroup = nativeTmplConfGroupResVo;
+                _.defaults(abTestGroupResVo, {
+                    nativeTmplConfGroup: nativeTmplConfGroupResVo
+                });
             }
 
             if (!think.isEmpty(adGroupResVoList)) {
-                abTestGroupResVo.placeGroup = adGroupResVoList;
+                _.defaults(abTestGroupResVo, {
+                    placeGroup: adGroupResVoList
+                });
             }
 
             delete abTestGroupResVo.configGroupId;

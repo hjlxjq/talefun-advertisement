@@ -769,6 +769,8 @@ export default class ModelService extends BaseService {
 
             const { adGroupId, type } = abTestMapVo;
 
+            think.logger.debug(`abTestMapVo : ${JSON.stringify(abTestMapVo)}`);
+
             const placeResVo: PlaceResVO = _.assign({
                 adGroup: null
             }, abTestMapVo);
@@ -789,7 +791,10 @@ export default class ModelService extends BaseService {
                 delete adGroupResVo.adTypeId;
                 delete adGroupResVo.createAt;
                 delete adGroupResVo.updateAt;
-                placeResVo.adGroup = adGroupResVo;
+
+                _.defaults(placeResVo, {
+                    adGroup: adGroupResVo
+                });
             }
 
             delete placeResVo.abTestGroupId;
