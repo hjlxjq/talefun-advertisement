@@ -327,6 +327,7 @@ export default class DispatchManagerController extends BaseController {
                 this.nativeTmplConfInAb(nativeTmplConfGroupId, ucId)
             ]);
 
+            think.logger.debug(`adGroupResVoList: ${JSON.stringify(adGroupResVoList)}`);
             // 返回线上数据和未发布的数据，以未发布数据为准
             abTestGroupResVo.configGroup = configGroupResVo;
 
