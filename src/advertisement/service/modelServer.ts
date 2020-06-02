@@ -762,6 +762,7 @@ export default class ModelService extends BaseService {
         ]);
 
         const placeResVoList: PlaceResVO[] = await Bluebird.map(abTestMapVoList, async (abTestMapVo) => {
+            think.logger.debug(`abTestMapVo1 : ${JSON.stringify(abTestMapVo)}`);
             // 获取缓存中未发布更新
             const cacheAbTestMapVo = cacheAbTestMapVoHash[abTestMapVo.id] as AbTestMapVO;
             // 缓存中有更新，则以缓存中数据为准
@@ -769,7 +770,7 @@ export default class ModelService extends BaseService {
 
             const { adGroupId, type } = abTestMapVo;
 
-            think.logger.debug(`abTestMapVo : ${JSON.stringify(abTestMapVo)}`);
+            think.logger.debug(`abTestMapVo2 : ${JSON.stringify(abTestMapVo)}`);
 
             const placeResVo: PlaceResVO = _.assign({
                 adGroup: null
