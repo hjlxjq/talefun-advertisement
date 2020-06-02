@@ -189,26 +189,26 @@ export default class ModelService extends BaseService {
         const channelParamConfResVoList = await Bluebird.map(adChannelVoList, async (adChannelVo) => {
             const channelParamConfVo = await channelParamConfModel.getChannelParamConf(adChannelVo.id, productId);
 
-            let value1: string = null;    // 启动参数 1 的值
-            let value2: string = null;    // 启动参数 2 的值
-            let value3: string = null;    // 启动参数 3 的值,
-
-            if (channelParamConfVo) {
-                ({
-                    value1,
-                    value2,
-                    value3,
-                } = channelParamConfVo);
-            }
             const channelParamConfResVo: ChannelParamConfResVO = _.defaults(
                 {
-                    value1,    // 启动参数 1 的值
-                    value2,    // 启动参数 2 的值
-                    value3,    // 启动参数 3 的值,
+                    value1: null,    // 启动参数 1 的值
+                    value2: null,    // 启动参数 2 的值
+                    value3: null,    // 启动参数 3 的值,
                 },
                 adChannelVo
             );
 
+            if (!_.isEmpty(channelParamConfVo)) {
+                const {
+                    value1,
+                    value2,
+                    value3,
+                } = channelParamConfVo;
+                channelParamConfResVo.value1 = value1 || null;
+                channelParamConfResVo.value2 = value2 || null;
+                channelParamConfResVo.value3 = value3 || null;
+
+            }
             delete channelParamConfResVo.createAt;
             delete channelParamConfResVo.updateAt;
             return channelParamConfResVo;
