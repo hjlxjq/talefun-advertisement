@@ -645,16 +645,19 @@ export interface AbTestGroupListResVO extends ResVO {
             active: number;    // 是否生效
             configList: ConfigVO[];    // 常量列表
         };
-        adGroup?: Array<{
-            id: string;    // 广告组表主键 id
-            name: string;    // 广告组名称
+        placeGroup: Array<{
             type: string;    // 广告类型显示名称
             place: string;    // 广告位
-            description: string;    // 描述
-            versionGroup: string[];    // 支持的条件组
-            active: number;    // 是否生效
-            adList: AdVO[];    // 广告列表
-        }>;
+            adGroup?: {
+                id: string;    // 广告组表主键 id
+                name: string;    // 广告组名称
+                type: string;    // 广告类型显示名称
+                description: string;    // 描述
+                versionGroup: string[];    // 支持的条件组
+                active: number;    // 是否生效
+                adList: AdVO[];    // 广告列表
+            };
+        }>,
         nativeTmplConfGroup?: {
             id: string;    // native 模板配置组表主键 id
             name: string;    // native 模板配置组表名称

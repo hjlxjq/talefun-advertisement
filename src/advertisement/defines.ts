@@ -274,10 +274,10 @@ export interface AbTestGroupVO extends BaseVO {
 export interface AbTestMapVO extends BaseVO {
     place: string; // 广告位
     type: string; // 广告类型
-    abTestGroupId: string;    // ab 分组测试表 id
-    adGroupId: string;    // 广告组表 id
-    creatorId: string;    // 创建者 id
     active: number;    // 控制生效
+    creatorId: string;    // 创建者 id
+    abTestGroupId?: string;    // ab 分组测试表 id
+    adGroupId?: string;    // 广告组表 id
 }
 
 /**
@@ -446,8 +446,11 @@ export interface NativeTmplConfResVO extends NativeTmplConfVO {
 export interface AdGroupResVO extends AdGroupVO {
     type: string;    // 广告类型显示名称
     versionGroup: string[];    // 支持的条件组
-    place?: string;    // 广告位
     adList?: AdResVO[];    // 广告列表
+}
+
+export interface PlaceResVO extends AbTestMapVO {
+    adGroup?: AdGroupResVO;    // ab 分组下的广告组及广告组下广告列表
 }
 
 export interface AdResVO extends AdVO {
@@ -461,7 +464,7 @@ export interface AdResVO extends AdVO {
 
 export interface AbTestGroupResVO extends AbTestGroupVO {
     configGroup: ConfigGroupResVO;
-    adGroup?: AdGroupResVO[];
+    placeGroup?: PlaceResVO[];
     nativeTmplConfGroup?: NativeTmplConfGroupResVO;
 }
 

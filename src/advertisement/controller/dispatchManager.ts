@@ -335,7 +335,7 @@ export default class DispatchManagerController extends BaseController {
             }
 
             if (!think.isEmpty(adGroupResVoList)) {
-                abTestGroupResVo.adGroup = adGroupResVoList;
+                abTestGroupResVo.placeGroup = adGroupResVoList;
             }
 
             delete abTestGroupResVo.configGroupId;

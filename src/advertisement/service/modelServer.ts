@@ -34,7 +34,7 @@ import CacheService from './cacheServer';
 import {
     VersionGroupVO, AdChannelResVO, PackParamConfResVO, ChannelParamConfResVO, ConfigGroupResVO, ConfigResVO,
     NativeTmplConfResVO, VersionGroupResVO, NativeTmplConfGroupResVO, AdGroupResVO, AdResVO, AbTestMapVO,
-    AdGroupVO, ConfigGroupVO, NativeTmplConfGroupVO, AdVO,
+    AdGroupVO, ConfigGroupVO, NativeTmplConfGroupVO, AdVO, PlaceResVO
 } from '../defines';
 
 /**
@@ -204,9 +204,14 @@ export default class ModelService extends BaseService {
                     value2,
                     value3,
                 } = channelParamConfVo;
-                channelParamConfResVo.value1 = value1 || null;
-                channelParamConfResVo.value2 = value2 || null;
-                channelParamConfResVo.value3 = value3 || null;
+                _.defaults(
+                    channelParamConfResVo,
+                    {
+                        value1,    // 启动参数 1 的值
+                        value2,    // 启动参数 2 的值
+                        value3,    // 启动参数 3 的值,
+                    }
+                );
 
             }
             delete channelParamConfResVo.createAt;
@@ -756,46 +761,45 @@ export default class ModelService extends BaseService {
             cacheServer.fetchCacheDataHash(creatorId, 'adGroup')
         ]);
 
-        const adGroupResVoList: AdGroupResVO[] = await Bluebird.map(abTestMapVoList, async (abTestMapVo) => {
-            const { type, place } = abTestMapVo;
-            let adGroupId = abTestMapVo.adGroupId;
-
+        const placeResVoList: PlaceResVO[] = await Bluebird.map(abTestMapVoList, async (abTestMapVo) => {
             // 获取缓存中未发布更新
             const cacheAbTestMapVo = cacheAbTestMapVoHash[abTestMapVo.id] as AbTestMapVO;
-
             // 缓存中有更新，则以缓存中数据为准
-            if (cacheAbTestMapVo && cacheAbTestMapVo.adGroupId) {
-                adGroupId = cacheAbTestMapVo.adGroupId;
-            }
+            _.assign(abTestMapVo, cacheAbTestMapVo);
 
-            let adGroupResVo: AdGroupResVO = {
-                place, type, creatorId: null, versionGroup: undefined,
-                name: undefined, description: undefined, active: undefined
-            };
+            const { adGroupId, type } = abTestMapVo;
+
+            const placeResVo: PlaceResVO = _.assign({
+                adGroup: null
+            }, abTestMapVo);
 
             if (adGroupId) {
                 const [adGroupVo, adList] = await Promise.all([
                     adGroupModel.getVo(adGroupId, creatorId),
                     this.getAdListInAdGroup(adGroupId, creatorId)
                 ]);
-
                 // 获取缓存中未发布更新，redis 哈希域为广告组表主键 id
                 const cacheAdGroupVo = cacheAdGroupVoHash[adGroupId] as AdGroupVO;
 
-                adGroupResVo = _.assign({
-                    adList, versionGroup: undefined
-                }, adGroupResVo, adGroupVo, cacheAdGroupVo);
+                const adGroupResVo: AdGroupResVO = _.assign({
+                    type, adList, versionGroup: undefined
+                }, adGroupVo, cacheAdGroupVo);
 
                 delete adGroupResVo.productId;
                 delete adGroupResVo.adTypeId;
                 delete adGroupResVo.createAt;
                 delete adGroupResVo.updateAt;
+                placeResVo.adGroup = adGroupResVo;
             }
 
-            return adGroupResVo;
+            delete placeResVo.abTestGroupId;
+            delete placeResVo.adGroupId;
+            delete placeResVo.createAt;
+            delete placeResVo.updateAt;
+            return placeResVo;
         });
 
-        return adGroupResVoList;
+        return placeResVoList;
     }
 
 }
