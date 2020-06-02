@@ -157,7 +157,7 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupVo: AbTestGroupVO = {
             versionGroupId, active,
             name: 'default', begin: -1, end: -1, description: '默认组',
-            creatorId: ucId, configGroupId: null, nativeTmplConfGroupId: null, activeTime: null
+            creatorId: ucId, configGroupId: undefined, nativeTmplConfGroupId: undefined, activeTime: undefined
         };
         await abTestGroupModel.addVo(abTestGroupVo);
 
@@ -214,7 +214,7 @@ export default class DispatchManagerController extends BaseController {
 
         // 再创建版本分组下默认 ab 测试
         const defaultAbTestGroupVo: AbTestGroupVO = {
-            name: 'default', begin: -1, end: -1, description: '默认组', active, activeTime: null,
+            name: 'default', begin: -1, end: -1, description: '默认组', active, activeTime: undefined,
             creatorId: ucId, nativeTmplConfGroupId, configGroupId, versionGroupId
         };
         const defaultAbTestGroupId = await abTestGroupModel.addVo(defaultAbTestGroupVo);
@@ -311,11 +311,6 @@ export default class DispatchManagerController extends BaseController {
 
             const { configGroupId, nativeTmplConfGroupId } = abTestGroupResVo;
 
-            if (abTestGroupId === 'aaab5835-fd12-410e-a737-ce424ef10794') {
-                think.logger.debug(`configGroupId: ${configGroupId}`);
-                think.logger.debug(`abTestGroupVo: ${JSON.stringify(abTestGroupVo)}`);
-                think.logger.debug(`cacheAbTestGroupVo: ${JSON.stringify(cacheAbTestGroupVo)}`);
-            }
             // 获取 ab 分组下的广告，常量， native模板配置
             const [
                 adGroupResVoList,
@@ -332,6 +327,7 @@ export default class DispatchManagerController extends BaseController {
             abTestGroupResVo.configGroup = configGroupResVo;
 
             if (!think.isEmpty(nativeTmplConfGroupResVo)) {
+                // lodash defaults 方法不会覆盖 null
                 abTestGroupResVo.nativeTmplConfGroup = nativeTmplConfGroupResVo || null;
                 // _.defaults(abTestGroupResVo, {
                 //     nativeTmplConfGroup: nativeTmplConfGroupResVo
@@ -340,9 +336,6 @@ export default class DispatchManagerController extends BaseController {
 
             if (!think.isEmpty(adGroupResVoList)) {
                 abTestGroupResVo.placeGroup = adGroupResVoList || null;
-                // _.defaults(abTestGroupResVo, {
-                //     placeGroup: adGroupResVoList
-                // });
             }
 
             delete abTestGroupResVo.configGroupId;
@@ -434,7 +427,7 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupVo: AbTestGroupVO = {
             versionGroupId, active: 1, activeTime: undefined,
             name: 'default', begin: -1, end: -1, description: '默认组',
-            creatorId: null, configGroupId: null, nativeTmplConfGroupId: null,
+            creatorId: undefined, configGroupId: undefined, nativeTmplConfGroupId: undefined,
         };
         await abTestGroupModel.addVo(abTestGroupVo);
 
@@ -473,7 +466,7 @@ export default class DispatchManagerController extends BaseController {
 
             const abTestGroupVo: AbTestGroupVO = {
                 name: abTestGroupName, begin, end, description, activeTime: undefined, active: 1,
-                versionGroupId, creatorId: ucId, configGroupId: null, nativeTmplConfGroupId: null
+                versionGroupId, creatorId: ucId, configGroupId: undefined, nativeTmplConfGroupId: undefined
             };
 
             abTestGroupVoList.push(abTestGroupVo);
@@ -740,7 +733,7 @@ export default class DispatchManagerController extends BaseController {
         const configVo: ConfigVO = {
             configGroupId, creatorId: ucId,
             key, value, description,
-            active, activeTime: null
+            active, activeTime: undefined
         };
         await configModel.addConfig(configVo);
 
@@ -1355,7 +1348,7 @@ export default class DispatchManagerController extends BaseController {
 
         const adVo: AdVO = {
             productId: undefined, adGroupId: undefined, adChannelId: undefined, adTypeId: undefined,
-            activeTime: undefined, creatorId: null,
+            activeTime: undefined, creatorId: undefined,
             placementID, name, ecpm, interval, subloader, loader, weight, bidding,
             active
         };

@@ -147,13 +147,14 @@ export default class ModelService extends BaseService {
         const packParamVoList = await packParamModel.getList(1, test);
 
         const packParamConfResVoList = await Bluebird.map(packParamVoList, async (packParamVo) => {
-            let value: string = null;
             const packParamConfVo = await packParamConfModel.getPackParamConf(packParamVo.id, productId);
+            // 默认返回 null
+            const packParamConfResVo: PackParamConfResVO = _.defaults({ value: null }, packParamVo);
 
             if (packParamConfVo) {
-                ({ value } = packParamConfVo);
+                const { value } = packParamConfVo;
+                packParamConfResVo.value = value || null;
             }
-            const packParamConfResVo: PackParamConfResVO = _.defaults({ value }, packParamVo);
 
             delete packParamConfResVo.createAt;
             delete packParamConfResVo.updateAt;
@@ -204,14 +205,9 @@ export default class ModelService extends BaseService {
                     value2,
                     value3,
                 } = channelParamConfVo;
-                _.defaults(
-                    channelParamConfResVo,
-                    {
-                        value1,    // 启动参数 1 的值
-                        value2,    // 启动参数 2 的值
-                        value3,    // 启动参数 3 的值,
-                    }
-                );
+                channelParamConfVo.value1 = value1 || null;
+                channelParamConfVo.value2 = value2 || null;
+                channelParamConfVo.value3 = value3 || null;
 
             }
             delete channelParamConfResVo.createAt;
@@ -649,7 +645,7 @@ export default class ModelService extends BaseService {
 
             const cacheConfigGroupVo = cacheConfigGroupVoHash[id] as ConfigGroupVO;
 
-            let dependent: string = null;
+            let dependent: string;
             if (dependentId) {
                 dependent = (await configGroupModel.getConfigGroup(dependentId, creatorId)).name;
             }
@@ -659,7 +655,7 @@ export default class ModelService extends BaseService {
                 await versionGroupModel.getVersionGroupNameList(verionGroupIdList, creatorId, 1);
 
             const configGroupResVo: ConfigGroupResVO = _.assign({
-                dependent, versionGroup: versionGroupNameList
+                dependent: dependent || null, versionGroup: versionGroupNameList
             }, configGroupVo, cacheConfigGroupVo);
 
             return configGroupResVo;
@@ -688,7 +684,7 @@ export default class ModelService extends BaseService {
         }
         const { dependentId } = configGroupVo;
 
-        let dependent: string = null;
+        let dependent: string;
         if (dependentId) {
             const dependentVo = await configGroupModel.getConfigGroup(dependentId, creatorId);
 
@@ -699,7 +695,7 @@ export default class ModelService extends BaseService {
         }
 
         const configGroupResVo: ConfigGroupResVO = _.assign({
-            dependent, versionGroup: undefined
+            dependent: dependent || null, versionGroup: undefined
         }, configGroupVo, cacheConfigGroupVo);
 
         delete configGroupResVo.productId;
@@ -762,16 +758,12 @@ export default class ModelService extends BaseService {
         ]);
 
         const placeResVoList: PlaceResVO[] = await Bluebird.map(abTestMapVoList, async (abTestMapVo) => {
-            think.logger.debug(`abTestMapVo1 : ${JSON.stringify(abTestMapVo)}`);
             // 获取缓存中未发布更新
             const cacheAbTestMapVo = cacheAbTestMapVoHash[abTestMapVo.id] as AbTestMapVO;
-            think.logger.debug(`cacheAbTestMapVo : ${JSON.stringify(cacheAbTestMapVo)}`);
             // 缓存中有更新，则以缓存中数据为准
             _.assign(abTestMapVo, cacheAbTestMapVo);
 
             const { adGroupId, type } = abTestMapVo;
-
-            think.logger.debug(`abTestMapVo2 : ${JSON.stringify(abTestMapVo)}`);
 
             const placeResVo: PlaceResVO = _.assign({
                 adGroup: null
@@ -794,10 +786,6 @@ export default class ModelService extends BaseService {
                 delete adGroupResVo.adTypeId;
                 delete adGroupResVo.createAt;
                 delete adGroupResVo.updateAt;
-
-                // _.defaults(placeResVo, {
-                //     adGroup: adGroupResVo
-                // });
                 placeResVo.adGroup = adGroupResVo || null;
             }
 
