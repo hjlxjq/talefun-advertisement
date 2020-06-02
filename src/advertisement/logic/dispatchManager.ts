@@ -569,6 +569,62 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
+     * <br/>测试结束
+     */
+    public async deleteABTestGroupAction() {
+        const ucId: string = this.ctx.state.user.id;
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
+
+        const rules = {
+            id: {
+                string: true,       // 字段类型为 String 类型
+                trim: true,         // 字段需要 trim 处理
+                required: true,     // 字段必填
+                method: 'POST'       // 指定获取数据的方式
+            },
+            name: {
+                string: true,       // 字段类型为 String 类型
+                trim: true,         // 字段需要 trim 处理
+                required: true,     // 字段必填
+                method: 'POST'       // 指定获取数据的方式
+            }
+        };
+        const flag = this.validate(rules);
+
+        if (!flag) {
+            return this.fail(TaleCode.ValidData, this.validateMsg());
+        }
+
+        const versionGroupId: string = this.post('id');
+        const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
+
+        try {
+            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
+
+            const productAuth = await this.productAuth(productId);
+            const {
+                editAd, editGameConfig, master
+            } = productAuth;
+
+            if (master === 0) {
+
+                if (editAd === 0 && type === 0) {
+                    throw new Error('没有权限！！！');
+                }
+
+                if (editGameConfig === 0 && type === 1) {
+                    throw new Error('没有权限！！！');
+                }
+            }
+
+        } catch (e) {
+            think.logger.debug(e);
+            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        }
+
+    }
+
+    /**
      * <br/>向 ab 分组绑定常量组
      */
     public async bindConfigGroupAction() {

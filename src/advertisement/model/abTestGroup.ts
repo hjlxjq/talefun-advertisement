@@ -62,18 +62,20 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 结束 ab 测试分组,
+     * 根据测试名获取 ab 测试分组主键列表
      * <br/>
      * @argument {string} name ab 测试分组表 id;
-     * @returns {Promise<number>} 返回影响的行数
+     * @argument {string} creatorId 创建者 id
+     * @returns {Promise<string[]>} 返回 ab 测试分组主键列表
      */
-    public async updateByName(name: string) {
-        if (name) {
-            const now = moment().format('YYYY-MM-DD HH:mm:ss');
-            return await this.where({ name: ['like', `%${name}_`] }).update({ active: 0, activeTime: now });
+    public async getIdListByName(name: string, creatorId: string) {
+        const query = `name = '${name}' AND
+        (creatorId IS NULL OR creatorId = '${creatorId}')`;
 
-        }
-        return 0;
+        const abTestGroupVoList = await this.where({ name: ['like', `%${name}_`] }).select() as AbTestGroupVO[];
+        return _.map(abTestGroupVoList, (abTestGroupVo) => {
+            return abTestGroupVo.id;
+        });
     }
 
     /**

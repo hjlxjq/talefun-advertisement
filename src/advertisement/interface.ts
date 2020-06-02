@@ -696,6 +696,18 @@ export interface CreateAbTestGroupResVO extends ResVO {
 }
 
 /**
+ * 测试结束 /advertisement/dispatchManager/deleteABTestGroup
+ */
+export interface DeleteABTestGroupReqVO {
+    id: string;    // 版本分组表主键 id
+    name: string;    // 创建的 ab 分组名
+}
+
+export interface DeleteABTestGroupResVO extends ResVO {
+    data: 'deleted';
+}
+
+/**
  * 向 ab 分组绑定常量组 /advertisement/dispatchManager/bindConfigGroup
  */
 export interface BindConfigGroupReqVO {

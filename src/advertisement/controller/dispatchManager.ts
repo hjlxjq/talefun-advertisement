@@ -51,6 +51,7 @@ import {
     CopyConfigGroupReqVO, CopyConfigGroupResVO, CreateNativeTmplConfListResVO,
     CopyVersionGroupReqVO, CopyVersionGroupResVO, CompletePlaceReqVO, CompletePlaceResVO,
     CreateDefaultAbTestGroupReqVO, CreateDefaultAbTestGroupResVO, UpdateAdConfigReqVO, UpdateAdConfigResVO,
+    DeleteABTestGroupReqVO, DeleteABTestGroupResVO,
     // DeleteConfigReqVO, DeleteConfigResVO, DeleteNativeTmplConfReqVO, DeleteNativeTmplConfResVO,
     // UnbindAdGroupReqVO, UnbindAdGroupResVO,DeleteAdReqVO, DeleteAdResVO,
 } from '../interface';
@@ -487,16 +488,30 @@ export default class DispatchManagerController extends BaseController {
 
     /**
      * <br/>测试结束
-     * @argument {DeleteAdReqVO}
-     * @returns {DeleteAdReqVO}
+     * @argument {DeleteABTestGroupReqVO}
+     * @returns {DeleteABTestGroupResVO}
      * @debugger yes
      */
-    public async deleteABTestAction() {
+    public async deleteABTestGroupAction() {
         const ucId: string = this.ctx.state.userId;
+        const versionGroupId: string = this.post('id');
         const name: string = this.post('name');
-
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        await abTestGroupModel.updateByName(ucId);
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+
+        const now = moment().format('YYYY-MM-DD HH:mm:ss');
+        const abTestGroupVo: AbTestGroupVO = {
+            active: 0, activeTime: now,
+            name: undefined, begin: undefined, end: undefined,
+            description: undefined, versionGroupId: undefined,
+            nativeTmplConfGroupId: undefined, configGroupId: undefined, creatorId: undefined
+        };
+
+        const idList = await abTestGroupModel.getIdListByName(name, ucId);
+
+        await Bluebird.map(idList, async (id) => {
+            await cacheServer.setCacheData(ucId, 'abTestGroup', id, abTestGroupVo);
+        });
 
         this.success('deleted');
     }
