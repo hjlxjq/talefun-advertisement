@@ -205,9 +205,9 @@ export default class ModelService extends BaseService {
                     value2,
                     value3,
                 } = channelParamConfVo;
-                channelParamConfVo.value1 = value1 || null;
-                channelParamConfVo.value2 = value2 || null;
-                channelParamConfVo.value3 = value3 || null;
+                channelParamConfResVo.value1 = value1 || null;
+                channelParamConfResVo.value2 = value2 || null;
+                channelParamConfResVo.value3 = value3 || null;
 
             }
             delete channelParamConfResVo.createAt;
