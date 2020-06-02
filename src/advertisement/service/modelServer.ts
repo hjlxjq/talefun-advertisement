@@ -765,6 +765,7 @@ export default class ModelService extends BaseService {
             think.logger.debug(`abTestMapVo1 : ${JSON.stringify(abTestMapVo)}`);
             // 获取缓存中未发布更新
             const cacheAbTestMapVo = cacheAbTestMapVoHash[abTestMapVo.id] as AbTestMapVO;
+            think.logger.debug(`cacheAbTestMapVo : ${JSON.stringify(cacheAbTestMapVo)}`);
             // 缓存中有更新，则以缓存中数据为准
             _.assign(abTestMapVo, cacheAbTestMapVo);
 
