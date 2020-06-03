@@ -508,9 +508,10 @@ export default class DispatchManagerController extends BaseController {
         };
 
         const idList = await abTestGroupModel.getIdListByName(versionGroupId, name, ucId);
+        think.logger.debug(`idList: ${JSON.stringify(idList)}`);
 
-        await Bluebird.map(idList, async (id) => {
-            await cacheServer.setCacheData(ucId, 'abTestGroup', id, abTestGroupVo);
+        await Bluebird.map(idList, (id) => {
+            return cacheServer.setCacheData(ucId, 'abTestGroup', id, abTestGroupVo);
         });
 
         this.success('deleted');
