@@ -515,7 +515,7 @@ export default class DispatchManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, '分组失败，分组范围不能均分！！！');
         }
 
-        const currentAbTestGroupVoList = await abTestGroupModel.getList(versionGroupId);
+        const currentAbTestGroupVoList = await abTestGroupModel.getList(versionGroupId, undefined, 1);
         // 终止判断条件
         currentAbTestGroupVoList[currentAbTestGroupVoList.length] = {
             begin: 100, end: 100,

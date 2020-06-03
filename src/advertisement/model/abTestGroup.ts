@@ -96,16 +96,20 @@ export default class AbTestGroupModel extends MBModel {
      * 获取 ab 测试分组信息列表,
      * @argument {string} versionGroupId 分组条件表 id;
      * @argument {string} creatorId 创建者 id
+     * @argument {number} active 是否生效
      */
-    public async getList(versionGroupId: string, creatorId?: string) {
+    public async getList(versionGroupId: string, creatorId?: string, active?: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`versionGroupId='${versionGroupId}'`);
 
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
         }
-        const queryString: string = queryStrings.join(' AND ');
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active='${active}'`);
+        }
 
+        const queryString: string = queryStrings.join(' AND ');
         return await this.where(queryString).order('begin').select() as AbTestGroupVO[];
     }
 
