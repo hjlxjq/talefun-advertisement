@@ -69,7 +69,7 @@ export default class AbTestGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<string[]>} 返回 ab 测试分组主键列表
      */
-    public async getIdListByName(versionGroupId: string, name: string, creatorId: string) {
+    public async getIdListByName(versionGroupId: string, name: string, creatorId: string = '') {
         const query = `versionGroupId = '${versionGroupId}' AND name LIKE '${name}_%' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
 
         // think.logger.debug(`getIdListByName query: ${query}`);
@@ -85,7 +85,7 @@ export default class AbTestGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestGroupVO>} ab 测试分组信息;
      */
-    public async getVo(id: string, creatorId: string) {
+    public async getVo(id: string, creatorId: string = '') {
         const query = `id = '${id}' AND
         (creatorId IS NULL OR creatorId = '${creatorId}')`;
 
@@ -118,7 +118,7 @@ export default class AbTestGroupModel extends MBModel {
      * @argument {string} versionGroupId 分组条件表 id;
      * @argument {string} creatorId 创建者 id
      */
-    public async getDefault(versionGroupId: string, creatorId: string) {
+    public async getDefault(versionGroupId: string, creatorId: string = '') {
         const query = `versionGroupId = '${versionGroupId}' AND name = 'default' AND
         (creatorId IS NULL OR creatorId = '${creatorId}')`;
 
@@ -131,7 +131,7 @@ export default class AbTestGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<string[]>} 获取版本分组表主键 id 列表;
      */
-    public async getVerionGroupIdListByNative(nativeTmplConfGroupId: string, creatorId: string) {
+    public async getVerionGroupIdListByNative(nativeTmplConfGroupId: string, creatorId: string = '') {
         const query = `nativeTmplConfGroupId = '${nativeTmplConfGroupId}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
         const abTestGroupVoList = await this.where(query).select() as AbTestGroupVO[];
 
@@ -147,7 +147,7 @@ export default class AbTestGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<string[]>} 获取版本分组表主键 id 列表;
      */
-    public async getVerionGroupIdListByConfig(configGroupId: string, creatorId: string) {
+    public async getVerionGroupIdListByConfig(configGroupId: string, creatorId: string = '') {
         const query = `configGroupId = '${configGroupId}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
         const abTestGroupVoList = await this.where(query).select() as AbTestGroupVO[];
 

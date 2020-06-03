@@ -48,7 +48,7 @@ export default class ConfigGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<ConfigGroupVO>} 常量组数据;
      */
-    public async getConfigGroup(id: string, creatorId: string) {
+    public async getConfigGroup(id: string, creatorId: string = '') {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
@@ -74,7 +74,7 @@ export default class ConfigGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AdTypeVO[]>} 常量组列表;
      */
-    public async getListByProductAndType(productId: string, type: number, creatorId: string) {
+    public async getListByProductAndType(productId: string, type: number, creatorId: string = '') {
         const queryStrings: string[] = [];
         queryStrings.push(`productId='${productId}'`);
         queryStrings.push(`type='${type}'`);

@@ -81,7 +81,7 @@ export default class NativeTmplConfModel extends MBModel {
      * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表 id;
      * @argument {string} creatorId 创建者 id
      */
-    public async getList(nativeTmplConfGroupId: string, creatorId: string) {
+    public async getList(nativeTmplConfGroupId: string, creatorId: string = '') {
         const query = `nativeTmplConfGroupId = '${nativeTmplConfGroupId}' AND
         (creatorId IS NULL OR creatorId = '${creatorId}')`;
 

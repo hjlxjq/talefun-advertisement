@@ -49,7 +49,7 @@ export default class VersionGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<VersionGroupVO>} 版本分组控制信息;
      */
-    public async getVersionGroup(id: string, creatorId: string ) {
+    public async getVersionGroup(id: string, creatorId: string = '') {
         const query = `id = '${id}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
 
         return await this.where(query).find() as VersionGroupVO;
@@ -60,7 +60,7 @@ export default class VersionGroupModel extends MBModel {
      * @argument {string} type 版本分组控制表类型;
      * @argument {string} creatorId 创建者 id
      */
-    public async getList(productId: string, type: number, creatorId: string ) {
+    public async getList(productId: string, type: number, creatorId: string = '') {
 
         const query = `productId = '${productId}' AND type = '${type}' AND
         (creatorId IS NULL OR creatorId = '${creatorId}')`;
@@ -75,7 +75,7 @@ export default class VersionGroupModel extends MBModel {
      * @argument {number} active 是否生效;
      * @returns {Promise<string[]>} 版本分组控制名列表;
      */
-    public async getVersionGroupNameList(idList: string[] = [], creatorId: string, active?: number) {
+    public async getVersionGroupNameList(idList: string[] = [], creatorId: string = '', active?: number) {
         // 为空数组
         if (_.isEmpty(idList)) {
             return [];

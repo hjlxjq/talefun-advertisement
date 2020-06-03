@@ -49,7 +49,7 @@ export default class NativeTmplConfGroupModel extends MBModel {
      * @argument {number} active 是否生效;
      * @returns {Promise<nativeTmplConfGroupVO>}应用下 native 模板组信息;
      */
-    public async getNativeTmplConfGroup(id: string, creatorId: string, active?: number) {
+    public async getNativeTmplConfGroup(id: string, creatorId: string = '', active?: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
@@ -66,7 +66,7 @@ export default class NativeTmplConfGroupModel extends MBModel {
      * @argument {string} productId 应用表 id;
      * @argument {string} creatorId 创建者 id
      */
-    public async getList(productId: string, creatorId: string) {
+    public async getList(productId: string, creatorId: string = '') {
         const queryStrings: string[] = [];
         queryStrings.push(`productId='${productId}'`);
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);

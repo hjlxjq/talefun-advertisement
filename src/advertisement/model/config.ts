@@ -88,7 +88,7 @@ export default class ConfigModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<ConfigVO>} 常量表信息;
      */
-    public async getByGroupAndKey(key: string, configGroupId: string, creatorId: string) {
+    public async getByGroupAndKey(key: string, configGroupId: string, creatorId: string = '') {
         const queryStrings: string[] = [];
 
         queryStrings.push(`\`key\`='${key}'`);    // key 为 mysql 关键字
@@ -131,7 +131,7 @@ export default class ConfigModel extends MBModel {
      * @argument {number} active 是否生效;
      * @returns {Promise<ConfigVO[]>} 常量数据列表;
      */
-    public async getList(configGroupId: string, creatorId: string , active?: number) {
+    public async getList(configGroupId: string, creatorId: string = '', active?: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`configGroupId='${configGroupId}'`);
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);

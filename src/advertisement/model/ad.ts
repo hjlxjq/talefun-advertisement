@@ -83,7 +83,7 @@ export default class AdModel extends MBModel {
      * @argument {number} active 是否生效;
      * 获取广告组下广告信息列表
      */
-    public async getListByAdGroup(adGroupId: string, creatorId: string, active?: number) {
+    public async getListByAdGroup(adGroupId: string, creatorId: string = '', active?: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`adGroupId='${adGroupId}'`);
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
@@ -102,7 +102,7 @@ export default class AdModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * 获取应用下广告信息列表
      */
-    public async getListByProduct(productId: string, creatorId: string) {
+    public async getListByProduct(productId: string, creatorId: string = '') {
         const queryStrings: string[] = [];
         queryStrings.push(`productId='${productId}'`);
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
