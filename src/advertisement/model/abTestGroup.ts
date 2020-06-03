@@ -70,8 +70,7 @@ export default class AbTestGroupModel extends MBModel {
      * @returns {Promise<string[]>} 返回 ab 测试分组主键列表
      */
     public async getIdListByName(versionGroupId: string, name: string, creatorId: string) {
-        const query = `name LIKE '${name}_' AND versionGroupId = '${versionGroupId}' AND
-        (creatorId IS NULL OR creatorId = '${creatorId}')`;
+        const query = `versionGroupId = '${versionGroupId}' AND name LIKE '${name}_' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
 
         think.logger.debug(`getIdListByName query: ${query}`);
         const abTestGroupVoList = await this.where(query).select() as AbTestGroupVO[];
