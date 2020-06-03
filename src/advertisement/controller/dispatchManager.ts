@@ -507,7 +507,7 @@ export default class DispatchManagerController extends BaseController {
             nativeTmplConfGroupId: undefined, configGroupId: undefined, creatorId: undefined
         };
 
-        const idList = await abTestGroupModel.getIdListByName(name, ucId);
+        const idList = await abTestGroupModel.getIdListByName(versionGroupId, name, ucId);
 
         await Bluebird.map(idList, async (id) => {
             await cacheServer.setCacheData(ucId, 'abTestGroup', id, abTestGroupVo);

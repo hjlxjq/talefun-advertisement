@@ -64,15 +64,19 @@ export default class AbTestGroupModel extends MBModel {
     /**
      * 根据测试名获取 ab 测试分组主键列表
      * <br/>
+     * @argument {string} versionGroupId 分组条件表 id;
      * @argument {string} name ab 测试分组表 id;
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<string[]>} 返回 ab 测试分组主键列表
      */
-    public async getIdListByName(name: string, creatorId: string) {
+    public async getIdListByName(versionGroupId: string, name: string, creatorId: string) {
         const query = `name = '${name}' AND
         (creatorId IS NULL OR creatorId = '${creatorId}')`;
 
-        const abTestGroupVoList = await this.where({ name: ['like', `%${name}_`] }).select() as AbTestGroupVO[];
+        const abTestGroupVoList = await this.where({
+            versionGroupId,
+            name: ['like', `%${name}_`]
+        }).select() as AbTestGroupVO[];
         return _.map(abTestGroupVoList, (abTestGroupVo) => {
             return abTestGroupVo.id;
         });
