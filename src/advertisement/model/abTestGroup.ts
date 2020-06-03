@@ -72,7 +72,7 @@ export default class AbTestGroupModel extends MBModel {
     public async getIdListByName(versionGroupId: string, name: string, creatorId: string) {
         const query = `versionGroupId = '${versionGroupId}' AND name LIKE '${name}_%' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
 
-        think.logger.debug(`getIdListByName query: ${query}`);
+        // think.logger.debug(`getIdListByName query: ${query}`);
         const abTestGroupVoList = await this.where(query).select() as AbTestGroupVO[];
         return _.map(abTestGroupVoList, (abTestGroupVo) => {
             return abTestGroupVo.id;

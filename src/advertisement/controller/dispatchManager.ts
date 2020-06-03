@@ -323,7 +323,7 @@ export default class DispatchManagerController extends BaseController {
                 this.nativeTmplConfInAb(nativeTmplConfGroupId, ucId)
             ]);
 
-            think.logger.debug(`adGroupResVoList: ${JSON.stringify(adGroupResVoList)}`);
+            // think.logger.debug(`adGroupResVoList: ${JSON.stringify(adGroupResVoList)}`);
             // 返回线上数据和未发布的数据，以未发布数据为准
             abTestGroupResVo.configGroup = configGroupResVo;
 
@@ -475,7 +475,7 @@ export default class DispatchManagerController extends BaseController {
             end += step;
         }
 
-        think.logger.debug(`abTestGroupVoList: ${JSON.stringify(abTestGroupVoList)}`);
+        // think.logger.debug(`abTestGroupVoList: ${JSON.stringify(abTestGroupVoList)}`);
 
         const rows = (await abTestGroupModel.addList(abTestGroupVoList)).length;
         if (rows === groupNum) {
@@ -508,7 +508,7 @@ export default class DispatchManagerController extends BaseController {
         };
 
         const idList = await abTestGroupModel.getIdListByName(versionGroupId, name, ucId);
-        think.logger.debug(`idList: ${JSON.stringify(idList)}`);
+        // think.logger.debug(`idList: ${JSON.stringify(idList)}`);
 
         await Bluebird.map(idList, (id) => {
             return cacheServer.setCacheData(ucId, 'abTestGroup', id, abTestGroupVo);
@@ -702,7 +702,7 @@ export default class DispatchManagerController extends BaseController {
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId);
-        think.logger.debug(`configVo: ${JSON.stringify(configVo)}`);
+        // think.logger.debug(`configVo: ${JSON.stringify(configVo)}`);
 
         const { id } = configVo;
 
