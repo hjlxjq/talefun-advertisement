@@ -11,6 +11,7 @@ import ConfigGroupModel from '../model/configGroup';
 import ConfigModel from '../model/config';
 import NativeTmplConfGroupModel from '../model/nativeTmplConfGroup';
 import NativeTmplConfModel from '../model/nativeTmplConf';
+import AdChannelConfModel from '../model/channelParamConf';
 
 import * as _ from 'lodash';
 import { think } from 'thinkjs';
@@ -2319,6 +2320,12 @@ export default class DispatchManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
+            placementID: {
+                string: true,       // 字段类型为 String 类型
+                trim: true,         // 字段需要 trim 处理
+                required: true,     // 字段必填
+                method: 'POST'       // 指定获取数据的方式
+            },
             ecpm: {
                 float: true,       // 字段类型为 Number 类型
                 trim: true,         // 字段需要 trim 处理
@@ -2346,33 +2353,38 @@ export default class DispatchManagerLogic extends AMLogic {
 
         const ecpm: number = this.post('ecpm');
         const bidding: number = this.post('bidding');
+        const adGroupId: string = this.post('id');
+        const adChannelId: string = this.post('adChannelId');
+        const placementID: string = this.post('placementID');
+        const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
+        const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as AdChannelConfModel;
 
+        // ecpm 非负
         if (ecpm < 0) {
             return this.fail(TaleCode.ValidData, 'ecpm 必须为非负数！！！');
         }
+        // bidding 为 1, 则 ecpm 强制为 0
         if (bidding === 1) {
             this.post('ecpm', 0);
         }
 
-        const adGroupId: string = this.post('id');
-        const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
+        const { productId } = await adGroupModel.getVo(adGroupId, ucId);
+        const channelParamConfVo = await channelParamConfModel.getChannelParamConf(adChannelId, productId);
 
-        try {
-            const { productId } = await adGroupModel.getVo(adGroupId, ucId);
-            const productAuth = await this.productAuth(productId);
-            const {
-                editAd, master
-            } = productAuth;
+        if (_.isEmpty(channelParamConfVo) && !_.includes(placementID, '$')) {
+            return this.fail(TaleCode.ValidData, '平台参数没有填, 广告 id 里面也没有加 $ ！！！');
+        }
 
-            if (master === 0) {
+        const productAuth = await this.productAuth(productId);
+        const {
+            editAd, master
+        } = productAuth;
 
-                if (editAd === 0) {
-                    throw new Error('没有权限！！！');
-                }
+        if (master === 0) {
+
+            if (editAd === 0) {
+                return this.fail(TaleCode.AuthFaild, '没有权限！！！');
             }
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
     }
