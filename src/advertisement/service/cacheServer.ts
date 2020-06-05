@@ -19,7 +19,7 @@ export default class CacheService extends BaseService {
 
     private redis: Redis.Redis;
     private oneDaySeconds = 24 * 60 * 60;
-    private cacheKeyPrefix = 'c:';
+    private cacheKeyPrefix = 'cache:';
 
     constructor() {
         super();

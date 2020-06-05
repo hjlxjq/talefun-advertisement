@@ -26,9 +26,9 @@ export default class AuthService extends BaseService {
 
     private redis: Redis.Redis;
     private oneDaySeconds = 24 * 60 * 60;
-    private productAuthKeyPrefix = 'p:';
-    private productGroupAuthKeyPrefix = 'pg:';
-    private userAuthKeyPrefix = 'u:';
+    private productAuthKeyPrefix = 'pAuth:';
+    private productGroupAuthKeyPrefix = 'pgAuth:';
+    private userAuthKeyPrefix = 'uAuth:';
 
     constructor() {
         super();
@@ -147,8 +147,8 @@ export default class AuthService extends BaseService {
 
         const productGroupAuthKey = this.productGroupAuthKeyPrefix + userId;
         const field = productGroupId;
-        think.logger.debug(`productGroupAuthKey: ${productGroupAuthKey}`);
-        think.logger.debug(`field: ${field}`);
+        // think.logger.debug(`productGroupAuthKey: ${productGroupAuthKey}`);
+        // think.logger.debug(`field: ${field}`);
         const productGroupAuthStr = await this.redis.hget(productGroupAuthKey, field);
 
         if (productGroupAuthStr) {

@@ -1348,16 +1348,22 @@ export default class DispatchManagerController extends BaseController {
 
             if (!_.isEmpty(adByPlacementIDVo) && adByPlacementIDVo.id) {
                 const cacheAdByPlacementIDVo = await cacheServer.fetchCacheData(ucId, 'ad', adByPlacementIDVo.id);
+
                 think.logger.debug(`cacheAdByPlacementIDVo: ${JSON.stringify(cacheAdByPlacementIDVo)}`);
-                if (cacheAdByPlacementIDVo.active !== 0) {
+
+                // 未更新（不存在）或者未禁用则报唯一性错误
+                if (_.isEmpty(cacheAdByPlacementIDVo) || cacheAdByPlacementIDVo.active !== 0) {
                     return this.fail(TaleCode.DBFaild, '广告 placementID 重复！！！');
                 }
 
             }
             if (!_.isEmpty(adByNameVo) && adByNameVo.id) {
                 const cacheAdByNameVo = await cacheServer.fetchCacheData(ucId, 'ad', adByNameVo.id);
+
                 think.logger.debug(`cacheAdByNameVo: ${JSON.stringify(cacheAdByNameVo)}`);
-                if (cacheAdByNameVo.active !== 0) {
+
+                // 未更新（不存在）或者未禁用则报唯一性错误
+                if (_.isEmpty(cacheAdByNameVo) || cacheAdByNameVo.active !== 0) {
                     return this.fail(TaleCode.DBFaild, '广告名称重复！！！');
                 }
 
