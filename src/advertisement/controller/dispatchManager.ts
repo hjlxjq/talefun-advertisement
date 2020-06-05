@@ -14,6 +14,7 @@ import * as moment from 'moment-mini-ts';
 import { TaleCode } from '../../common/tale/TaleDefine';
 import BaseController from '../../common/tale/BaseController';
 
+import AdTypeModel from '../model/adType';
 import VersionGroupModel from '../model/versionGroup';
 import NationDefineModel from '../model/nationDefine';
 import AbTestGroupModel from '../model/abTestGroup';
@@ -55,7 +56,8 @@ import {
     // DeleteConfigReqVO, DeleteConfigResVO, DeleteNativeTmplConfReqVO, DeleteNativeTmplConfResVO,
     // UnbindAdGroupReqVO, UnbindAdGroupResVO,DeleteAdReqVO, DeleteAdResVO,
 } from '../interface';
-import AdTypeModel from '../model/adType';
+
+const cacheActiveTime = '2020-05-02';
 
 export default class DispatchManagerController extends BaseController {
 
@@ -1325,21 +1327,60 @@ export default class DispatchManagerController extends BaseController {
         const ecpm: number = this.post('ecpm');
         const bidding: number = this.post('bidding');
         const active: number = this.post('active');
-
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        const { adTypeId, productId } = await adGroupModel.getVo(adGroupId, ucId);
+        try {
+            /**
+             * 广告 placementID 和广告名称唯一性检查，
+             * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
+             */
+            const [
+                adByPlacementIDVo, adByNameVo
+            ] = await Promise.all([
+                adModel.getByPlacementID(adGroupId, placementID, 1),
+                adModel.getByName(adGroupId, adChannelId, name, 1)
+            ]);
 
-        const adVo: AdVO = {
-            productId, adGroupId, adChannelId, adTypeId,
-            name, placementID, ecpm, bidding, creatorId: ucId,
-            active, activeTime: undefined,
-            loader: undefined, subloader: undefined, interval: undefined, weight: undefined
-        };
-        await adModel.addVo(adVo);
+            think.logger.debug(`adByPlacementIDVo: ${JSON.stringify(adByPlacementIDVo)}`);
+            think.logger.debug(`adByNameVo: ${JSON.stringify(adByNameVo)}`);
 
-        this.success('created');
+            if (!_.isEmpty(adByPlacementIDVo) && adByPlacementIDVo.id) {
+                const cacheAdByPlacementIDVo = await cacheServer.fetchCacheData(ucId, 'ad', adByPlacementIDVo.id);
+                think.logger.debug(`cacheAdByPlacementIDVo: ${JSON.stringify(cacheAdByPlacementIDVo)}`);
+                if (cacheAdByPlacementIDVo.active !== 0) {
+                    return this.fail(TaleCode.DBFaild, '广告 placementID 重复！！！');
+                }
+
+            }
+            if (!_.isEmpty(adByNameVo) && adByNameVo.id) {
+                const cacheAdByNameVo = await cacheServer.fetchCacheData(ucId, 'ad', adByNameVo.id);
+                think.logger.debug(`cacheAdByNameVo: ${JSON.stringify(cacheAdByNameVo)}`);
+                if (cacheAdByNameVo.active !== 0) {
+                    return this.fail(TaleCode.DBFaild, '广告名称重复！！！');
+                }
+
+            }
+
+            const { adTypeId, productId } = await adGroupModel.getVo(adGroupId, ucId);
+            const CacheActiveTime = think.config('CacheActiveTime');
+
+            // 数据库暂存， activeTime 标识
+            const adVo: AdVO = {
+                productId, adGroupId, adChannelId, adTypeId,
+                name, placementID, ecpm, bidding, creatorId: ucId,
+                active, activeTime: CacheActiveTime,
+                loader: undefined, subloader: undefined, interval: undefined, weight: undefined
+            };
+
+            await adModel.addVo(adVo);
+            this.success('created');
+
+        } catch (e) {
+            think.logger.debug(e);
+            this.fail(TaleCode.DBFaild, 'create fail!!!');
+        }
     }
 
     /**

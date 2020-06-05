@@ -97,6 +97,57 @@ export default class AdModel extends MBModel {
     }
 
     /**
+     * 根据广告组表主键 id 和 广告 placementID 获取广告信息列表
+     * @argument {string} adGroupId 广告组表 id;
+     * @argument {string} placementID 广告 placementID
+     * @argument {number} active 是否生效;
+     * 获取广告组下广告信息列表
+     */
+    public async getByPlacementID(adGroupId: string, placementID: string, active?: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`adGroupId = '${adGroupId}'`);
+        queryStrings.push(`placementID = '${placementID}'`);
+
+        if (!_.isUndefined(active)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`active=${active}`);
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).find() as AdVO;
+    }
+
+    /**
+     * 根据广告组表主键 id, 广告渠道 和 广告名称获取广告信息列表
+     * @argument {string} adGroupId 广告组表 id;
+     * @argument {string} adChannelId 广告组表 id;
+     * @argument {string} name 广告 placementID
+     * @argument {number} active 是否生效;
+     * 获取广告组下广告信息列表
+     */
+    public async getByName(
+        adGroupId: string,
+        adChannelId: string,
+        name: string,
+        active?: number
+    ) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`adGroupId = '${adGroupId}'`);
+        queryStrings.push(`adChannelId = '${adChannelId}'`);
+        queryStrings.push(`name = '${name}'`);
+
+        if (!_.isUndefined(active)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`active=${active}`);
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).find() as AdVO;
+    }
+
+    /**
      * 根据应用表主键 id 获取广告信息
      * @argument {string} productId 应用表 id;
      * @argument {string} creatorId 创建者 id

@@ -287,7 +287,7 @@ export interface ProductListResVO extends ResVO {
 /**
  * 获取应用详情 /advertisement/productManager/product
  */
-export interface GetProductReqVO extends ResVO {
+export interface GetProductReqVO {
     id: string;    // 应用表主键 id
 }
 
@@ -440,7 +440,7 @@ export interface ProductGroupListResVO extends ResVO {
 /**
  * 获取项目组详情 /advertisement/productManager/productGroup
  */
-export interface GetProductGroupReqVO extends ResVO {
+export interface GetProductGroupReqVO {
     id: string;    // 项目组表主键 id
 }
 
@@ -1076,7 +1076,7 @@ export interface UpdateAdGroupResVO extends ResVO {
  * GET，
  * </br>获取广告列表 /advertisement/dispatchManager/adList
  */
-export interface AdListReqVO extends ResVO {
+export interface AdListReqVO {
     id: string;    // 应用表主键 id
 }
 
