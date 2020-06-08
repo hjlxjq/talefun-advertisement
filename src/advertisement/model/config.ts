@@ -65,7 +65,7 @@ export default class ConfigModel extends MBModel {
      * @argument {ConfigVO} configVo 常量表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateConfig(id: string, configVo: ConfigVO) {
+    public async updateVo(id: string, configVo: ConfigVO) {
         if (!Utils.isEmptyObj(configVo)) {
             return await this.where({ id }).update(configVo);
         }
@@ -77,7 +77,7 @@ export default class ConfigModel extends MBModel {
      * @argument {string} id 常量表 id;
      * @returns {Promise<ConfigVO>} 常量表信息;
      */
-    public async getConfig(id: string): Promise<ConfigVO> {
+    public async getVo(id: string): Promise<ConfigVO> {
         return await this.where({ id }).find();
     }
 
@@ -86,14 +86,29 @@ export default class ConfigModel extends MBModel {
      * @argument {string} key 常量 key;
      * @argument {string} configGroupId 常量组表 id;
      * @argument {string} creatorId 创建者 id
+     * @argument {number} active 是否生效
      * @returns {Promise<ConfigVO>} 常量表信息;
      */
-    public async getByGroupAndKey(key: string, configGroupId: string, creatorId: string = '') {
+    public async getByGroupAndKey(
+        key: string,
+        configGroupId: string,
+        creatorId?: string,
+        active?: number
+    ) {
         const queryStrings: string[] = [];
 
         queryStrings.push(`\`key\`='${key}'`);    // key 为 mysql 关键字
         queryStrings.push(`configGroupId='${configGroupId}'`);
-        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        if (!_.isUndefined(active)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`active=${active}`);
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+        }
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+        }
 
         const queryString: string = queryStrings.join(' AND ');
         think.logger.debug(`queryString: ${queryString}`);
@@ -106,23 +121,9 @@ export default class ConfigModel extends MBModel {
      * @argument {string} id 常量表 id;
      * @returns {Promise<number>} 删除行数;
      */
-    public async delConfig(id: string) {
+    public async delVo(id: string) {
         return await this.where({ id }).delete();
     }
-
-    /**
-     * 根据常量组主键 id 获取常量组下常量数量
-     * @argument {string} configGroupId 常量组表 id;
-     * @argument {number} active 是否生效;
-     * @returns {Promise<number>} 常量组下常量数量;
-     */
-    // public async getNum(configGroupId: string, active?: number) {
-    //     if (!_.isUndefined(active)) {
-    //         return await this.where({ configGroupId, active }).count('id');
-
-    //     }
-    //     return await this.where({ configGroupId }).count('id');
-    // }
 
     /**
      * 按常量组主键获取常量信息

@@ -188,7 +188,7 @@ export default class ModelService extends BaseService {
         const adChannelVoList = await adChannelModel.getList(1, test, adChannelIdList);
 
         const channelParamConfResVoList = await Bluebird.map(adChannelVoList, async (adChannelVo) => {
-            const channelParamConfVo = await channelParamConfModel.getChannelParamConf(adChannelVo.id, productId);
+            const channelParamConfVo = await channelParamConfModel.getVo(adChannelVo.id, productId);
 
             const channelParamConfResVo: ChannelParamConfResVO = _.defaults(
                 {
@@ -219,9 +219,9 @@ export default class ModelService extends BaseService {
     }
 
     /**
-     * <br/>获取版本分组控制列表信息
+     * <br/>获取版本条件分组列表信息
      * @argument {string} productId 应用表 id;
-     * @argument {string} type 版本分组类型;
+     * @argument {string} type 版本条件分组类型;
      * @argument {string} creatorId 创建者 id
      */
     public async getVersionGroupList(productId: string, type: number, creatorId: string) {

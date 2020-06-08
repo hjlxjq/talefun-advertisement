@@ -298,43 +298,22 @@ export default class ProductManagerController extends BaseController {
             value1, value2, value3,
             adChannelId, productId
         };
-        await channelParamConfModel.updateChannelParamConf(
+        await channelParamConfModel.updateVo(
             adChannelId, productId, channelParamConfUpdateVo
         );
 
-        const channelParamConfVo = await channelParamConfModel.getChannelParamConf(adChannelId, productId);
+        const channelParamConfVo = await channelParamConfModel.getVo(adChannelId, productId);
 
         if (
             _.isEmpty(channelParamConfVo.value1) &&
             _.isEmpty(channelParamConfVo.value2) &&
             _.isEmpty(channelParamConfVo.value3)
         ) {
-            await channelParamConfModel.delChannelParamConf(adChannelId, productId);
+            await channelParamConfModel.delVo(adChannelId, productId);
         }
 
         return this.success('updated');
     }
-
-    // /**
-    //  * <br/>删除应用平台参数
-    //  * @argument {DeleteChannelParamConfReqVO}
-    //  * @returns {DeleteChannelParamConfResVO}
-    //  * @debugger yes
-    //  */
-    // public async deleteChannelParamConfAction() {
-    //     const ucId: string = this.ctx.state.userId;
-    //     const adChannelId: string = this.post('id');
-    //     const productId: string = this.post('productId');
-    //     const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as ChannelParamConfModel;
-
-    //     const rows = await channelParamConfModel.delChannelParamConf(adChannelId, productId);
-
-    //     if (rows === 1) {
-    //         return this.success('deleted');
-    //     } else {
-    //         this.fail(TaleCode.DBFaild, 'delete fail!!!');
-    //     }
-    // }
 
     /**
      * <br/>获取项目组列表

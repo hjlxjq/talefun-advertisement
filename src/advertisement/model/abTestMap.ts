@@ -11,7 +11,7 @@ import { AbTestMapVO } from '../defines';
 import Utils from '../utils';
 
 /**
- * ab 测试分组与广告组关系配置相关模型
+ * 广告位表配置相关模型
  * @class abTestMapModel
  * @extends @link:advertisement/model/managerBaseModel
  * @author jianlong <jianlong@talefun.com>
@@ -19,8 +19,8 @@ import Utils from '../utils';
 export default class AbTestMapModel extends MBModel {
 
     /**
-     * <br/>插入 ab 测试分组与广告组关系表对象
-     * @argument {AbTestMapVO[]} abTestMapVo ab 测试分组与广告组关系表对象;
+     * <br/>插入广告位表对象
+     * @argument {AbTestMapVO[]} abTestMapVo 广告位表对象;
      * @returns {Promise<string>} 主键 id;
      */
     public async addVo(abTestMapVo: AbTestMapVO) {
@@ -30,8 +30,8 @@ export default class AbTestMapModel extends MBModel {
 
     /**
      * 批量，
-     * <br/>插入 ab 测试分组与广告组关系表对象
-     * @argument {AbTestMapVO[]} abTestMapVoList ab 测试分组与广告组关系表对象列表;
+     * <br/>插入广告位表对象
+     * @argument {AbTestMapVO[]} abTestMapVoList 广告位表对象列表;
      * @returns {Promise<string[]>} 主键列表;
      */
     public async addList(abTestMapVoList: AbTestMapVO[]) {
@@ -46,19 +46,15 @@ export default class AbTestMapModel extends MBModel {
     }
 
     /**
-     * 更新 ab 测试分组与广告组关系表
-     * @argument {string} abTestGroupId 分组表 id;
-     * @argument {string} place 广告位;
-     * @argument {AbTestMapVO} abTestMapVo ab 测试分组与广告组关系表对象;
+     * 更新广告位表
+     * @argument {string} id 广告位表 id;
+     * @argument {AbTestMapVO} abTestMapVo 广告位表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateVo(
-        abTestGroupId: string, place: string, abTestMapVo: AbTestMapVO
-    ) {
+    public async updateVo(id: string, abTestMapVo: AbTestMapVO) {
         if (!Utils.isEmptyObj(abTestMapVo)) {
-            return await this.thenUpdate(abTestMapVo, { place, abTestGroupId });
+            return await this.where({ id }).update(abTestMapVo);
         }
-
         return 0;
     }
 
@@ -73,23 +69,55 @@ export default class AbTestMapModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取 ab 测试分组与广告组关系信息
-     * @argument {string} abTestGroupId 分组表 id;
-     * @argument {string} place 广告位;
-     * @argument {string} creatorId 创建者 id
-     * @returns {Promise<AbTestMapVO>} ab 测试分组与广告组关系信息;
+     * 删除 ab 分组与广告组关系记录
+     * @argument {string} versionGroupId 分组条件表 id;
+     * @returns {Promise<number>} 删除行数;
      */
-    public async getVo(abTestGroupId: string, place: string, creatorId: string = '') {
-        const query = `abTestGroupId = '${abTestGroupId}' AND place = '${place}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
-
-        return await this.where(query).find() as AbTestMapVO;
+    public async delByVersionGroup(versionGroupId: string) {
+        return await this.where({ versionGroupId }).delete();
     }
 
     /**
-     * 根据 ab 测试分组表主键 id 获取 ab 测试分组与广告组关系表列表
+     * 根据 ab 分组主键列表删除 ab 分组与广告组关系列表
+     * @argument {string[]} abTestGroupIdList ab 分组条件表主键列表;
+     * @returns {Promise<number>} 删除行数;
+     */
+    public async delListByAbTestGroupList(abTestGroupIdList: string[]) {
+        abTestGroupIdList.push('');    // 为空数组报错
+        return await this.where({ abTestGroupId: ['IN', abTestGroupIdList] }).delete();
+    }
+
+    /**
+     * 根据主键 id 获取广告位信息,
+     * <br/> 广告位表不需要判断是否开启
+     * @argument {string} abTestGroupId 分组表 id;
+     * @argument {string} place 广告位;
+     * @argument {string} creatorId 创建者 id
+     * @returns {Promise<AbTestMapVO>} 广告位信息;
+     */
+    public async getVo(
+        abTestGroupId: string,
+        place: string,
+        creatorId?: string,
+    ) {
+        const queryStrings: string[] = [];
+
+        queryStrings.push(`abTestGroupId = '${abTestGroupId}'`);
+        queryStrings.push(`place = '${place}'`);
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+        }
+
+        const queryString: string = queryStrings.join(' AND ');
+        return await this.where(queryString).find() as AbTestMapVO;
+    }
+
+    /**
+     * 根据 ab 测试分组表主键 id 获取广告位表列表
      * @argument {string} abTestGroupId ab 测试分组表 id;
      * @argument {string} creatorId 创建者 id
-     * @returns {Promise<AbTestMapVO[]>} ab 测试分组与广告组关系表列表;
+     * @returns {Promise<AbTestMapVO[]>} 广告位表列表;
      */
     public async getList(abTestGroupId: string, creatorId: string = '') {
         const query = `abTestGroupId = '${abTestGroupId}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;

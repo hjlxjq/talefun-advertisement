@@ -51,7 +51,7 @@ export default class NativeTmplConfModel extends MBModel {
      * @argument {NativeTmplConfVO} nativeTmplConfVo应用下 native 模板表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateNativeTmplConf(id: string, nativeTmplConfVo: NativeTmplConfVO) {
+    public async updateVo(id: string, nativeTmplConfVo: NativeTmplConfVO) {
         if (!Utils.isEmptyObj(nativeTmplConfVo)) {
             return await this.where({ id }).update(nativeTmplConfVo);
         }
@@ -63,8 +63,51 @@ export default class NativeTmplConfModel extends MBModel {
      * @argument {string} id应用下 native 模板表 id;
      * @returns {Promise<nativeTmplConfVO>}应用下 native 模板信息;
      */
-    public async getNativeTmplConf(id: string) {
+    public async getVo(id: string) {
         return await this.where({ id }).find() as NativeTmplConfVO;
+    }
+
+    /**
+     * 删除应用 native 模板
+     * @argument {string} id  引用 native 模板表 id;
+     * @returns {Promise<number>} 删除行数;
+     */
+    public async delVo(id: string) {
+        return await this.where({ id }).delete();
+    }
+
+    /**
+     * 根据 native 模板组表主键和 native 模板表主键获取常量
+     * @argument {string} nativeTmplId native 模板表主键;
+     * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表 id;
+     * @argument {string} creatorId 创建者 id
+     * @returns {Promise<ConfigVO>} 常量表信息;
+     */
+    public async getByGroupAndNativeTmpl(
+        nativeTmplId: string,
+        nativeTmplConfGroupId: string,
+        creatorId?: string,
+        active?: number
+    ) {
+        const queryStrings: string[] = [];
+
+        queryStrings.push(`nativeTmplId='${nativeTmplId}'`);
+        queryStrings.push(`nativeTmplConfGroupId = '${nativeTmplConfGroupId}'`);
+
+        if (!_.isUndefined(active)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`active=${active}`);
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+        }
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+        }
+
+        const queryString: string = queryStrings.join(' AND ');
+        think.logger.debug(`queryString: ${queryString}`);
+
+        return await this.where(queryString).find() as NativeTmplConfVO;
     }
 
     /**
@@ -87,19 +130,4 @@ export default class NativeTmplConfModel extends MBModel {
 
         return await this.where(query).select() as NativeTmplConfVO[];
     }
-
-    /**
-     * 根据 native 模板组表主键 id 获取应用 native 模板数量
-     * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表 id;
-     * @argument {number} active 是否生效;
-     * @returns {Promise<number>} 应用 native 模板数量;
-     */
-    // public async getNum(nativeTmplConfGroupId: string, active?: number) {
-    //     if (!_.isUndefined(active)) {
-    //         return await this.where({ nativeTmplConfGroupId, active }).count('id');
-
-    //     }
-    //     return await this.where({ nativeTmplConfGroupId }).count('id');
-    // }
-
 }

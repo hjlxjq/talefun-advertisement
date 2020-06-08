@@ -12,6 +12,9 @@ import ConfigModel from '../model/config';
 import NativeTmplConfGroupModel from '../model/nativeTmplConfGroup';
 import NativeTmplConfModel from '../model/nativeTmplConf';
 import AdChannelConfModel from '../model/channelParamConf';
+import AdChannelModel from '../model/adChannel';
+
+import CacheService from '../service/cacheServer';
 
 import * as _ from 'lodash';
 import { think } from 'thinkjs';
@@ -32,7 +35,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>获取版本分组控制列表信息
+     * <br/>获取版本条件分组列表信息
      */
     public async versionGroupListAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
@@ -95,7 +98,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>创建版本分组控制
+     * <br/>创建版本条件分组
      */
     public async createVersionGroupAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
@@ -161,12 +164,13 @@ export default class DispatchManagerLogic extends AMLogic {
         const productId: string = this.post('id');
         const type: number = this.post('type');
 
-        try {
-            const productAuth = await this.productAuth(productId);
-            const {
-                editAd, editGameConfig, editPurchase, master
-            } = productAuth;
+        const productAuth = await this.productAuth(productId);
+        const {
+            editAd, editGameConfig, editPurchase, master
+        } = productAuth;
 
+        // 权限检查
+        try {
             if (master === 0) {
 
                 if (editAd === 0 && type === 0) {
@@ -188,7 +192,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>复制版本分组控制
+     * <br/>复制版本条件分组
      */
     public async copyVersionGroupAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -228,37 +232,44 @@ export default class DispatchManagerLogic extends AMLogic {
 
         const copyId: string = this.post('id');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
+        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
 
-        try {
-            // 被复制组的默认配置
-            const { productId, type } = await versionGroupModel.getVersionGroup(copyId, ucId);
-            const productAuth = await this.productAuth(productId);
-            const {
-                editAd, editGameConfig, editPurchase, master
-            } = productAuth;
+        // 被复制组的默认配置
+        const [
+            copyedVersionGroupVo,
+            copyedAbTestGroupVo
+        ] = await Promise.all([
+            versionGroupModel.getVo(copyId, ucId),
+            abTestGroupModel.getDefault(copyId, ucId)
+        ]);
 
-            if (master === 0) {
+        // 复制组不存在
+        if (_.isEmpty(copyedVersionGroupVo) || _.isEmpty(copyedAbTestGroupVo)) {
+            this.fail(TaleCode.DBFaild, '复制组不存在！！！');
+        }
 
-                if (editAd === 0 && type === 0) {
-                    throw new Error('没有权限！！！');
-                }
-                if (editGameConfig === 0 && type === 1) {
-                    throw new Error('没有权限！！！');
-                }
-                if (editPurchase === 0 && type === 2) {
-                    throw new Error('没有权限！！！');
-                }
+        // 权限
+        const { productId, type } = copyedVersionGroupVo;
+        const productAuth = await this.productAuth(productId);
+        const {
+            editAd, editGameConfig, editPurchase, master
+        } = productAuth;
+
+        if (master === 0) {
+
+            if (
+                (editAd === 0 && type === 0) ||
+                (editGameConfig === 0 && type === 1) ||
+                (editPurchase === 0 && type === 2)
+            ) {
+                return this.fail(TaleCode.AuthFaild, '没有权限！！！');
             }
-
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
     }
 
     /**
-     * <br/>更新版本分组控制
+     * <br/>更新版本条件分组
      */
     public async updateVersionGroupAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -314,13 +325,20 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupId: string = this.post('id');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
-        try {
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
-            const productAuth = await this.productAuth(productId);
-            const {
-                editAd, editGameConfig, editPurchase, master
-            } = productAuth;
+        const versionGroupVo = await versionGroupModel.getVo(versionGroupId, ucId);
 
+        if (_.isEmpty(versionGroupVo)) {
+            this.fail(TaleCode.DBFaild, '版本条件分组不存在!!!');
+        }
+
+        // 权限检查
+        const { productId, type } = versionGroupVo;
+        const productAuth = await this.productAuth(productId);
+        const {
+            editAd, editGameConfig, editPurchase, master
+        } = productAuth;
+
+        try {
             if (master === 0) {
 
                 if (editAd === 0 && type === 0) {
@@ -342,7 +360,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>获取版本分组下 ab 分组列表
+     * <br/>获取版本条件分组下 ab 分组列表
      */
     public async abTestGroupListAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -366,7 +384,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVo(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 viewAd, viewGameConfig, viewPurchase, master
@@ -393,58 +411,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>向版本分组下创建默认 ab 分组
-     */
-    public async createDefaultAbTestGroupAction() {
-        const ucId: string = this.ctx.state.user.id;
-        this.allowMethods = 'post';    // 只允许 POST 请求类型
-
-        const rules = {
-            id: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            }
-        };
-        const flag = this.validate(rules);
-
-        if (!flag) {
-            return this.fail(TaleCode.ValidData, this.validateMsg());
-        }
-
-        const versionGroupId: string = this.post('id');
-        const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-
-        try {
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
-            const productAuth = await this.productAuth(productId);
-            const {
-                editAd, editGameConfig, editPurchase, master
-            } = productAuth;
-
-            if (master === 0) {
-
-                if (editAd === 0 && type === 0) {
-                    throw new Error('没有权限！！！');
-                }
-                if (editGameConfig === 0 && type === 1) {
-                    throw new Error('没有权限！！！');
-                }
-                if (editPurchase === 0 && type === 2) {
-                    throw new Error('没有权限！！！');
-                }
-            }
-
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
-
-    }
-
-    /**
-     * <br/>向版本分组下创建 ab 分组
+     * <br/>向版本条件分组下创建 ab 分组
      */
     public async createAbTestGroupAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -500,6 +467,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupId: string = this.post('id');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 最少分 2 组
         if (!groupNum || groupNum < 2) {
@@ -516,6 +484,27 @@ export default class DispatchManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, '分组失败，分组范围不能均分！！！');
         }
 
+        /**
+         * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
+         */
+        const abTestGroupVoList =
+            await abTestGroupModel.getListByName(versionGroupId, name, ucId, 1);
+
+        const abTestGroupVo = abTestGroupVoList[0];
+        if (!_.isEmpty(abTestGroupVo) && abTestGroupVo.id) {
+            const cacheAbTestGroupVo =
+                await cacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupVo.id);
+
+            // 未更新（不存在）或者未禁用则报唯一性错误
+            if (_.isEmpty(cacheAbTestGroupVo) || cacheAbTestGroupVo.active !== 0) {
+                return this.fail(TaleCode.DBFaild, 'ab 测试名重复！！！');
+            }
+
+        }
+
+        /**
+         * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
+         */
         const currentAbTestGroupVoList = await abTestGroupModel.getList(versionGroupId, undefined, 1);
         // 终止判断条件
         currentAbTestGroupVoList[currentAbTestGroupVoList.length] = {
@@ -526,6 +515,7 @@ export default class DispatchManagerLogic extends AMLogic {
         let correct = false;
         for (let i = 0, l = currentAbTestGroupVoList.length; i < l; i++) {
             const currentAbTestGroupVo = currentAbTestGroupVoList[i];
+            // 上一个 ab 测试用户范围，第一个 ab 测试默认上一个用户范围
             let lastAbTestGroupVo = { begin: 1, end: 1 };
 
             if (i > 0) {
@@ -538,12 +528,16 @@ export default class DispatchManagerLogic extends AMLogic {
             }
         }
 
+        // 未找到合适的用户范围
         if (!correct) {
             return this.fail(TaleCode.ValidData, '分组失败，范围重叠！！！');
         }
 
+        /**
+         * <br/>权限判断
+         */
         try {
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVo(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
             const {
                 editAd, editGameConfig, editPurchase, master
@@ -600,7 +594,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         try {
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVo(versionGroupId, ucId);
 
             const productAuth = await this.productAuth(productId);
             const {
@@ -658,7 +652,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         try {
             const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVo(versionGroupId, ucId);
 
             const productAuth = await this.productAuth(productId);
             const {
@@ -940,11 +934,6 @@ export default class DispatchManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
-            name: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                method: 'POST'       // 指定获取数据的方式
-            },
             dependentId: {
                 string: true,       // 字段类型为 String 类型
                 trim: true,         // 字段需要 trim 处理
@@ -1075,7 +1064,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>创建常量
+     * <br/>创建游戏常量
      */
     public async createConfigAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
@@ -1120,8 +1109,14 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         const configGroupId: string = this.post('id');
+        const key: string = this.post('key');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
+        const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
+        /**
+         * <br/>权限判断
+         */
         try {
             const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, ucId);
             const { type, productId } = configGroupVo;
@@ -1146,6 +1141,21 @@ export default class DispatchManagerLogic extends AMLogic {
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
+        /**
+         * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
+         */
+        const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId, 1);
+
+        if (!_.isEmpty(configVo) && configVo.id) {
+            const cacheConfigVo = await cacheServer.fetchCacheData(ucId, 'config', configVo.id);
+
+            // 未更新（不存在）或者未禁用则报唯一性错误
+            if (_.isEmpty(cacheConfigVo) || cacheConfigVo.active !== 0) {
+                return this.fail(TaleCode.DBFaild, '游戏常量 key 重复！！！');
+            }
+
+        }
+
     }
 
     /**
@@ -1160,11 +1170,6 @@ export default class DispatchManagerLogic extends AMLogic {
                 string: true,       // 字段类型为 String 类型
                 trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            key: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             value: {
@@ -1194,7 +1199,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
 
         try {
-            const { configGroupId } = await configModel.getConfig(configId);
+            const { configGroupId } = await configModel.getVo(configId);
             const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, ucId);
             const { type, productId } = configGroupVo;
 
@@ -1219,58 +1224,6 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
     }
-
-    /**
-     * <br/>删除常量
-     */
-    // public async deleteConfigAction() {
-    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
-    //     const ucId: string = this.ctx.state.user.id;
-
-    //     const rules = {
-    //         id: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         }
-    //     };
-    //     const flag = this.validate(rules);
-
-    //     if (!flag) {
-    //         return this.fail(TaleCode.ValidData, this.validateMsg());
-    //     }
-
-    //     const configId: string = this.post('id');
-    //     const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-    //     const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
-
-    //     try {
-    //         const { configGroupId } = await configModel.getConfig(configId);
-    //         const configGroupVo = await configGroupModel.getConfigGroup(configGroupId, ucId);
-    //         const { type, productId } = configGroupVo;
-
-    //         const productAuth = await this.productAuth(productId);
-    //         const {
-    //             editGameConfig, master
-    //         } = productAuth;
-
-    //         if (master === 0) {
-
-    //             if (type === 0) {
-    //                 throw new Error('没有权限！！！');
-    //             }
-
-    //             if (editGameConfig === 0 && type === 1) {
-    //                 throw new Error('没有权限！！！');
-    //             }
-    //         }
-    //     } catch (e) {
-    //         think.logger.debug(e);
-    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-    //     }
-
-    // }
 
     /**
      * <br/>向 ab 分组绑定 native 组
@@ -1305,7 +1258,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         try {
             const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVo(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
 
             const {
@@ -1564,11 +1517,6 @@ export default class DispatchManagerLogic extends AMLogic {
                 trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
-            name: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                method: 'POST'       // 指定获取数据的方式
-            },
             active: {
                 int: true,       // 字段类型为 Number 类型
                 trim: true,         // 字段需要 trim 处理
@@ -1659,10 +1607,17 @@ export default class DispatchManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, this.validateMsg());
         }
 
+        const nativeTmplId: string = this.post('nativeTmplId');
         const nativeTmplConfGroupId: string = this.post('id');
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const nativeTmplConfModel =
+            this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
 
+        /**
+         * <br/>权限判断
+         */
         try {
             const nativeTmplConfGroupVo =
                 await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId, ucId);
@@ -1682,6 +1637,23 @@ export default class DispatchManagerLogic extends AMLogic {
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        }
+
+        /**
+         * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
+         */
+        const nativeTmplConfVo =
+            await nativeTmplConfModel.getByGroupAndNativeTmpl(nativeTmplId, nativeTmplConfGroupId, ucId, 1);
+
+        if (!_.isEmpty(nativeTmplConfVo) && nativeTmplConfVo.id) {
+            const cacheNativeTmplConfVo =
+                await cacheServer.fetchCacheData(ucId, 'nativeTmplConf', nativeTmplConfVo.id);
+
+            // 未更新（不存在）或者未禁用则报唯一性错误
+            if (_.isEmpty(cacheNativeTmplConfVo) || cacheNativeTmplConfVo.active !== 0) {
+                return this.fail(TaleCode.DBFaild, '模板 key 重复！！！');
+            }
+
         }
 
     }
@@ -1733,7 +1705,7 @@ export default class DispatchManagerLogic extends AMLogic {
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
 
         try {
-            const { nativeTmplConfGroupId } = await nativeTmplConfModel.getNativeTmplConf(nativeTmplConfId);
+            const { nativeTmplConfGroupId } = await nativeTmplConfModel.getVo(nativeTmplConfId);
             const nativeTmplConfGroupVo =
                 await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId, ucId);
             const { productId } = nativeTmplConfGroupVo;
@@ -1755,56 +1727,6 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
     }
-
-    /**
-     * <br/>删除应用 native 模板
-     */
-    // public async deleteNativeTmplConfAction() {
-    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
-    //     const ucId: string = this.ctx.state.user.id;
-
-    //     const rules = {
-    //         id: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         }
-    //     };
-    //     const flag = this.validate(rules);
-
-    //     if (!flag) {
-    //         return this.fail(TaleCode.ValidData, this.validateMsg());
-    //     }
-
-    //     const nativeTmplConfId: string = this.post('id');
-    //     const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
-    //     const nativeTmplConfGroupModel =
-    //         this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
-
-    //     try {
-    //         const { nativeTmplConfGroupId } = await nativeTmplConfModel.getNativeTmplConf(nativeTmplConfId);
-    //         const nativeTmplConfGroupVo =
-    //             await nativeTmplConfGroupModel.getNativeTmplConfGroup(nativeTmplConfGroupId, ucId);
-    //         const { productId } = nativeTmplConfGroupVo;
-
-    //         const productAuth = await this.productAuth(productId);
-    //         const {
-    //             editAd, master
-    //         } = productAuth;
-
-    //         if (master === 0) {
-
-    //             if (editAd === 0) {
-    //                 throw new Error('没有权限！！！');
-    //             }
-    //         }
-    //     } catch (e) {
-    //         think.logger.debug(e);
-    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-    //     }
-
-    // }
 
     /**
      * <br/>向 ab 分组绑定广告组
@@ -1850,7 +1772,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         try {
             const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVo(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
 
             const {
@@ -1871,61 +1793,6 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
     }
-
-    /**
-     * <br/>删除 ab 分组下广告位
-     */
-    // public async unbindAdGroupAction() {
-    //     const ucId: string = this.ctx.state.user.id;
-    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
-
-    //     const rules = {
-    //         id: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         },
-    //         place: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         }
-    //     };
-    //     const flag = this.validate(rules);
-
-    //     if (!flag) {
-    //         return this.fail(TaleCode.ValidData, this.validateMsg());
-    //     }
-
-    //     const abTestGroupId: string = this.post('id');
-    //     const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-    //     const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-
-    //     try {
-    //         const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
-    //         const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
-    //         const productAuth = await this.productAuth(productId);
-
-    //         const {
-    //             editAd, master
-    //         } = productAuth;
-
-    //         if (master === 0) {
-
-    //             if (editAd === 0 && type === 0) {
-    //                 throw new Error('没有权限！！！');
-    //             }
-
-    //         }
-
-    //     } catch (e) {
-    //         think.logger.debug(e);
-    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-    //     }
-
-    // }
 
     /**
      * <br/>全量 ab 分组下广告位到默认组
@@ -1960,7 +1827,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         try {
             const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
-            const { productId, type } = await versionGroupModel.getVersionGroup(versionGroupId, ucId);
+            const { productId, type } = await versionGroupModel.getVo(versionGroupId, ucId);
             const productAuth = await this.productAuth(productId);
 
             const {
@@ -2164,11 +2031,6 @@ export default class DispatchManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
-            name: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                method: 'POST'       // 指定获取数据的方式
-            },
             description: {
                 string: true,       // 字段类型为 String 类型
                 trim: true,         // 字段需要 trim 处理
@@ -2358,23 +2220,38 @@ export default class DispatchManagerLogic extends AMLogic {
         const placementID: string = this.post('placementID');
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as AdChannelConfModel;
+        const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
 
         // ecpm 非负
         if (ecpm < 0) {
             return this.fail(TaleCode.ValidData, 'ecpm 必须为非负数！！！');
         }
         // bidding 为 1, 则 ecpm 强制为 0
-        if (bidding === 1) {
-            this.post('ecpm', 0);
+        if (bidding === 1 && ecpm !== 0) {
+            return this.fail(TaleCode.ValidData, 'bidding 为 1, 则 ecpm 强制为 0！！！');
         }
 
         const { productId } = await adGroupModel.getVo(adGroupId, ucId);
-        const channelParamConfVo = await channelParamConfModel.getChannelParamConf(adChannelId, productId);
 
-        if (_.isEmpty(channelParamConfVo) && !_.includes(placementID, '$')) {
+        const [adChannelVo, channelParamConfVo] = await Promise.all([
+            adChannelModel.getVo(adChannelId),
+            channelParamConfModel.getVo(adChannelId, productId)
+        ]);
+
+        let keyExist = false;
+        if (adChannelVo.key1 || adChannelVo.key2 || adChannelVo.key3) {
+            keyExist = true;
+        }
+        // 常规配置中 key 存在，且在应用下面没有配置 value，则必须在广告 placementID 中包含 $
+        if (
+            keyExist &&
+            _.isEmpty(channelParamConfVo) &&
+            !_.includes(placementID, '$')
+        ) {
             return this.fail(TaleCode.ValidData, '平台参数没有填, 广告 id 里面也没有加 $ ！！！');
         }
 
+        // 权限判断
         const productAuth = await this.productAuth(productId);
         const {
             editAd, master
@@ -2393,6 +2270,7 @@ export default class DispatchManagerLogic extends AMLogic {
      * <br/>更新广告
      */
     public async updateAdAction() {
+        const ucId: string = this.ctx.state.userId;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
         const rules = {
@@ -2457,22 +2335,24 @@ export default class DispatchManagerLogic extends AMLogic {
         const adId: string = this.post('id');
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
 
-        try {
-            const { productId } = await adModel.getVo(adId);
-            const productAuth = await this.productAuth(productId);
-            const {
-                editAd, master
-            } = productAuth;
+        const adVo = await adModel.getVo(adId, ucId);
 
-            if (master === 0) {
+        if (_.isEmpty(adVo)) {
+            this.fail(TaleCode.DBFaild, '该广告不存在!!!');
+        }
 
-                if (editAd === 0) {
-                    throw new Error('没有权限！！！');
-                }
+        // 权限判断
+        const { productId } = adVo;
+        const productAuth = await this.productAuth(productId);
+        const {
+            editAd, master
+        } = productAuth;
+
+        if (master === 0) {
+
+            if (editAd === 0) {
+                return this.fail(TaleCode.AuthFaild, '没有权限！！！');
             }
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
     }

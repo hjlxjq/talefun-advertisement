@@ -60,7 +60,11 @@ export default class ManagerBaseModel extends BaseModel {
      */
     public async deployVo(creatorId: string) {
         if ((creatorId)) {
-            return await this.where({ creatorId }).update({ creatorId: null });
+            const LiveActiveTime = think.config('LiveActiveTime');
+            return await this.where({ creatorId }).update({
+                creatorId: null,
+                activeTime: LiveActiveTime
+            });
         }
         return 0;
     }

@@ -11,7 +11,7 @@ import { NationVO } from '../defines';
 import Utils from '../utils';
 
 /**
- * 版本分组与国家关系表配置相关模型
+ * 版本条件分组与国家关系表配置相关模型
  * @class nationModel
  * @extends @link:advertisement/model/managerBaseModel
  * @author jianlong <jianlong@talefun.com>
@@ -19,7 +19,7 @@ import Utils from '../utils';
 export default class NationModel extends MBModel {
 
     /**
-     * 获取某个版本分组下国家列表
+     * 获取某个版本条件分组下国家列表
      * @argument {string} versionGroupId 版本控制分组表 id;
      * @returns {Promise<string[]>} 国家列表;
      */

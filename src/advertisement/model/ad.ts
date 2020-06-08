@@ -70,10 +70,16 @@ export default class AdModel extends MBModel {
     /**
      * 根据主键 id 获取广告信息
      * @argument {string} id 广告表 id;
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<AdVO>} 广告信息;
      */
-    public async getVo(id: string) {
-        return await this.where({ id }).find() as AdVO;
+    public async getVo(id: string, creatorId: string = '') {
+        const queryStrings: string[] = [];
+        queryStrings.push(`id='${id}'`);
+        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        const queryString: string = queryStrings.join(' AND ');
+        return await this.where(queryString).find() as AdVO;
     }
 
     /**

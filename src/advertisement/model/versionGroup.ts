@@ -11,7 +11,7 @@ import { VersionGroupVO } from '../defines';
 import Utils from '../utils';
 
 /**
- * 版本分组控制配置相关模型
+ * 版本条件分组配置相关模型
  * @class versionGroupModel
  * @extends @link:advertisement/model/managerBaseModel
  * @author jianlong <jianlong@talefun.com>
@@ -19,23 +19,23 @@ import Utils from '../utils';
 export default class VersionGroupModel extends MBModel {
 
     /**
-     * 插入版本分组控制
-     * @argument {VersionGroupVO} versionGroupVo 版本分组控制表对象;
+     * 插入版本条件分组
+     * @argument {VersionGroupVO} versionGroupVo 版本条件分组表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addVersionGroup(versionGroupVo: VersionGroupVO) {
+    public async addVo(versionGroupVo: VersionGroupVO) {
 
         await this.add(versionGroupVo);
         return this.ID[0];
     }
 
     /**
-     * 更新版本分组控制
-     * @argument {string} id 版本分组控制表 id;
-     * @argument {VersionGroupVO} versionGroupVo 版本分组控制表对象;
+     * 更新版本条件分组
+     * @argument {string} id 版本条件分组表 id;
+     * @argument {VersionGroupVO} versionGroupVo 版本条件分组表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateVersionGroup(id: string, versionGroupVo: VersionGroupVO) {
+    public async updateVo(id: string, versionGroupVo: VersionGroupVO) {
         if (!Utils.isEmptyObj(versionGroupVo)) {
             return await this.where({ id }).update(versionGroupVo);
 
@@ -44,20 +44,57 @@ export default class VersionGroupModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取版本分组控制信息
-     * @argument {string} id 版本分组控制表 id;
-     * @argument {string} creatorId 创建者 id
-     * @returns {Promise<VersionGroupVO>} 版本分组控制信息;
+     * 删除版本条件分组
+     * @argument {string} id 版本条件分组表主键;
+     * @returns {Promise<number>} 删除行数;
      */
-    public async getVersionGroup(id: string, creatorId: string = '') {
+    public async delVo(id: string) {
+        return await this.where({ id }).delete();
+    }
+
+    /**
+     * 根据主键 id 获取版本条件分组信息
+     * @argument {string} id 版本条件分组表 id;
+     * @argument {string} creatorId 创建者 id
+     * @returns {Promise<VersionGroupVO>} 版本条件分组信息;
+     */
+    public async getVo(id: string, creatorId: string = '') {
         const query = `id = '${id}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
 
         return await this.where(query).find() as VersionGroupVO;
     }
 
-    /**获取版本分组控制信息列表
+    /**
+     * 根据广告组表主键 id 和 广告 placementID 获取广告信息列表
+     * @argument {string} adGroupId 广告组表 id;
+     * @argument {string} placementID 广告 placementID
+     * @argument {number} active 是否生效;
+     * 获取广告组下广告信息列表
+     */
+    public async getByName(
+        name: string,
+        type: number,
+        productId: string,
+        active?: number
+    ) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`type = '${type}'`);
+        queryStrings.push(`name = '${name}'`);
+        queryStrings.push(`productId = '${productId}'`);
+
+        if (!_.isUndefined(active)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`active=${active}`);
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).find() as VersionGroupVO;
+    }
+
+    /**获取版本条件分组信息列表
      * @argument {string} productId 应用表 id;
-     * @argument {string} type 版本分组控制表类型;
+     * @argument {string} type 版本条件分组表类型;
      * @argument {string} creatorId 创建者 id
      */
     public async getList(productId: string, type: number, creatorId: string = '') {
@@ -69,11 +106,11 @@ export default class VersionGroupModel extends MBModel {
     }
 
     /**
-     * 获取版本分组控制名列表,
-     * @argument {string[]} idList 版本分组控制表 id 列表;
+     * 获取版本条件分组名列表,
+     * @argument {string[]} idList 版本条件分组表 id 列表;
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;
-     * @returns {Promise<string[]>} 版本分组控制名列表;
+     * @returns {Promise<string[]>} 版本条件分组名列表;
      */
     public async getVersionGroupNameList(idList: string[] = [], creatorId: string = '', active?: number) {
         // 为空数组

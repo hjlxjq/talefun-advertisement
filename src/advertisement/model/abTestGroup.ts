@@ -62,21 +62,53 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 根据测试名获取 ab 测试分组主键列表
+     * 删除 ab 测试分组
+     * @argument {string} versionGroupId 分组条件表 id;
+     * @returns {Promise<number>} 删除行数;
+     */
+    public async delByVersionGroup(versionGroupId: string) {
+        return await this.where({ versionGroupId }).delete();
+    }
+
+    /**
+     * 删除  ab 测试分组列表
+     * @argument {string[]} idList ab 测试分组主键列表;
+     * @returns {Promise<number>} 删除行数;
+     */
+    public async delList(idList: string[]) {
+        idList.push('');    // 为空数组报错
+        return await this.where({ id: ['IN', idList] }).delete();
+    }
+
+    /**
+     * 根据测试名获取 ab 测试分组列表
      * <br/>
      * @argument {string} versionGroupId 分组条件表 id;
-     * @argument {string} name ab 测试分组表 id;
+     * @argument {string} name ab 测试分组名;
      * @argument {string} creatorId 创建者 id
-     * @returns {Promise<string[]>} 返回 ab 测试分组主键列表
+     * @returns {Promise<string[]>} 返回 ab 测试分组列表
      */
-    public async getIdListByName(versionGroupId: string, name: string, creatorId: string = '') {
-        const query = `versionGroupId = '${versionGroupId}' AND name LIKE '${name}_%' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
+    public async getListByName(
+        versionGroupId: string,
+        name: string,
+        creatorId?: string,
+        active?: number
+    ) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`name LIKE '${name}_%'`);
+        queryStrings.push(`versionGroupId = '${versionGroupId}'`);
 
-        // think.logger.debug(`getIdListByName query: ${query}`);
-        const abTestGroupVoList = await this.where(query).select() as AbTestGroupVO[];
-        return _.map(abTestGroupVoList, (abTestGroupVo) => {
-            return abTestGroupVo.id;
-        });
+        if (!_.isUndefined(active)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`active=${active}`);
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+        }
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+        }
+
+        const queryString: string = queryStrings.join(' AND ');
+        return await this.where(queryString).select() as AbTestGroupVO[];
     }
 
     /**
@@ -126,10 +158,10 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 获取版本分组表主键 id 列表，
+     * 获取版本条件分组表主键 id 列表，
      * @argument {string} nativeTmplConfGroupId native 模板组表 id;
      * @argument {string} creatorId 创建者 id
-     * @returns {Promise<string[]>} 获取版本分组表主键 id 列表;
+     * @returns {Promise<string[]>} 获取版本条件分组表主键 id 列表;
      */
     public async getVerionGroupIdListByNative(nativeTmplConfGroupId: string, creatorId: string = '') {
         const query = `nativeTmplConfGroupId = '${nativeTmplConfGroupId}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
@@ -142,10 +174,10 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 获取版本分组表主键 id 列表，
+     * 获取版本条件分组表主键 id 列表，
      * @argument {string} configGroupId 常量组表 id;
      * @argument {string} creatorId 创建者 id
-     * @returns {Promise<string[]>} 获取版本分组表主键 id 列表;
+     * @returns {Promise<string[]>} 获取版本条件分组表主键 id 列表;
      */
     public async getVerionGroupIdListByConfig(configGroupId: string, creatorId: string = '') {
         const query = `configGroupId = '${configGroupId}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;

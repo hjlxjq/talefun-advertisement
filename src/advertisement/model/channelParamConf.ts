@@ -18,17 +18,6 @@ import Utils from '../utils';
  */
 export default class ChannelParamConfModel extends MBModel {
 
-    // /**
-    //  * 插入应用广告平台参数
-    //  * @argument {ChannelParamConfVO} channelParamConfVo 应用广告平台参数表对象;
-    //  * @returns {Promise<string>} 主键 id;
-    //  */
-    // public async addChannelParamConf(channelParamConfVo: ChannelParamConfVO) {
-
-    //     await this.add(channelParamConfVo);
-    //     return this.ID[0];
-    // }
-
     /**
      * 更新应用广告平台参数
      * @argument {string} adChannelId 广告平台参数表 id;
@@ -36,7 +25,7 @@ export default class ChannelParamConfModel extends MBModel {
      * @argument {ChannelParamConfVO} channelParamConfVo 应用广告平台参数表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateChannelParamConf(
+    public async updateVo(
         adChannelId: string,
         productId: string,
         channelParamConfVo: ChannelParamConfVO
@@ -54,7 +43,7 @@ export default class ChannelParamConfModel extends MBModel {
      * @argument {string} productId 应用表 id;
      * @returns {Promise<ChannelParamConfVO>} 应用广告平台参数信息;
      */
-    public async getChannelParamConf(adChannelId: string, productId: string) {
+    public async getVo(adChannelId: string, productId: string) {
         return await this.where({ adChannelId, productId }).find() as ChannelParamConfVO;
     }
 
@@ -72,7 +61,7 @@ export default class ChannelParamConfModel extends MBModel {
      * @argument {string} productId 应用表 id;
      * @returns {Promise<number>} 删除行数;
      */
-    public async delChannelParamConf(adChannelId: string, productId: string) {
+    public async delVo(adChannelId: string, productId: string) {
         return await this.where({ adChannelId, productId }).delete();
     }
 }

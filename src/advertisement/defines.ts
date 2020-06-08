@@ -220,10 +220,10 @@ export interface ConfigVO extends BaseVO {
 }
 
 /**
- * 版本分组控制表基本字段
+ * 版本条件分组表基本字段
  */
 export interface VersionGroupVO extends BaseVO {
-    name: string;    // 版本分组控制组名
+    name: string;    // 版本条件分组组名
     begin: number;    // 起始版本
     description: string; // 描述
     type: number;    // 0 广告 1 游戏常量 2 商店
@@ -241,7 +241,7 @@ export interface VersionGroupVO extends BaseVO {
 export interface NationVO extends BaseVO {
     code: string;    // 国家代码
     include: number;    // 是否包含
-    versionGroupId: string;    // 版本分组控制表 id
+    versionGroupId: string;    // 版本条件分组表 id
 }
 
 /**
@@ -265,7 +265,7 @@ export interface AbTestGroupVO extends BaseVO {
     activeTime: string;    // 失效时间戳
     nativeTmplConfGroupId?: string;    // native 模板组表 id
     configGroupId?: string;    // 常量组表 id
-    versionGroupId?: string;    // 版本分组控制表 id
+    versionGroupId?: string;    // 版本条件分组表 id
 }
 
 /**
@@ -277,6 +277,7 @@ export interface AbTestMapVO extends BaseVO {
     active: number;    // 控制生效
     creatorId: string;    // 创建者 id
     abTestGroupId?: string;    // ab 分组测试表 id
+    versionGroupId: string;    // 版本条件分组表 id
     adGroupId?: string;    // 广告组表 id
 }
 
