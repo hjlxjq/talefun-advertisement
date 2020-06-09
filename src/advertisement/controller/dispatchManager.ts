@@ -1446,46 +1446,8 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         try {
-            /**
-             * 广告 placementID 和广告名称唯一性检查，
-             * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
-             */
-            const [
-                adByPlacementIDVo, adByNameVo
-            ] = await Promise.all([
-                adModel.getByPlacementID(adGroupId, placementID, 1, 1),
-                adModel.getByName(adGroupId, adChannelId, name, 1, 1)
-            ]);
-
-            think.logger.debug(`adByPlacementIDVo: ${JSON.stringify(adByPlacementIDVo)}`);
-            think.logger.debug(`adByNameVo: ${JSON.stringify(adByNameVo)}`);
-
-            if (!_.isEmpty(adByPlacementIDVo) && adByPlacementIDVo.id) {
-                const cacheAdByPlacementIDVo = await cacheServer.fetchCacheData(ucId, 'ad', adByPlacementIDVo.id);
-
-                think.logger.debug(`cacheAdByPlacementIDVo: ${JSON.stringify(cacheAdByPlacementIDVo)}`);
-
-                // 未更新（不存在）或者未禁用则报唯一性错误
-                if (_.isEmpty(cacheAdByPlacementIDVo) || cacheAdByPlacementIDVo.active !== 0) {
-                    return this.fail(TaleCode.DBFaild, '广告 placementID 重复！！！');
-                }
-
-            }
-            if (!_.isEmpty(adByNameVo) && adByNameVo.id) {
-                const cacheAdByNameVo = await cacheServer.fetchCacheData(ucId, 'ad', adByNameVo.id);
-
-                think.logger.debug(`cacheAdByNameVo: ${JSON.stringify(cacheAdByNameVo)}`);
-
-                // 未更新（不存在）或者未禁用则报唯一性错误
-                if (_.isEmpty(cacheAdByNameVo) || cacheAdByNameVo.active !== 0) {
-                    return this.fail(TaleCode.DBFaild, '广告名称重复！！！');
-                }
-
-            }
-
             const { adTypeId, productId } = await adGroupModel.getVo(adGroupId, ucId);
             const CacheActiveTime = think.config('CacheActiveTime');
 
@@ -1527,21 +1489,23 @@ export default class DispatchManagerController extends BaseController {
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
+        // 该广告对象
         const adVo = await adModel.getVo(id, ucId);
 
+         // 待更新广告对象
         const updateAdVo: AdVO = {
             productId: undefined, adGroupId: undefined, adChannelId: undefined, adTypeId: undefined,
             activeTime: undefined, creatorId: undefined,
-            placementID, name, ecpm, interval, subloader, loader, weight, bidding,
-            active
+            placementID, name, ecpm, interval, subloader, loader, weight, bidding, active
         };
 
         try {
             // 本账户创建的直接数据库操作
             if (adVo.creatorId === ucId) {
+                // 直接删除
                 if (active === 0) {
                     await adModel.delVo(id);
-
+                    // 直接更新
                 } else {
                     await adModel.updateVo(id, updateAdVo);
                 }

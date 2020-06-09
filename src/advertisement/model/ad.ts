@@ -17,7 +17,6 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class AdModel extends MBModel {
-
     /**
      * 插入广告组下广告
      * @argument {AdVO} adVo 广告组下广告表对象;

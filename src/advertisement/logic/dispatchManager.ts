@@ -2279,6 +2279,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as AdChannelConfModel;
         const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
+        const adModel = this.taleModel('ad', 'advertisement') as AdModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // ecpm 非负
         if (ecpm < 0) {
@@ -2309,7 +2311,9 @@ export default class DispatchManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, '平台参数没有填, 广告 id 里面也没有加 $ ！！！');
         }
 
-        // 权限判断
+        /**
+         * 权限判断
+         */
         const productAuth = await this.productAuth(productId);
         const {
             editAd, master
@@ -2320,6 +2324,43 @@ export default class DispatchManagerLogic extends AMLogic {
             if (editAd === 0) {
                 return this.fail(TaleCode.AuthFaild, '没有权限！！！');
             }
+        }
+
+        /**
+         * 广告 placementID 和广告名称唯一性检查，
+         * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
+         */
+        const [
+            adByPlacementIDVo, adByNameVo
+        ] = await Promise.all([
+            adModel.getByPlacementID(adGroupId, placementID, 1, 1),
+            adModel.getByName(adGroupId, adChannelId, name, 1, 1)
+        ]);
+
+        think.logger.debug(`adByPlacementIDVo: ${JSON.stringify(adByPlacementIDVo)}`);
+        think.logger.debug(`adByNameVo: ${JSON.stringify(adByNameVo)}`);
+
+        if (!_.isEmpty(adByPlacementIDVo) && adByPlacementIDVo.id) {
+            const cacheAdByPlacementIDVo = await cacheServer.fetchCacheData(ucId, 'ad', adByPlacementIDVo.id);
+
+            think.logger.debug(`cacheAdByPlacementIDVo: ${JSON.stringify(cacheAdByPlacementIDVo)}`);
+
+            // 未更新（不存在）或者未禁用则报唯一性错误
+            if (_.isEmpty(cacheAdByPlacementIDVo) || cacheAdByPlacementIDVo.active !== 0) {
+                return this.fail(TaleCode.DBFaild, '广告 placementID 重复！！！');
+            }
+
+        }
+        if (!_.isEmpty(adByNameVo) && adByNameVo.id) {
+            const cacheAdByNameVo = await cacheServer.fetchCacheData(ucId, 'ad', adByNameVo.id);
+
+            think.logger.debug(`cacheAdByNameVo: ${JSON.stringify(cacheAdByNameVo)}`);
+
+            // 未更新（不存在）或者未禁用则报唯一性错误
+            if (_.isEmpty(cacheAdByNameVo) || cacheAdByNameVo.active !== 0) {
+                return this.fail(TaleCode.DBFaild, '广告名称重复！！！');
+            }
+
         }
 
     }
