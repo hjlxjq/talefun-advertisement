@@ -17,16 +17,15 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class ConfigGroupModel extends MBModel {
-
     /**
      * 插入常量组
      * @argument {ConfigGroupVO} configGroupVo 常量组表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addConfigGroup(configGroupVo: ConfigGroupVO) {
-
+    public async addVo(configGroupVo: ConfigGroupVO) {
         await this.add(configGroupVo);
         return this.ID[0];
+
     }
 
     /**
@@ -35,11 +34,13 @@ export default class ConfigGroupModel extends MBModel {
      * @argument {ConfigGroupVO} configGroupVo 常量组表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateConfigGroup(id: string, configGroupVo: ConfigGroupVO) {
+    public async updateVo(id: string, configGroupVo: ConfigGroupVO) {
         if (!Utils.isEmptyObj(configGroupVo)) {
             return await this.where({ id }).update(configGroupVo);
         }
+
         return 0;
+
     }
 
     /**
@@ -48,13 +49,18 @@ export default class ConfigGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<ConfigGroupVO>} 常量组数据;
      */
-    public async getConfigGroup(id: string, creatorId: string = '') {
+    public async getVo(id: string, creatorId: string) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
-        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
         const queryString: string = queryStrings.join(' AND ');
+
         return await this.where(queryString).find() as ConfigGroupVO;
+
     }
 
     /**
@@ -64,6 +70,7 @@ export default class ConfigGroupModel extends MBModel {
      */
     public async getList() {
         return await this.order('name').select() as ConfigGroupVO[];
+
     }
 
     /**
@@ -74,15 +81,19 @@ export default class ConfigGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AdTypeVO[]>} 常量组列表;
      */
-    public async getListByProductAndType(productId: string, type: number, creatorId: string = '') {
+    public async getListByProductAndType(productId: string, type: number, creatorId: string) {
         const queryStrings: string[] = [];
         queryStrings.push(`productId='${productId}'`);
         queryStrings.push(`type='${type}'`);
-        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).select() as ConfigGroupVO[];
+
     }
 
 }

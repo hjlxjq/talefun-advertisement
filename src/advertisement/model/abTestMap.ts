@@ -17,7 +17,6 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class AbTestMapModel extends MBModel {
-
     /**
      * <br/>插入广告位表对象
      * @argument {AbTestMapVO[]} abTestMapVo 广告位表对象;
@@ -25,7 +24,9 @@ export default class AbTestMapModel extends MBModel {
      */
     public async addVo(abTestMapVo: AbTestMapVO) {
         await this.add(abTestMapVo);
+
         return this.ID[0];
+
     }
 
     /**
@@ -38,11 +39,12 @@ export default class AbTestMapModel extends MBModel {
         let idList: string[] = [];
 
         if (!think.isEmpty(abTestMapVoList)) {
-
             await this.addMany(abTestMapVoList);
             idList = this.ID;
         }
+
         return idList;
+
     }
 
     /**
@@ -55,42 +57,38 @@ export default class AbTestMapModel extends MBModel {
         if (!Utils.isEmptyObj(abTestMapVo)) {
             return await this.where({ id }).update(abTestMapVo);
         }
+
         return 0;
+
     }
 
     /**
-     * 删除 ab 分组与广告组关系
+     * 删除广告位表对象
      * @argument {string} abTestGroupId 分组表 id;
      * @argument {string} place 广告位;
      * @returns {Promise<number>} 删除行数;
      */
     public async delVo(abTestGroupId: string, place: string) {
         return await this.where({ abTestGroupId, place }).delete();
+
     }
 
     /**
-     * 删除 ab 分组与广告组关系记录
-     * @argument {string} versionGroupId 分组条件表 id;
-     * @returns {Promise<number>} 删除行数;
-     */
-    public async delByVersionGroup(versionGroupId: string) {
-        return await this.where({ versionGroupId }).delete();
-    }
-
-    /**
-     * 根据 ab 分组主键列表删除 ab 分组与广告组关系列表
+     * 根据 ab 分组主键列表删除广告位表对象列表
      * @argument {string[]} abTestGroupIdList ab 分组条件表主键列表;
      * @returns {Promise<number>} 删除行数;
      */
-    public async delListByAbTestGroupList(abTestGroupIdList: string[]) {
+    public async delList(abTestGroupIdList: string[]) {
         abTestGroupIdList.push('');    // 为空数组报错
+
         return await this.where({ abTestGroupId: ['IN', abTestGroupIdList] }).delete();
+
     }
 
     /**
      * 根据主键 id 获取广告位信息,
      * <br/> 广告位表不需要判断是否开启
-     * @argument {string} abTestGroupId 分组表 id;
+     * @argument {string} abTestGroupId ab 测试分组表 id;
      * @argument {string} place 广告位;
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestMapVO>} 广告位信息;
@@ -110,7 +108,9 @@ export default class AbTestMapModel extends MBModel {
         }
 
         const queryString: string = queryStrings.join(' AND ');
+
         return await this.where(queryString).find() as AbTestMapVO;
+
     }
 
     /**
@@ -119,10 +119,19 @@ export default class AbTestMapModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestMapVO[]>} 广告位表列表;
      */
-    public async getList(abTestGroupId: string, creatorId: string = '') {
-        const query = `abTestGroupId = '${abTestGroupId}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
+    public async getList(abTestGroupId: string, creatorId?: string) {
+        const queryStrings: string[] = [];
 
-        return await this.where(query).select() as AbTestMapVO[];
+        queryStrings.push(`abTestGroupId = '${abTestGroupId}'`);
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+        }
+
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as AbTestMapVO[];
+
     }
 
     /**
@@ -131,13 +140,22 @@ export default class AbTestMapModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestMapVO>} ab 测试分组主键 id 列表
      */
-    public async getAbTestGroupIdByAdGroup(adGroupId: string, creatorId: string = '') {
-        const query = `adGroupId = '${adGroupId}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
+    public async getAbTestGroupIdByAdGroup(adGroupId: string, creatorId?: string) {
+        const queryStrings: string[] = [];
 
-        const abTestMapVoList = await this.where(query).select() as AbTestMapVO[];
+        queryStrings.push(`adGroupId = '${adGroupId}'`);
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+        }
+
+        const queryString: string = queryStrings.join(' AND ');
+        const abTestMapVoList = await this.where(queryString).select() as AbTestMapVO[];
 
         return _.map(abTestMapVoList, (abTestMapVo) => {
             return abTestMapVo.abTestGroupId;
         });
+
     }
+
 }

@@ -17,16 +17,15 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class NativeTmplConfModel extends MBModel {
-
     /**
      * 插入应用下 native 模板
      * @argument {NativeTmplConfVO} nativeTmplConfVo应用下 native 模板表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addNativeTmplConf(nativeTmplConfVo: NativeTmplConfVO) {
-
+    public async addVo(nativeTmplConfVo: NativeTmplConfVO) {
         await this.add(nativeTmplConfVo);
         return this.ID[0];
+
     }
 
     /**
@@ -37,34 +36,48 @@ export default class NativeTmplConfModel extends MBModel {
      */
     public async addList(nativeTmplConfVoList: NativeTmplConfVO[]) {
         let idList: string[] = [];
-        if (!think.isEmpty(nativeTmplConfVoList)) {
 
+        if (!think.isEmpty(nativeTmplConfVoList)) {
             await this.addMany(nativeTmplConfVoList);
             idList = this.ID;
+
         }
         return idList;
+
     }
 
     /**
      * 更新应用下 native 模板
-     * @argument {string} id应用下 native 模板表 id;
+     * @argument {string} id 应用下 native 模板表 id;
      * @argument {NativeTmplConfVO} nativeTmplConfVo应用下 native 模板表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, nativeTmplConfVo: NativeTmplConfVO) {
         if (!Utils.isEmptyObj(nativeTmplConfVo)) {
             return await this.where({ id }).update(nativeTmplConfVo);
+
         }
         return 0;
+
     }
 
     /**
      * 根据主键 id 获取应用下 native 模板信息
-     * @argument {string} id应用下 native 模板表 id;
+     * @argument {string} id 应用下 native 模板表 id;
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<nativeTmplConfVO>}应用下 native 模板信息;
      */
-    public async getVo(id: string) {
-        return await this.where({ id }).find() as NativeTmplConfVO;
+    public async getVo(id: string, creatorId: string) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`id='${id}'`);
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).find() as NativeTmplConfVO;
     }
 
     /**
@@ -74,6 +87,7 @@ export default class NativeTmplConfModel extends MBModel {
      */
     public async delVo(id: string) {
         return await this.where({ id }).delete();
+
     }
 
     /**
@@ -81,13 +95,16 @@ export default class NativeTmplConfModel extends MBModel {
      * @argument {string} nativeTmplId native 模板表主键;
      * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表 id;
      * @argument {string} creatorId 创建者 id
+     * @argument {number} active 是否生效;
+     * @argument {number} live 是否线上已发布数据
      * @returns {Promise<ConfigVO>} 常量表信息;
      */
     public async getByGroupAndNativeTmpl(
         nativeTmplId: string,
         nativeTmplConfGroupId: string,
-        creatorId?: string,
-        active?: number
+        creatorId: string,
+        active: number,
+        live: number,
     ) {
         const queryStrings: string[] = [];
 
@@ -95,28 +112,23 @@ export default class NativeTmplConfModel extends MBModel {
         queryStrings.push(`nativeTmplConfGroupId = '${nativeTmplConfGroupId}'`);
 
         if (!_.isUndefined(active)) {
-            const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`active=${active}`);
-            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
-        }
 
+        }
+        if (!_.isUndefined(live)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
-        }
 
+        }
         const queryString: string = queryStrings.join(' AND ');
         think.logger.debug(`queryString: ${queryString}`);
 
         return await this.where(queryString).find() as NativeTmplConfVO;
-    }
 
-    /**
-     * 删除应用下 native 模板
-     * @argument {string} id 应用下 native 模板表 id;
-     * @returns {Promise<number>} 删除行数;
-     */
-    public async delNativeTmplConf(id: string) {
-        return await this.where({ id }).delete();
     }
 
     /**
@@ -129,5 +141,7 @@ export default class NativeTmplConfModel extends MBModel {
         (creatorId IS NULL OR creatorId = '${creatorId}')`;
 
         return await this.where(query).select() as NativeTmplConfVO[];
+
     }
+
 }

@@ -17,16 +17,15 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class ConfigModel extends MBModel {
-
     /**
      * 插入常量
      * @argument {ConfigVO} configVo 常量表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addConfig(configVo: ConfigVO) {
-
+    public async addVo(configVo: ConfigVO) {
         await this.add(configVo);
         return this.ID[0];
+
     }
 
     /**
@@ -37,12 +36,14 @@ export default class ConfigModel extends MBModel {
      */
     public async addList(configVoList: ConfigVO[]) {
         let idList: string[] = [];
-        if (!think.isEmpty(configVoList)) {
 
+        if (!think.isEmpty(configVoList)) {
             await this.addMany(configVoList);
             idList = this.ID;
+
         }
         return idList;
+
     }
 
     /**
@@ -55,8 +56,10 @@ export default class ConfigModel extends MBModel {
     public async updateAdConfig(key: string, configGroupId: string, configVo: ConfigVO) {
         if (!Utils.isEmptyObj(configVo)) {
             return await this.thenUpdate(configVo, { key, configGroupId });
+
         }
         return 0;
+
     }
 
     /**
@@ -68,17 +71,30 @@ export default class ConfigModel extends MBModel {
     public async updateVo(id: string, configVo: ConfigVO) {
         if (!Utils.isEmptyObj(configVo)) {
             return await this.where({ id }).update(configVo);
+
         }
         return 0;
+
     }
 
     /**
      * 根据常量表主键 id 获取常量
      * @argument {string} id 常量表 id;
+     * @argument {string} creatorId 创建者 id
      * @returns {Promise<ConfigVO>} 常量表信息;
      */
-    public async getVo(id: string): Promise<ConfigVO> {
-        return await this.where({ id }).find();
+    public async getVo(id: string, creatorId: string) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`id='${id}'`);
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).find() as ConfigVO;
+
     }
 
     /**
@@ -87,13 +103,15 @@ export default class ConfigModel extends MBModel {
      * @argument {string} configGroupId 常量组表 id;
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效
+     * @argument {number} live 是否线上已发布数据
      * @returns {Promise<ConfigVO>} 常量表信息;
      */
     public async getByGroupAndKey(
         key: string,
         configGroupId: string,
-        creatorId?: string,
-        active?: number
+        creatorId: string,
+        active: number,
+        live: number,
     ) {
         const queryStrings: string[] = [];
 
@@ -101,11 +119,14 @@ export default class ConfigModel extends MBModel {
         queryStrings.push(`configGroupId='${configGroupId}'`);
 
         if (!_.isUndefined(active)) {
-            const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`active=${active}`);
-            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
-        }
 
+        }
+        if (!_.isUndefined(live)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
         }
@@ -114,6 +135,7 @@ export default class ConfigModel extends MBModel {
         think.logger.debug(`queryString: ${queryString}`);
 
         return await this.where(queryString).find() as ConfigVO;
+
     }
 
     /**
@@ -123,6 +145,7 @@ export default class ConfigModel extends MBModel {
      */
     public async delVo(id: string) {
         return await this.where({ id }).delete();
+
     }
 
     /**
@@ -132,16 +155,21 @@ export default class ConfigModel extends MBModel {
      * @argument {number} active 是否生效;
      * @returns {Promise<ConfigVO[]>} 常量数据列表;
      */
-    public async getList(configGroupId: string, creatorId: string = '', active?: number) {
+    public async getList(configGroupId: string, creatorId: string, active: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`configGroupId='${configGroupId}'`);
-        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
         if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
         }
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
         const queryString: string = queryStrings.join(' AND ');
+
         return await this.where(queryString).select() as ConfigVO[];
+
     }
 
 }

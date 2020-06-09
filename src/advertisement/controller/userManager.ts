@@ -490,7 +490,7 @@ export default class UserController extends BaseController {
      * @returns {CreateUserToProductResVO}
      */
     public async createUserToProductAction() {
-        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用户的 userId
         const productId: string = this.post('id');
         const userId: string = this.post('userId');
         const editAd: number = this.post('editAd');

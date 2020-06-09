@@ -505,7 +505,7 @@ export interface VersionGroupListResVO extends ResVO {
         name: string;    // 版本条件分组组名
         begin: number;    // 起始版本
         codeList: string[];    // 支持的国家代码列表
-        type: number;    // 0 广告 1 游戏常量 2 商店
+        include: number;    // 是否包含
         description: string;    // 描述
         active: number;    // 是否生效
     }>;
@@ -543,7 +543,7 @@ export interface CreateVersionGroupResVO extends ResVO {
  * 复制版本条件分组 /advertisement/dispatchManager/copyVersionGroup
  */
 export interface CopyVersionGroupReqVO {
-    id: string;    // 被版本条件分组表主键 id
+    id: string;    // 被复制的版本条件分组主键 id
     name: string;    // 分组名
     description: string;    // 描述
 }
@@ -557,8 +557,6 @@ export interface CopyVersionGroupResVO extends ResVO {
  */
 export interface UpdateVersionGroupReqVO {
     id: string;    // 版本条件分组表主键 id
-    name?: string;    // 分组名
-    begin?: number;    // 起始版本
     codeList?: string[];    // 支持的国家代码列表, 有变动就传所有的 code
     include?: number;    // 国家代码是否包含
     description?: string;    // 描述

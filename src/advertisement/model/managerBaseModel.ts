@@ -55,7 +55,7 @@ export default class ManagerBaseModel extends BaseModel {
     /**
      * 更新 ab 测试分组,
      * <br/>
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者 id;
      * @returns {Promise<number>} 返回影响的行数
      */
     public async deployVo(creatorId: string) {

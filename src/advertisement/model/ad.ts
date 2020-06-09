@@ -107,17 +107,27 @@ export default class AdModel extends MBModel {
      * @argument {string} adGroupId 广告组表 id;
      * @argument {string} placementID 广告 placementID
      * @argument {number} active 是否生效;
+     * @argument {number} live 是否线上已发布数据
      * 获取广告组下广告信息列表
      */
-    public async getByPlacementID(adGroupId: string, placementID: string, active?: number) {
+    public async getByPlacementID(
+        adGroupId: string,
+        placementID: string,
+        active: number,
+        live: number
+    ) {
         const queryStrings: string[] = [];
         queryStrings.push(`adGroupId = '${adGroupId}'`);
         queryStrings.push(`placementID = '${placementID}'`);
 
         if (!_.isUndefined(active)) {
-            const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`active=${active}`);
+
+        }
+        if (!_.isUndefined(live)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
         }
         const queryString: string = queryStrings.join(' AND ');
 
@@ -130,13 +140,15 @@ export default class AdModel extends MBModel {
      * @argument {string} adChannelId 广告组表 id;
      * @argument {string} name 广告 placementID
      * @argument {number} active 是否生效;
+     * @argument {number} live 是否线上已发布数据
      * 获取广告组下广告信息列表
      */
     public async getByName(
         adGroupId: string,
         adChannelId: string,
         name: string,
-        active?: number
+        active: number,
+        live: number,
     ) {
         const queryStrings: string[] = [];
         queryStrings.push(`adGroupId = '${adGroupId}'`);
@@ -144,9 +156,13 @@ export default class AdModel extends MBModel {
         queryStrings.push(`name = '${name}'`);
 
         if (!_.isUndefined(active)) {
-            const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`active=${active}`);
+
+        }
+        if (!_.isUndefined(live)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
         }
         const queryString: string = queryStrings.join(' AND ');
 

@@ -17,16 +17,16 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class VersionGroupModel extends MBModel {
-
     /**
      * 插入版本条件分组
      * @argument {VersionGroupVO} versionGroupVo 版本条件分组表对象;
      * @returns {Promise<string>} 主键 id;
      */
     public async addVo(versionGroupVo: VersionGroupVO) {
-
         await this.add(versionGroupVo);
+
         return this.ID[0];
+
     }
 
     /**
@@ -38,9 +38,10 @@ export default class VersionGroupModel extends MBModel {
     public async updateVo(id: string, versionGroupVo: VersionGroupVO) {
         if (!Utils.isEmptyObj(versionGroupVo)) {
             return await this.where({ id }).update(versionGroupVo);
-
         }
+
         return 0;
+
     }
 
     /**
@@ -50,6 +51,7 @@ export default class VersionGroupModel extends MBModel {
      */
     public async delVo(id: string) {
         return await this.where({ id }).delete();
+
     }
 
     /**
@@ -58,24 +60,35 @@ export default class VersionGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<VersionGroupVO>} 版本条件分组信息;
      */
-    public async getVo(id: string, creatorId: string = '') {
-        const query = `id = '${id}' AND (creatorId IS NULL OR creatorId = '${creatorId}')`;
+    public async getVo(id: string, creatorId: string) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`id = '${id}'`);
 
-        return await this.where(query).find() as VersionGroupVO;
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+        }
+
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).find() as VersionGroupVO;
+
     }
 
     /**
-     * 根据广告组表主键 id 和 广告 placementID 获取广告信息列表
-     * @argument {string} adGroupId 广告组表 id;
-     * @argument {string} placementID 广告 placementID
+     * 根据应用和版本条件分组类型获取版本条件分组列表
+     * @argument {string} name 版本条件分组名;
+     * @argument {string} type 版本条件分组表类型;
+     * @argument {string} productId 应用表 id;
      * @argument {number} active 是否生效;
-     * 获取广告组下广告信息列表
+     * @argument {number} live 是否线上已发布数据
+     * @returns {Promise<string[]>} 版本条件分组列表;
      */
     public async getByName(
         name: string,
         type: number,
         productId: string,
-        active?: number
+        active: number,
+        live: number
     ) {
         const queryStrings: string[] = [];
         queryStrings.push(`type = '${type}'`);
@@ -83,26 +96,39 @@ export default class VersionGroupModel extends MBModel {
         queryStrings.push(`productId = '${productId}'`);
 
         if (!_.isUndefined(active)) {
-            const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`active=${active}`);
+
+        }
+        if (!_.isUndefined(live)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
         }
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).find() as VersionGroupVO;
+
     }
 
-    /**获取版本条件分组信息列表
+    /**
+     * 获取版本条件分组信息列表
      * @argument {string} productId 应用表 id;
      * @argument {string} type 版本条件分组表类型;
      * @argument {string} creatorId 创建者 id
      */
-    public async getList(productId: string, type: number, creatorId: string = '') {
+    public async getList(productId: string, type: number, creatorId: string) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`type = '${type}'`);
+        queryStrings.push(`productId = '${productId}'`);
 
-        const query = `productId = '${productId}' AND type = '${type}' AND
-        (creatorId IS NULL OR creatorId = '${creatorId}')`;
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+        }
 
-        return await this.where(query).select() as VersionGroupVO[];
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as VersionGroupVO[];
+
     }
 
     /**
@@ -112,19 +138,23 @@ export default class VersionGroupModel extends MBModel {
      * @argument {number} active 是否生效;
      * @returns {Promise<string[]>} 版本条件分组名列表;
      */
-    public async getVersionGroupNameList(idList: string[] = [], creatorId: string = '', active?: number) {
-        // 为空数组
+    public async getVersionGroupNameList(idList: string[] = [], creatorId: string, active: number) {
+        // 为空数组直接返回空
         if (_.isEmpty(idList)) {
             return [];
         }
 
         const queryStrings: string[] = [];
+
         // 条件单字段查询
-        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+        }
 
         // in 查询逻辑
         const idListString = _.map(idList, (id) => {
-            return `'id'`;
+            return `'${id}'`;
+
         });
         queryStrings.push(`id IN (${idListString})`);
 
@@ -138,7 +168,9 @@ export default class VersionGroupModel extends MBModel {
         const versionGroupNameList = _.map(versionGroupVoList, (versionGroupVo) => {
             return versionGroupVo.name;
         });
+
         return versionGroupNameList;
+
     }
 
 }

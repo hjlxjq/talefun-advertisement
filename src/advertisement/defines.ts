@@ -162,10 +162,10 @@ export interface AdVO extends BaseVO {
     activeTime: string;    // 失效时间戳
     active: number;    // 控制生效
     creatorId: string;    // 创建者 id
-    adChannelId?: string;    // 广告平台表 id
-    adTypeId?: string;    // 广告类型表 id
-    adGroupId?: string;    // 广告组表 id
-    productId?: string;    // 应用表 id
+    adChannelId: string;    // 广告平台表 id
+    adTypeId: string;    // 广告类型表 id
+    adGroupId: string;    // 广告组表 id
+    productId: string;    // 应用表 id
 }
 
 /**
@@ -176,7 +176,7 @@ export interface NativeTmplConfGroupVO extends BaseVO {
     description: string; // native 模板配置组描述
     active: number;    // 控制生效
     creatorId: string;    // 创建者 id
-    productId?: string;    // 应用表 id
+    productId: string;    // 应用表 id
 }
 
 /**
@@ -189,8 +189,8 @@ export interface NativeTmplConfVO extends BaseVO {
     active: number;    // 控制生效
     activeTime: string;    // 失效时间戳
     creatorId: string;    // 创建者 id
-    nativeTmplId?: string;    // native 模板表 id
-    nativeTmplConfGroupId?: string;    // native 模板配置组表 id
+    nativeTmplId: string;    // native 模板表 id
+    nativeTmplConfGroupId: string;    // native 模板配置组表 id
 }
 
 /**
@@ -202,8 +202,8 @@ export interface ConfigGroupVO extends BaseVO {
     type: number;    // 0 广告 1 游戏常量
     active: number;    // 控制生效
     creatorId: string;    // 创建者 id
-    dependentId?: string;    // 依赖的常量组表 id
-    productId?: string;    // 应用表 id
+    dependentId: string;    // 依赖的常量组表 id
+    productId: string;    // 应用表 id
 }
 
 /**
@@ -216,7 +216,7 @@ export interface ConfigVO extends BaseVO {
     active: number;    // 控制生效
     activeTime: string;    // 失效时间戳
     creatorId: string;    // 创建者 id
-    configGroupId?: string;    // 常量组表 id
+    configGroupId: string;    // 常量组表 id
 }
 
 /**
@@ -226,22 +226,13 @@ export interface VersionGroupVO extends BaseVO {
     name: string;    // 版本条件分组组名
     begin: number;    // 起始版本
     description: string; // 描述
-    type: number;    // 0 广告 1 游戏常量 2 商店
-    code: string; // 国家代码列表 json 字符串
     include: number;    // 是否包含
     active: number;    // 控制生效
-    activeTime: string;    // 失效时间戳
     creatorId: string;    // 创建者 id
-    productId?: string;    // 应用表 id
-}
-
-/**
- * 国家代码表基本字段
- */
-export interface NationVO extends BaseVO {
-    code: string;    // 国家代码
-    include: number;    // 是否包含
-    versionGroupId: string;    // 版本条件分组表 id
+    type: number;    // 0 广告 1 游戏常量 2 商店
+    activeTime: string;    // 失效时间戳
+    code: string; // 国家代码列表 json 字符串
+    productId: string;    // 应用表 id
 }
 
 /**
@@ -263,9 +254,9 @@ export interface AbTestGroupVO extends BaseVO {
     creatorId: string;    // 创建者 id
     active: number;    // 控制生效
     activeTime: string;    // 失效时间戳
-    nativeTmplConfGroupId?: string;    // native 模板组表 id
-    configGroupId?: string;    // 常量组表 id
-    versionGroupId?: string;    // 版本条件分组表 id
+    nativeTmplConfGroupId: string;    // native 模板组表 id
+    configGroupId: string;    // 常量组表 id
+    versionGroupId: string;    // 版本条件分组表 id
 }
 
 /**
@@ -276,9 +267,8 @@ export interface AbTestMapVO extends BaseVO {
     type: string; // 广告类型
     active: number;    // 控制生效
     creatorId: string;    // 创建者 id
-    abTestGroupId?: string;    // ab 分组测试表 id
-    versionGroupId: string;    // 版本条件分组表 id
-    adGroupId?: string;    // 广告组表 id
+    abTestGroupId: string;    // ab 分组测试表 id
+    adGroupId: string;    // 广告组表 id
 }
 
 /**
@@ -427,7 +417,7 @@ export interface VersionGroupResVO extends VersionGroupVO {
 export interface ConfigGroupResVO extends ConfigGroupVO {
     versionGroup: string[];    // 支持的条件组
     dependent: string;    // 依赖的常量组名
-    configList?: ConfigResVO[];    // 常量列表
+    configList: ConfigResVO[];    // 常量列表
 }
 
 export interface ConfigResVO extends ConfigVO {
@@ -436,7 +426,7 @@ export interface ConfigResVO extends ConfigVO {
 
 export interface NativeTmplConfGroupResVO extends NativeTmplConfGroupVO {
     versionGroup: string[];    // 支持的条件组
-    nativeTmplConfList?: NativeTmplConfResVO[];
+    nativeTmplConfList: NativeTmplConfResVO[];
 }
 
 export interface NativeTmplConfResVO extends NativeTmplConfVO {
@@ -447,11 +437,12 @@ export interface NativeTmplConfResVO extends NativeTmplConfVO {
 export interface AdGroupResVO extends AdGroupVO {
     type: string;    // 广告类型显示名称
     versionGroup: string[];    // 支持的条件组
-    adList?: AdResVO[];    // 广告列表
+    adList: AdResVO[];    // 广告列表
 }
 
+// ab 测试分组下广告位列表信息
 export interface PlaceResVO extends AbTestMapVO {
-    adGroup?: AdGroupResVO;    // ab 分组下的广告组及广告组下广告列表
+    adGroup: AdGroupResVO;    // ab 分组下的广告组及广告组下广告列表
 }
 
 export interface AdResVO extends AdVO {
@@ -459,8 +450,8 @@ export interface AdResVO extends AdVO {
     isEcpm: boolean;    // 分层控制更改失焦 - 前端需求字段
     isLoader: boolean;    // 加载器失焦 - 前端需求字段
     isSubloader: boolean;    // 子加载器失焦 - 前端需求字段
-    adGroupName?: string;    // 广告组名称
-    type?: string;    // 广告类型显示名称
+    adGroupName: string;    // 广告组名称
+    type: string;    // 广告类型显示名称
 }
 
 export interface AbTestGroupResVO extends AbTestGroupVO {

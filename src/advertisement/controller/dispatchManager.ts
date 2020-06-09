@@ -69,7 +69,9 @@ export default class DispatchManagerController extends BaseController {
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
         const versionGroupResVoList = await modelServer.getVersionGroupList(productId, type, ucId);
+
         return this.success(versionGroupResVoList);
+
     }
 
     /**
@@ -78,15 +80,21 @@ export default class DispatchManagerController extends BaseController {
      * @debugger yes
      */
     public async nationListAction() {
-        const ucId: string = this.ctx.state.userId;
         const nationDefineModel = this.taleModel('nationDefine', 'advertisement') as NationDefineModel;
 
         const nationDefineVoList = await nationDefineModel.getList();
+
         return this.success(nationDefineVoList);
+
     }
 
     /**
+     * 服务器操作,
      * <br/>创建国家代码定义列表 --- 一次性
+     * @argument {Array<{
+     *   name: string;    // 国家名称
+     *   code: string;    // 国家代码
+     * }>}
      */
     public async createNationListAction() {
         const nationDefineList: NationDefineVO[] = this.post('nationDefineList');
@@ -94,28 +102,33 @@ export default class DispatchManagerController extends BaseController {
 
         const rows = await nationDefineModel.addList(nationDefineList);
 
+        // 是否全部插入数据库
         if (rows.length === nationDefineList.length) {
             this.success('created');
+
         } else {
             this.fail(TaleCode.DBFaild, 'create fail!!!');
         }
+
     }
 
     /**
-     * <br/>更新国家代码定义列表
+     * 服务器操作,
+     * <br/>更新国家代码定义列表;
+     * @argument {string} code 国家代码;
+     * @argument {string} name 国家名称;
+     * @argument {number} byName 是否以国家名称为主;
      */
     public async updateNationAction() {
-        const name: string = this.post('name');
-        const code: string = this.post('code');
-
+        const name: string = this.post('name');    // 国家名称
+        const code: string = this.post('code');    // 国家代码
+        const byName: number = this.post('byName');    // 是否以国家名称为主
         const nationDefineModel = this.taleModel('nationDefine', 'advertisement') as NationDefineModel;
 
-        const rows = await nationDefineModel.updateNationDefine(code, name);
-        if (rows === 1) {
-            this.success('updated');
-        } else {
-            this.fail(TaleCode.DBFaild, 'update fail!!!');
-        }
+        await nationDefineModel.updateVo(code, name, byName);
+
+        this.success('updated');
+
     }
 
     /**
@@ -130,35 +143,17 @@ export default class DispatchManagerController extends BaseController {
         const name: string = this.post('name');
         const begin: number = this.post('begin');
         const description: string = this.post('description');
-        const codeList: string[] = this.post('codeList') || [];
+        const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const type: number = this.post('type');
         const include: number = this.post('include');
         const active: number = this.post('active');
-
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         try {
-            /**
-             * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
-             */
-            const versionGroupVo =
-                await versionGroupModel.getByName(name, type, productId, 1);
-
-            if (!_.isEmpty(versionGroupVo) && versionGroupVo.id) {
-                const cacheVersionGroupVo =
-                    await cacheServer.fetchCacheData(ucId, 'versionGroup', versionGroupVo.id);
-
-                // 未更新（不存在）或者未禁用则报唯一性错误
-                if (_.isEmpty(cacheVersionGroupVo) || cacheVersionGroupVo.active !== 0) {
-                    return this.fail(TaleCode.DBFaild, '版本条件分组名重复！！！');
-                }
-
-            }
-
             // 数据库暂存， activeTime 标识
             const CacheActiveTime = think.config('CacheActiveTime');
+            // 版本条件分组表对象
             const createVersionGroupVo: VersionGroupVO = {
                 name, begin, description, type, code: JSON.stringify(codeList), include,
                 active, activeTime: CacheActiveTime, creatorId: ucId, productId
@@ -166,12 +161,12 @@ export default class DispatchManagerController extends BaseController {
 
             const versionGroupId = await versionGroupModel.addVo(createVersionGroupVo);
 
-            // 向版本条件分组下创建默认 ab 分组
+            // 默认 ab 测试分组对象
             const abTestGroupVo: AbTestGroupVO = {
-                versionGroupId, active,
-                name: 'default', begin: -1, end: -1, description: '默认组',
-                creatorId: ucId, configGroupId: undefined, nativeTmplConfGroupId: undefined, activeTime: undefined
+                versionGroupId, active, name: 'default', begin: -1, end: -1, description: '默认组',
+                creatorId: undefined, configGroupId: undefined, nativeTmplConfGroupId: undefined, activeTime: undefined
             };
+            // 向版本条件分组下创建默认 ab 分组
             await abTestGroupModel.addVo(abTestGroupVo);
 
             this.success('created');
@@ -180,17 +175,19 @@ export default class DispatchManagerController extends BaseController {
             think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'create fail!!!');
         }
+
     }
 
     /**
-     * <br/>复制版本条件分组
+     * 复制版本条件分组，
+     * <br/>复制即相当于创建，版本条件分组下的 ab 测试分组和广告位信息，都是第一次创建，所以不需要检查一致性问题
      * @argument {CopyVersionGroupReqVO}
      * @returns {CopyVersionGroupResVO}
      * @debugger yes
      */
     public async copyVersionGroupAction() {
         const ucId: string = this.ctx.state.userId;
-        const copyId: string = this.post('id');
+        const copyId: string = this.post('id');    // 被复制的版本条件分组主键 id
         const name: string = this.post('name');
         const description: string = this.post('description');
         const active: number = this.post('active');
@@ -198,7 +195,6 @@ export default class DispatchManagerController extends BaseController {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         try {
             // 被复制组的默认配置
@@ -212,58 +208,44 @@ export default class DispatchManagerController extends BaseController {
 
             const { begin, description: copyedDescription, type, code, include, productId } = copyedVersionGroupVo;
             const { id: copyedAbTestGroupId, configGroupId, nativeTmplConfGroupId } = copyedAbTestGroupVo;
-            /**
-             * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
-             */
-            const versionGroupVo =
-                await versionGroupModel.getByName(name, type, productId, 1);
 
-            if (!_.isEmpty(versionGroupVo) && versionGroupVo.id) {
-                const cacheVersionGroupVo =
-                    await cacheServer.fetchCacheData(ucId, 'versionGroup', versionGroupVo.id);
-
-                // 未更新（不存在）或者未禁用则报唯一性错误
-                if (_.isEmpty(cacheVersionGroupVo) || cacheVersionGroupVo.active !== 0) {
-                    return this.fail(TaleCode.DBFaild, '版本条件分组名重复！！！');
-                }
-
-            }
-
+            const CacheActiveTime = think.config('CacheActiveTime');    // 数据库暂存， activeTime 标识
             // 先创建版本条件分组表
-            // 数据库暂存， activeTime 标识
-            const CacheActiveTime = think.config('CacheActiveTime');
+            // 版本条件分组对象
             const createVersionGroupVo: VersionGroupVO = {
                 name, begin, description: description || copyedDescription, type, code, include,
                 active, activeTime: CacheActiveTime, creatorId: ucId, productId
             };
-
             const versionGroupId = await versionGroupModel.addVo(createVersionGroupVo);
 
             // 再创建版本条件分组下默认 ab 测试
+            // 默认 ab 测试对象
             const defaultAbTestGroupVo: AbTestGroupVO = {
                 name: 'default', begin: -1, end: -1, description: '默认组', active, activeTime: undefined,
-                creatorId: ucId, nativeTmplConfGroupId, configGroupId, versionGroupId
+                creatorId: undefined, nativeTmplConfGroupId, configGroupId, versionGroupId
             };
-            const defaultAbTestGroupId = await abTestGroupModel.addVo(defaultAbTestGroupVo);
+            const defaultAbTestGroupId = await abTestGroupModel.addVo(defaultAbTestGroupVo);    // 默认 ab 测试组主键
 
-            // 再创建版本条件分组下默认 ab 测试下的广告测试
-            // 被复制组的默认 ab 测试下的广告测试列表
+            // 再创建版本条件分组下默认 ab 测试下的广告位信息测试
+            // 被复制组的默认 ab 测试下的广告位信息列表
             const copyedAbTestMapVoList = await abTestMapModel.getList(copyedAbTestGroupId, ucId);
-            // 复制组的默认 ab 测试下的广告测试列表
+            // 复制组的默认 ab 测试下的广告位信息列表
             const defaultAbTestMapVoList = _.map(copyedAbTestMapVoList, (copyedAbTestMapVo) => {
                 const { place, type: adType, adGroupId } = copyedAbTestMapVo;
 
+                // 默认 ab 测试下的广告位信息
                 const defaultAbTestMapVo: AbTestMapVO = {
-                    place, type: adType, adGroupId, abTestGroupId: defaultAbTestGroupId,
-                    versionGroupId, creatorId: ucId, active: 1
+                    place, type: adType, adGroupId, abTestGroupId: defaultAbTestGroupId, creatorId: ucId, active: 1
                 };
                 return defaultAbTestMapVo;
             });
+
             const rows = (await abTestMapModel.addList(defaultAbTestMapVoList)).length;
 
             // 比较创建成功与否
             if (rows === copyedAbTestMapVoList.length) {
                 this.success('copyed');
+
             } else {
                 this.fail(TaleCode.DBFaild, 'copy fail!!!');
             }
@@ -274,6 +256,7 @@ export default class DispatchManagerController extends BaseController {
             think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'create fail!!!');
         }
+
     }
 
     /**
@@ -285,8 +268,6 @@ export default class DispatchManagerController extends BaseController {
     public async updateVersionGroupAction() {
         const ucId: string = this.ctx.state.userId;
         const id: string = this.post('id');
-        const name: string = this.post('name');
-        const begin: number = this.post('begin');
         const description: string = this.post('description');
         const codeList: string[] = this.post('codeList');
         const include: number = this.post('include');
@@ -296,6 +277,7 @@ export default class DispatchManagerController extends BaseController {
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
+        // 数据库 code 字段为 json 字符串
         let code: string;
         if (codeList) {
             code = JSON.stringify(codeList);
@@ -303,19 +285,24 @@ export default class DispatchManagerController extends BaseController {
 
         const versionGroupVo = await versionGroupModel.getVo(id, ucId);
 
+        // 待更新的版本条件分组对象
         const updateVersionGroupVo: VersionGroupVO = {
-            name, begin, description, code, include, active, activeTime: undefined,
+            name: undefined, begin: undefined, description, code, include, active, activeTime: undefined,
             type: undefined, productId: undefined, creatorId: undefined
         };
 
         try {
             // 本账户创建的直接数据库操作
             if (versionGroupVo.creatorId === ucId) {
+                // 关闭则直接数据库删除
                 if (active === 0) {
-                    await versionGroupModel.delVo(id);
-                    await abTestGroupModel.delByVersionGroup(id);
-                    await abTestMapModel.delByVersionGroup(id);
-
+                    const abTestGroupIdList = await abTestGroupModel.getIdListByVersionGroup(id);
+                    await Promise.all([
+                        versionGroupModel.delVo(id),
+                        abTestGroupModel.delByVersionGroup(id),
+                        abTestMapModel.delList(abTestGroupIdList)
+                    ]);
+                    // 否则直接更新
                 } else {
                     await versionGroupModel.updateVo(id, updateVersionGroupVo);
                 }
@@ -335,6 +322,7 @@ export default class DispatchManagerController extends BaseController {
             think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
+
     }
 
     /**
@@ -350,7 +338,7 @@ export default class DispatchManagerController extends BaseController {
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 数据库里的 ab 分组对象
-        const abTestGroupVoList = await abTestGroupModel.getList(versionGroupId, ucId);
+        const abTestGroupVoList = await abTestGroupModel.getList(versionGroupId, ucId, undefined);
         // 未发布更新在缓存里的 ab 分组对象
         const cacheAbTestGroupVoHash = await cacheServer.fetchCacheDataHash(ucId, 'abTestGroup');
 
@@ -378,23 +366,27 @@ export default class DispatchManagerController extends BaseController {
             ]);
 
             // think.logger.debug(`adGroupResVoList: ${JSON.stringify(adGroupResVoList)}`);
-            // 返回线上数据和未发布的数据，以未发布数据为准
-            abTestGroupResVo.configGroup = configGroupResVo;
+            if (!think.isEmpty(configGroupResVo)) {
+                abTestGroupResVo.configGroup = configGroupResVo;
 
+            }
             if (!think.isEmpty(nativeTmplConfGroupResVo)) {
                 // lodash defaults 方法不会覆盖 null
-                abTestGroupResVo.nativeTmplConfGroup = nativeTmplConfGroupResVo || null;
+                abTestGroupResVo.nativeTmplConfGroup = nativeTmplConfGroupResVo;
                 // _.defaults(abTestGroupResVo, {
                 //     nativeTmplConfGroup: nativeTmplConfGroupResVo
                 // });
-            }
 
+            }
             if (!think.isEmpty(adGroupResVoList)) {
-                abTestGroupResVo.placeGroup = adGroupResVoList || null;
+                abTestGroupResVo.placeGroup = adGroupResVoList;
             }
 
+            // 删除不需要的字段
             delete abTestGroupResVo.configGroupId;
             delete abTestGroupResVo.nativeTmplConfGroupId;
+            delete abTestGroupResVo.versionGroupId;
+            delete abTestGroupResVo.activeTime;
             delete abTestGroupResVo.createAt;
             delete abTestGroupResVo.updateAt;
 
@@ -402,6 +394,7 @@ export default class DispatchManagerController extends BaseController {
         });
 
         return this.success(abTestGroupResVoList);
+
     }
 
     /**
@@ -422,6 +415,7 @@ export default class DispatchManagerController extends BaseController {
         }
 
         return null;
+
     }
 
     /**
@@ -451,18 +445,19 @@ export default class DispatchManagerController extends BaseController {
         }
 
         return null;
+
     }
 
     /**
-     * <br/>获取 ab 分组下广告位信息
-     * @argument {string} abTestGroupId ab 分组 id
-     * @returns {AdGroupResVO[]} ab 分组下的广告位配置
+     * <br/>获取 ab 测试分组下广告位信息
+     * @argument {string} abTestGroupId ab 测试分组表 id
+     * @returns {AdGroupResVO[]} ab 测试分组下的广告位配置
      * @argument {string} creatorId 创建者 id
      */
     private async adInAb(abTestGroupId: string, creatorId: string) {
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
-        const adGroupResVoList = await modelServer.getAdGroupListInAb(abTestGroupId, creatorId);
+        const adGroupResVoList = await modelServer.getPlaceList(abTestGroupId, creatorId);
         return adGroupResVoList;
 
     }
@@ -481,7 +476,6 @@ export default class DispatchManagerController extends BaseController {
         let begin: number = this.post('begin');
         let end: number = this.post('end');
         const groupNum: number = this.post('groupNum');
-
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
 
         try {
@@ -493,6 +487,7 @@ export default class DispatchManagerController extends BaseController {
                 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
             ];
 
+            // 需要创建的 ab 测试分组对象列表
             const createAbTestGroupVoList: AbTestGroupVO[] = [];
             const step = (end - begin + 1) / groupNum;
             // 分组左右均包含
@@ -505,7 +500,6 @@ export default class DispatchManagerController extends BaseController {
                     name: abTestGroupName, begin, end, description, activeTime: CacheActiveTime, active: 1,
                     versionGroupId, creatorId: ucId, configGroupId: undefined, nativeTmplConfGroupId: undefined
                 };
-
                 createAbTestGroupVoList.push(createAbTestGroupVo);
                 begin = end + 1;
                 end += step;
@@ -514,6 +508,7 @@ export default class DispatchManagerController extends BaseController {
             const rows = (await abTestGroupModel.addList(createAbTestGroupVoList)).length;
             if (rows === groupNum) {
                 this.success('created');
+
             } else {
                 this.fail(TaleCode.DBFaild, 'create fail!!!');
             }
@@ -547,7 +542,7 @@ export default class DispatchManagerController extends BaseController {
             nativeTmplConfGroupId: undefined, configGroupId: undefined, creatorId: undefined
         };
 
-        const abTestGroupVoList = await abTestGroupModel.getListByName(versionGroupId, name, ucId, 1);
+        const abTestGroupVoList = await abTestGroupModel.getListByName(versionGroupId, name, ucId, 1, undefined);
 
         try {
             if (!_.isEmpty(abTestGroupVoList)) {
@@ -561,22 +556,25 @@ export default class DispatchManagerController extends BaseController {
                     // 同时删除 ab 测试分组列表以及 ab 测试分组下的广告位
                     await Promise.all([
                         abTestGroupModel.delList(idList),
-                        abTestMapModel.delListByAbTestGroupList(idList)
+                        abTestMapModel.delList(idList)
                     ]);
 
                     // 线上数据更新到缓存
+                    // 广告位开关不用更新
                 } else {
                     await Bluebird.map(abTestGroupVoList, (abTestGroupVo) => {
                         return cacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupVo.id, updateAbTestGroupVo);
                     });
                 }
-            }
 
+            }
             this.success('deleted');
+
         } catch (e) {
             think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'delete fail!!!');
         }
+
     }
 
     /**
@@ -592,8 +590,10 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
+        // ab 分组对象
         const abTestGroupVo = await abTestGroupModel.getVo(abTestGroupId, ucId);
 
+        // 待更新的 ab 分组对象
         const updateAbTestGroupVo: AbTestGroupVO = {
             name: undefined, begin: undefined, end: undefined, description: undefined,
             creatorId: undefined, active: undefined, activeTime: undefined, nativeTmplConfGroupId: undefined,
@@ -664,13 +664,13 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const type: number = this.post('type');
         const active: number = this.post('active');
-
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
+
         const configGroupVo: ConfigGroupVO = {
             name, description, type, active,
             dependentId, productId, creatorId: ucId
         };
-        await configGroupModel.addConfigGroup(configGroupVo);
+        await configGroupModel.addVo(configGroupVo);
 
         this.success('created');
     }
@@ -687,20 +687,20 @@ export default class DispatchManagerController extends BaseController {
         const copyId: string = this.post('id');
         const description: string = this.post('description');
         const active: number = this.post('active');
-
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
 
         const [
             copyedConfigGroupVo, copyedConfigVoList
         ] = await Promise.all([
-            configGroupModel.getConfigGroup(copyId, ucId),
-            configModel.getList(copyId, ucId)
+            configGroupModel.getVo(copyId, ucId),
+            configModel.getList(copyId, ucId, undefined)
         ]);
 
         if (_.isEmpty(copyedConfigGroupVo)) {
-            return this.fail(TaleCode.DBFaild, '复制组不存在!!!');
+            return this.fail(TaleCode.DBFaild, '被复制组不存在!!!');
         }
+        // 被复制组的依赖组，光联的应用主键，常量类型被复制
         const {
             dependentId, productId, type
         } = copyedConfigGroupVo;
@@ -709,12 +709,12 @@ export default class DispatchManagerController extends BaseController {
             name, description, type, active,
             dependentId, productId, creatorId: ucId
         };
-        const configGroupId = await configGroupModel.addConfigGroup(configGroupVo);
+        const configGroupId = await configGroupModel.addVo(configGroupVo);
 
+        // 常量批量保存，更改常量组和创造者主键 creatorId
         const configVoList = _.map(copyedConfigVoList, (copyedConfigVo) => {
-
             const configVo: ConfigVO = _.omit(copyedConfigVo, [
-                'id', 'createAt', 'updateAt', 'configGroupId'
+                'id', 'createAt', 'updateAt'
             ]);
             configVo.configGroupId = configGroupId;
             configVo.creatorId = ucId;
@@ -725,9 +725,11 @@ export default class DispatchManagerController extends BaseController {
 
         if (rows === copyedConfigVoList.length) {
             return this.success('copyed');
+
         } else {
             this.fail(TaleCode.DBFaild, 'copy fail!!!');
         }
+
     }
 
     /**
@@ -742,21 +744,34 @@ export default class DispatchManagerController extends BaseController {
         const dependentId: string = this.post('dependentId');
         const description: string = this.post('description');
         const active: number = this.post('active');
+        const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        const configGroupVo: ConfigGroupVO = {
+        // 当前常量组对象
+        const configGroupVo = await configGroupModel.getVo(id, ucId);
+        // 待更新常量组对象
+        const updateConfigGroupVo: ConfigGroupVO = {
             name: undefined, description, dependentId, active,
             type: undefined, productId: undefined, creatorId: undefined
         };
 
         try {
-            await cacheServer.setCacheData(ucId, 'configGroup', id, configGroupVo);
+            // 本账户创建的直接数据库操作
+            if (configGroupVo.creatorId === ucId) {
+                await configGroupModel.updateVo(id, updateConfigGroupVo);
+
+                // 线上数据更新到缓存
+            } else {
+                await cacheServer.setCacheData(ucId, 'configGroup', id, updateConfigGroupVo);
+
+            }
             this.success('updated');
 
         } catch (e) {
             think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
+
     }
 
     /**
@@ -775,9 +790,10 @@ export default class DispatchManagerController extends BaseController {
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId);
-        // think.logger.debug(`configVo: ${JSON.stringify(configVo)}`);
+        // 广告常量的 active 和 activeTime 都为默认值（线上值）
+        const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId, undefined, undefined);
 
+        // 待更新的广告常量
         const updateConfigVo: ConfigVO = {
             key, value, description, active,
             configGroupId, activeTime: undefined, creatorId: undefined
@@ -787,7 +803,7 @@ export default class DispatchManagerController extends BaseController {
             // 数据库不存在，则插入，同时创建者暂时设置为当前操作用户
             if (_.isEmpty(configVo)) {
                 updateConfigVo.creatorId = ucId;
-                await configModel.addConfig(updateConfigVo);
+                await configModel.addVo(updateConfigVo);
 
                 // 存在加入缓存
             } else {
@@ -801,6 +817,7 @@ export default class DispatchManagerController extends BaseController {
             think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
+
     }
 
     /**
@@ -820,11 +837,12 @@ export default class DispatchManagerController extends BaseController {
 
         // 数据库暂存， activeTime 标识
         const CacheActiveTime = think.config('CacheActiveTime');
+        // 常量表对象
         const configVo: ConfigVO = {
             key, value, description,
             configGroupId, creatorId: ucId, active, activeTime: CacheActiveTime
         };
-        await configModel.addConfig(configVo);
+        await configModel.addVo(configVo);
 
         this.success('created');
     }
@@ -844,7 +862,7 @@ export default class DispatchManagerController extends BaseController {
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        const configVo = await configModel.getVo(id);
+        const configVo = await configModel.getVo(id, ucId);
 
         const updateConfigVo: ConfigVO = {
             configGroupId: undefined, creatorId: undefined, active, activeTime: undefined,
@@ -890,8 +908,10 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
+        // ab 分组对象
         const abTestGroupVo = await abTestGroupModel.getVo(abTestGroupId, ucId);
 
+        // 待更新的 ab 分组对象
         const updateAbTestGroupVo: AbTestGroupVO = {
             name: undefined, begin: undefined, end: undefined, description: undefined,
             creatorId: undefined, active: undefined, activeTime: undefined, nativeTmplConfGroupId,
@@ -914,6 +934,7 @@ export default class DispatchManagerController extends BaseController {
             think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
+
     }
 
     /**
@@ -965,7 +986,7 @@ export default class DispatchManagerController extends BaseController {
         const nativeTmplConfGroupVo: NativeTmplConfGroupVO = {
             name, description, productId, active, creatorId: ucId
         };
-        await nativeTmplConfGroupModel.addNativeTmplConfGroup(nativeTmplConfGroupVo);
+        await nativeTmplConfGroupModel.addVo(nativeTmplConfGroupVo);
 
         this.success('created');
     }
@@ -990,12 +1011,12 @@ export default class DispatchManagerController extends BaseController {
         const [
             copyedNativeTmplConfGroupVo, copyedNativeTmplConfVoList
         ] = await Promise.all([
-            nativeTmplConfGroupModel.getNativeTmplConfGroup(copyId, ucId),
+            nativeTmplConfGroupModel.getVo(copyId, ucId),
             nativeTmplConfModel.getList(copyId, ucId)
         ]);
 
         if (_.isEmpty(copyedNativeTmplConfGroupVo)) {
-            return this.fail(TaleCode.DBFaild, '复制组不存在!!!');
+            return this.fail(TaleCode.DBFaild, '被复制组不存在!!!');
         }
 
         const { productId } = copyedNativeTmplConfGroupVo;
@@ -1003,14 +1024,15 @@ export default class DispatchManagerController extends BaseController {
         const nativeTmplConfGroupVo: NativeTmplConfGroupVO = {
             name, description, productId, active, creatorId: ucId
         };
-        const nativeTmplConfGroupId = await nativeTmplConfGroupModel.addNativeTmplConfGroup(nativeTmplConfGroupVo);
+        const nativeTmplConfGroupId = await nativeTmplConfGroupModel.addVo(nativeTmplConfGroupVo);
 
         const nativeTmplConfVoList = await Bluebird.map(copyedNativeTmplConfVoList, async (copyedNativeTmplConfVo) => {
             const nativeTmplConfVo: NativeTmplConfVO = _.omit(copyedNativeTmplConfVo, [
-                'id', 'createAt', 'updateAt', 'nativeTmplConfGroupId'
+                'id', 'createAt', 'updateAt'
             ]);
             nativeTmplConfVo.nativeTmplConfGroupId = nativeTmplConfGroupId;
             nativeTmplConfVo.creatorId = ucId;
+
             return nativeTmplConfVo;
 
         });
@@ -1018,9 +1040,11 @@ export default class DispatchManagerController extends BaseController {
 
         if (rows === copyedNativeTmplConfVoList.length) {
             this.success('copyed');
+
         } else {
             this.fail(TaleCode.DBFaild, 'copy fail!!!');
         }
+
     }
 
     /**
@@ -1034,20 +1058,34 @@ export default class DispatchManagerController extends BaseController {
         const id: string = this.post('id');
         const description: string = this.post('description');
         const active: number = this.post('active');
+        const nativeTmplConfGroupModel =
+            this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        const nativeTmplConfGroupVo: NativeTmplConfGroupVO = {
+        // 应用 native 模板组对象
+        const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getVo(id, ucId);
+        // 待更新的应用 native 模板组对象
+        const updateNativeTmplConfGroupVo: NativeTmplConfGroupVO = {
             name: undefined, description, active, productId: undefined, creatorId: undefined
         };
 
         try {
-            await cacheServer.setCacheData(ucId, 'nativeTmplConfGroup', id, nativeTmplConfGroupVo);
+            // 本账户创建的直接数据库操作
+            if (nativeTmplConfGroupVo.creatorId === ucId) {
+                await nativeTmplConfGroupModel.updateVo(id, updateNativeTmplConfGroupVo);
+
+                // 线上数据更新到缓存
+            } else {
+                await cacheServer.setCacheData(ucId, 'nativeTmplConfGroup', id, updateNativeTmplConfGroupVo);
+
+            }
             this.success('updated');
 
         } catch (e) {
             think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
+
     }
 
     /**
@@ -1073,8 +1111,9 @@ export default class DispatchManagerController extends BaseController {
             nativeTmplConfGroupId, nativeTmplId, creatorId: ucId, active, activeTime: CacheActiveTime
         };
 
-        await nativeTmplConfModel.addNativeTmplConf(nativeTmplConfVo);
+        await nativeTmplConfModel.addVo(nativeTmplConfVo);
         this.success('created');
+
     }
 
     /**
@@ -1095,7 +1134,7 @@ export default class DispatchManagerController extends BaseController {
         const nativeTmplConfModel =
             this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
 
-        const nativeTmplConfVo = await nativeTmplConfModel.getVo(id);
+        const nativeTmplConfVo = await nativeTmplConfModel.getVo(id, ucId);
 
         const updateNativeTmplConfVo: NativeTmplConfVO = {
             nativeTmplConfGroupId, nativeTmplId: undefined, activeTime: undefined, creatorId: undefined,
@@ -1126,6 +1165,7 @@ export default class DispatchManagerController extends BaseController {
             think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
+
     }
 
     /**
@@ -1142,24 +1182,20 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
-        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const [
-            abTestMapVo, adTypeVo, abTestGroupVo
+            abTestMapVo, adTypeVo
         ] = await Promise.all([
             abTestMapModel.getVo(abTestGroupId, place, ucId),
             adTypeModel.getByType(place),
-            abTestGroupModel.getVo(abTestGroupId, ucId),
         ]);
         // 广告位名称
         const { name: type } = adTypeVo;
-        // 版本条件分组主键
-        const { versionGroupId } = abTestGroupVo;
 
         // 待创建或更新的广告位表记录
         const updateAbTestMapVo: AbTestMapVO = {
-            place, type, abTestGroupId, versionGroupId, adGroupId, creatorId: undefined, active
+            place, type, abTestGroupId, adGroupId, creatorId: undefined, active
         };
 
         try {
@@ -1218,13 +1254,15 @@ export default class DispatchManagerController extends BaseController {
             // 默认 ab 测试分组下的该广告位表主键
             const defaultAbTestMapVo = await abTestMapModel.getVo(defaultId, place, ucId);
 
+            // 默认 ab 测试分组下的广告位表对象更新
             const updateDefaultAbTestMapVo: AbTestMapVO = {
                 abTestGroupId: defaultId, creatorId: undefined, active: 1,
-                place, type, adGroupId, versionGroupId
+                place, type, adGroupId
             };
+            // 被全量的 ab 测试分组下的广告位表对象更新
             const updateAbTestMapVo: AbTestMapVO = {
                 abTestGroupId: id, creatorId: undefined, active: 0,
-                place, type, adGroupId, versionGroupId
+                place, type, adGroupId
             };
 
             // 数据库中不存在默认 ab 分组测试下的该广告位，则直接插入数据库
@@ -1316,7 +1354,7 @@ export default class DispatchManagerController extends BaseController {
 
         const adVoList = _.map(copyedAdVoList, (copyedAdVo) => {
             const adVo: AdVO = _.omit(copyedAdVo, [
-                'id', 'createAt', 'updateAt', 'adGroupId'
+                'id', 'createAt', 'updateAt'
             ]);
 
             adVo.adGroupId = adGroupId;
@@ -1418,8 +1456,8 @@ export default class DispatchManagerController extends BaseController {
             const [
                 adByPlacementIDVo, adByNameVo
             ] = await Promise.all([
-                adModel.getByPlacementID(adGroupId, placementID, 1),
-                adModel.getByName(adGroupId, adChannelId, name, 1)
+                adModel.getByPlacementID(adGroupId, placementID, 1, 1),
+                adModel.getByName(adGroupId, adChannelId, name, 1, 1)
             ]);
 
             think.logger.debug(`adByPlacementIDVo: ${JSON.stringify(adByPlacementIDVo)}`);
