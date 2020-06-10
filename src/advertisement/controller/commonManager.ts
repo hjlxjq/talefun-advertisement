@@ -85,6 +85,7 @@ export default class CommonManagerController extends BaseController {
         const active: number = this.post('active');
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
 
+        think.logger.debug(`test: ${test}`);
         const adTypeVo: AdTypeVO = {
             type, name,
             test, active,

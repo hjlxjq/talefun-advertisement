@@ -418,6 +418,7 @@ export default class UserManagerLogic extends AMLogic {
             email: {
                 string: true,       // 字段类型为 String 类型
                 trim: true,         // 字段需要 trim 处理
+                endWith: '@talefun.com',        // 以某些字符结束
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },

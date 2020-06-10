@@ -59,9 +59,9 @@ export default class CommonManagerLogic extends AMLogic {
         }
 
         const rules = {
-            type: {
+            name: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -95,25 +95,23 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             type: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -147,28 +145,26 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             type: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -222,7 +218,7 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             channel: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -256,34 +252,32 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             channel: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             key1: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             key2: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             key3: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -317,46 +311,44 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             channel: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             key1: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             key2: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             key3: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             adTypeIdList: {
                 array: true,
                 children: {
                     string: true,       // 字段类型为 String 类型
-                    trim: true,         // 字段需要 trim 处理
+                    cusTrimAll: true,      // 不能有空格
                 },
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -429,24 +421,22 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             key: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             preview: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -480,28 +470,26 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             key: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             preview: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -555,31 +543,29 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             key: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             value: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -613,33 +599,31 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             key: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             value: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -693,25 +677,23 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             key: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -745,28 +727,26 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             key: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };

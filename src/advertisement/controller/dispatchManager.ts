@@ -1492,7 +1492,7 @@ export default class DispatchManagerController extends BaseController {
         // 该广告对象
         const adVo = await adModel.getVo(id, ucId);
 
-         // 待更新广告对象
+        // 待更新广告对象
         const updateAdVo: AdVO = {
             productId: undefined, adGroupId: undefined, adChannelId: undefined, adTypeId: undefined,
             activeTime: undefined, creatorId: undefined,
