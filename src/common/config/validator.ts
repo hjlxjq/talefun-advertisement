@@ -46,6 +46,8 @@ module.exports = {
     messages: {
         cusTrim: '{name} 前后不能有空格',
         cusTrimAll: '{name} 不能有空格',
+        regexp: '{name} 数据格式不正确',
+
     }
 
 };

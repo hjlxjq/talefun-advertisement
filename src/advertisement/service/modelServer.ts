@@ -38,15 +38,14 @@ import {
 } from '../defines';
 
 /**
- * model 重新包装，包含日志处理相关 service
+ * model 重新包装，数据库操作相关 service
  * @class modelService
  * @extends @link:common/tale/BaseService
  * @author jianlong <jianlong@talefun.com>
  */
 export default class ModelService extends BaseService {
-
     /**
-     * <br/>获取广告平台和该平台下所有广告类型列表信息
+     * <br/>获取所有的，广告平台和该平台下所有广告类型列表信息，列表
      */
     public async getAdChannelList() {
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
@@ -55,17 +54,18 @@ export default class ModelService extends BaseService {
 
         const adChannelVoList = await adChannelModel.getList();
         const adChannelResVoList = await Bluebird.map(adChannelVoList, async (adChannelVo) => {
-
             const { id, test } = adChannelVo;
             const adTypeIdList = await adChannelMapModel.getAdTypeIdList(id);
 
             // 获取支持的广告类型
             const adTypeList = await Bluebird.map(adTypeIdList, async (adTypeId) => {
+                // 只返回启用的，如果平台为正式，则只返回正式的广告类型
                 const adTypeVo = await adTypeModel.getVo(adTypeId, 1, test);
 
                 if (adTypeVo) {
                     return adTypeVo.name;
                 }
+
             });
 
             const adChannelResVo: AdChannelResVO = _.defaults({
@@ -75,13 +75,14 @@ export default class ModelService extends BaseService {
             delete adChannelResVo.createAt;
             delete adChannelResVo.updateAt;
             return adChannelResVo;
-        });
 
+        });
         return adChannelResVoList;
+
     }
 
     /**
-     * <br/>获取广告平台和该平台下所有广告类型列表信息
+     * <br/>获取广告平台和 该平台下所有广告类型列表 信息
      * @argument {string} channel 广告平台名;
      */
     public async getAdChannel(channel: string) {
@@ -101,6 +102,7 @@ export default class ModelService extends BaseService {
             if (adTypeVo) {
                 return adTypeVo.name;
             }
+
         });
 
         const adChannelResVo: AdChannelResVO = _.defaults({
@@ -320,7 +322,7 @@ export default class ModelService extends BaseService {
 
             // 从 native 模板表常规配置中获取 key, preview
             const { nativeTmplId } = nativeTmplConfVo;
-            const nativeTmplVo = await nativeTmplModel.getNativeTmpl(nativeTmplId);
+            const nativeTmplVo = await nativeTmplModel.getNativeTmpl(nativeTmplId, undefined, undefined);
 
             if (think.isEmpty(nativeTmplVo)) {
                 return;
@@ -367,7 +369,7 @@ export default class ModelService extends BaseService {
             const { id, adTypeId } = adGroupVo;
 
             const cacheAdGroupVo = cacheAdGroupVoHash[id] as AdGroupVO;
-            const adTypeVo = await adTypeModel.getVo(adTypeId);
+            const adTypeVo = await adTypeModel.getVo(adTypeId, undefined, undefined);
 
             if (think.isEmpty(adTypeVo)) {
                 return;
@@ -420,7 +422,7 @@ export default class ModelService extends BaseService {
             const [
                 adTypeVo, adChannelVo, adGroupVo
             ] = await Promise.all([
-                adTypeModel.getVo(adTypeId),
+                adTypeModel.getVo(adTypeId, undefined, undefined),
                 adChannelModel.getVo(adChannelId),
                 adGroupModel.getVo(adGroupId, creatorId)
             ]);

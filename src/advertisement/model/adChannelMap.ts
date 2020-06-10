@@ -8,7 +8,6 @@ import * as _ from 'lodash';
 
 import MBModel from './managerBaseModel';
 import { AdChannelMapVO } from '../defines';
-import Utils from '../utils';
 
 /**
  * 广告平台与广告类型关系表配置相关模型
@@ -17,7 +16,6 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class AdChannelMapModel extends MBModel {
-
     /**
      * 获取某个广告平台下所有的广告类型主键 id 列表
      * @argument {string} adChannelId 广告平台表 id;
@@ -28,7 +26,9 @@ export default class AdChannelMapModel extends MBModel {
 
         return _.map(adChannelMapVOList, (adChannelMapVO) => {
             return adChannelMapVO.adTypeId;
+
         });
+
     }
 
     /**
@@ -41,7 +41,9 @@ export default class AdChannelMapModel extends MBModel {
 
         return _.map(adChannelMapVOList, (adChannelMapVO) => {
             return adChannelMapVO.adChannelId;
+
         });
+
     }
 
     /**
@@ -56,22 +58,26 @@ export default class AdChannelMapModel extends MBModel {
         adTypeIdList: string[]
     ) {
         let idList: string[] = [];
+        // 先全部删除广告平台下所有的广告类型
+        await this.where({ adChannelId }).delete();
 
+        // 如果不为空，则再批量添加
         if (!think.isEmpty(adTypeIdList)) {
-            await this.where({ adChannelId }).delete();
-
             const AdChannelMapVoList: AdChannelMapVO[] = _.map(adTypeIdList, (adTypeId) => {
 
                 const AdChannelMapVo: AdChannelMapVO = {
                     adChannelId, adTypeId
                 };
                 return AdChannelMapVo;
+
             });
 
             await this.addMany(AdChannelMapVoList);
-
             idList = this.ID;
+
         }
         return idList;
+
     }
+
 }

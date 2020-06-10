@@ -6,7 +6,6 @@ import * as _ from 'lodash';
 import { think } from 'thinkjs';
 
 export default class CommonManagerLogic extends AMLogic {
-
     /**
      * 权限认证，
      * <br/>常规配置权限
@@ -16,8 +15,8 @@ export default class CommonManagerLogic extends AMLogic {
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const userAuth = await authServer.fetchUserAuth(ucId);
-        // think.logger.debug(`userAuth: ${JSON.stringify(userAuth)}`);
         return userAuth;
+
     }
 
     /**
@@ -34,10 +33,12 @@ export default class CommonManagerLogic extends AMLogic {
             if (master === 0 && viewComConf === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
+
     }
 
     /**
@@ -53,6 +54,7 @@ export default class CommonManagerLogic extends AMLogic {
             if (master === 0 && viewComConf === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -61,7 +63,7 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[\u4e00-\u9fa5_]+$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -87,6 +89,7 @@ export default class CommonManagerLogic extends AMLogic {
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -95,13 +98,13 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             type: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
+                regexp: /^[a-z_]$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[\u4e00-\u9fa5_]+$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -137,6 +140,7 @@ export default class CommonManagerLogic extends AMLogic {
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -145,18 +149,9 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            type: {
-                string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
-                method: 'POST'       // 指定获取数据的方式
-            },
-            name: {
-                string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
@@ -190,6 +185,7 @@ export default class CommonManagerLogic extends AMLogic {
             if (master === 0 && viewComConf === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -210,6 +206,7 @@ export default class CommonManagerLogic extends AMLogic {
             if (master === 0 && viewComConf === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -218,7 +215,7 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             channel: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[a-z]$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -244,6 +241,7 @@ export default class CommonManagerLogic extends AMLogic {
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -252,23 +250,23 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             channel: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[a-z]$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             key1: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[A-Za-z]$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             key2: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[A-Za-z]$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             key3: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[A-Za-z]$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
@@ -311,35 +309,33 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
-                method: 'POST'       // 指定获取数据的方式
-            },
-            channel: {
-                string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             key1: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[A-Za-z]$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             key2: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[A-Za-z]$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             key3: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[A-Za-z]$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             adTypeIdList: {
                 array: true,
                 children: {
                     string: true,       // 字段类型为 String 类型
-                    cusTrimAll: true,      // 不能有空格
+                    regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                    length: 36,         // 长度为 36
+                    required: true,     // 字段必填
                 },
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -374,31 +370,13 @@ export default class CommonManagerLogic extends AMLogic {
             if (master === 0 && viewComConf === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
+
     }
-
-    /**
-     * <br/>上传 native 模板预览图
-     */
-    // public async uploadPreviewAction() {
-    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
-
-    //     try {
-    //         const userAuth = await this.comAuth();
-    //         const { master, editComConf } = userAuth;
-
-    //         if (master === 0 && editComConf === 0) {
-    //             throw new Error('没有权限！！！');
-    //         }
-    //     } catch (e) {
-    //         think.logger.debug(e);
-    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-    //     }
-
-    // }
 
     /**
      * <br/>创建 native 模板
@@ -413,6 +391,7 @@ export default class CommonManagerLogic extends AMLogic {
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -421,7 +400,7 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             key: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[0-9]+$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -447,6 +426,8 @@ export default class CommonManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, this.validateMsg());
         }
 
+        const file = this.file('file');    // 上传的文件
+
     }
 
     /**
@@ -470,13 +451,14 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             key: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[0-9]+$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             preview: {
@@ -599,7 +581,8 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -727,7 +710,8 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },

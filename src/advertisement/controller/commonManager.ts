@@ -23,6 +23,7 @@ import { think } from 'thinkjs';
 import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as path from 'path';
+
 const rename = think.promisify(fs.rename, fs); // 通过 promisify 方法把 rename 方法包装成 Promise 接口
 
 import {
@@ -40,7 +41,6 @@ import {
 } from '../interface';
 
 export default class CommonManagerController extends BaseController {
-
     /**
      * GET，
      * <br/>获取广告类型列表
@@ -53,6 +53,7 @@ export default class CommonManagerController extends BaseController {
 
         const adTypeVoList = await adTypeModel.getList();
         return this.success(adTypeVoList);
+
     }
 
     /**
@@ -69,6 +70,7 @@ export default class CommonManagerController extends BaseController {
         const adTypeVo = await adTypeModel.getByName(name);
 
         return this.success(adTypeVo);
+
     }
 
     /**
@@ -85,13 +87,13 @@ export default class CommonManagerController extends BaseController {
         const active: number = this.post('active');
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
 
-        think.logger.debug(`test: ${test}`);
         const adTypeVo: AdTypeVO = {
-            type, name,
-            test, active,
+            type, name, test, active,
         };
         await adTypeModel.addVo(adTypeVo);
+
         this.success('created');
+
     }
 
     /**
@@ -103,22 +105,17 @@ export default class CommonManagerController extends BaseController {
     public async updateAdTypeAction() {
         const ucId: string = this.ctx.state.user.id;
         const id: string = this.post('id');
-        const type: string = this.post('type');
-        const name: string = this.post('name');
         const test: number = this.post('test');
         const active: number = this.post('active');
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
 
         const adTypeUpdateVo: AdTypeVO = {
-            type, name,
-            test, active
+            type: undefined, name: undefined, test, active
         };
-        const rows = await adTypeModel.updateVo(id, adTypeUpdateVo);
-        if (rows === 1) {
-            return this.success('updated');
-        } else {
-            this.fail(TaleCode.DBFaild, 'update fail!!!');
-        }
+        await adTypeModel.updateVo(id, adTypeUpdateVo);
+
+        return this.success('updated');
+
     }
 
     /**
@@ -133,6 +130,7 @@ export default class CommonManagerController extends BaseController {
 
         const adChannelResVoList = await modelServer.getAdChannelList();
         return this.success(adChannelResVoList);
+
     }
 
     /**
@@ -147,8 +145,8 @@ export default class CommonManagerController extends BaseController {
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
         const adChannelVo = await modelServer.getAdChannel(channel);
-
         return this.success(adChannelVo);
+
     }
 
     /**
@@ -160,20 +158,20 @@ export default class CommonManagerController extends BaseController {
     public async createAdChannelAction() {
         const ucId: string = this.ctx.state.user.id;
         const channel: string = this.post('channel');
-        const key1: string = this.post('key1');
-        const key2: string = this.post('key2');
-        const key3: string = this.post('key3');
+        const key1: string = this.post('key1') || undefined;
+        const key2: string = this.post('key2') || undefined;
+        const key3: string = this.post('key3') || undefined;
         const test: number = this.post('test');
         const active: number = this.post('active');
         const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
 
         const adChannelVo: AdChannelVO = {
-            channel,
-            key1, key2, key3,
-            test, active,
+            channel, key1, key2, key3, test, active,
         };
         await adChannelModel.addVo(adChannelVo);
+
         this.success('created');
+
     }
 
     /**
@@ -185,41 +183,37 @@ export default class CommonManagerController extends BaseController {
     public async updateAdChannelAction() {
         const ucId: string = this.ctx.state.user.id;
         const id: string = this.post('id');
-        const channel: string = this.post('channel');
-        const key1: string = this.post('key1');
-        const key2: string = this.post('key2');
-        const key3: string = this.post('key3');
+        const key1: string = this.post('key1') || undefined;
+        const key2: string = this.post('key2') || undefined;
+        const key3: string = this.post('key3') || undefined;
         const adTypeIdList: string[] = this.post('adTypeIdList');
         const test: number = this.post('test');
         const active: number = this.post('active');
-
         const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
         const adChannelMapModel = this.taleModel('adChannelMap', 'advertisement') as AdChannelMapModel;
-        let rows: number;
 
-        if (adTypeIdList) {
-            rows = (await adChannelMapModel.updateList(id, adTypeIdList)).length;
+        try {
+            // 如果存在 adTypeIdList，则表示只更新 广告平台下的广告类型
+            if (adTypeIdList) {
+                const rows = (await adChannelMapModel.updateList(id, adTypeIdList)).length;
 
-            if (rows === adTypeIdList.length) {
-                return this.success('updated');
+                if (rows !== adTypeIdList.length) {
+                    throw new Error('没有全部更新！！！');
+                }
+
             } else {
-                this.fail(TaleCode.DBFaild, 'update fail!!!');
-            }
+                const adChannelUpdateVo: AdChannelVO = {
+                    channel: undefined, key1, key2, key3, test, active
+                };
+                await adChannelModel.updateVo(id, adChannelUpdateVo);
 
-        } else {
-            const adChannelUpdateVo: AdChannelVO = {
-                channel,
-                key1, key2, key3,
-                test, active
-            };
-            rows = await adChannelModel.updateVo(id, adChannelUpdateVo);
-
-            if (rows === 1) {
-                return this.success('updated');
-            } else {
-                this.fail(TaleCode.DBFaild, 'update fail!!!');
             }
+            return this.success('updated');
+
+        } catch (e) {
+            this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
+
     }
 
     /**

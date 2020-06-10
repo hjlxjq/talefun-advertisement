@@ -17,7 +17,6 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class NativeTmplModel extends MBModel {
-
     /**
      * 插入 native 模板
      * @argument {NativeTmplVO} nativeTmplVo native 模板表对象;
@@ -25,8 +24,8 @@ export default class NativeTmplModel extends MBModel {
      */
     public async addNativeTmpl(nativeTmplVo: NativeTmplVO) {
         await this.add(nativeTmplVo);
-
         return this.ID[0];
+
     }
 
     /**
@@ -38,8 +37,10 @@ export default class NativeTmplModel extends MBModel {
     public async updateNativeTmpl(id: string, nativeTmplVo: NativeTmplVO) {
         if (!Utils.isEmptyObj(nativeTmplVo)) {
             return await this.where({ id }).update(nativeTmplVo);
+
         }
         return 0;
+
     }
 
     /**
@@ -49,21 +50,22 @@ export default class NativeTmplModel extends MBModel {
      * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<nativeTmplVO>} native 模板信息;
      */
-    public async getNativeTmpl(id: string, active?: number, test?: number) {
+    public async getNativeTmpl(id: string, active: number, test: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
 
         if (test === 0) {
             queryStrings.push(`test=${test}`);
-        }
 
+        }
         if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
-        }
 
+        }
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).find() as NativeTmplVO;
+
     }
 
     /**
@@ -72,6 +74,7 @@ export default class NativeTmplModel extends MBModel {
      */
     public async getList() {
         return await this.select() as NativeTmplVO[];
+
     }
 
 }

@@ -45,7 +45,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -110,7 +111,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -122,7 +124,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             begin: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -142,19 +143,16 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             type: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             include: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -228,7 +226,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -246,7 +245,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -324,7 +322,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -343,12 +342,10 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             include: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -405,7 +402,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -456,7 +454,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -474,19 +473,16 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             begin: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             end: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             groupNum: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -610,7 +606,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -669,13 +666,15 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             configGroupId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -726,13 +725,13 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             type: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -779,7 +778,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -827,7 +827,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -839,7 +840,8 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             dependentId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
@@ -850,13 +852,11 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             type: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -914,13 +914,13 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -970,13 +970,15 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             dependentId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
@@ -986,7 +988,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -1035,7 +1036,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1059,7 +1061,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1113,7 +1114,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1137,7 +1139,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1208,7 +1209,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1224,7 +1226,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -1275,13 +1276,15 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             nativeTmplConfGroupId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1329,7 +1332,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1371,7 +1375,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1423,7 +1428,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1441,7 +1447,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1483,7 +1488,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1501,7 +1507,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1548,7 +1553,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1559,7 +1565,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -1606,37 +1611,35 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             nativeTmplId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             weight: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             clickArea: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             isFull: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1713,28 +1716,25 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             weight: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             clickArea: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             isFull: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -1796,13 +1796,15 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             adGroupId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 method: 'POST'       // 指定获取数据的方式
             },
             place: {
@@ -1813,7 +1815,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1862,7 +1863,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1916,7 +1918,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1957,7 +1960,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1969,7 +1973,8 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             adTypeId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1981,7 +1986,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -2023,7 +2027,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -2041,7 +2046,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -2085,7 +2089,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -2096,7 +2101,6 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -2138,7 +2142,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -2180,7 +2185,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -2224,13 +2230,15 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             adChannelId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -2248,19 +2256,16 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             ecpm: {
                 float: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             bidding: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,    // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -2375,7 +2380,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -2401,27 +2407,22 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             ecpm: {
                 float: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             interval: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             weight: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             bidding: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -2455,50 +2456,6 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
     }
-
-    /**
-     * <br/>删除广告组下广告
-     */
-    // public async deleteAdAction() {
-    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
-
-    //     const rules = {
-    //         id: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         }
-    //     };
-    //     const flag = this.validate(rules);
-
-    //     if (!flag) {
-    //         return this.fail(TaleCode.ValidData, this.validateMsg());
-    //     }
-
-    //     const adId: string = this.post('id');
-    //     const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-
-    //     try {
-    //         const { productId } = await adModel.getVo(adId);
-    //         const productAuth = await this.productAuth(productId);
-    //         const {
-    //             editAd, master
-    //         } = productAuth;
-
-    //         if (master === 0) {
-
-    //             if (editAd === 0) {
-    //                 throw new Error('没有权限！！！');
-    //             }
-    //         }
-
-    //     } catch (e) {
-    //         think.logger.debug(e);
-    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-    //     }
-
-    // }
 
     /**
      * 取得访问豁免,

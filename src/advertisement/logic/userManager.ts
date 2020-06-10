@@ -292,17 +292,11 @@ export default class UserManagerLogic extends AMLogic {
     public async userAuthAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
-        try {
-            await this.userAuth();
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
-
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -324,7 +318,8 @@ export default class UserManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -346,7 +341,8 @@ export default class UserManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -375,7 +371,8 @@ export default class UserManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -386,17 +383,14 @@ export default class UserManagerLogic extends AMLogic {
             },
             viewComConf: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             createProductGroup: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             master: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -447,7 +441,8 @@ export default class UserManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -477,7 +472,8 @@ export default class UserManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -507,67 +503,60 @@ export default class UserManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             userId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             editAd: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewAd: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             editGameConfig: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewGameConfig: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             editPurchase: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewPurchase: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             createProduct: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             editProduct: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             master: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -597,61 +586,55 @@ export default class UserManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             userId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             editAd: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewAd: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             editGameConfig: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewGameConfig: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             editPurchase: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewPurchase: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             editProduct: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             master: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -681,54 +664,48 @@ export default class UserManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             userId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             editAd: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             viewAd: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             editGameConfig: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             viewGameConfig: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             editPurchase: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             viewPurchase: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             editProduct: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             master: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -757,59 +734,52 @@ export default class UserManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             userId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             editAd: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             viewAd: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             editGameConfig: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             viewGameConfig: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             editPurchase: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             viewPurchase: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             createProduct: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             editProduct: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             master: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -838,13 +808,15 @@ export default class UserManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             userId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -874,13 +846,15 @@ export default class UserManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             userId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }

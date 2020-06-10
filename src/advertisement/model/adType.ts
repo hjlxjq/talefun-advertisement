@@ -16,16 +16,15 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class AdTypeModel extends MBModel {
-
     /**
      * 插入广告类型
      * @argument {AdTypeVO} adTypeVo 广告类型表对象;
      * @returns {Promise<string>} 主键 id;
      */
     public async addVo(adTypeVo: AdTypeVO) {
-
         await this.add(adTypeVo);
         return this.ID[0];
+
     }
 
     /**
@@ -37,8 +36,10 @@ export default class AdTypeModel extends MBModel {
     public async updateVo(id: string, adTypeVo: AdTypeVO) {
         if (!Utils.isEmptyObj(adTypeVo)) {
             return await this.where({ id }).update(adTypeVo);
+
         }
         return 0;
+
     }
 
     /**
@@ -48,32 +49,32 @@ export default class AdTypeModel extends MBModel {
      * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<AdTypeVO>} 广告类型信息;
      */
-    public async getVo(id: string, active?: number, test?: number) {
+    public async getVo(id: string, active: number, test: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
 
         if (test === 0) {
             queryStrings.push(`test=${test}`);
-        }
 
+        }
         if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
-        }
 
+        }
         const queryString: string = queryStrings.join(' AND ');
 
-        // think.logger.debug(`queryString: ${queryString}`);
-
         return await this.where(queryString).find() as AdTypeVO;
+
     }
 
     /**
-     * 根据广告类型获取广告类型信息
+     * 根据广告类型名称，获取广告类型信息
      * @argument {string} name 广告类型显示名称;
      * @returns {Promise<AdTypeVO>} 广告类型信息;
      */
     public async getByName(name: string) {
         return await this.where({ name }).find() as AdTypeVO;
+
     }
 
     /**
@@ -83,6 +84,7 @@ export default class AdTypeModel extends MBModel {
      */
     public async getByType(type: string) {
         return await this.where({ type }).find() as AdTypeVO;
+
     }
 
     /**
@@ -91,7 +93,8 @@ export default class AdTypeModel extends MBModel {
      * @returns {Promise<AdTypeVO[]>} 广告类型信息列表;
      */
     public async getList() {
-        return await this.order('type').select() as AdTypeVO[];
+        return await this.select() as AdTypeVO[];
+
     }
 
 }

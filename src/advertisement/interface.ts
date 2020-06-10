@@ -64,8 +64,6 @@ export interface CreateAdTypeResVO extends ResVO {
  */
 export interface UpdateAdTypeReqVO {
     id: string;    // 广告类型表 id
-    type?: string;    // 类型名称
-    name?: string;    // 显示名称
     test?: number;    // 是否测试 app 可见
     active?: number;    // 是否生效
 }
@@ -112,7 +110,6 @@ export interface CreateAdChannelResVO extends ResVO {
  */
 export interface UpdateAdChannelReqVO {
     id: string;    // 广告平台表 id
-    channel?: string;    // 平台名
     key1?: string;    // 启动参数 1
     key2?: string;    // 启动参数 2
     key3?: string;    // 启动参数 3

@@ -69,7 +69,8 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -104,7 +105,8 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -130,12 +132,10 @@ export default class ProductManagerLogic extends AMLogic {
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -170,7 +170,8 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -196,54 +197,6 @@ export default class ProductManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>创建应用打包参数
-     */
-    // public async createPackParamConfAction() {
-    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
-
-    //     const rules = {
-    //         productId: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         },
-    //         id: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         },
-    //         value: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         }
-    //     };
-    //     const flag = this.validate(rules);
-
-    //     if (!flag) {
-    //         return this.fail(TaleCode.ValidData, this.validateMsg());
-    //     }
-
-    //     const productId: string = this.post('productId');
-
-    //     try {
-    //         const productAuth = await this.productAuth(productId);
-    //         const { master, editProduct } = productAuth;
-
-    //         if (master === 0 && editProduct === 0) {
-    //             throw new Error('没有权限！！！');
-    //         }
-    //     } catch (e) {
-    //         think.logger.debug(e);
-    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-    //     }
-
-    // }
-
-    /**
      * <br/>更新应用打包参数
      */
     public async updatePackParamConfAction() {
@@ -252,13 +205,15 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             productId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -291,48 +246,6 @@ export default class ProductManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>删除应用打包参数
-     */
-    // public async deletePackParamConfAction() {
-    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
-
-    //     const rules = {
-    //         productId: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         },
-    //         id: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         }
-    //     };
-    //     const flag = this.validate(rules);
-
-    //     if (!flag) {
-    //         return this.fail(TaleCode.ValidData, this.validateMsg());
-    //     }
-
-    //     const productId: string = this.post('productId');
-
-    //     try {
-    //         const productAuth = await this.productAuth(productId);
-    //         const { master, editProduct } = productAuth;
-
-    //         if (master === 0 && editProduct === 0) {
-    //             throw new Error('没有权限！！！');
-    //         }
-    //     } catch (e) {
-    //         think.logger.debug(e);
-    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-    //     }
-
-    // }
-
-    /**
      * <br/>获取应用广告平台参数列表
      */
     public async channelParamConfListAction() {
@@ -341,7 +254,8 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -372,63 +286,6 @@ export default class ProductManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>创建应用平台参数
-     */
-    // public async createChannelParamConfAction() {
-    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
-
-    //     const rules = {
-    //         productId: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         },
-    //         id: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         },
-    //         value1: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             method: 'POST'       // 指定获取数据的方式
-    //         },
-    //         value2: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             method: 'POST'       // 指定获取数据的方式
-    //         },
-    //         value3: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             method: 'POST'       // 指定获取数据的方式
-    //         }
-    //     };
-    //     const flag = this.validate(rules);
-
-    //     if (!flag) {
-    //         return this.fail(TaleCode.ValidData, this.validateMsg());
-    //     }
-
-    //     const productId: string = this.post('productId');
-
-    //     try {
-    //         const productAuth = await this.productAuth(productId);
-    //         const { master, editProduct } = productAuth;
-
-    //         if (master === 0 && editProduct === 0) {
-    //             throw new Error('没有权限！！！');
-    //         }
-    //     } catch (e) {
-    //         think.logger.debug(e);
-    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-    //     }
-
-    // }
-
-    /**
      * <br/>更新应用平台参数
      */
     public async updateChannelParamConfAction() {
@@ -437,13 +294,15 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             productId: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -486,48 +345,6 @@ export default class ProductManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>删除应用平台参数
-     */
-    // public async deleteChannelParamConfAction() {
-    //     this.allowMethods = 'post';    // 只允许 POST 请求类型
-
-    //     const rules = {
-    //         productId: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         },
-    //         id: {
-    //             string: true,       // 字段类型为 String 类型
-    //             trim: true,         // 字段需要 trim 处理
-    //             required: true,     // 字段必填
-    //             method: 'POST'       // 指定获取数据的方式
-    //         }
-    //     };
-    //     const flag = this.validate(rules);
-
-    //     if (!flag) {
-    //         return this.fail(TaleCode.ValidData, this.validateMsg());
-    //     }
-
-    //     const productId: string = this.post('productId');
-
-    //     try {
-    //         const productAuth = await this.productAuth(productId);
-    //         const { master, editProduct } = productAuth;
-
-    //         if (master === 0 && editProduct === 0) {
-    //             throw new Error('没有权限！！！');
-    //         }
-    //     } catch (e) {
-    //         think.logger.debug(e);
-    //         return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-    //     }
-
-    // }
-
-    /**
      * GET，
      * <br/>获取项目组列表
      */
@@ -545,7 +362,8 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -593,7 +411,6 @@ export default class ProductManagerLogic extends AMLogic {
             },
             action: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -627,7 +444,8 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -643,7 +461,6 @@ export default class ProductManagerLogic extends AMLogic {
             },
             action: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -678,7 +495,8 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -713,7 +531,8 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             id: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -742,13 +561,11 @@ export default class ProductManagerLogic extends AMLogic {
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             action: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
