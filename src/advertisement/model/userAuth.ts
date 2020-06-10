@@ -36,7 +36,7 @@ export default class UserAuthModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateUserAuth(userId: string, userAuthVo: UserAuthVO) {
-        if (!Utils.isEmptyObj(userAuthVo)) {
+        if (!_.isEmpty(userAuthVo)) {
             return await this.where({ userId }).update(userAuthVo);
         }
         return 0;

@@ -56,7 +56,7 @@ export default class AbTestGroupModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, abTestGroupVo: AbTestGroupVO) {
-        if (!Utils.isEmptyObj(abTestGroupVo)) {
+        if (!_.isEmpty(abTestGroupVo)) {
             return await this.where({ id }).update(abTestGroupVo);
         }
 

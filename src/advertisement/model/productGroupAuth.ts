@@ -40,7 +40,7 @@ export default class ProductGroupAuthModel extends MBModel {
         userId: string,
         productGroupAuthUpdateVo: ProductGroupAuthVO
     ) {
-        if (!Utils.isEmptyObj(productGroupAuthUpdateVo)) {
+        if (!_.isEmpty(productGroupAuthUpdateVo)) {
             return await this.where({ productGroupId, userId }).update(productGroupAuthUpdateVo);
         }
         return 0;

@@ -53,7 +53,7 @@ export default class NativeTmplConfModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, nativeTmplConfVo: NativeTmplConfVO) {
-        if (!Utils.isEmptyObj(nativeTmplConfVo)) {
+        if (!_.isEmpty(nativeTmplConfVo)) {
             return await this.where({ id }).update(nativeTmplConfVo);
 
         }

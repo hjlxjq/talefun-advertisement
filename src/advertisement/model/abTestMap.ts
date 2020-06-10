@@ -54,7 +54,7 @@ export default class AbTestMapModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, abTestMapVo: AbTestMapVO) {
-        if (!Utils.isEmptyObj(abTestMapVo)) {
+        if (!_.isEmpty(abTestMapVo)) {
             return await this.where({ id }).update(abTestMapVo);
         }
 

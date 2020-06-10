@@ -35,7 +35,7 @@ export default class NativeTmplModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, nativeTmplVo: NativeTmplVO) {
-        if (!Utils.isEmptyObj(nativeTmplVo)) {
+        if (!_.isEmpty(nativeTmplVo)) {
             return await this.where({ id }).update(nativeTmplVo);
 
         }

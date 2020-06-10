@@ -35,7 +35,7 @@ export default class NativeTmplConfGroupModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, nativeTmplConfGroupVo: NativeTmplConfGroupVO) {
-        if (!Utils.isEmptyObj(nativeTmplConfGroupVo)) {
+        if (!_.isEmpty(nativeTmplConfGroupVo)) {
             return await this.where({ id }).update(nativeTmplConfGroupVo);
 
         }

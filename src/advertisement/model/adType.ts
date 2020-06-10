@@ -34,7 +34,7 @@ export default class AdTypeModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, adTypeVo: AdTypeVO) {
-        if (!Utils.isEmptyObj(adTypeVo)) {
+        if (!_.isEmpty(adTypeVo)) {
             return await this.where({ id }).update(adTypeVo);
 
         }

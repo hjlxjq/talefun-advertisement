@@ -36,7 +36,7 @@ export default class AdGroupModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, adGroupVo: AdGroupVO) {
-        if (!Utils.isEmptyObj(adGroupVo)) {
+        if (!_.isEmpty(adGroupVo)) {
             return await this.where({ id }).update(adGroupVo);
         }
         return 0;

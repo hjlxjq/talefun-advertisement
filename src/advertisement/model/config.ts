@@ -54,7 +54,7 @@ export default class ConfigModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateAdConfig(key: string, configGroupId: string, configVo: ConfigVO) {
-        if (!Utils.isEmptyObj(configVo)) {
+        if (!_.isEmpty(configVo)) {
             return await this.thenUpdate(configVo, { key, configGroupId });
 
         }
@@ -69,7 +69,7 @@ export default class ConfigModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, configVo: ConfigVO) {
-        if (!Utils.isEmptyObj(configVo)) {
+        if (!_.isEmpty(configVo)) {
             return await this.where({ id }).update(configVo);
 
         }
