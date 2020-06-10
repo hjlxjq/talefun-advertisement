@@ -153,8 +153,6 @@ export interface CreateNativeTmplResVO extends ResVO {
  */
 export interface UpdateNativeTmplReqVO {
     id: string;    // native 模板表 id
-    key?: string;    // 模板编号
-    preview?: string;    // 预览图地址
     test?: number;    // 是否测试 app 可见
     active?: number;    // 是否生效
 }
@@ -196,7 +194,6 @@ export interface CreateBaseConfigResVO extends ResVO {
  */
 export interface UpdateBaseConfigReqVO {
     id: string;    // 基础常量表 id
-    name?: string;    // 键
     value?: string;    // 值
     description?: string;    // 描述
     test?: number;    // 是否测试 app 可见
@@ -238,7 +235,6 @@ export interface CreatePackParamResVO extends ResVO {
  */
 export interface UpdatePackParamReqVO {
     id: string;    // 打包参数表 id
-    key?: string;    // 参数名
     description?: string;    // 描述
     test?: number;    // 是否测试 app 可见
     active?: number;    // 是否生效

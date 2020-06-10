@@ -52,7 +52,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             type: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
+                in: [0, 1, 2],     // 0 广告 1 游戏常量 2 商店
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -143,16 +143,19 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             type: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1, 2],     // 0 广告 1 游戏常量 2 商店
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             include: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -245,6 +248,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -342,10 +346,12 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             include: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -472,17 +478,17 @@ export default class DispatchManagerLogic extends AMLogic {
                 method: 'POST'       // 指定获取数据的方式
             },
             begin: {
-                int: true,       // 字段类型为 Number 类型
+                int: { min: 1, max: 98 },       // 字段类型为 Number 类型
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             end: {
-                int: true,       // 字段类型为 Number 类型
+                int: { min: 2, max: 99 },       // 字段类型为 Number 类型
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             groupNum: {
-                int: true,       // 字段类型为 Number 类型
+                int: { min: 2, max: 100 },       // 字段类型为 Number 类型
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -500,11 +506,6 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
-
-        // 最少分 2 组
-        if (!groupNum || groupNum < 2) {
-            return this.fail(TaleCode.ValidData, '分组失败，没有指定大于 1 的组数');
-        }
 
         // 用户范围结束大于开始
         if (begin >= end) {
@@ -732,6 +733,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             type: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 广告 1 游戏常量
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -852,11 +854,13 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             type: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 广告 1 游戏常量
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -921,6 +925,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -988,6 +993,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -1061,6 +1067,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1139,6 +1146,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1226,6 +1234,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -1447,6 +1456,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1507,6 +1517,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1565,6 +1576,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -1635,11 +1647,13 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             isFull: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1731,10 +1745,12 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             isFull: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -1815,6 +1831,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1986,6 +2003,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -2046,6 +2064,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -2101,6 +2120,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -2261,11 +2281,13 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             bidding: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,    // 默认字段
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -2419,10 +2441,12 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             bidding: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };

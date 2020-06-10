@@ -322,7 +322,7 @@ export default class ModelService extends BaseService {
 
             // 从 native 模板表常规配置中获取 key, preview
             const { nativeTmplId } = nativeTmplConfVo;
-            const nativeTmplVo = await nativeTmplModel.getNativeTmpl(nativeTmplId, undefined, undefined);
+            const nativeTmplVo = await nativeTmplModel.getVo(nativeTmplId, undefined, undefined);
 
             if (think.isEmpty(nativeTmplVo)) {
                 return;

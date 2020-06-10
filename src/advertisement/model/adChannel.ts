@@ -36,7 +36,7 @@ export default class AdChannelModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, adChannelVo: AdChannelVO) {
-        if (!Utils.isEmptyObj(adChannelVo)) {
+        if (!_.isEmpty(adChannelVo)) {
             return await this.where({ id }).update(adChannelVo);
 
         }

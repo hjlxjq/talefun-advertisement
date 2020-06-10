@@ -96,14 +96,14 @@ export default class UserManagerLogic extends AMLogic {
                 object: true,
                 children: {
                     int: true,       // 字段类型为 Number 类型
-                    trim: true,         // 字段需要 trim 处理
+                    in: [0, 1],     // 0 为 false， 1 为 true
                     default: 0,    // 字段默认值
                 },
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -152,14 +152,14 @@ export default class UserManagerLogic extends AMLogic {
                 object: true,
                 children: {
                     int: true,       // 字段类型为 Number 类型
-                    trim: true,         // 字段需要 trim 处理
+                    in: [0, 1],     // 0 为 false， 1 为 true
                     default: 0,    // 字段默认值
                 },
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -222,7 +222,7 @@ export default class UserManagerLogic extends AMLogic {
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
+                in: [0, 1],     // 0 为 false， 1 为 true
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -378,19 +378,22 @@ export default class UserManagerLogic extends AMLogic {
             },
             editComConf: {
                 int: true,       // 字段类型为 Number 类型
-                trim: true,         // 字段需要 trim 处理
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             viewComConf: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             createProductGroup: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             master: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -517,31 +520,37 @@ export default class UserManagerLogic extends AMLogic {
             },
             editAd: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewAd: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             editGameConfig: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewGameConfig: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             editPurchase: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewPurchase: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -552,11 +561,13 @@ export default class UserManagerLogic extends AMLogic {
             },
             editProduct: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             master: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -600,41 +611,49 @@ export default class UserManagerLogic extends AMLogic {
             },
             editAd: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewAd: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             editGameConfig: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewGameConfig: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             editPurchase: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             viewPurchase: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             editProduct: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             master: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 0,    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -678,34 +697,42 @@ export default class UserManagerLogic extends AMLogic {
             },
             editAd: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             viewAd: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             editGameConfig: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             viewGameConfig: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             editPurchase: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             viewPurchase: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             editProduct: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             master: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -748,38 +775,47 @@ export default class UserManagerLogic extends AMLogic {
             },
             editAd: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             viewAd: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             editGameConfig: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             viewGameConfig: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             editPurchase: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             viewPurchase: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             createProduct: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             editProduct: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             master: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };

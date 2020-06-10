@@ -22,7 +22,7 @@ export default class NativeTmplModel extends MBModel {
      * @argument {NativeTmplVO} nativeTmplVo native 模板表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addNativeTmpl(nativeTmplVo: NativeTmplVO) {
+    public async addVo(nativeTmplVo: NativeTmplVO) {
         await this.add(nativeTmplVo);
         return this.ID[0];
 
@@ -34,7 +34,7 @@ export default class NativeTmplModel extends MBModel {
      * @argument {NativeTmplVO} nativeTmplVo native 模板表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateNativeTmpl(id: string, nativeTmplVo: NativeTmplVO) {
+    public async updateVo(id: string, nativeTmplVo: NativeTmplVO) {
         if (!Utils.isEmptyObj(nativeTmplVo)) {
             return await this.where({ id }).update(nativeTmplVo);
 
@@ -50,7 +50,7 @@ export default class NativeTmplModel extends MBModel {
      * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<nativeTmplVO>} native 模板信息;
      */
-    public async getNativeTmpl(id: string, active: number, test: number) {
+    public async getVo(id: string, active: number, test: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
 

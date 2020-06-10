@@ -132,10 +132,12 @@ export default class ProductManagerLogic extends AMLogic {
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -409,8 +411,9 @@ export default class ProductManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
-            action: {
+            active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -459,8 +462,9 @@ export default class ProductManagerLogic extends AMLogic {
                 trim: true,         // 字段需要 trim 处理
                 method: 'POST'       // 指定获取数据的方式
             },
-            action: {
+            active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -561,11 +565,13 @@ export default class ProductManagerLogic extends AMLogic {
             },
             test: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
-            action: {
+            active: {
                 int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
                 default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },

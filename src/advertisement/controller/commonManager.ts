@@ -23,11 +23,12 @@ import { think } from 'thinkjs';
 import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as url from 'url';
 
 const rename = think.promisify(fs.rename, fs); // 通过 promisify 方法把 rename 方法包装成 Promise 接口
 
 import {
-    AdTypeVO, AdChannelVO, NativeTmplVO, BaseConfigVO, PackParamVO
+    AdTypeVO, AdChannelVO, NativeTmplVO, BaseConfigVO, PackParamVO, FileVO
 } from '../defines';
 
 import {
@@ -52,7 +53,16 @@ export default class CommonManagerController extends BaseController {
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
 
         const adTypeVoList = await adTypeModel.getList();
-        return this.success(adTypeVoList);
+
+        const adTypeResVoList = _.map(adTypeVoList, (adTypeVo) => {
+            // 删除不必要的字段
+            delete adTypeVo.createAt;
+            delete adTypeVo.updateAt;
+
+            return adTypeVo;
+
+        });
+        return this.success(adTypeResVoList);
 
     }
 
@@ -68,6 +78,9 @@ export default class CommonManagerController extends BaseController {
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
 
         const adTypeVo = await adTypeModel.getByName(name);
+        // 删除不必要的字段
+        delete adTypeVo.createAt;
+        delete adTypeVo.updateAt;
 
         return this.success(adTypeVo);
 
@@ -183,9 +196,9 @@ export default class CommonManagerController extends BaseController {
     public async updateAdChannelAction() {
         const ucId: string = this.ctx.state.user.id;
         const id: string = this.post('id');
-        const key1: string = this.post('key1') || undefined;
-        const key2: string = this.post('key2') || undefined;
-        const key3: string = this.post('key3') || undefined;
+        const key1: string = this.post('key1');
+        const key2: string = this.post('key2');
+        const key3: string = this.post('key3');
         const adTypeIdList: string[] = this.post('adTypeIdList');
         const test: number = this.post('test');
         const active: number = this.post('active');
@@ -274,36 +287,40 @@ export default class CommonManagerController extends BaseController {
      */
     public async createNativeTmplAction() {
         const ucId: string = this.ctx.state.user.id;
-        const file = this.file('file');
+        const file = this.file('file') as FileVO;    // 上传的文件
         const key: string = this.post('key');
-        // const preview: string = this.post('preview');
         const test: number = this.post('test');
         const active: number = this.post('active');
-
         const nativeTmplModel = this.taleModel('nativeTmpl', 'advertisement') as NativeTmplModel;
 
-        if (!file || !file.type.startsWith('image')) {
-            return this.fail(10, '上传失败');
-        }
-
+        // 服务器环境。本地服务器，管理服务器或者分发服务器
         const CTR_ENV = process.env.CTR_ENV;
+        // 服务器域名 -暂时，后期考虑加上 CDN
         const domain: string = think.config(CTR_ENV + '_domain');
-        const PreviewDir = path.resolve(think.ROOT_PATH, '..', think.config('PreviewDir'));
+        // 上传图片保存目录
+        const PreviewDir = think.config('PreviewDir');
 
-        const extname = path.extname(file.path);
-        const newFileName = key + extname;
-        const filepath = path.resolve(PreviewDir, newFileName);
-
+        // 模板图片保存在上传图片保存目录的子目录，目录名为 key
+        const nativeTmplDir = path.resolve(PreviewDir, key);
+        // 不存在这创建
+        await Utils.thenCreateDir(nativeTmplDir);
+        // 模板图片名
+        const fileName = path.basename(file.path);
+        // 模板图片地址
+        const filepath = path.resolve(nativeTmplDir, fileName);
+        // 把图片从暂存中 move 到图片目录
         await rename(file.path, filepath);
 
-        const preview = domain + 'image/preview/' + newFileName;
-
+        // 预览图地址
+        const preview = new URL(filepath, domain).toString();
+        // native 模板表对象
         const nativeTmplVo: NativeTmplVO = {
-            key, preview,
-            test, active,
+            key, preview, test, active,
         };
-        await nativeTmplModel.addNativeTmpl(nativeTmplVo);
+        await nativeTmplModel.addVo(nativeTmplVo);
+
         this.success('created');
+
     }
 
     /**
@@ -314,24 +331,43 @@ export default class CommonManagerController extends BaseController {
      */
     public async updateNativeTmplAction() {
         const ucId: string = this.ctx.state.user.id;
+        const file = this.file('file') as FileVO;    // 上传的文件
         const id: string = this.post('id');
-        const key: string = this.post('key');
-        const preview: string = this.post('preview');
         const test: number = this.post('test');
         const active: number = this.post('active');
         const nativeTmplModel = this.taleModel('nativeTmpl', 'advertisement') as NativeTmplModel;
 
-        const nativeTmplUpdateVo: NativeTmplVO = {
-            key, preview,
-            test, active,
-        };
-        const rows = await nativeTmplModel.updateNativeTmpl(id, nativeTmplUpdateVo);
+        // 当前 native 模板的 key
+        const { key } = await nativeTmplModel.getVo(id, undefined, undefined);
 
-        if (rows === 1) {
-            return this.success('updated');
-        } else {
-            this.fail(TaleCode.DBFaild, 'update fail!!!');
-        }
+        // 服务器环境。本地服务器，管理服务器或者分发服务器
+        const CTR_ENV = process.env.CTR_ENV;
+        // 服务器域名 -暂时，后期考虑加上 CDN
+        const domain: string = think.config(CTR_ENV + '_domain');
+        // 上传图片保存目录
+        const PreviewDir = think.config('PreviewDir');
+
+        // 模板图片保存在上传图片保存目录的子目录，目录名为 key
+        const nativeTmplDir = path.resolve(PreviewDir, key);
+        // 不存在这创建
+        await Utils.thenCreateDir(nativeTmplDir);
+        // 模板图片名
+        const fileName = path.basename(file.path);
+        // 模板图片地址
+        const filepath = path.resolve(nativeTmplDir, fileName);
+        // 把图片从暂存中 move 到图片目录
+        await rename(file.path, filepath);
+
+        // 预览图地址
+        const preview = new URL(filepath, domain).toString();
+
+        const nativeTmplUpdateVo: NativeTmplVO = {
+            key: undefined, preview, test, active,
+        };
+        await nativeTmplModel.updateVo(id, nativeTmplUpdateVo);
+
+        return this.success('updated');
+
     }
 
     /**
@@ -343,9 +379,18 @@ export default class CommonManagerController extends BaseController {
     public async baseConfigListAction() {
         const ucId: string = this.ctx.state.user.id;
         const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
-        const baseConfigVoList = await baseConfigModel.getList();
+        const baseConfigVoList = await baseConfigModel.getList(undefined, undefined);
 
-        return this.success(baseConfigVoList);
+        const baseConfigResVoList = _.map(baseConfigVoList, (baseConfigVo) => {
+            // 删除不必要的字段
+            delete baseConfigVo.createAt;
+            delete baseConfigVo.updateAt;
+
+            return baseConfigVo;
+
+        });
+        return this.success(baseConfigResVoList);
+
     }
 
     /**
@@ -364,11 +409,12 @@ export default class CommonManagerController extends BaseController {
         const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
 
         const baseConfigVo: BaseConfigVO = {
-            key, value, description,
-            test, active,
+            key, value, description, test, active,
         };
         await baseConfigModel.addVo(baseConfigVo);
+
         this.success('created');
+
     }
 
     /**
@@ -380,7 +426,6 @@ export default class CommonManagerController extends BaseController {
     public async updateBaseConfigAction() {
         const ucId: string = this.ctx.state.user.id;
         const id: string = this.post('id');
-        const key: string = this.post('key');
         const value: string = this.post('value');
         const description: string = this.post('description');
         const test: number = this.post('test');
@@ -388,16 +433,12 @@ export default class CommonManagerController extends BaseController {
         const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
 
         const baseConfigUpdateVo: BaseConfigVO = {
-            key, value, description,
-            test, active
+            key: undefined, value, description, test, active
         };
-        const rows = await baseConfigModel.updateVo(id, baseConfigUpdateVo);
+        await baseConfigModel.updateVo(id, baseConfigUpdateVo);
 
-        if (rows === 1) {
-            return this.success('updated');
-        } else {
-            this.fail(TaleCode.DBFaild, 'update fail!!!');
-        }
+        return this.success('updated');
+
     }
 
     /**
@@ -410,9 +451,18 @@ export default class CommonManagerController extends BaseController {
         const ucId: string = this.ctx.state.user.id;
         const packParamModel = this.taleModel('packParam', 'advertisement') as PackParamModel;
 
-        const packParamVoList = await packParamModel.getList();
+        const packParamVoList = await packParamModel.getList(undefined, undefined);
 
-        return this.success(packParamVoList);
+        const packParamResVoList = _.map(packParamVoList, (packParamVo) => {
+            // 删除不必要的字段
+            delete packParamVo.createAt;
+            delete packParamVo.updateAt;
+
+            return packParamVo;
+
+        });
+        return this.success(packParamResVoList);
+
     }
 
     /**
@@ -430,11 +480,12 @@ export default class CommonManagerController extends BaseController {
         const packParamModel = this.taleModel('packParam', 'advertisement') as PackParamModel;
 
         const packParamVo: PackParamVO = {
-            key, description,
-            test, active,
+            key, description, test, active,
         };
-        await packParamModel.addPackParam(packParamVo);
+        await packParamModel.addVo(packParamVo);
+
         this.success('created');
+
     }
 
     /**
@@ -446,23 +497,18 @@ export default class CommonManagerController extends BaseController {
     public async updatePackParamAction() {
         const ucId: string = this.ctx.state.user.id;
         const id: string = this.post('id');
-        const key: string = this.post('key');
         const description: string = this.post('description');
         const test: number = this.post('test');
         const active: number = this.post('active');
         const packParamModel = this.taleModel('packParam', 'advertisement') as PackParamModel;
 
         const packParamUpdateVo: PackParamVO = {
-            key, description,
-            test, active
+            key: undefined, description, test, active
         };
-        const rows = await packParamModel.updatePackParam(id, packParamUpdateVo);
+        const rows = await packParamModel.updateVo(id, packParamUpdateVo);
 
-        if (rows === 1) {
-            return this.success('updated');
-        } else {
-            this.fail(TaleCode.DBFaild, 'update fail!!!');
-        }
+        return this.success('updated');
+
     }
 
 }

@@ -24,9 +24,9 @@ export default class BaseConfigModel extends MBModel {
      * @returns {Promise<string>} 主键 id;
      */
     public async addVo(baseConfigVo: BaseConfigVO) {
-
         await this.add(baseConfigVo);
         return this.ID[0];
+
     }
 
     /**
@@ -38,32 +38,34 @@ export default class BaseConfigModel extends MBModel {
     public async updateVo(id: string, baseConfigVo: BaseConfigVO) {
         if (!Utils.isEmptyObj(baseConfigVo)) {
             return await this.where({ id }).update(baseConfigVo);
+
         }
         return 0;
+
     }
 
     /**
      * 获取基础常量信息列表
-     * </br> 按基础常量 key 从小到大排序
      * @argument {number} active 是否生效;
      * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<BaseConfigVO[]>} 基础常量信息列表;
      */
-    public async getList(active?: number, test?: number) {
+    public async getList(active: number, test: number) {
         const queryStrings: string[] = [];
         queryStrings.push('1=1');
 
         if (test === 0) {
             queryStrings.push(`test=${test}`);
-        }
 
+        }
         if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
-        }
 
+        }
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).select() as BaseConfigVO[];
+
     }
 
 }

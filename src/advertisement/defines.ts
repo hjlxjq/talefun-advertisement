@@ -365,6 +365,15 @@ export interface CusRedis extends Redis.Redis {
     ): Promise<string>;
 }
 
+// 上传的文件类型
+export interface FileVO {
+    size: number;
+    path: string;
+    name: string;
+    type: string;
+    mtime: string;
+}
+
 /**
  * *********************************************************************************************************************
  * 扩展 thinkjs 原生 interface 结构

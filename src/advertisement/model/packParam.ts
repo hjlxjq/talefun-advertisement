@@ -17,16 +17,15 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class PackParamModel extends MBModel {
-
     /**
      * 插入打包参数,
      * @argument {PackParamVO} packParamVo 打包参数表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addPackParam(packParamVo: PackParamVO) {
-
+    public async addVo(packParamVo: PackParamVO) {
         await this.add(packParamVo);
         return this.ID[0];
+
     }
 
     /**
@@ -35,34 +34,36 @@ export default class PackParamModel extends MBModel {
      * @argument {PackParamVO} packParamVo 打包参数表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updatePackParam(id: string, packParamVo: PackParamVO) {
+    public async updateVo(id: string, packParamVo: PackParamVO) {
         if (!Utils.isEmptyObj(packParamVo)) {
             return await this.where({ id }).update(packParamVo);
+
         }
         return 0;
+
     }
 
     /**
      * 获取打包参数信息列表,
-     * </br>按打包参数 key 从小到大排序
      * @argument {number} active 是否生效;
      * @argument {number} test 是否测试 app 可见;
      */
-    public async getList(active?: number, test?: number) {
+    public async getList(active: number, test: number) {
         const queryStrings: string[] = [];
         queryStrings.push('1=1');
 
         if (test === 0) {
             queryStrings.push(`test=${test}`);
-        }
 
+        }
         if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
-        }
 
+        }
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).select() as PackParamVO[];
+
     }
 
 }
