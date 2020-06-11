@@ -2302,6 +2302,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const bidding: number = this.post('bidding');
         const adGroupId: string = this.post('id');
         const adChannelId: string = this.post('adChannelId');
+        const name: string = this.post('name');
         const placementID: string = this.post('placementID');
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as AdChannelConfModel;
