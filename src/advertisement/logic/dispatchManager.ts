@@ -168,6 +168,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         const productId: string = this.post('id');
         const type: number = this.post('type');    // 0 广告 1 游戏常量 2 商店
+        const name: string = this.post('name');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
@@ -260,6 +261,7 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         const copyId: string = this.post('id');    // 被复制的版本条件分组主键 id
+        const name: string = this.post('name');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
