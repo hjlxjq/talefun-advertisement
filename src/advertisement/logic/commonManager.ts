@@ -64,7 +64,7 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             name: {
                 string: true,       // 字段类型为 String 类型
-                regexp: /^[\u4e00-\u9fa5]+$/,    // 字段值要匹配给出的正则
+                cusTrim: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -105,7 +105,7 @@ export default class CommonManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                regexp: /^[\u4e00-\u9fa5]+$/,    // 字段值要匹配给出的正则
+                cusTrim: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },

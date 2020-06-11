@@ -505,7 +505,7 @@ export default class CommonManagerController extends BaseController {
         const packParamUpdateVo: PackParamVO = {
             key: undefined, description, test, active
         };
-        const rows = await packParamModel.updateVo(id, packParamUpdateVo);
+        await packParamModel.updateVo(id, packParamUpdateVo);
 
         return this.success('updated');
 
