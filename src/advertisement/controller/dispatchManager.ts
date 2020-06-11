@@ -55,7 +55,6 @@ import {
 } from '../interface';
 
 export default class DispatchManagerController extends BaseController {
-
     /**
      * <br/>获取版本条件分组列表信息
      * @argument {VersionGroupListReqVO}
@@ -191,7 +190,6 @@ export default class DispatchManagerController extends BaseController {
         const name: string = this.post('name');
         const description: string = this.post('description');
         const active: number = this.post('active');
-
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
@@ -565,6 +563,7 @@ export default class DispatchManagerController extends BaseController {
                     await Bluebird.map(abTestGroupVoList, (abTestGroupVo) => {
                         return cacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupVo.id, updateAbTestGroupVo);
                     });
+
                 }
 
             }

@@ -110,7 +110,8 @@ export default class ProductManagerLogic extends AMLogic {
             },
             pid: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                // cusTrim: true,      // 前后不能有空格
+                regexp: /^id[0-9]+$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {

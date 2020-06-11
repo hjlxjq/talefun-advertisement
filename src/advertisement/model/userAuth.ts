@@ -24,9 +24,9 @@ export default class UserAuthModel extends MBModel {
      * @returns {Promise<string>} 用户权限表主键;
      */
     public async addVo(userAuthVo: UserAuthVO): Promise<string> {
-
         await this.add(userAuthVo);
         return this.ID[0];
+
     }
 
     /**

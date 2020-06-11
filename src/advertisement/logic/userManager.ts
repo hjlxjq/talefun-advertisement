@@ -633,7 +633,7 @@ export default class UserManagerLogic extends AMLogic {
 
         try {
             await this.productGroupAuth(productGroupId, 'master');
-            
+
         } catch (e) {
 
             think.logger.debug(e);

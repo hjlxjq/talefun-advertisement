@@ -16,7 +16,7 @@ import AdChannelModel from '../model/adChannel';
 
 import CacheService from '../service/cacheServer';
 
-import { UserAuthVO, CusProductAuth, CusProductGroupAuth } from '../defines';
+import { UserAuthVO, ProductAuthVO } from '../defines';
 
 import * as _ from 'lodash';
 import { think } from 'thinkjs';
@@ -26,14 +26,15 @@ export default class DispatchManagerLogic extends AMLogic {
     /**
      * 权限认证，
      * <br/>应用下的权限
-     * @returns {CusProductAuth} 应用下的权限
+     * @returns {ProductAuthVO} productAuthVo 应用下的权限
      */
     private async productAuth(productId: string) {
         const ucId: string = this.ctx.state.user.id;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
-        const productAuth = await authServer.fetchProductAuth(ucId, productId);
-        return productAuth;
+        const productAuthVo = await authServer.fetchProductAuth(ucId, productId);
+        return productAuthVo;
+
     }
 
     /**
@@ -123,7 +124,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 method: 'POST'       // 指定获取数据的方式
             },
             begin: {
-                int: true,       // 字段类型为 Number 类型
+                int: { min: 0 },       // 字段类型为 Number 类型且最小值为 0
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -138,6 +139,8 @@ export default class DispatchManagerLogic extends AMLogic {
                 children: {
                     string: true,       // 字段类型为 String 类型
                     cusTrim: true,      // 前后不能有空格
+                    required: true,     // 字段必填
+                    length: 2,          // 长度为 2
                 },
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -192,11 +195,34 @@ export default class DispatchManagerLogic extends AMLogic {
                 if (editPurchase === 0 && type === 2) {
                     throw new Error('没有权限！！！');
                 }
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
+        }
+
+        /**
+         * <br/>线上是否存在默认组，创建之前先保证存在默认组
+         */
+        const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, 1, 1);
+
+        if (_.isEmpty(defaultVersionGroupVo)) {
+            return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
+
+        }
+        const { begin, code, include } = defaultVersionGroupVo;
+        const codeList = JSON.parse(code);
+
+        // 默认组必须，起始版本为 0, 国家全覆盖
+        if (
+            begin !== 0 ||
+            include !== 1 ||
+            codeList !== []
+        ) {
+            return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
         }
 
         /**
@@ -212,6 +238,7 @@ export default class DispatchManagerLogic extends AMLogic {
             // 未更新（不存在）或者未禁用则报唯一性错误
             if (_.isEmpty(cacheVersionGroupVo) || cacheVersionGroupVo.active !== 0) {
                 return this.fail(TaleCode.DBFaild, '版本条件分组名重复！！！');
+
             }
 
         }
@@ -343,6 +370,8 @@ export default class DispatchManagerLogic extends AMLogic {
                 children: {
                     string: true,       // 字段类型为 String 类型
                     cusTrim: true,      // 前后不能有空格
+                    required: true,     // 字段必填
+                    length: 2,          // 长度为 2
                 },
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -469,7 +498,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -616,7 +645,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1051,7 +1080,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             key: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                regexp: /^[A-Za-z][A-Za-z0-9]+$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1130,7 +1159,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             key: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                regexp: /^[A-Za-z][A-Za-z0-9]+$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1827,7 +1856,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             place: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                regexp: /^[a-z_]+$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1889,7 +1918,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             place: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                regexp: /^[a-z_]+$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -2272,7 +2301,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             placementID: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -2324,7 +2353,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const { productId } = await adGroupModel.getVo(adGroupId, ucId);
 
         const [adChannelVo, channelParamConfVo] = await Promise.all([
-            adChannelModel.getVo(adChannelId),
+            adChannelModel.getVo(adChannelId, undefined, undefined),
             channelParamConfModel.getVo(adChannelId, productId)
         ]);
 
@@ -2417,17 +2446,17 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             placementID: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimAll: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             loader: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                regexp: /^[a-z0-9]+$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             subloader: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                regexp: /^[a-z0-9]+$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             ecpm: {
@@ -2460,12 +2489,23 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         const adId: string = this.post('id');
+        const ecpm: number = this.post('ecpm');
+        const bidding: number = this.post('bidding');
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
 
         const adVo = await adModel.getVo(adId, ucId);
 
         if (_.isEmpty(adVo)) {
             this.fail(TaleCode.DBFaild, '该广告不存在!!!');
+        }
+
+        // ecpm 非负
+        if (ecpm < 0) {
+            return this.fail(TaleCode.ValidData, 'ecpm 必须为非负数！！！');
+        }
+        // bidding 为 1, 则 ecpm 强制为 0
+        if (bidding === 1 && ecpm !== 0) {
+            return this.fail(TaleCode.ValidData, 'bidding 为 1, 则 ecpm 强制为 0！！！');
         }
 
         // 权限判断
