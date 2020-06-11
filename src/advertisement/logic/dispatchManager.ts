@@ -226,6 +226,27 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         /**
+         * <br/>线上是否存在冲突组，一个起始版本和一个国家只能对应一个版本条件分组
+         */
+        // const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, 1, 1);
+
+        // if (_.isEmpty(defaultVersionGroupVo)) {
+        //     return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
+
+        // }
+        // const { begin, code, include } = defaultVersionGroupVo;
+        // const codeList = JSON.parse(code);
+
+        // // 默认组必须，起始版本为 0, 国家全覆盖
+        // if (
+        //     begin !== 0 ||
+        //     include !== 1 ||
+        //     codeList !== []
+        // ) {
+        //     return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
+        // }
+
+        /**
          * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
          */
         const versionGroupVo =
@@ -378,6 +399,10 @@ export default class DispatchManagerLogic extends AMLogic {
             include: {
                 int: true,       // 字段类型为 Number 类型
                 in: [0, 1],     // 0 为 false， 1 为 true
+                method: 'POST'       // 指定获取数据的方式
+            },
+            begin: {
+                int: { min: 0 },       // 字段类型为 Number 类型且最小值为 0
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {

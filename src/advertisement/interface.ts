@@ -570,6 +570,7 @@ export interface UpdateVersionGroupReqVO {
     id: string;    // 版本条件分组表主键 id
     codeList?: string[];    // 支持的国家代码列表, 有变动就传所有的 code
     include?: number;    // 国家代码是否包含
+    begin?: number;    // 起始版本
     description?: string;    // 描述
     active?: number;    // 是否生效
 }

@@ -269,6 +269,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const codeList: string[] = this.post('codeList');
         const include: number = this.post('include');
+        const begin: number = this.post('begin');
         const active: number = this.post('action');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
@@ -285,7 +286,7 @@ export default class DispatchManagerController extends BaseController {
 
         // 待更新的版本条件分组对象
         const updateVersionGroupVo: VersionGroupVO = {
-            name: undefined, begin: undefined, description, code, include, active, activeTime: undefined,
+            name: undefined, begin, description, code, include, active, activeTime: undefined,
             type: undefined, productId: undefined, creatorId: undefined
         };
 
