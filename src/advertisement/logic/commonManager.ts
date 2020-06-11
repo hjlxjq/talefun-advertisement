@@ -714,7 +714,7 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             key: {
                 string: true,       // 字段类型为 String 类型
-                regexp: /^[A-Za-z]+$/,    // 字段值要匹配给出的正则
+                regexp: /^[A-Za-z_]+$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },

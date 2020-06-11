@@ -76,6 +76,7 @@ export default class ProductAuthModel extends MBModel {
         return _.map(productAuthVoList, (productAuthVo) => {
             return productAuthVo.productId;
         });
+
     }
 
     /**

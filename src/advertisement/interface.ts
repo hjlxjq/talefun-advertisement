@@ -9,6 +9,9 @@ interface ResVO {
  * *********************************************************************************************************************
  */
 
+/**
+ * 常规广告类型返回字段
+ */
 interface AdTypeVO {
     id: string;    // 广告类型表 id
     type: string;    // 类型名称
@@ -17,6 +20,9 @@ interface AdTypeVO {
     active: number;    // 是否生效
 }
 
+/**
+ * 常规广告平台返回字段
+ */
 interface AdChannelVO {
     id: string;    // 广告平台表 id
     channel: string;    // 平台名
@@ -25,6 +31,40 @@ interface AdChannelVO {
     key3: string;    // 启动参数 3
     test: number;    // 是否测试 app 可见
     adTypeList: string[];    // 支持的广告类型显示名称列表
+    active: number;    // 是否生效
+}
+
+/**
+ * 常规 native 模板返回字段
+ */
+interface NativeTmplVO {
+    id: string;    // native 模板表 id
+    key: string;    // 模板编号
+    preview: string;    // 预览图地址
+    test: number;    // 是否测试 app 可见
+    active: number;    // 是否生效
+}
+
+/**
+ * 常规基础常量返回字段
+ */
+interface BaseConfigVO {
+    id: string;    // 通用基础常量表 id
+    key: string;    // 键
+    value: string;    // 值
+    description: string;    // 描述
+    test: number;    // 是否测试 app 可见
+    active: number;    // 是否生效
+}
+
+/**
+ * 常规打包参数返回字段
+ */
+interface PackParamVO {
+    id: string;    // 通用打包参数表 id
+    key: string;    // 键
+    description: string;    // 描述
+    test: number;    // 是否测试 app 可见
     active: number;    // 是否生效
 }
 
@@ -127,21 +167,15 @@ export interface UpdateAdChannelResVO extends ResVO {
  * <br/>获取 native 模板列表 /advertisement/commonManager/nativeTmplList
  */
 export interface NativeTmplListResVO extends ResVO {
-    data: Array<{
-        id: string;    // 通用 native 模板表 id
-        key: string;    // 模板编号
-        preview: string;    // 预览图地址
-        test: number;    // 是否测试 app 可见
-        active: number;    // 是否生效
-    }>;
+    data: NativeTmplVO[];
 }
 
 /**
  * 创建 native 模板 /advertisement/commonManager/createNativeTmpl
+ * <br/>需要上传图片
  */
 export interface CreateNativeTmplReqVO {
     key: string;    // 模板编号
-    // preview: string;    // 预览图地址
 }
 
 export interface CreateNativeTmplResVO extends ResVO {
@@ -150,6 +184,7 @@ export interface CreateNativeTmplResVO extends ResVO {
 
 /**
  * 更新 native 模板 /advertisement/commonManager/updateNativeTmpl
+ * <br/>更新预览图需要上传图片
  */
 export interface UpdateNativeTmplReqVO {
     id: string;    // native 模板表 id
@@ -166,14 +201,7 @@ export interface UpdateNativeTmplResVO extends ResVO {
  * <br/>获取基础常量列表 /advertisement/commonManager/baseConfigList
  */
 export interface BaseConfigListResVO extends ResVO {
-    data: Array<{
-        id: string;    // 基础常量表 id
-        key: string;    // 键
-        value: string;    // 值
-        description: string;    // 描述
-        test: number;    // 是否测试 app 可见
-        active: number;    // 是否生效
-    }>;
+    data: BaseConfigVO[];
 }
 
 /**
@@ -209,13 +237,7 @@ export interface UpdateBaseConfigResVO extends ResVO {
  * <br/>获取打包参数列表 /advertisement/commonManager/packParamList
  */
 export interface PackParamListResVO extends ResVO {
-    data: Array<{
-        id: string;    // 通用打包参数表 id
-        key: string;    // 参数名
-        description: string;    // 描述
-        test: number;    // 是否测试 app 可见
-        active: number;    // 是否生效
-    }>;
+    data: PackParamVO[];
 }
 
 /**

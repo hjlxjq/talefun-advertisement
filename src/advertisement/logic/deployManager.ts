@@ -1,12 +1,10 @@
 import { TaleCode, TokenExemptVO } from '../../common/tale/TaleDefine';
 import AMLogic from './managerBaseLogic';
-import AuthServer from '../service/authServer';
 
 import * as _ from 'lodash';
 import { think } from 'thinkjs';
 
 export default class DeployManagerLogic extends AMLogic {
-
     /**
      * GET，
      * <br/>发布到正式环境
@@ -34,6 +32,7 @@ export default class DeployManagerLogic extends AMLogic {
         exes.push({ action: 'index' });
 
         return exes;
+
     }
 
 }

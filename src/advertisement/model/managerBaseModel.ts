@@ -32,6 +32,7 @@ export default class ManagerBaseModel extends BaseModel {
         this.ID.push(modelVo.id);
 
         return modelVo;
+
     }
 
     /**
@@ -39,8 +40,9 @@ export default class ManagerBaseModel extends BaseModel {
      * @argument {any[]} modelVoList 数据库对象列表;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateModelVoList(modelVoList: any[]): Promise<number> {
-        return await this.updateMany(modelVoList);
+    public async updateModelVoList(modelVoList: any[]) {
+        return await this.updateMany(modelVoList) as number;
+
     }
 
     /**
@@ -48,8 +50,9 @@ export default class ManagerBaseModel extends BaseModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async delModelVoList(creatorId: string): Promise<number> {
+    public async delModelVoList(creatorId: string) {
         return await this.where({ creatorId }).delete();
+
     }
 
     /**
@@ -59,14 +62,17 @@ export default class ManagerBaseModel extends BaseModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async deployVo(creatorId: string) {
-        if ((creatorId)) {
+        if (creatorId) {
+            // 线上的 activeTime 值
             const LiveActiveTime = think.config('LiveActiveTime');
             return await this.where({ creatorId }).update({
                 creatorId: null,
                 activeTime: LiveActiveTime
             });
+
         }
         return 0;
+
     }
 
 }

@@ -76,21 +76,8 @@ export default class ProductGroupAuthModel extends MBModel {
         return _.map(productGroupAuthVoList, (productGroupAuthVo) => {
             return productGroupAuthVo.productGroupId;
         });
+
     }
-
-    /**
-     * 根据项目组表主键 id 获取项目组权限表数量
-     * @argument {string} productGroupId 应用表 id;
-     * @argument {number} active 是否生效;
-     * @returns {Promise<number>} 项目组权限表数量;
-     */
-    // public async getNum(productGroupId: string, active?: number) {
-    //     if (!_.isUndefined(active)) {
-    //         return await this.where({ productGroupId, active }).count('id');
-
-    //     }
-    //     return await this.where({ productGroupId }).count('id');
-    // }
 
     /**
      * 根据用户表主键和项目组表主键获取项目组和应用权限对象

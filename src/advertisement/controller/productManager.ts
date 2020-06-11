@@ -37,7 +37,6 @@ import {
 } from '../interface';
 
 export default class ProductManagerController extends BaseController {
-
     /**
      * GET，
      * <br/>获取全部应用列表
@@ -54,35 +53,45 @@ export default class ProductManagerController extends BaseController {
         const userAuth = await authServer.fetchUserAuth(ucId);
         const { master } = userAuth;
 
+        // 应用列表
         let productVoList: ProductVO[];
-
-        // think.logger.debug(`master: ${master}`);
 
         if (master === 1) {    // 管理员获取全部应用
             productVoList = await productModel.getList();
 
         } else {    // 获取用户有权查看的全部应用
             productVoList = await modelServer.getProductListByUser(ucId);
+
         }
 
+        // 返回前端的应用信息列表
         const productResVoList = await Bluebird.map(productVoList, async (productVo) => {
-
-            const productGroupVo = await productGroupModel.getProductGroup(productVo.productGroupId);
+            // 项目组表对象，获取项目组名
+            const productGroupVo = await productGroupModel.getVo(productVo.productGroupId);
             const { name: productGroupName, active } = productGroupVo;
 
             // 项目组不生效则不显示其下的应用
-            if (!active) {
+            if (active === 0) {
                 return;
+
             }
 
-            delete productVo.productGroupId;
+            // 返回应用信息包含项目组名
+            const productResVo: ProductResVO = _.defaults({
+                productGroupName, productAuth: undefined
+            }, productVo);
 
-            const productResVo: ProductResVO = _.defaults({ productGroupName }, productVo);
+            // 删除不必要的字段
+            delete productResVo.productGroupId;
+            delete productResVo.createAt;
+            delete productResVo.updateAt;
 
             return productResVo;
+
         });
 
         return this.success(_.compact(productResVoList));
+
     }
 
     /**
@@ -357,7 +366,7 @@ export default class ProductManagerController extends BaseController {
         const [
             productGroupVo, productGroupAuth
         ] = await Promise.all([
-            productGroupModel.getProductGroup(productGroupId),
+            productGroupModel.getVo(productGroupId),
             authServer.fetchProductGroupAuth(ucId, productGroupId)
         ]);
 

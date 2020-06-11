@@ -60,7 +60,8 @@ export default class ProductModel extends MBModel {
      * @returns {Promise<ProductVO[]>} 应用列表;
      */
     public async getList() {
-        return await this.order('name').select() as ProductVO[];
+        return await this.select() as ProductVO[];
+
     }
 
     /**
@@ -69,7 +70,8 @@ export default class ProductModel extends MBModel {
      * @returns {Promise<ProductVO[]>} 应用列表;
      */
     public async getListByProductGroup(productGroupId: string) {
-        return await this.where({ productGroupId }).order('name').select() as ProductVO[];
+        return await this.where({ productGroupId }).select() as ProductVO[];
+
     }
 
     /**
@@ -80,7 +82,6 @@ export default class ProductModel extends MBModel {
      * @returns {Promise<ProductVO[]>} 应用列表;
      */
     public async getListByAuth(idList: string[], ProductGroupIdList: string[]) {
-
         idList.push('');    // 为空数组报错
         ProductGroupIdList.push('');    // 为空数组报错
 
@@ -88,8 +89,8 @@ export default class ProductModel extends MBModel {
             id: ['IN', idList],
             productGroupId: ['IN', ProductGroupIdList],
             _logic: 'OR'
-        })
-            .order('name').select() as ProductVO[];
+        }).select() as ProductVO[];
+
     }
 
     /**

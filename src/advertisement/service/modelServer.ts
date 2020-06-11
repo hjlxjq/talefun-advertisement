@@ -128,12 +128,13 @@ export default class ModelService extends BaseService {
             productAuthModel.getIdListByUser(userId),
             productGroupAuthModel.getIdListByUser(userId)
         ]);
-        think.logger.debug(`productIdList: ${JSON.stringify(productIdList)}`);
-        think.logger.debug(`productGroupIdList: ${JSON.stringify(productGroupIdList)}`);
+        // think.logger.debug(`productIdList: ${JSON.stringify(productIdList)}`);
+        // think.logger.debug(`productGroupIdList: ${JSON.stringify(productGroupIdList)}`);
 
         const productVoList = await productModel.getListByAuth(productIdList, productGroupIdList);
 
         return productVoList;
+
     }
 
     /**

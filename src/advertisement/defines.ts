@@ -106,7 +106,7 @@ export interface ProductVO extends BaseVO {
     pid: string;    // 苹果 id
     test: number;    // 是否测试 app 可见
     active: number;    // 是否生效
-    productGroupId?: string;    // 项目组表 id
+    productGroupId: string;    // 项目组表 id
 }
 
 /**
@@ -306,9 +306,8 @@ export interface UserAuthVO extends BaseVO {
 export interface ProductGroupAuthVO extends BaseProductAuthVO {
     master: number;    // 项目组管理员
     createProduct: number; // 创建应用
-    active?: number;    // 控制生效
-    userId?: string;    // 用户表 id
-    productGroupId?: string;    // 项目组表 id
+    userId: string;    // 用户表 id
+    productGroupId: string;    // 项目组表 id
 }
 
 /**
@@ -316,9 +315,8 @@ export interface ProductGroupAuthVO extends BaseProductAuthVO {
  */
 export interface ProductAuthVO extends BaseProductAuthVO {
     master: number;    // 应用管理员
-    active?: number;    // 控制生效
-    userId?: string;    // 用户表 id
-    productId?: string;    // 应用表 id
+    userId: string;    // 用户表 id
+    productId: string;    // 应用表 id
 }
 
 /**
@@ -401,8 +399,8 @@ export interface AdChannelResVO extends AdChannelVO {
 }
 
 export interface ProductResVO extends ProductVO {
-    productGroupName?: string;    // 项目组名
-    productAuth?: ProductAuthVO;    // 用户在应用下权限
+    productGroupName: string;    // 项目组名
+    productAuth: ProductAuthVO;    // 用户在应用下权限
 }
 
 export interface PackParamConfResVO extends PackParamVO {

@@ -65,8 +65,9 @@ export default class ProductGroupModel extends MBModel {
      * @argument {string} id 项目组表 id;
      * @returns {Promise<ProductGroupVO>} 项目组信息;
      */
-    public async getProductGroup(id: string) {
+    public async getVo(id: string) {
         return await this.where({ id }).find() as ProductGroupVO;
+
     }
 
 }
