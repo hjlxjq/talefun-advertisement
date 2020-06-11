@@ -17,34 +17,21 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class PackParamConfModel extends MBModel {
-
-    // /**
-    //  * 插入应用打包参数
-    //  * @argument {PackParamConfVO} packParamConfVo 应用打包参数表对象;
-    //  * @returns {Promise<string>} 主键 id;
-    //  */
-    // public async addPackParamConf(packParamConfVo: PackParamConfVO) {
-
-    //     await this.add(packParamConfVo);
-    //     return this.ID[0];
-    // }
-
     /**
-     * 更新应用打包参数
+     * 创建或者更新应用打包参数，
+     * <br/>不存在则创建
      * @argument {string} packParamId 打包参数表 id;
      * @argument {string} productId 应用表 id;
      * @argument {PackParamConfVO} packParamConfUpdateVo 应用打包参数对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updatePackParamConf(
+    public async thenUpdateVo(
         packParamId: string,
         productId: string,
         packParamConfUpdateVo: PackParamConfVO
     ) {
-        think.logger.debug(`packParamId: ${packParamId}`);
-        think.logger.debug(`productId: ${productId}`);
-        think.logger.debug(`packParamConfUpdateVo: ${JSON.stringify(packParamConfUpdateVo)}`);
         return await this.thenUpdate(packParamConfUpdateVo, { packParamId, productId });
+
     }
 
     /**
@@ -53,16 +40,18 @@ export default class PackParamConfModel extends MBModel {
      * @argument {string} productId 应用表 id;
      * @returns {Promise<number>} 应用打包参数信息;
      */
-    public async getPackParamConf(packParamId: string, productId: string) {
+    public async getVo(packParamId: string, productId: string) {
         return await this.where({ packParamId, productId }).find() as PackParamConfVO;
+
     }
 
     /**
-     * @argument {string} productId 应用表 id;
      * 获取应用打包参数信息列表
+     * @argument {string} productId 应用表 id;
      */
     public async getList(productId: string) {
         return await this.where({ productId }).select() as PackParamConfVO[];
+
     }
 
     /**
@@ -73,6 +62,7 @@ export default class PackParamConfModel extends MBModel {
      */
     public async delPackParamConf(packParamId: string, productId: string) {
         return await this.where({ packParamId, productId }).delete();
+
     }
 
 }

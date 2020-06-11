@@ -713,11 +713,16 @@ export default class DispatchManagerController extends BaseController {
 
         // 常量批量保存，更改常量组和创造者主键 creatorId
         const configVoList = _.map(copyedConfigVoList, (copyedConfigVo) => {
-            const configVo: ConfigVO = _.omit(copyedConfigVo, [
-                'id', 'createAt', 'updateAt'
-            ]);
+            const configVo = _.clone(copyedConfigVo);
+
+            // 删除不必要的字段
+            delete configVo.id;
+            delete configVo.createAt;
+            delete configVo.createAt;
+
             configVo.configGroupId = configGroupId;
             configVo.creatorId = ucId;
+
             return configVo;
 
         });
@@ -1027,9 +1032,13 @@ export default class DispatchManagerController extends BaseController {
         const nativeTmplConfGroupId = await nativeTmplConfGroupModel.addVo(nativeTmplConfGroupVo);
 
         const nativeTmplConfVoList = await Bluebird.map(copyedNativeTmplConfVoList, async (copyedNativeTmplConfVo) => {
-            const nativeTmplConfVo: NativeTmplConfVO = _.omit(copyedNativeTmplConfVo, [
-                'id', 'createAt', 'updateAt'
-            ]);
+            const nativeTmplConfVo = _.clone(copyedNativeTmplConfVo);
+
+            // 删除不必要的字段
+            delete nativeTmplConfVo.id;
+            delete nativeTmplConfVo.createAt;
+            delete nativeTmplConfVo.createAt;
+
             nativeTmplConfVo.nativeTmplConfGroupId = nativeTmplConfGroupId;
             nativeTmplConfVo.creatorId = ucId;
 
@@ -1353,12 +1362,16 @@ export default class DispatchManagerController extends BaseController {
         const adGroupId = await adGroupModel.addVo(adGroupVo);
 
         const adVoList = _.map(copyedAdVoList, (copyedAdVo) => {
-            const adVo: AdVO = _.omit(copyedAdVo, [
-                'id', 'createAt', 'updateAt'
-            ]);
+            const adVo = _.clone(copyedAdVo);
+
+            // 删除不必要的字段
+            delete adVo.id;
+            delete adVo.createAt;
+            delete adVo.createAt;
 
             adVo.adGroupId = adGroupId;
             adVo.creatorId = ucId;
+
             return adVo;
         });
 

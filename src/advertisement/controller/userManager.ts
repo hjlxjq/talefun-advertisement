@@ -45,7 +45,6 @@ import {
  * @debugger
  */
 export default class UserController extends BaseController {
-
     /**
      * <br/>创建管理员--后台接口
      * @argument {CreateUserReqVO}
@@ -60,34 +59,24 @@ export default class UserController extends BaseController {
         const password: string = this.post('password');
         const active: number = this.post('active');
         const userAuth: UserAuthVO = this.post('userAuth');
-
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
         const userAuthModel = this.taleModel('userAuth', 'advertisement') as UserAuthModel;
 
-        // 判断 user 是否已经创建
-        const user = await userModel.getByEmail(email);
-
-        if (!think.isEmpty(user)) {
-            return this.fail(10, '用户已存在！！！');
-        }
-
         const userVo: UserVO = {
-            email, name, password,
-            active,
+            email, name, password, active,
         };
-        const userId = await userModel.addUser(userVo);
+        const userId = await userModel.addVo(userVo);
         think.logger.debug(`userId: ${userId}`);
 
         const {
-            editComConf, viewComConf,
-            createProductGroup, master
+            editComConf, viewComConf, createProductGroup, master
         } = userAuth;
 
         const userAuthVo: UserAuthVO = {
             editComConf, viewComConf, createProductGroup, master,
             userId,
         };
-        await userAuthModel.addUserAuth(userAuthVo);
+        await userAuthModel.addVo(userAuthVo);
 
         return this.success('created');
     }
@@ -106,36 +95,27 @@ export default class UserController extends BaseController {
         const password: string = this.post('password');
         const active: number = this.post('active');
         const userAuth: UserAuthVO = this.post('userAuth');
-
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
         const userAuthModel = this.taleModel('userAuth', 'advertisement') as UserAuthModel;
 
-        // 判断 user 是否已经创建
-        const user = await userModel.getByEmail(email);
-
-        if (!think.isEmpty(user)) {
-            return this.fail(10, '用户已存在！！！');
-        }
-
+        // 先创建用户
         const userVo: UserVO = {
-            email, name, password,
-            active,
+            email, name, password, active,
         };
-        const userId = await userModel.addUser(userVo);
-        think.logger.debug(`userId: ${userId}`);
+        const userId = await userModel.addVo(userVo);
 
+        // 再创建用户权限
         const {
-            editComConf, viewComConf,
-            createProductGroup, master
+            editComConf, viewComConf, createProductGroup, master
         } = userAuth;
 
         const userAuthVo: UserAuthVO = {
-            editComConf, viewComConf, createProductGroup, master,
-            userId,
+            editComConf, viewComConf, createProductGroup, master, userId,
         };
-        await userAuthModel.addUserAuth(userAuthVo);
+        await userAuthModel.addVo(userAuthVo);
 
         return this.success('created');
+
     }
 
     /**
@@ -149,21 +129,13 @@ export default class UserController extends BaseController {
         const password: string = this.post('password');
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
 
-        if (ucId !== id) {
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
-
         const userVo: UserVO = {
-            password,
-            email: undefined, name: undefined,
-            active: undefined,
+            password, email: undefined, name: undefined, active: undefined,
         };
-        const rows = await userModel.updateUser(id, userVo);
+        await userModel.updateVo(id, userVo);
 
-        if (rows === 1) {
-            return this.success('updated');
-        }
-        this.fail(TaleCode.DBFaild, 'update fail!!!');
+        return this.success('updated');
+
     }
 
     /**
@@ -177,31 +149,21 @@ export default class UserController extends BaseController {
         const active: number = this.post('active');
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
 
-        // 不能操作自己
-        if (ucId !== id) {
-            return this.fail(TaleCode.AuthFaild, '不能禁用自己！！！');
-        }
-
-        const user = await userModel.getUser(id);
-
-        if (think.isEmpty(user)) {
-            return this.fail(10, '用户不存在！！！');
-        }
-
+        // 更新
         const userVo: UserVO = {
-            email: undefined, name: undefined, password: undefined,
-            active
+            email: undefined, name: undefined, password: undefined, active
         };
-        const rows = await userModel.updateUser(id, userVo);
+        await userModel.updateVo(id, userVo);
 
-        if (rows === 1) {
-            if (active === 1) {
-                return this.success('enabled');
-            } else {
-                return this.success('disabled');
-            }
+        // 根据开关 active 返回
+        if (active === 1) {
+            return this.success('enabled');
+
+        } else {
+            return this.success('disabled');
+
         }
-        this.fail(TaleCode.DBFaild, 'disable or enable fail!!!');
+
     }
 
     /**
@@ -215,27 +177,14 @@ export default class UserController extends BaseController {
         const id: string = this.post('id');
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
 
-        // 判断 user 是否已经创建
-        const user = await userModel.getUser(id);
-
-        if (think.isEmpty(user)) {
-            return this.fail(10, '用户不存在！！！');
-        }
-
-        if (user.active !== 1) {
-            return this.fail(10, '该用户已被禁用！！！');
-        }
-
         const userVo: UserVO = {
             email: undefined, name: undefined, active: undefined,
             password
         };
-        const rows = await userModel.updateUser(id, userVo);
+        await userModel.updateVo(id, userVo);
 
-        if (rows === 1) {
-            return this.success('reseted');
-        }
-        this.fail(TaleCode.DBFaild, 'reset fail!!!');
+        return this.success('reseted');
+
     }
 
     /**
@@ -243,20 +192,29 @@ export default class UserController extends BaseController {
      * @returns {UserListResVO}
      */
     public async userListAction() {
-        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
         const userAuthModel = this.taleModel('userAuth', 'advertisement') as UserAuthModel;
 
         const userVoList = await userModel.getList();
 
+        // 返回用户信息列表
         const userResVoList = await Bluebird.map(userVoList, async (userVo) => {
-            const userAuthVo = await userAuthModel.getUserAuth(userVo.id);
+            const userAuthVo = await userAuthModel.getVo(userVo.id);
+            const userResVo: UserResVO = _.defaults({
+                userAuth: userAuthVo, productAuth: undefined, productGroupAuth: undefined
+            }, userVo);
 
-            const userResVo: UserResVO = _.defaults({ userAuth: userAuthVo }, userVo);
+            // 删除不必要的字段
+            delete userResVo.createAt;
+            delete userResVo.updateAt;
 
             return userResVo;
+
         });
+
         return this.success(userResVoList);
+
     }
 
     /**
@@ -265,12 +223,14 @@ export default class UserController extends BaseController {
      * @returns {UserAuthResVO}
      */
     public async userAuthAction() {
-        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const userId: string = this.post('id');
         const userAuthModel = this.taleModel('userAuth', 'advertisement') as UserAuthModel;
 
-        const userAuthVo = await userAuthModel.getUserAuth(userId);
+        const userAuthVo = await userAuthModel.getVo(userId);
+
         return this.success(userAuthVo);
+
     }
 
     /**
@@ -279,12 +239,14 @@ export default class UserController extends BaseController {
      * @returns {UserAuthInProductGroupResVO}
      */
     public async userAuthInProductGroupAction() {
-        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const productGroupId: string = this.post('id');
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productGroupAuth = await authServer.fetchProductGroupAuth(ucId, productGroupId);
+
         return this.success(productGroupAuth);
+
     }
 
     /**
@@ -293,12 +255,14 @@ export default class UserController extends BaseController {
      * @returns {UserAuthInProductGroupResVO}
      */
     public async userAuthInProductAction() {
-        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const productId: string = this.post('id');
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productAuth = await authServer.fetchProductGroupAuth(ucId, productId);
+
         return this.success(productAuth);
+
     }
 
     /**
@@ -307,30 +271,27 @@ export default class UserController extends BaseController {
      * @returns {UpdateUserAuthResVO}
      */
     public async updateUserAuthAction() {
-        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const userId: string = this.post('id');
         const editComConf: number = this.post('editComConf');
         const viewComConf: number = this.post('viewComConf');
         const createProductGroup: number = this.post('createProductGroup');
         const master: number = this.post('master');
-
         const userAuthModel = this.taleModel('userAuth', 'advertisement') as UserAuthModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const userAuthVo: UserAuthVO = {
-            editComConf, viewComConf, createProductGroup, master,
-            userId: undefined
+            editComConf, viewComConf, createProductGroup, master, userId: undefined
         };
-        const rows = await userAuthModel.updateUserAuth(userId, userAuthVo);
-        const success = await authServer.deleteAllAuthFromRedis(userId);
 
-        think.logger.debug(`updateUserAuth rows: ${rows}`);
-        think.logger.debug(`updateUserAuth success: ${success}`);
+        // 更新数据库，并删除缓存中的所有权限，后续操作再从数据库更新权限到 redis 缓存
+        await Promise.all([
+            userAuthModel.updateVo(userId, userAuthVo),
+            authServer.deleteAllAuthFromRedis(userId)
+        ]);
 
-        if (rows === 1 && success === true) {
-            return this.success('updated');
-        }
-        this.fail(TaleCode.DBFaild, 'update fail!!!');
+        return this.success('updated');
+
     }
 
     /**
@@ -343,6 +304,7 @@ export default class UserController extends BaseController {
 
         const tokenService = think.service('token') as TokenService;
         return tokenService.createToken(signture);
+
     }
 
     /**
@@ -355,41 +317,27 @@ export default class UserController extends BaseController {
      */
     public async loginAction() {
         const email = this.post('email');
-        let password = this.post('password');
         // const verifiCode = this.post('verifiCode') || '123';
-
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
         const userAuthModel = this.taleModel('userAuth', 'advertisement') as UserAuthModel;
 
+        // 用户信息
         const userVo = await userModel.getByEmail(email);
+        // 用户权限信息
+        const userAuthVo = await userAuthModel.getVo(userVo.id);
 
-        if (think.isEmpty(userVo)) {
-            return this.fail(10, '用户不存在！！！');
-        }
-
-        if (userVo.active !== 1) {
-            return this.fail(10, '该用户已被禁用！！！');
-        }
-
-        const md5 = crypto.createHash('md5');
-        password = md5.update(password).digest('hex');
-
-        if (userVo.password !== password) {
-            return this.fail(10, '密码错误！！！');
-        }
-
-        const userAuthVo = await userAuthModel.getUserAuth(userVo.id);
         const jwt = this.createToken(userVo.id);
-
         this.header('sessiontoken', jwt.sessionToken);
         this.header('Access-Control-Expose-Headers', ['sessionToken']); // 允许跨站接收的token
         // const isRightCode = await verifiCodeServer.verification(verifiCode, userId);
         // if (!isRightCode) {
         //     gobj.raise(10, '验证码错误！！！');
         // }
+        // 删除密码，不返回前端
         delete userVo.password;
 
         this.success({ user: userVo, userAuth: userAuthVo });
+
     }
 
     /**
@@ -404,18 +352,29 @@ export default class UserController extends BaseController {
 
         const productGroupAuthVoList = await productGroupAuthModel.getList(productGroupId);
 
+        // 返回用户信息列表
         const userResVoList = await Bluebird.map(productGroupAuthVoList, async (productGroupAuthVo) => {
             const userVo = await userModel.getUser(productGroupAuthVo.userId);
-            const userResVo: UserResVO = userVo;
+            // 返回用户信息
+            const userResVo: UserResVO = _.assign({
+                userAuth: undefined, productGroupAuth: undefined, productAuth: undefined
+            }, userVo);
 
-            userResVo.productGroupAuth = _.omit(
-                productGroupAuthVo,
-                ['id', 'createAt', 'updateAt', 'userId', 'productGroupId', 'active']
-            );
+            userResVo.productGroupAuth = _.clone(productGroupAuthVo);
+
+            // 删除不必要的字段
+            delete userResVo.productGroupAuth.id;
+            delete userResVo.productGroupAuth.userId;
+            delete userResVo.productGroupAuth.productGroupId;
+            delete userResVo.productGroupAuth.createAt;
+            delete userResVo.updateAt;
 
             return userResVo;
+
         });
+
         return this.success(userResVoList);
+
     }
 
     /**
@@ -430,20 +389,29 @@ export default class UserController extends BaseController {
 
         const productAuthVoList = await productAuthModel.getList(productId);
 
+        // 返回用户信息列表
         const userResVoList = await Bluebird.map(productAuthVoList, async (productAuthVo) => {
             const userVo = await userModel.getUser(productAuthVo.userId);
+            // 返回用户信息
+            const userResVo: UserResVO = _.assign({
+                userAuth: undefined, productGroupAuth: undefined, productAuth: undefined
+            }, userVo);
 
-            const userResVo: UserResVO = userVo;
+            userResVo.productAuth = _.clone(productAuthVo);
 
-            userResVo.productAuth = _.omit(
-                productAuthVo,
-                ['id', 'createAt', 'updateAt', 'userId', 'productId', 'active']
-            );
+            // 删除不必要的字段
+            delete userResVo.productAuth.id;
+            delete userResVo.productAuth.userId;
+            delete userResVo.productAuth.productId;
+            delete userResVo.productAuth.createAt;
+            delete userResVo.productAuth.updateAt;
 
             return userResVo;
+
         });
 
         return this.success(userResVoList);
+
     }
 
     /**
@@ -452,7 +420,7 @@ export default class UserController extends BaseController {
      * @returns {CreateUserToProductGroupResVO}
      */
     public async createUserToProductGroupAction() {
-        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const productGroupId: string = this.post('id');
         const userId: string = this.post('userId');
         const editAd: number = this.post('editAd');
@@ -464,24 +432,25 @@ export default class UserController extends BaseController {
         const createProduct: number = this.post('createProduct');
         const editProduct: number = this.post('editProduct');
         const master: number = this.post('master');
-
         const productGroupAuthModel = this.taleModel('productGroupAuth', 'advertisement') as ProductGroupAuthModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productGroupAuthVo: ProductGroupAuthVO = {
-            productGroupId, userId,
-            editAd, viewAd, editGameConfig, viewGameConfig,
+            productGroupId, userId, editAd, viewAd, editGameConfig, viewGameConfig,
             editPurchase, viewPurchase, editProduct, createProduct, master
         };
-        await productGroupAuthModel.addProductGroupAuth(productGroupAuthVo);
+        await productGroupAuthModel.addVo(productGroupAuthVo);
 
+        // 删除缓存数据
         const success = await authServer.deleteAllAuthFromRedis(userId);
 
         if (success === true) {
             return this.success('created');
 
         }
+
         this.fail(TaleCode.DBFaild, 'create fail!!!');
+
     }
 
     /**
@@ -501,7 +470,6 @@ export default class UserController extends BaseController {
         const viewPurchase: number = this.post('viewPurchase');
         const editProduct: number = this.post('editProduct');
         const master: number = this.post('master');
-
         const productAuthModel = this.taleModel('productAuth', 'advertisement') as ProductAuthModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
@@ -509,15 +477,14 @@ export default class UserController extends BaseController {
             productId, userId, master,
             editAd, viewAd, editGameConfig, viewGameConfig, editPurchase, viewPurchase, editProduct
         };
+        // 数据库中创建，并删除缓存中的所有权限，后续操作再从数据库更新权限到 redis 缓存
+        await Promise.all([
+            productAuthModel.addVo(productAuthVo),
+            authServer.deleteProductAuthFromRedis(userId, productId)
+        ]);
 
-        await productAuthModel.addProductAuth(productAuthVo);
-        const success = await authServer.deleteProductAuthFromRedis(userId, productId);
+        return this.success('created');
 
-        if (success === true) {
-            return this.success('created');
-
-        }
-        this.fail(TaleCode.DBFaild, 'create fail!!!');
     }
 
     /**
@@ -526,7 +493,7 @@ export default class UserController extends BaseController {
      * @returns {UpdateUserAuthInProductReqVO}
      */
     public async updateUserAuthInProductAction() {
-        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const productId: string = this.post('id');
         const userId: string = this.post('userId');
         const editAd: number = this.post('editAd');
@@ -546,13 +513,14 @@ export default class UserController extends BaseController {
             editAd, viewAd, editGameConfig, viewGameConfig, editPurchase, viewPurchase, editProduct
         };
 
-        const rows = await productAuthModel.updateProductAuth(productId, userId, productAuthVo);
-        const success = await authServer.deleteProductAuthFromRedis(userId, productId);
+        // 更新数据库，并删除缓存中的所有权限，后续操作再从数据库更新权限到 redis 缓存
+        await Promise.all([
+            productAuthModel.updateVo(productId, userId, productAuthVo),
+            authServer.deleteProductAuthFromRedis(userId, productId)
+        ]);
 
-        if (rows === 1 && success === true) {
-            return this.success('updated');
-        }
-        this.fail(TaleCode.DBFaild, 'update fail!!!');
+        return this.success('updated');
+
     }
 
     /**
@@ -561,7 +529,7 @@ export default class UserController extends BaseController {
      * @returns {UpdateUserAuthInProductGroupReqVO}
      */
     public async updateUserAuthInProductGroupAction() {
-        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const productGroupId: string = this.post('id');
         const userId: string = this.post('userId');
         const editAd: number = this.post('editAd');
@@ -573,7 +541,6 @@ export default class UserController extends BaseController {
         const createProduct: number = this.post('createProduct');
         const editProduct: number = this.post('editProduct');
         const master: number = this.post('master');
-
         const productGroupAuthModel = this.taleModel('productGroupAuth', 'advertisement') as ProductGroupAuthModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
@@ -583,13 +550,14 @@ export default class UserController extends BaseController {
             viewPurchase, editProduct, createProduct, master
         };
 
-        const rows = await productGroupAuthModel.updateProductGroupAuth(productGroupId, userId, productGroupAuthVo);
-        const success = await authServer.deleteAllAuthFromRedis(userId);
+        // 更新数据库，并删除缓存中的所有权限，后续操作再从数据库更新权限到 redis 缓存
+        await Promise.all([
+            productGroupAuthModel.updateVo(productGroupId, userId, productGroupAuthVo),
+            authServer.deleteAllAuthFromRedis(userId)
+        ]);
 
-        if (rows === 1 && success === true) {
-            return this.success('updated');
-        }
-        this.fail(TaleCode.DBFaild, 'update fail!!!');
+        return this.success('updated');
+
     }
 
     /**
@@ -598,19 +566,20 @@ export default class UserController extends BaseController {
      * @returns {DeleteUserFromProductReqVO}
      */
     public async deleteUserFromProductAction() {
-        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const productId: string = this.post('id');
         const userId: string = this.post('userId');
         const productAuthModel = this.taleModel('productAuth', 'advertisement') as ProductAuthModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
-        const rows = await productAuthModel.delProductAuth(productId, userId);
-        const success = await authServer.deleteProductAuthFromRedis(userId, productId);
+        // 删除数据库数据，并删除缓存中的所有权限
+        await Promise.all([
+            productAuthModel.delProductAuth(productId, userId),
+            authServer.deleteProductAuthFromRedis(userId, productId)
+        ]);
 
-        if (rows === 1 && success === true) {
-            return this.success('deleted');
-        }
-        this.fail(TaleCode.DBFaild, 'delete fail!!!');
+        return this.success('deleted');
+
     }
 
     /**
@@ -619,19 +588,20 @@ export default class UserController extends BaseController {
      * @returns {DeleteUserFromProductGroupReqVO}
      */
     public async deleteUserFromProductGroupAction() {
-        const ucId: string = this.ctx.state.userId;    // 获取已登录用的userId
+        const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const productGroupId: string = this.post('id');
         const userId: string = this.post('userId');
-
         const productGroupAuthModel = this.taleModel('productGroupAuth', 'advertisement') as ProductGroupAuthModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
-        const rows = await productGroupAuthModel.delProductGroupAuth(productGroupId, userId);
-        const success = await authServer.deleteAllAuthFromRedis(userId);
+        // 删除数据库数据，并删除缓存中的所有权限
+        await Promise.all([
+            productGroupAuthModel.delVo(productGroupId, userId),
+            authServer.deleteAllAuthFromRedis(userId)
+        ]);
 
-        if (rows === 1 && success === true) {
-            return this.success('deleted');
-        }
-        this.fail(TaleCode.DBFaild, 'delete fail!!!');
+        return this.success('deleted');
+
     }
+
 }

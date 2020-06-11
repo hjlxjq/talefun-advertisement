@@ -339,20 +339,6 @@ interface BaseProductAuthVO extends BaseVO {
  */
 
 /**
- * redis 中缓存的应用权限结构
- */
-export interface CusProductAuth extends ProductAuthVO {
-    master: number;    // 是否管理员或项目组管理员或应用管理员
-}
-
-/**
- * redis 中缓存的应用权限结构
- */
-export interface CusProductGroupAuth extends ProductGroupAuthVO {
-    master: number;    // 是否管理员或项目组管理员
-}
-
-/**
  * 自定义 redis 接口，扩展 Redis.Redis 接口
  */
 export interface CusRedis extends Redis.Redis {
@@ -414,7 +400,7 @@ export interface ChannelParamConfResVO extends AdChannelVO {
 }
 
 export interface ProductGroupResVO extends ProductGroupVO {
-    productGroupAuth?: ProductAuthVO;    // 用户在项目组下权限
+    productGroupAuth: ProductGroupAuthVO;    // 用户在项目组下权限
 }
 
 export interface VersionGroupResVO extends VersionGroupVO {
@@ -468,7 +454,7 @@ export interface AbTestGroupResVO extends AbTestGroupVO {
 }
 
 export interface UserResVO extends UserVO {
-    userAuth?: UserAuthVO;    // 用户权限
-    productGroupAuth?: ProductGroupAuthVO;    // 用户在项目组权限
-    productAuth?: ProductAuthVO;    // 用户在应用下权限
+    userAuth: UserAuthVO;    // 用户权限
+    productGroupAuth: ProductGroupAuthVO;    // 用户在项目组权限
+    productAuth: ProductAuthVO;    // 用户在应用下权限
 }

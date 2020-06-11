@@ -16,16 +16,15 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class ProductModel extends MBModel {
-
     /**
      * 插入应用
      * @argument {ProductVO} productVo 应用表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addProduct(productVo: ProductVO) {
-
+    public async addVo(productVo: ProductVO) {
         await this.add(productVo);
         return this.ID[0];
+
     }
 
     /**
@@ -37,23 +36,11 @@ export default class ProductModel extends MBModel {
     public async updateProduct(id: string, productUpdateVo: ProductVO) {
         if (!_.isEmpty(productUpdateVo)) {
             return await this.where({ id }).update(productUpdateVo);
+
         }
         return 0;
+
     }
-
-    /**
-     * 根据项目组表主键 id 获取应用数量
-     * @argument {string} productGroupId 应用表 id;
-     * @argument {number} active 是否生效;
-     * @returns {Promise<number>} 应用数量;
-     */
-    // public async getNum(productGroupId: string, active?: number) {
-    //     if (!_.isUndefined(active)) {
-    //         return await this.where({ productGroupId, active }).count('id');
-
-    //     }
-    //     return await this.where({ productGroupId }).count('id');
-    // }
 
     /**
      * 获取全部应用列表
@@ -98,8 +85,9 @@ export default class ProductModel extends MBModel {
      * @argument {string} id 应用表 id;
      * @returns {Promise<ProductVO>} 应用表信息;
      */
-    public async getProduct(id: string) {
+    public async getVo(id: string) {
         return await this.where({ id }).find() as ProductVO;
+
     }
 
 }

@@ -17,16 +17,15 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class AdChannelModel extends MBModel {
-
     /**
      * 插入广告平台
      * @argument {AdChannelVO} adChannelVo 广告平台表对象;
      * @returns {Promise<string>} 主键 id;
      */
     public async addVo(adChannelVo: AdChannelVO) {
-
         await this.add(adChannelVo);
         return this.ID[0];
+
     }
 
     /**
@@ -41,6 +40,7 @@ export default class AdChannelModel extends MBModel {
 
         }
         return 0;
+
     }
 
     /**
@@ -50,21 +50,22 @@ export default class AdChannelModel extends MBModel {
      * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<AdChannelVO>} 广告平台信息;
      */
-    public async getVo(id: string, active?: number, test?: number) {
+    public async getVo(id: string, active: number, test: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
 
         if (test === 0) {
             queryStrings.push(`test=${test}`);
-        }
 
+        }
         if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
-        }
 
+        }
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).find() as AdChannelVO;
+
     }
 
     /**
@@ -74,6 +75,7 @@ export default class AdChannelModel extends MBModel {
      */
     public async getByChannel(channel: string) {
         return await this.where({ channel }).find() as AdChannelVO;
+
     }
 
     /**
@@ -83,30 +85,32 @@ export default class AdChannelModel extends MBModel {
      * @argument {number} test 是否测试 app 可见;
      * @argument {string[]} idList 查询的主键列表;
      */
-    public async getList(active?: number, test?: number, idList?: string[]) {
+    public async getList(active: number, test: number, idList: string[]) {
         const queryStrings: string[] = [];
         queryStrings.push('1=1');
 
         if (test === 0) {
             queryStrings.push(`test=${test}`);
-        }
 
+        }
         if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
-        }
 
+        }
         if (!think.isEmpty(idList)) {
             idList.push('');    // 为空数组报错
+
             const idStr = (_.map(idList, (id) => {
-                return `'${id}'`;
+                return `'${id}'`;    // mysql in 字符串每一个值加上双引号
             })).join();
 
             queryStrings.push(`id in (${idStr})`);
-        }
 
+        }
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).select() as AdChannelVO[];
+
     }
 
 }

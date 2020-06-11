@@ -23,7 +23,7 @@ export default class UserAuthModel extends MBModel {
      * @argument {UserAuthVO} userAuthVo 用户权限表对象;
      * @returns {Promise<string>} 用户权限表主键;
      */
-    public async addUserAuth(userAuthVo: UserAuthVO): Promise<string> {
+    public async addVo(userAuthVo: UserAuthVO): Promise<string> {
 
         await this.add(userAuthVo);
         return this.ID[0];
@@ -35,20 +35,31 @@ export default class UserAuthModel extends MBModel {
      * @argument {UserAuthVO} userAuthVo 用户权限表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateUserAuth(userId: string, userAuthVo: UserAuthVO) {
+    public async updateVo(userId: string, userAuthVo: UserAuthVO) {
         if (!_.isEmpty(userAuthVo)) {
             return await this.where({ userId }).update(userAuthVo);
+
         }
         return 0;
+
     }
 
     /**
-     * 查看详细信息
+     * 查看用户权限
      * @argument {string} id 用户表 id;
      * @returns {Promise<UserAuthVO>} 用户权限表对象;
      */
-    public async getUserAuth(userId: string) {
+    public async getVo(userId: string) {
         const userAuthVo = await this.where({ userId }).find() as UserAuthVO;
-        return _.omit(userAuthVo, ['id', 'userId', 'createAt', 'updateAt']);
+
+        // 删除不必要的字段
+        delete userAuthVo.id;
+        delete userAuthVo.userId;
+        delete userAuthVo.createAt;
+        delete userAuthVo.updateAt;
+
+        return userAuthVo;
+
     }
+
 }

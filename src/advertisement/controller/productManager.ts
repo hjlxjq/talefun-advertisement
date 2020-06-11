@@ -103,24 +103,27 @@ export default class ProductManagerController extends BaseController {
     public async productAction() {
         const ucId: string = this.ctx.state.userId;
         const productId: string = this.post('id');
-
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const [
             productVo, productAuth
         ] = await Promise.all([
-            productModel.getProduct(productId),
+            productModel.getVo(productId),
             authServer.fetchProductAuth(ucId, productId)
         ]);
 
-        delete productVo.productGroupId;
-
         const productResVo: ProductResVO = _.defaults({
-            productAuth
+            productAuth, productGroupName: undefined
         }, productVo);
 
+        // 删除不必要的字段
+        delete productResVo.productGroupId;
+        delete productResVo.createAt;
+        delete productResVo.updateAt;
+
         return this.success(productResVo);
+
     }
 
     /**
@@ -131,9 +134,6 @@ export default class ProductManagerController extends BaseController {
      */
     public async updateProductAction() {
         const ucId: string = this.ctx.state.userId;
-        const name: string = this.post('name');
-        const packageName: string = this.post('packageName');
-        const platform: string = this.post('platform');
         const pid: string = this.post('pid');
         const productId: string = this.post('id');
         const active: number = this.post('active');
@@ -141,17 +141,13 @@ export default class ProductManagerController extends BaseController {
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
 
         const productVo: ProductVO = {
-            name, packageName, platform, pid,
-            test, active,
-            productGroupId: undefined
+            name: undefined, packageName: undefined, platform: undefined, pid,
+            test, active, productGroupId: undefined
         };
-        const rows = await productModel.updateProduct(productId, productVo);
+        await productModel.updateProduct(productId, productVo);
 
-        if (rows === 1) {
-            return this.success('updated');
-        } else {
-            this.fail(TaleCode.DBFaild, 'update fail!!!');
-        }
+        return this.success('updated');
+
     }
 
     /**
@@ -167,28 +163,8 @@ export default class ProductManagerController extends BaseController {
 
         const packParamConfResVoList = await modelServer.getPackParamConfList(productId);
         return this.success(packParamConfResVoList);
+
     }
-
-    // /**
-    //  * <br/>创建应用打包参数
-    //  * @argument {CreatePackParamConfReqVO}
-    //  * @returns {CreatePackParamConfResVO}
-    //  * @debugger yes
-    //  */
-    // public async createPackParamConfAction() {
-    //     const ucId: string = this.ctx.state.userId;
-    //     const packParamId: string = this.post('id');    // 打包参数表 id
-    //     const value: string = this.post('value');
-    //     const productId: string = this.post('productId');
-    //     const packParamConfModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
-
-    //     const packParamConfVo: PackParamConfVO = {
-    //         packParamId, productId,
-    //         value,
-    //     };
-    //     await packParamConfModel.addPackParamConf(packParamConfVo);
-    //     this.success('created');
-    // }
 
     /**
      * <br/>更新应用打包参数
@@ -201,50 +177,26 @@ export default class ProductManagerController extends BaseController {
         const packParamId: string = this.post('id');
         const productId: string = this.post('productId');
         const value: string = this.post('value');
-
         const packParamConfModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
 
+        // value 不存在 或者 不为 '' 和 null，即为空，则创建或者更新
         if (!_.isEmpty(value)) {
+            // 创建或者更新，要补全所有字段
             const packParamConfUpdateVo: PackParamConfVO = {
-                value,
-                packParamId, productId
+                value, packParamId, productId
             };
 
-            const result = await packParamConfModel.updatePackParamConf(packParamId, productId, packParamConfUpdateVo);
-            think.logger.debug(`result: ${JSON.stringify(result)}`);
+            const result = await packParamConfModel.thenUpdateVo(packParamId, productId, packParamConfUpdateVo);
+            think.logger.debug(`updatePackParamConf: ${JSON.stringify(result)}`);
 
+            // 否者从数据库中删除
         } else {
             await packParamConfModel.delPackParamConf(packParamId, productId);
 
         }
         return this.success('updated');
-        // if (rows === 1) {
-        //     return this.success('updated');
-        // } else {
-        //     this.fail(TaleCode.DBFaild, 'update fail!!!');
-        // }
+
     }
-
-    // /**
-    //  * <br/>删除应用打包参数
-    //  * @argument {DeletePackParamConfReqVO}
-    //  * @returns {DeletePackParamConfResVO}
-    //  * @debugger yes
-    //  */
-    // public async deletePackParamConfAction() {
-    //     const ucId: string = this.ctx.state.userId;
-    //     const packParamId: string = this.post('id');
-    //     const productId: string = this.post('productId');
-    //     const packParamConfModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
-
-    //     const rows = await packParamConfModel.delPackParamConf(packParamId, productId);
-
-    //     if (rows === 1) {
-    //         return this.success('deleted');
-    //     } else {
-    //         this.fail(TaleCode.DBFaild, 'delete fail!!!');
-    //     }
-    // }
 
     /**
      * GET，
@@ -261,31 +213,8 @@ export default class ProductManagerController extends BaseController {
 
         const channelParamResVoList = await modelServer.getChannelParamConfList(productId, adType);
         return this.success(channelParamResVoList);
+
     }
-
-    // /**
-    //  * <br/>创建应用平台参数
-    //  * @argument {CreateChannelParamConfReqVO}
-    //  * @returns {CreateChannelParamConfResVO}
-    //  * @debugger yes
-    //  */
-    // public async createChannelParamConfAction() {
-    //     const ucId: string = this.ctx.state.userId;
-    //     const value1: string = this.post('value1');
-    //     const value2: string = this.post('value2');
-    //     const value3: string = this.post('value3');
-    //     const adChannelId: string = this.post('id');    // 广告平台表 id
-    //     const productId: string = this.post('productId');
-    //     const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as ChannelParamConfModel;
-
-    //     const channelParamConfVo: ChannelParamConfVO = {
-    //         adChannelId, productId,
-    //         value1, value2, value3
-    //     };
-
-    //     await channelParamConfModel.addChannelParamConf(channelParamConfVo);
-    //     this.success('created');
-    // }
 
     /**
      * <br/>更新应用平台参数
@@ -300,25 +229,26 @@ export default class ProductManagerController extends BaseController {
         const value1: string = this.post('value1');
         const value2: string = this.post('value2');
         const value3: string = this.post('value3');
-
         const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as ChannelParamConfModel;
 
+        // 创建或者更新，要补全所有字段
         const channelParamConfUpdateVo: ChannelParamConfVO = {
-            value1, value2, value3,
-            adChannelId, productId
+            value1, value2, value3, adChannelId, productId
         };
-        await channelParamConfModel.updateVo(
+        await channelParamConfModel.thenUpdateVo(
             adChannelId, productId, channelParamConfUpdateVo
         );
 
         const channelParamConfVo = await channelParamConfModel.getVo(adChannelId, productId);
 
+        // 如果所有 value 都不存在，则删除
         if (
             _.isEmpty(channelParamConfVo.value1) &&
             _.isEmpty(channelParamConfVo.value2) &&
             _.isEmpty(channelParamConfVo.value3)
         ) {
             await channelParamConfModel.delVo(adChannelId, productId);
+
         }
 
         return this.success('updated');
@@ -348,6 +278,7 @@ export default class ProductManagerController extends BaseController {
         }
 
         return this.success(productGroupVoList);
+
     }
 
     /**
@@ -359,7 +290,6 @@ export default class ProductManagerController extends BaseController {
     public async productGroupAction() {
         const ucId: string = this.ctx.state.userId;
         const productGroupId: string = this.post('id');
-
         const productGroupModel = this.taleModel('productGroup', 'advertisement') as ProductGroupModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
@@ -370,11 +300,17 @@ export default class ProductManagerController extends BaseController {
             authServer.fetchProductGroupAuth(ucId, productGroupId)
         ]);
 
+        // 返回项目组详情，包含用户在项目组下权限
         const productGroupResVo: ProductGroupResVO = _.defaults({
             productGroupAuth
         }, productGroupVo);
 
+        // 删除不必要的字段
+        delete productGroupResVo.createAt;
+        delete productGroupResVo.updateAt;
+
         return this.success(productGroupResVo);
+
     }
 
     /**
@@ -392,19 +328,18 @@ export default class ProductManagerController extends BaseController {
         const productGroupAuthModel = this.taleModel('productGroupAuth', 'advertisement') as ProductGroupAuthModel;
 
         const productGroupVo: ProductGroupVO = {
-            name, description,
-            active
+            name, description, active
         };
 
-        const productGroupId = await productGroupModel.addProductGroup(productGroupVo);
+        const productGroupId = await productGroupModel.addVo(productGroupVo);
 
         // 创建者自动拥有管理员权限
         const productGroupAuthVo: ProductGroupAuthVO = {
-            productGroupId, userId: ucId, active, master: 1,
+            productGroupId, userId: ucId, master: 1,
             editAd: 1, viewAd: 1, editGameConfig: 1, viewGameConfig: 1,
             editPurchase: 1, viewPurchase: 1, editProduct: 1, createProduct: 1
         };
-        await productGroupAuthModel.addProductGroupAuth(productGroupAuthVo);
+        await productGroupAuthModel.addVo(productGroupAuthVo);
 
         this.success('created');
     }
@@ -417,23 +352,18 @@ export default class ProductManagerController extends BaseController {
      */
     public async updateProductGroupAction() {
         const ucId: string = this.ctx.state.userId;
-        const name: string = this.post('name');
         const description: string = this.post('description');
         const productGroupId: string = this.post('id');
         const active: number = this.post('active');
         const productGroupModel = this.taleModel('productGroup', 'advertisement') as ProductGroupModel;
 
         const productGroupVo: ProductGroupVO = {
-            name, description,
-            active,
+            name: undefined, description, active,
         };
-        const rows = await productGroupModel.updateProductGroup(productGroupId, productGroupVo);
+        await productGroupModel.updateProductGroup(productGroupId, productGroupVo);
 
-        if (rows === 1) {
-            return this.success('updated');
-        } else {
-            this.fail(TaleCode.DBFaild, 'update fail!!!');
-        }
+        return this.success('updated');
+
     }
 
     /**
@@ -449,10 +379,15 @@ export default class ProductManagerController extends BaseController {
 
         const productVoList = await productModel.getListByProductGroup(productGroupId);
 
+        // 返回的项目组下应用列表
         const productResVoList = await Bluebird.map(productVoList, async (productVo) => {
+            // 删除不必要的字段
             delete productVo.productGroupId;
+            delete productVo.createAt;
+            delete productVo.updateAt;
 
             return productVo;
+
         });
 
         return this.success(productResVoList);
@@ -481,16 +416,18 @@ export default class ProductManagerController extends BaseController {
             name, packageName, platform, pid,
             test, active
         };
-        const productId = await productModel.addProduct(productVo);
+        const productId = await productModel.addVo(productVo);
 
         // 创建者自动拥有管理员权限
         const productAuthVo: ProductAuthVO = {
-            productId, userId: ucId, active, master: 1,
+            productId, userId: ucId, master: 1,
             editAd: 1, viewAd: 1, editGameConfig: 1, viewGameConfig: 1,
             editPurchase: 1, viewPurchase: 1, editProduct: 1,
         };
-        await productAuthModel.addProductAuth(productAuthVo);
+        await productAuthModel.addVo(productAuthVo);
 
         this.success('created');
+
     }
+
 }

@@ -10,7 +10,6 @@ import * as _ from 'lodash';
 import { think } from 'thinkjs';
 
 export default class ProductManagerLogic extends AMLogic {
-
     /**
      * 权限认证，
      * <br/>应用权限
@@ -20,8 +19,8 @@ export default class ProductManagerLogic extends AMLogic {
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productAuth = await authServer.fetchProductAuth(ucId, productId);
-        // think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
         return productAuth;
+
     }
 
     /**
@@ -33,8 +32,8 @@ export default class ProductManagerLogic extends AMLogic {
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productGroupAuth = await authServer.fetchProductGroupAuth(ucId, productGroupId);
-        think.logger.debug(`productGroupAuth: ${JSON.stringify(productGroupAuth)}`);
         return productGroupAuth;
+
     }
 
     /**
@@ -46,7 +45,6 @@ export default class ProductManagerLogic extends AMLogic {
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const userAuth = await authServer.fetchUserAuth(ucId);
-        think.logger.debug(`userAuth: ${JSON.stringify(userAuth)}`);
         return userAuth;
 
     }
@@ -81,7 +79,7 @@ export default class ProductManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, this.validateMsg());
         }
 
-        const productId: string = this.post('id');
+        // const productId: string = this.post('id');
 
         // try {
         //     const productAuth = await this.productAuth(productId);
@@ -110,24 +108,9 @@ export default class ProductManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
-            name: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                method: 'POST'       // 指定获取数据的方式
-            },
-            packageName: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                method: 'POST'       // 指定获取数据的方式
-            },
-            platform: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                method: 'POST'       // 指定获取数据的方式
-            },
             pid: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrim: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
@@ -156,6 +139,7 @@ export default class ProductManagerLogic extends AMLogic {
             if (master === 0 && editProduct === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -191,6 +175,7 @@ export default class ProductManagerLogic extends AMLogic {
             if (think.isEmpty(productAuth)) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -221,7 +206,7 @@ export default class ProductManagerLogic extends AMLogic {
             },
             value: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrim: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -240,6 +225,7 @@ export default class ProductManagerLogic extends AMLogic {
             if (master === 0 && editProduct === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -263,7 +249,7 @@ export default class ProductManagerLogic extends AMLogic {
             },
             type: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrim: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -310,17 +296,17 @@ export default class ProductManagerLogic extends AMLogic {
             },
             value1: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrim: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             value2: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrim: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             value3: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrim: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -339,6 +325,7 @@ export default class ProductManagerLogic extends AMLogic {
             if (master === 0 && editProduct === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -376,20 +363,6 @@ export default class ProductManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, this.validateMsg());
         }
 
-        // const productGroupId: string = this.post('id');
-
-        // try {
-        //     const producrGroupAuth = await this.productGroupAuth(productGroupId);
-        //     const { master } = producrGroupAuth;
-
-        // if (master === 0) {
-        //     throw new Error('没有权限！！！');
-        // }
-        // } catch (e) {
-        //     think.logger.debug(e);
-        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        // }
-
     }
 
     /**
@@ -401,13 +374,14 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             name: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrim: true,      // 前后不能有空格
+                regexp: /^[a-z][a-z\s]*[a-z]$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrim: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -425,12 +399,13 @@ export default class ProductManagerLogic extends AMLogic {
         }
 
         try {
-            const userAuth = await this.userAuth();
-            const { master, createProductGroup } = userAuth;
+            const userAuthVo = await this.userAuth();
+            const { master, createProductGroup } = userAuthVo;
 
             if (master === 0 && createProductGroup === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -452,14 +427,9 @@ export default class ProductManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
-            name: {
-                string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
-                method: 'POST'       // 指定获取数据的方式
-            },
             description: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                cusTrim: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
@@ -483,6 +453,7 @@ export default class ProductManagerLogic extends AMLogic {
             if (master === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -519,6 +490,7 @@ export default class ProductManagerLogic extends AMLogic {
             if (think.isEmpty(productGroupAuth)) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -542,25 +514,26 @@ export default class ProductManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z0-9\-_]+$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             packageName: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                regexp: /^[a-z][a-z0-9\.]+$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             platform: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                in: ['android', 'ios', 'weixin', 'instant'],    // 平台只包含四项
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             pid: {
                 string: true,       // 字段类型为 String 类型
-                trim: true,         // 字段需要 trim 处理
+                // cusTrim: true,      // 前后不能有空格
+                regexp: /^id[0-9]+$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
@@ -583,16 +556,16 @@ export default class ProductManagerLogic extends AMLogic {
         }
 
         const productGroupId: string = this.post('id');
-        // think.logger.debug(`productGroupId: ${productGroupId}`);
 
+        // 权限判断
         try {
             const productGroupAuth = await this.productGroupAuth(productGroupId);
-            // think.logger.debug(`productGroupAuth: ${JSON.stringify(productGroupAuth)}`);
             const { master, createProduct } = productGroupAuth;
 
             if (master === 0 && createProduct === 0) {
                 throw new Error('没有权限！！！');
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
@@ -608,6 +581,7 @@ export default class ProductManagerLogic extends AMLogic {
         const exes = super.tokenExempts();
         exes.push({ action: 'index' });
         return exes;
+
     }
 
 }

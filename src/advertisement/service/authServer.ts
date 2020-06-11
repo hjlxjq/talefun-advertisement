@@ -14,7 +14,7 @@ import ProductModel from '../model/product';
 import ProductAuthModel from '../model/productAuth';
 import ProductGroupAuthModel from '../model/productGroupAuth';
 
-import { UserAuthVO, CusProductAuth, CusProductGroupAuth } from '../defines';
+import { UserAuthVO, ProductAuthVO, ProductGroupAuthVO } from '../defines';
 
 /**
  * 用户权限处理相关 service
@@ -23,21 +23,19 @@ import { UserAuthVO, CusProductAuth, CusProductGroupAuth } from '../defines';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class AuthService extends BaseService {
-
     private redis: Redis.Redis;
-    private oneDaySeconds = 24 * 60 * 60;
-    private productAuthKeyPrefix = 'pAuth:';
-    private productGroupAuthKeyPrefix = 'pgAuth:';
-    private userAuthKeyPrefix = 'uAuth:';
+    private oneDaySeconds = 24 * 60 * 60;    // 一天，redis 过期时间
+    private productAuthKeyPrefix = 'pAuth:';    // 应用权限哈希表 key 前缀
+    private productGroupAuthKeyPrefix = 'pgAuth:';    // 项目组权限哈希表 key 前缀
+    private userAuthKeyPrefix = 'uAuth:';    // 用户权限哈希表 key 前缀
 
     constructor() {
         super();
-        this.redis = (think as any).redis('redis1');
+        this.redis = (think as any).redis('redis1');    // 初始化 redis 实例
     }
 
     /**
-     * 查询 productGroupAuth, product, productAuth, userAuthModel 四张表,
-     * <br/>获取用户在应用下权限
+     * <br/>获取用户在应用下权限。
      * @augments {string} userId 用户表主键 id
      * @augments {string} productId 应用表主键 id
      * @returns {CusProductAuth} 用户在应用下权限
@@ -50,55 +48,60 @@ export default class AuthService extends BaseService {
 
         const [
             productVo,
-            currentProductAuth,
-            userAuth
+            currentProductAuthVo,    // 应用下配置的权限
+            userAuthVo
         ] = await Promise.all([
-            productModel.getProduct(productId),
-            productAuthModel.getProductAuth(userId, productId),
-            userAuthModel.getUserAuth(userId)
+            productModel.getVo(productId),
+            productAuthModel.getVo(userId, productId),
+            userAuthModel.getVo(userId)
         ]);
 
+        // 项目组下包含的应用权限
         const { productGroupId } = productVo;
         const {
-            productAuth: productAuthInGroup
-        } = await productGroupAuthModel.getProductGroupAuth(userId, productGroupId);
+            productAuthVo: InGroupProductAuthVo
+        } = await productGroupAuthModel.getVo(userId, productGroupId);
 
-        const productAuth: CusProductAuth = _.defaults(currentProductAuth, productAuthInGroup);
+        // 最终应用权限，为应用下配置的权限加上项目组下的所有应用权限
+        const productAuthVo = _.defaults(currentProductAuthVo, InGroupProductAuthVo);
 
-        if (userAuth.master === 1) {
-            productAuth.master = 1;
+        // 用户为管理员，则拥有全部权限
+        if (userAuthVo.master === 1) {
+            productAuthVo.master = 1;
+
         }
-        return productAuth;
+        return productAuthVo;
+
     }
 
     /**
-     * 查询 productGroupAuth，userAuth 两张表,
-     * <br/>获取用户在项目组下权限
+     * <br/>获取用户在项目组下操作权限
      * @augments {string} userId 用户表主键 id
      * @augments {string} productGroupId 项目组表主键 id
-     * @returns {CusProductGroupAuth} 用户在项目组下权限
+     * @returns {CusProductGroupAuth} 用户在项目组下能操作权限
      */
     private async getProductGroupAuth(userId: string, productGroupId: string) {
         const productGroupAuthModel = this.taleModel('productGroupAuth', 'advertisement') as ProductGroupAuthModel;
         const userAuthModel = this.taleModel('userAuth', 'advertisement') as UserAuthModel;
 
         const [
-            { productGroupAuth: currentProductGroupAuth },
-            userAuth
+            { productGroupAuthVo },    // 项目组下排除 项目组下所有应用都包含的权限
+            userAuthVo
         ] = await Promise.all([
-            productGroupAuthModel.getProductGroupAuth(userId, productGroupId),
-            userAuthModel.getUserAuth(userId)
+            productGroupAuthModel.getVo(userId, productGroupId),
+            userAuthModel.getVo(userId)
         ]);
 
-        const productGroupAuth: CusProductGroupAuth = currentProductGroupAuth;
-        if (userAuth.master === 1) {
-            productGroupAuth.master = 1;
+        // 用户是管理员，则在项目组下卫视管理员
+        if (userAuthVo.master === 1) {
+            productGroupAuthVo.master = 1;
+
         }
-        return productGroupAuth;
+        return productGroupAuthVo;
+
     }
 
     /**
-     * 查询 userAuth 表,
      * <br/>获取用户权限
      * @augments {string} userId 用户表主键 id
      * @returns {UserAuthVO} 用户权限
@@ -106,8 +109,9 @@ export default class AuthService extends BaseService {
     private async getUserAuth(userId: string) {
         const userAuthModel = this.taleModel('userAuth', 'advertisement') as UserAuthModel;
 
-        const userAuth = await userAuthModel.getUserAuth(userId);
-        return userAuth;
+        const userAuthVo = await userAuthModel.getVo(userId);
+        return userAuthVo;
+
     }
 
     /**
@@ -118,21 +122,29 @@ export default class AuthService extends BaseService {
      * @returns {CusProductAuth} 用户在应用下权限
      */
     public async fetchProductAuth(userId: string, productId: string) {
-        let productAuth: CusProductAuth;
+        // 用户在应用下权限
+        let productAuthVo: ProductAuthVO;
 
+        // 从 redis 中获取
         const productAuthKey = this.productAuthKeyPrefix + userId;
         const field = productId;
         const productAuthStr = await this.redis.hget(productAuthKey, field);
 
+        // 存在则直接 json parse 返回
         if (productAuthStr) {
-            productAuth = JSON.parse(productAuthStr);
+            productAuthVo = JSON.parse(productAuthStr);
+
+            // 不存在则从数据库中获取
         } else {
-            productAuth = await this.getProductAuth(userId, productId);
-            await this.redis.hset(productAuthKey, field, JSON.stringify(productAuth));
+            productAuthVo = await this.getProductAuth(userId, productId);
+            // 再更新到 redis 缓存中去
+            await this.redis.hset(productAuthKey, field, JSON.stringify(productAuthVo));
             await this.redis.expire(productAuthKey, this.oneDaySeconds);
+
         }
 
-        return productAuth;
+        return productAuthVo;
+
     }
 
     /**
@@ -143,7 +155,7 @@ export default class AuthService extends BaseService {
      * @returns {CusProductGroupAuth} 用户在项目组下权限
      */
     public async fetchProductGroupAuth(userId: string, productGroupId: string) {
-        let productGroupAuth: CusProductGroupAuth;
+        let productGroupAuthVo: ProductGroupAuthVO;
 
         const productGroupAuthKey = this.productGroupAuthKeyPrefix + userId;
         const field = productGroupId;
@@ -152,14 +164,16 @@ export default class AuthService extends BaseService {
         const productGroupAuthStr = await this.redis.hget(productGroupAuthKey, field);
 
         if (productGroupAuthStr) {
-            productGroupAuth = JSON.parse(productGroupAuthStr);
-        } else {
-            productGroupAuth = await this.getProductGroupAuth(userId, productGroupId);
-            await this.redis.hset(productGroupAuthKey, field, JSON.stringify(productGroupAuth));
-            await this.redis.expire(productGroupAuthKey, this.oneDaySeconds);
-        }
+            productGroupAuthVo = JSON.parse(productGroupAuthStr);
 
-        return productGroupAuth;
+        } else {
+            productGroupAuthVo = await this.getProductGroupAuth(userId, productGroupId);
+            await this.redis.hset(productGroupAuthKey, field, JSON.stringify(productGroupAuthVo));
+            await this.redis.expire(productGroupAuthKey, this.oneDaySeconds);
+
+        }
+        return productGroupAuthVo;
+
     }
 
     /**
@@ -169,19 +183,21 @@ export default class AuthService extends BaseService {
      * @returns {UserAuthVO} 用户权限
      */
     public async fetchUserAuth(userId: string) {
-        let userAuth: UserAuthVO;
+        let userAuthVo: UserAuthVO;
 
         const userAuthKey = this.userAuthKeyPrefix + userId;
         const userAuthStr = await this.redis.get(userAuthKey);
 
         if (userAuthStr) {
-            userAuth = JSON.parse(userAuthStr);
-        } else {
-            userAuth = await this.getUserAuth(userId);
-            await this.redis.setex(userAuthKey, this.oneDaySeconds, JSON.stringify(userAuth));
-        }
+            userAuthVo = JSON.parse(userAuthStr);
 
-        return userAuth;
+        } else {
+            userAuthVo = await this.getUserAuth(userId);
+            await this.redis.setex(userAuthKey, this.oneDaySeconds, JSON.stringify(userAuthVo));
+
+        }
+        return userAuthVo;
+
     }
 
     /**
@@ -194,9 +210,10 @@ export default class AuthService extends BaseService {
     public async deleteProductAuthFromRedis(userId: string, productId: string) {
         const productAuthKey = this.productAuthKeyPrefix + userId;
 
+        // 从 redis 删除用户在应用下权限数据
         await this.redis.hdel(productAuthKey, productId);
+        return true;
 
-        return  true;
     }
 
     /**
@@ -210,9 +227,10 @@ export default class AuthService extends BaseService {
         const productAuthKey = this.productAuthKeyPrefix + userId;
         const productGroupAuthKey = this.productGroupAuthKeyPrefix + userId;
 
+        // 从 redis 删除用户所有权限数据
         await this.redis.del(userAuthKey, productAuthKey, productGroupAuthKey);
+        return true;
 
-        return  true;
     }
 
 }

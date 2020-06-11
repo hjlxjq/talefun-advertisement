@@ -17,24 +17,19 @@ import * as crypto from 'crypto';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class UserModel extends MBModel {
-
     /**
      * 插入用户
      * @argument {UserVO} userVo 用户表对象;
      * @returns {Promise<string>} 用户表主键;
      */
-    public async addUser(userVo: UserVO) {
-        if (!think.isEmpty(userVo.password)) {
-
-            const md5 = crypto.createHash('md5');
-            const password = md5.update(userVo.password).digest('hex');
-            userVo.password = password;
-        } else {
-            delete userVo.password;
-        }
+    public async addVo(userVo: UserVO) {
+        const md5 = crypto.createHash('md5');
+        const password = md5.update(userVo.password).digest('hex');
+        userVo.password = password;
 
         await this.add(userVo);
         return this.ID[0];
+
     }
 
     /**
@@ -43,20 +38,23 @@ export default class UserModel extends MBModel {
      * @argument {UserVO} userVo 用户表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateUser(id: string, userVo: UserVO) {
+    public async updateVo(id: string, userVo: UserVO) {
         if (!_.isEmpty(userVo)) {
-
             const password: string = userVo.password;
+
             if (!think.isEmpty(password)) {
                 const md5 = crypto.createHash('md5');
                 userVo.password = md5.update(password).digest('hex');
 
             } else {
                 delete userVo.password;
+
             }
             return await this.where({ id }).update(userVo);
+
         }
         return 0;
+
     }
 
     /**
@@ -69,6 +67,7 @@ export default class UserModel extends MBModel {
 
         delete userVo.password;
         return userVo;
+
     }
 
     /**
@@ -76,9 +75,9 @@ export default class UserModel extends MBModel {
      * @param name string
      */
     public async getByEmail(email: string): Promise<UserVO> {
-
         const userVo = await this.where({ email }).find() as UserVO;
         return userVo;
+
     }
 
     /**
@@ -92,6 +91,9 @@ export default class UserModel extends MBModel {
             delete userVo.password;
 
             return userVo;
+
         });
+
     }
+
 }

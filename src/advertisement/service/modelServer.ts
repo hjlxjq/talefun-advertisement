@@ -146,40 +146,46 @@ export default class ModelService extends BaseService {
         const packParamConfModel = this.taleModel('packParamConf', 'advertisement') as PackParamConfModel;
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
 
-        const { test } = await productModel.getProduct(productId);
+        // 非测试应用 只能获取非测试打包参数
+        const { test } = await productModel.getVo(productId);
         const packParamVoList = await packParamModel.getList(1, test);
 
+        // 返回打包参数
         const packParamConfResVoList = await Bluebird.map(packParamVoList, async (packParamVo) => {
-            const packParamConfVo = await packParamConfModel.getPackParamConf(packParamVo.id, productId);
+            const packParamConfVo = await packParamConfModel.getVo(packParamVo.id, productId);
             // 默认返回 null
             const packParamConfResVo: PackParamConfResVO = _.defaults({ value: null }, packParamVo);
 
-            if (packParamConfVo) {
-                const { value } = packParamConfVo;
-                packParamConfResVo.value = value || null;
+            // 存在则覆盖
+            if (packParamConfVo && packParamConfVo.value) {
+                packParamConfResVo.value = packParamConfVo.value;
             }
 
+            // 删除不必要的字段
             delete packParamConfResVo.createAt;
             delete packParamConfResVo.updateAt;
+
             return packParamConfResVo;
+
         });
 
         return packParamConfResVoList;
+
     }
 
     /**
      * <br/>获取应用广告平台参数信息
      * @argument {string} productId 应用表 id;
+     * @argument {string} adType 广告类型显示名称;
      */
-    public async getChannelParamConfList(productId: string, adType?: string) {
+    public async getChannelParamConfList(productId: string, adType: string) {
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
         const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
         const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as AdChannelConfModel;
         const adChannelMapModel = this.taleModel('adChannelMap', 'advertisement') as AdChannelMapModel;
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
 
-        // 非测试应用看不到测试广告平台数据
-        const { test } = await productModel.getProduct(productId);
+        const { test } = await productModel.getVo(productId);
         let adChannelIdList: string[] = [];
 
         // 获取广告类型支持下的所有广告平台
@@ -187,12 +193,16 @@ export default class ModelService extends BaseService {
             const adTypeVo = await adTypeModel.getByName(adType);
             const { id } = adTypeVo;
             adChannelIdList = await adChannelMapModel.getAdChannelIdList(id);
+
         }
+        // 非测试应用看不到测试广告平台数据
         const adChannelVoList = await adChannelModel.getList(1, test, adChannelIdList);
 
+        // 返回的广告平台参数
         const channelParamConfResVoList = await Bluebird.map(adChannelVoList, async (adChannelVo) => {
             const channelParamConfVo = await channelParamConfModel.getVo(adChannelVo.id, productId);
 
+            // 默认 value 为 null
             const channelParamConfResVo: ChannelParamConfResVO = _.defaults(
                 {
                     value1: null,    // 启动参数 1 的值
@@ -208,17 +218,22 @@ export default class ModelService extends BaseService {
                     value2,
                     value3,
                 } = channelParamConfVo;
-                channelParamConfResVo.value1 = value1 || null;
-                channelParamConfResVo.value2 = value2 || null;
-                channelParamConfResVo.value3 = value3 || null;
+
+                channelParamConfResVo.value1 = value1;
+                channelParamConfResVo.value2 = value2;
+                channelParamConfResVo.value3 = value3;
 
             }
+            // 删除不必要的值
             delete channelParamConfResVo.createAt;
             delete channelParamConfResVo.updateAt;
+
             return channelParamConfResVo;
+
         });
 
         return channelParamConfResVoList;
+
     }
 
     /**
@@ -597,7 +612,7 @@ export default class ModelService extends BaseService {
         // 广告常量依赖于基础常量
         const baseConfigVoHash: { [propName: string]: ConfigResVO; } = {};
         if (type === 0) {
-            const { test } = await productModel.getProduct(productId);
+            const { test } = await productModel.getVo(productId);
             const baseConfigVoList = await baseConfigModel.getList(1, test);
 
             baseConfigVoList.map((baseConfigVo) => {

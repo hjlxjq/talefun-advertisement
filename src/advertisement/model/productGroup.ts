@@ -22,10 +22,10 @@ export default class ProductGroupModel extends MBModel {
      * @argument {ProductGroupVO} productGroupVo 项目组表对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addProductGroup(productGroupVo: ProductGroupVO) {
-
+    public async addVo(productGroupVo: ProductGroupVO) {
         await this.add(productGroupVo);
         return this.ID[0];
+
     }
 
     /**
@@ -51,13 +51,23 @@ export default class ProductGroupModel extends MBModel {
 
     /**
      * 根据用户权限获取项目组列表,
+     * <br/>去掉不必要字段
      * @argument {string[]} idList 项目组表主键列表;
      * @returns {Promise<ProductGroupVO[]>} 项目组列表;
      */
     public async getListByAuth(idList: string[]) {
         idList.push('');    // 为空数组报错
 
-        return await this.where({ id: ['IN', idList] }).order('name').select() as ProductGroupVO[];
+        const productGroupVoList =  await this.where({ id: ['IN', idList] }).select() as ProductGroupVO[];
+
+        return _.map(productGroupVoList, (productGroupVo) => {
+            // 删除不必要的字段
+            delete productGroupVo.createAt;
+            delete productGroupVo.updateAt;
+
+            return productGroupVo;
+        });
+
     }
 
     /**

@@ -47,22 +47,6 @@ export default class ConfigModel extends MBModel {
     }
 
     /**
-     * 更新广告常量
-     * @argument {string} key 常量 key;
-     * @argument {string} configGroupId 常量组表 id;
-     * @argument {ConfigVO} configVo 常量表对象;
-     * @returns {Promise<number>} 返回影响的行数
-     */
-    public async updateAdConfig(key: string, configGroupId: string, configVo: ConfigVO) {
-        if (!_.isEmpty(configVo)) {
-            return await this.thenUpdate(configVo, { key, configGroupId });
-
-        }
-        return 0;
-
-    }
-
-    /**
      * 更新游戏常量
      * @argument {string} id 常量表 id;
      * @argument {ConfigVO} configVo 常量表对象;

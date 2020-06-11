@@ -16,13 +16,12 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class ProductGroupAuthModel extends MBModel {
-
     /**
      * 插入项目组权限表
      * @argument {ProductGroupAuthVO} productGroupAuthVo 项目组权限对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addProductGroupAuth(productGroupAuthVo: ProductGroupAuthVO) {
+    public async addVo(productGroupAuthVo: ProductGroupAuthVO) {
 
         await this.add(productGroupAuthVo);
         return this.ID[0];
@@ -35,15 +34,17 @@ export default class ProductGroupAuthModel extends MBModel {
      * @argument {ProductGroupAuthVO} productGroupAuthUpdateVo 项目组权限对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateProductGroupAuth(
+    public async updateVo(
         productGroupId: string,
         userId: string,
         productGroupAuthUpdateVo: ProductGroupAuthVO
     ) {
         if (!_.isEmpty(productGroupAuthUpdateVo)) {
             return await this.where({ productGroupId, userId }).update(productGroupAuthUpdateVo);
+
         }
         return 0;
+
     }
 
     /**
@@ -52,8 +53,9 @@ export default class ProductGroupAuthModel extends MBModel {
      * @argument {string} userId 用户表主键 id;
      * @returns {Promise<number>} 删除行数;
      */
-    public async delProductGroupAuth(productGroupId: string, userId: string) {
+    public async delVo(productGroupId: string, userId: string) {
         return await this.where({ productGroupId, userId }).delete();
+
     }
 
     /**
@@ -63,6 +65,7 @@ export default class ProductGroupAuthModel extends MBModel {
      */
     public async getList(productGroupId: string) {
         return await this.where({ productGroupId }).select() as ProductGroupAuthVO[];
+
     }
 
     /**
@@ -80,45 +83,46 @@ export default class ProductGroupAuthModel extends MBModel {
     }
 
     /**
-     * 根据用户表主键和项目组表主键获取项目组和应用权限对象
+     * 根据用户表主键和项目组表主键 获取 项目组和应用权限对象
      * @argument {string} userId 用户表 id;
      * @argument {string} productGroupId 项目组表 id;
      * @returns {Promise<{ productAuth: ProductAuthVO;productGroupAuth: ProductGroupAuthVO; }>} 项目组和应用权限对象;
      */
-    public async getProductGroupAuth(userId: string, productGroupId: string) {
-        const productGroupAuthVo = await this.where({ userId, productGroupId }).find() as ProductGroupAuthVO;
+    public async getVo(userId: string, productGroupId: string) {
+        const allProductGroupAuthVo = await this.where({ userId, productGroupId }).find() as ProductGroupAuthVO;
 
         const {
             editAd, viewAd, editGameConfig, viewGameConfig,
             editPurchase, viewPurchase, createProduct, editProduct, master
-        } = productGroupAuthVo;
+        } = allProductGroupAuthVo;
 
-        const productAuth: ProductAuthVO = {
-            editAd, viewAd, editGameConfig, viewGameConfig, editPurchase, viewPurchase, editProduct,
-            master: 0
+        // 项目组下所有应用都包含的权限，项目组下是管理员，则再应用下也是管理员
+        const productAuthVo: ProductAuthVO = {
+            editAd, viewAd, editGameConfig, viewGameConfig, editPurchase, viewPurchase, editProduct, master,
+            userId: undefined, productId: undefined
         };
 
-        if (master === 1) {
-            productAuth.master = 1;
-        }
-
-        for (const key of Object.keys(productAuth)) {
-            const auth = productAuth[key];
+        // 删除权限为 0 的字段，即只返回拥有的权限。lodash defaults 函数只覆盖 undefined
+        for (const key of Object.keys(productAuthVo)) {
+            const auth = productAuthVo[key];
 
             if (auth === 0) {
-                delete productAuth[key];
+                delete productAuthVo[key];
             }
-        }
 
-        const productGroupAuth: ProductGroupAuthVO = {
-            createProduct, master,
+        }
+        // 项目组下排除 项目组下所有应用都包含的权限
+        const productGroupAuthVo: ProductGroupAuthVO = {
+            createProduct, master, userId: undefined, productGroupId: undefined,
             editAd: undefined, viewAd: undefined, editGameConfig: undefined,
             viewGameConfig: undefined, editPurchase: undefined, viewPurchase: undefined, editProduct: undefined,
         };
 
         return {
-            productAuth,
-            productGroupAuth
+            productAuthVo,
+            productGroupAuthVo
         };
+
     }
+
 }

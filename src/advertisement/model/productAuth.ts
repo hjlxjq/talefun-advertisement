@@ -16,16 +16,15 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class ProductAuthModel extends MBModel {
-
     /**
      * 插入应用权限表
      * @argument {ProductAuthVO} productAuthVo 应用权限对象;
      * @returns {Promise<string>} 主键 id;
      */
-    public async addProductAuth(productAuthVo: ProductAuthVO) {
-
+    public async addVo(productAuthVo: ProductAuthVO) {
         await this.add(productAuthVo);
         return this.ID[0];
+
     }
 
     /**
@@ -35,15 +34,17 @@ export default class ProductAuthModel extends MBModel {
      * @argument {ProductAuthVO} productAuthUpdateVo 应用权限对象;
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async updateProductAuth(
+    public async updateVo(
         productId: string,
         userId: string,
         productAuthUpdateVo: ProductAuthVO
     ) {
         if (!_.isEmpty(productAuthUpdateVo)) {
             return await this.where({ productId, userId }).update(productAuthUpdateVo);
+
         }
         return 0;
+
     }
 
     /**
@@ -54,6 +55,7 @@ export default class ProductAuthModel extends MBModel {
      */
     public async delProductAuth(productId: string, userId: string) {
         return await this.where({ productId, userId }).delete();
+
     }
 
     /**
@@ -63,6 +65,7 @@ export default class ProductAuthModel extends MBModel {
      */
     public async getList(productId: string) {
         return await this.where({ productId }).select() as ProductAuthVO[];
+
     }
 
     /**
@@ -85,13 +88,18 @@ export default class ProductAuthModel extends MBModel {
      * @argument {string} productId 应用表 id;
      * @returns {Promise<ProductAuthVO[]>} 应用权限对象;
      */
-    public async getProductAuth(userId: string, productId: string) {
+    public async getVo(userId: string, productId: string) {
         const productAuthVo = await this.where({ userId, productId }).find() as ProductAuthVO;
 
-        return _.omit(
-            productAuthVo,
-            ['id', 'createAt', 'updateAt', 'userId', 'productId', 'active']
-        );
+        // 删除不必要的字段
+        delete productAuthVo.id;
+        delete productAuthVo.userId;
+        delete productAuthVo.productId;
+        delete productAuthVo.createAt;
+        delete productAuthVo.updateAt;
+
+        return productAuthVo;
+
     }
 
 }

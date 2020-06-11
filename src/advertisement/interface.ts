@@ -315,9 +315,6 @@ export interface GetProductResVO extends ResVO {
  */
 export interface UpdateProductReqVO {
     id: string;    // 应用表主键 id
-    name?: string;    // 应用名
-    packageName?: string;     // 包名
-    platform?: string;    // 平台名
     pid?: string;    // 苹果 id
     test?: number;    // 是否测试 app 可见
     active?: number;    // 是否生效
@@ -428,7 +425,6 @@ export interface CreateProductGroupResVO extends ResVO {
  */
 export interface UpdateProductGroupReqVO {
     id: string;    // 项目组表 id
-    name?: string;    // 项目组名
     description?: string;    // 项目组描述
     active?: number;    // 是否生效
 }
