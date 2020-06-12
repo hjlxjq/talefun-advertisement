@@ -1341,7 +1341,7 @@ export interface DeleteUserFromProductResVO extends ResVO {
 
 /**
  * GET
- * </br>获取用户列表 /advertisement/deployManager/deploy
+ * </br>发布用户操作 /advertisement/deployManager/deploy
  */
 export interface DeployResVO extends ResVO {
     data: 'deployed';    // 发布成功！！！
@@ -1349,8 +1349,16 @@ export interface DeployResVO extends ResVO {
 
 /**
  * GET
- * </br>获取用户列表 /advertisement/deployManager/rollBack
+ * </br>删除用户操作 /advertisement/deployManager/rollBack
  */
 export interface RollBackResVO extends ResVO {
     data: 'rollbacked';    // 回滚成功！！！
+}
+
+/**
+ * GET
+ * </br>获取用户发布状态 /advertisement/deployManager/deployStatus
+ */
+export interface DeployStatusResVO extends ResVO {
+    data: 1;    // 返回发布状态
 }

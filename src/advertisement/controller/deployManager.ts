@@ -13,7 +13,7 @@ import BaseController from '../../common/tale/BaseController';
 import MBModel from '../model/managerBaseModel';
 import CacheService from '../service/cacheServer';
 
-import { DeployResVO, RollBackResVO } from '../interface';
+import { DeployResVO, RollBackResVO, DeployStatusResVO } from '../interface';
 
 export default class DeployManagerController extends BaseController {
     /**
@@ -61,6 +61,9 @@ export default class DeployManagerController extends BaseController {
                 await cacheServer.delCacheDataList(tableNameList, ucId);
 
             });
+
+            // 从缓存中删除用户发布状态
+            await cacheServer.delDeployStatus(ucId);
             this.success('发布成功！！！');
 
         } catch (e) {
@@ -97,6 +100,7 @@ export default class DeployManagerController extends BaseController {
             });
             // 从缓存中删除
             await cacheServer.delCacheDataList(tableNameList, ucId);
+            await cacheServer.delDeployStatus(ucId);
 
             this.success('回滚成功！！！');
 
@@ -104,6 +108,23 @@ export default class DeployManagerController extends BaseController {
             think.logger.debug(e);
             this.fail(10, '回滚失败！！！');
         }
+
+    }
+
+    /**
+     * GET
+     * <br/>获取发布状态
+     * @returns {DeployStatusResVO}
+     * @debugger yes
+     */
+    public async deployStatusAction() {
+        const ucId: string = this.ctx.state.userId;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+
+        // 从缓存中获取用户发布状态
+        const deployStatus = await cacheServer.fetchDeployStatus(ucId);
+
+        this.success(deployStatus);
 
     }
 

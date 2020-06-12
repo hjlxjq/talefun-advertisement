@@ -147,6 +147,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         try {
             // 数据库暂存， activeTime 标识
@@ -166,6 +167,9 @@ export default class DispatchManagerController extends BaseController {
             };
             // 向版本条件分组下创建默认 ab 分组
             await abTestGroupModel.addVo(abTestGroupVo);
+
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
 
             this.success('created');
 
@@ -195,6 +199,7 @@ export default class DispatchManagerController extends BaseController {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         try {
             // 被复制组的默认配置
@@ -242,21 +247,16 @@ export default class DispatchManagerController extends BaseController {
                 return defaultAbTestMapVo;
             });
 
-            const rows = (await abTestMapModel.addList(defaultAbTestMapVoList)).length;
+            await abTestMapModel.addList(defaultAbTestMapVoList);
 
-            // 比较创建成功与否
-            if (rows === copyedAbTestMapVoList.length) {
-                this.success('copyed');
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
 
-            } else {
-                this.fail(TaleCode.DBFaild, 'copy fail!!!');
-            }
-
-            this.success('created');
+            this.success('copyed');
 
         } catch (e) {
             think.logger.debug(e);
-            this.fail(TaleCode.DBFaild, 'create fail!!!');
+            this.fail(TaleCode.DBFaild, 'copye fail!!!');
         }
 
     }
@@ -319,6 +319,9 @@ export default class DispatchManagerController extends BaseController {
                 }
                 await cacheServer.setCacheData(ucId, 'versionGroup', id, updateVersionGroupVo);
             }
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('updated');
 
         } catch (e) {
@@ -480,6 +483,7 @@ export default class DispatchManagerController extends BaseController {
         let end: number = this.post('end');
         const groupNum: number = this.post('groupNum');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         try {
             // 数据库暂存， activeTime 标识
@@ -508,13 +512,11 @@ export default class DispatchManagerController extends BaseController {
                 end += step;
             }
 
-            const rows = (await abTestGroupModel.addList(createAbTestGroupVoList)).length;
-            if (rows === groupNum) {
-                this.success('created');
+            await abTestGroupModel.addList(createAbTestGroupVoList);
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
 
-            } else {
-                this.fail(TaleCode.DBFaild, 'create fail!!!');
-            }
+            this.success('created');
 
         } catch (e) {
             think.logger.debug(e);
@@ -572,6 +574,9 @@ export default class DispatchManagerController extends BaseController {
                 }
 
             }
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('deleted');
 
         } catch (e) {
@@ -614,6 +619,9 @@ export default class DispatchManagerController extends BaseController {
                 await cacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupId, updateAbTestGroupVo);
 
             }
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('binded');
 
         } catch (e) {
@@ -669,6 +677,7 @@ export default class DispatchManagerController extends BaseController {
         const type: number = this.post('type');
         const active: number = this.post('active');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const configGroupVo: ConfigGroupVO = {
             name, description, type, active,
@@ -676,7 +685,11 @@ export default class DispatchManagerController extends BaseController {
         };
         await configGroupModel.addVo(configGroupVo);
 
+        // 缓存用户发布状态
+        await cacheServer.setDeployStatus(ucId);
+
         this.success('created');
+
     }
 
     /**
@@ -693,6 +706,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const [
             copyedConfigGroupVo, copyedConfigVoList
@@ -730,14 +744,12 @@ export default class DispatchManagerController extends BaseController {
             return configVo;
 
         });
-        const rows = (await configModel.addList(configVoList)).length;
+        await configModel.addList(configVoList);
 
-        if (rows === copyedConfigVoList.length) {
-            return this.success('copyed');
+        // 缓存用户发布状态
+        await cacheServer.setDeployStatus(ucId);
 
-        } else {
-            this.fail(TaleCode.DBFaild, 'copy fail!!!');
-        }
+        return this.success('copyed');
 
     }
 
@@ -774,6 +786,9 @@ export default class DispatchManagerController extends BaseController {
                 await cacheServer.setCacheData(ucId, 'configGroup', id, updateConfigGroupVo);
 
             }
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('updated');
 
         } catch (e) {
@@ -820,6 +835,9 @@ export default class DispatchManagerController extends BaseController {
                 await cacheServer.setCacheData(ucId, 'config', id, updateConfigVo);
 
             }
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('updated');
 
         } catch (e) {
@@ -843,6 +861,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 数据库暂存， activeTime 标识
         const CacheActiveTime = think.config('CacheActiveTime');
@@ -853,7 +872,11 @@ export default class DispatchManagerController extends BaseController {
         };
         await configModel.addVo(configVo);
 
+        // 缓存用户发布状态
+        await cacheServer.setDeployStatus(ucId);
+
         this.success('created');
+
     }
 
     /**
@@ -896,6 +919,9 @@ export default class DispatchManagerController extends BaseController {
                 }
                 await cacheServer.setCacheData(ucId, 'versionGroup', id, updateConfigVo);
             }
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('updated');
 
         } catch (e) {
@@ -937,6 +963,9 @@ export default class DispatchManagerController extends BaseController {
                 await cacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupId, updateAbTestGroupVo);
 
             }
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('updated');
 
         } catch (e) {
@@ -989,6 +1018,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
 
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
 
@@ -997,7 +1027,11 @@ export default class DispatchManagerController extends BaseController {
         };
         await nativeTmplConfGroupModel.addVo(nativeTmplConfGroupVo);
 
+        // 缓存用户发布状态
+        await cacheServer.setDeployStatus(ucId);
+
         this.success('created');
+
     }
 
     /**
@@ -1016,6 +1050,7 @@ export default class DispatchManagerController extends BaseController {
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const [
             copyedNativeTmplConfGroupVo, copyedNativeTmplConfVoList
@@ -1049,14 +1084,12 @@ export default class DispatchManagerController extends BaseController {
             return nativeTmplConfVo;
 
         });
-        const rows = (await nativeTmplConfModel.addList(nativeTmplConfVoList)).length;
+        await nativeTmplConfModel.addList(nativeTmplConfVoList);
 
-        if (rows === copyedNativeTmplConfVoList.length) {
-            this.success('copyed');
+        // 缓存用户发布状态
+        await cacheServer.setDeployStatus(ucId);
 
-        } else {
-            this.fail(TaleCode.DBFaild, 'copy fail!!!');
-        }
+        this.success('copyed');
 
     }
 
@@ -1092,6 +1125,9 @@ export default class DispatchManagerController extends BaseController {
                 await cacheServer.setCacheData(ucId, 'nativeTmplConfGroup', id, updateNativeTmplConfGroupVo);
 
             }
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('updated');
 
         } catch (e) {
@@ -1116,6 +1152,7 @@ export default class DispatchManagerController extends BaseController {
         const isFull: number = this.post('isFull');
         const active: number = this.post('active');
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 数据库暂存， activeTime 标识
         const CacheActiveTime = think.config('CacheActiveTime');
@@ -1125,6 +1162,9 @@ export default class DispatchManagerController extends BaseController {
         };
 
         await nativeTmplConfModel.addVo(nativeTmplConfVo);
+        // 缓存用户发布状态
+        await cacheServer.setDeployStatus(ucId);
+
         this.success('created');
 
     }
@@ -1172,6 +1212,9 @@ export default class DispatchManagerController extends BaseController {
                 }
                 await cacheServer.setCacheData(ucId, 'nativeTmplConf', id, updateNativeTmplConfVo);
             }
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('updated');
 
         } catch (e) {
@@ -1230,6 +1273,9 @@ export default class DispatchManagerController extends BaseController {
                 }
 
             }
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('updated');
 
         } catch (e) {
@@ -1287,6 +1333,9 @@ export default class DispatchManagerController extends BaseController {
                 await cacheServer.setCacheData(ucId, 'abTestMap', defaultAbTestMapVo.id, updateDefaultAbTestMapVo);
                 await cacheServer.setCacheData(ucId, 'abTestMap', abTestMapId, updateAbTestMapVo);
             }
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('completed');
 
         } catch (e) {
@@ -1324,6 +1373,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         const adGroupVo: AdGroupVO = {
             name, description, creatorId: ucId,
@@ -1331,7 +1381,11 @@ export default class DispatchManagerController extends BaseController {
         };
 
         await adGroupModel.addVo(adGroupVo);
+        // 缓存用户发布状态
+        await cacheServer.setDeployStatus(ucId);
+
         this.success('created');
+
     }
 
     /**
@@ -1346,7 +1400,7 @@ export default class DispatchManagerController extends BaseController {
         const name: string = this.post('name');
         const description: string = this.post('description');
         const active: number = this.post('active');
-
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
 
@@ -1380,13 +1434,13 @@ export default class DispatchManagerController extends BaseController {
         });
 
         think.logger.debug(`adVoList: ${JSON.stringify(adVoList)}`);
-        const rows = (await adModel.addList(adVoList)).length;
+        await adModel.addList(adVoList);
 
-        if (rows === copyedAdVoList.length) {
-            this.success('copyed');
-        } else {
-            this.fail(TaleCode.DBFaild, 'copy fail!!!');
-        }
+        // 缓存用户发布状态
+        await cacheServer.setDeployStatus(ucId);
+
+        this.success('copyed');
+
     }
 
     /**
@@ -1408,6 +1462,10 @@ export default class DispatchManagerController extends BaseController {
 
         try {
             await cacheServer.setCacheData(ucId, 'adGroup', id, adGroupVo);
+
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('updated');
 
         } catch (e) {
@@ -1463,6 +1521,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         try {
             const { adTypeId, productId } = await adGroupModel.getVo(adGroupId, ucId);
@@ -1477,6 +1536,10 @@ export default class DispatchManagerController extends BaseController {
             };
 
             await adModel.addVo(adVo);
+
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('created');
 
         } catch (e) {
@@ -1535,7 +1598,12 @@ export default class DispatchManagerController extends BaseController {
 
                 }
                 await cacheServer.setCacheData(ucId, 'ad', id, updateAdVo);
+
             }
+
+            // 缓存用户发布状态
+            await cacheServer.setDeployStatus(ucId);
+
             this.success('updated');
 
         } catch (e) {

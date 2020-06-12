@@ -16,14 +16,51 @@ import BaseService from '../../common/tale/BaseService';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class CacheService extends BaseService {
-
     private redis: Redis.Redis;
     private oneDaySeconds = 24 * 60 * 60;
-    private cacheKeyPrefix = 'cache:';
+    private cacheKeyPrefix = 'cache:';    // 数据库更新缓存数据，redis 哈希表的 key 前缀
+    private deployKeyPrefix = 'deploy:';    // 用户发布状态，redis 哈希表的 key 前缀
 
     constructor() {
         super();
         this.redis = (think as any).redis('redis1');
+
+    }
+
+    /**
+     * 缓存用户发布状态，
+     */
+    public async setDeployStatus(userId: string) {
+        //  用户发布状态，redis 哈希表的 key
+        const deployKey = this.deployKeyPrefix + userId;
+
+        // redis 记录用户更新状态为 true
+        await this.redis.set(deployKey, true);
+
+    }
+
+    /**
+     * 获取缓存的用户发布状态，
+     */
+    public async fetchDeployStatus(userId: string) {
+        //  用户发布状态，redis 哈希表的 key
+        const deployKey = this.deployKeyPrefix + userId;
+
+        // redis 记录用户更新状态为 true
+        return this.redis.get(deployKey);
+
+    }
+
+    /**
+     * 删除缓存的用户发布状态，
+     */
+    public async delDeployStatus(userId: string) {
+        //  用户发布状态，redis 哈希表的 key
+        const deployKey = this.deployKeyPrefix + userId;
+
+        // redis 记录用户更新状态为 true
+        return this.redis.del(deployKey);
+
     }
 
     /**
@@ -36,19 +73,25 @@ export default class CacheService extends BaseService {
         tableId: string,
         modelVo: object
     ) {
+        // 数据库更新缓存数据，redis 哈希表的 key
         const cacheKey = this.cacheKeyPrefix + userId + ':' + tableName;
+
         const cacheField = tableId;
-        let cacheValue = modelVo;
+        let cacheVo = modelVo;
 
         const preJsonStr = await this.redis.hget(cacheKey, cacheField);
         // 覆盖之前的更新
         if (preJsonStr) {
             const preModelVo = JSON.parse(preJsonStr);
-            cacheValue = _.assign(preModelVo, cacheValue);
+            cacheVo = _.assign(preModelVo, cacheVo);
+
         }
 
-        await this.redis.hset(cacheKey, cacheField, JSON.stringify(cacheValue));    // 哈希值为字符串
+        const cacheValue = JSON.stringify(cacheVo);    // 哈希值为字符串
+
+        await this.redis.hset(cacheKey, cacheField, cacheValue);
         await this.redis.expire(cacheKey, this.oneDaySeconds);    // 设置过期时间为一天
+
     }
 
     /**
@@ -59,6 +102,7 @@ export default class CacheService extends BaseService {
         tableName: string,
         tableId: string,
     ) {
+        // 数据库更新缓存数据，redis 哈希表的 key
         const cacheKey = this.cacheKeyPrefix + userId + ':' + tableName;
         const cacheField = tableId;
 
@@ -69,6 +113,7 @@ export default class CacheService extends BaseService {
             preModelVo = JSON.parse(preJsonStr);
         }
 
+        // 返回用户缓存的更新数据
         return preModelVo;
 
     }
@@ -80,23 +125,27 @@ export default class CacheService extends BaseService {
         userId: string,
         tableName: string,
     ) {
+        // 数据库更新缓存数据，redis 哈希表的 key
         const cacheKey = this.cacheKeyPrefix + userId + ':' + tableName;
 
         const jsonhash = await this.redis.hgetall(cacheKey);
         const cacheDataHash = {};
 
         for (const key in jsonhash) {
-
             if (jsonhash.hasOwnProperty(key)) {
                 const preJsonStr = jsonhash[key];
                 let preModelVo;
                 if (preJsonStr) {
                     preModelVo = JSON.parse(preJsonStr);
+
                 }
                 cacheDataHash[key] = preModelVo;
+
             }
+
         }
         return cacheDataHash;
+
     }
 
     /**
@@ -106,6 +155,7 @@ export default class CacheService extends BaseService {
         const pipeline = this.redis.pipeline();
 
         tableNameList.forEach((tableName) => {
+            // 数据库更新缓存数据，redis 哈希表的 key
             const cacheKey = this.cacheKeyPrefix + userId + ':' + tableName;
             pipeline.del(cacheKey);
 
@@ -140,11 +190,16 @@ export default class CacheService extends BaseService {
                 });
                 think.logger.debug(`fetchDeployModelList: ${JSON.stringify(tableNameList)}`);
                 resolve({ tableNameList, cachetKeyList });
+
             });
 
             stream.on('end', () => {
                 think.logger.debug('all keys have been visited');
+
             });
+
         });
+
     }
+
 }
