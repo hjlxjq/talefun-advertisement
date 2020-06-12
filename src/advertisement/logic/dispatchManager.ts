@@ -16,7 +16,7 @@ import AdChannelModel from '../model/adChannel';
 
 import CacheService from '../service/cacheServer';
 
-import { UserAuthVO, ProductAuthVO } from '../defines';
+import { UserAuthVO, ProductAuthVO, AbTestGroupVO } from '../defines';
 
 import * as _ from 'lodash';
 import { think } from 'thinkjs';
@@ -207,16 +207,16 @@ export default class DispatchManagerLogic extends AMLogic {
 
         }
 
-        // 默认组必须，起始版本为 0, 国家全覆盖
+        /**
+         * <br/>默认组必须，起始版本为 0, 国家全覆盖
+         */
         if (
             name !== 'default' ||
             begin !== 0 ||
             include !== 1 ||
             codeList.toString() !== [].toString()
         ) {
-            /**
-             * <br/>线上或者暂存是否存在默认组，创建之前先保证存在默认组
-             */
+            // 线上或者暂存是否存在默认组，创建之前先保证存在默认组
             const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, 1, undefined);
 
             if (_.isEmpty(defaultVersionGroupVo)) {
@@ -239,23 +239,28 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/>线上是否存在冲突组，一个起始版本和一个国家只能对应一个版本条件分组
          */
-        // const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, 1, 1);
+        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1, undefined);
 
-        // if (_.isEmpty(defaultVersionGroupVo)) {
-        //     return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
+        for (const beginVersionGroupVo of beginVersionGroupVoList) {
+            const { code, include: beginInclude } = beginVersionGroupVo;
+            const beginCodeList = JSON.parse(code);
 
-        // }
-        // const { begin, code, include } = defaultVersionGroupVo;
-        // const codeList = JSON.parse(code);
+            // 判断 codeList 和线上相同开始版本的 codeList 是否有重复项
+            const concatCodeList = _.concat(codeList, beginCodeList);
+            const isDupli = new Set(concatCodeList).size !== concatCodeList.length;
+            // 判断 codeList 是否是线上相同开始版本的 codeList 的子数组
+            const isContain = _.isEmpty(_.difference(codeList, beginCodeList));
 
-        // // 默认组必须，起始版本为 0, 国家全覆盖
-        // if (
-        //     begin !== 0 ||
-        //     include !== 1 ||
-        //     codeList !== []
-        // ) {
-        //     return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
-        // }
+            // 包含，则不能有有重复项；不包含，则必须是线上的子数组
+            if (
+                (beginInclude === 1 && isDupli) ||
+                (beginInclude === 0 && !isContain)
+            ) {
+                return this.fail(TaleCode.DBFaild, '一个起始版本和一个国家只能对应一个版本条件分组！！！');
+
+            }
+
+        }
 
         /**
          * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
@@ -570,6 +575,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const end: number = this.post('end');
         const groupNum: number = this.post('groupNum');
         const versionGroupId: string = this.post('id');
+        const name: string = this.post('name');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
@@ -621,7 +627,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const abTestGroupVo = abTestGroupVoList[0];
         if (!_.isEmpty(abTestGroupVo) && abTestGroupVo.id) {
             // 缓存中个更新
-            const cacheAbTestGroupVo =
+            const cacheAbTestGroupVo: AbTestGroupVO =
                 await cacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupVo.id);
 
             // 未更新（不存在）或者未禁用则报唯一性错误

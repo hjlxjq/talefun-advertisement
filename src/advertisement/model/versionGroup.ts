@@ -75,7 +75,7 @@ export default class VersionGroupModel extends MBModel {
     }
 
     /**
-     * 根据应用和版本条件分组类型获取版本条件分组列表
+     * 根据 版本条件分组名称 获取版本条件分组列表
      * @argument {string} name 版本条件分组名;
      * @argument {string} type 版本条件分组表类型;
      * @argument {string} productId 应用表 id;
@@ -107,6 +107,42 @@ export default class VersionGroupModel extends MBModel {
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).find() as VersionGroupVO;
+
+    }
+
+    /**
+     * 根据 版本条件分组的开始版本 获取版本条件分组列表
+     * @argument {number} begin 版本条件分组的开始版本;
+     * @argument {string} type 版本条件分组表类型;
+     * @argument {string} productId 应用表 id;
+     * @argument {number} active 是否生效;
+     * @argument {number} live 是否线上已发布数据
+     * @returns {Promise<string[]>} 版本条件分组列表;
+     */
+    public async getByBegin(
+        begin: number,
+        type: number,
+        productId: string,
+        active: number,
+        live: number
+    ) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`type = '${type}'`);
+        queryStrings.push(`begin = '${begin}'`);
+        queryStrings.push(`productId = '${productId}'`);
+
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
+
+        }
+        if (!_.isUndefined(live)) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as VersionGroupVO[];
 
     }
 
