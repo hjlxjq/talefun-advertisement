@@ -172,6 +172,9 @@ export default class DispatchManagerLogic extends AMLogic {
         const productId: string = this.post('id');
         const type: number = this.post('type');    // 0 广告 1 游戏常量 2 商店
         const name: string = this.post('name');
+        const begin: number = this.post('begin');
+        const include: number = this.post('include');
+        const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
@@ -204,25 +207,33 @@ export default class DispatchManagerLogic extends AMLogic {
 
         }
 
-        /**
-         * <br/>线上是否存在默认组，创建之前先保证存在默认组
-         */
-        const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, 1, 1);
-
-        if (_.isEmpty(defaultVersionGroupVo)) {
-            return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
-
-        }
-        const { begin, code, include } = defaultVersionGroupVo;
-        const codeList = JSON.parse(code);
-
         // 默认组必须，起始版本为 0, 国家全覆盖
         if (
+            name !== 'default' ||
             begin !== 0 ||
             include !== 1 ||
             codeList !== []
         ) {
-            return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
+            /**
+             * <br/>线上是否存在默认组，创建之前先保证存在默认组
+             */
+            const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, 1, 1);
+
+            if (_.isEmpty(defaultVersionGroupVo)) {
+                return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
+
+            }
+            const { begin: defaultBegin, code, include: defaultInclude } = defaultVersionGroupVo;
+            const defaultCodeList = JSON.parse(code);
+
+            // 默认组必须，起始版本为 0, 国家全覆盖
+            if (
+                defaultBegin !== 0 ||
+                defaultInclude !== 1 ||
+                defaultCodeList !== []
+            ) {
+                return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
+            }
         }
 
         /**
