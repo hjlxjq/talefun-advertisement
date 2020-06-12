@@ -215,9 +215,9 @@ export default class DispatchManagerLogic extends AMLogic {
             codeList.toString() !== [].toString()
         ) {
             /**
-             * <br/>线上是否存在默认组，创建之前先保证存在默认组
+             * <br/>线上或者暂存是否存在默认组，创建之前先保证存在默认组
              */
-            const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, 1, 1);
+            const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, 1, undefined);
 
             if (_.isEmpty(defaultVersionGroupVo)) {
                 return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
