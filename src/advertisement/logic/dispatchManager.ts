@@ -134,7 +134,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
-            code: {
+            codeList: {
                 array: true,
                 children: {
                     string: true,       // 字段类型为 String 类型
@@ -212,7 +212,7 @@ export default class DispatchManagerLogic extends AMLogic {
             name !== 'default' ||
             begin !== 0 ||
             include !== 1 ||
-            codeList !== []
+            codeList.toString() !== [].toString()
         ) {
             /**
              * <br/>线上是否存在默认组，创建之前先保证存在默认组
@@ -230,7 +230,7 @@ export default class DispatchManagerLogic extends AMLogic {
             if (
                 defaultBegin !== 0 ||
                 defaultInclude !== 1 ||
-                defaultCodeList !== []
+                defaultCodeList.toString() !== [].toString()
             ) {
                 return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
             }
