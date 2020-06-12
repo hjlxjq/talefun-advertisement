@@ -556,7 +556,10 @@ export interface CreateVersionGroupResVO extends ResVO {
 export interface CopyVersionGroupReqVO {
     id: string;    // 被复制的版本条件分组主键 id
     name: string;    // 分组名
+    begin: number;    // 起始版本
     description: string;    // 描述
+    codeList?: string[];    // 支持的国家代码列表
+    include: number;    // 国家代码是否包含
 }
 
 export interface CopyVersionGroupResVO extends ResVO {

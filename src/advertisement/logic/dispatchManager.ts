@@ -326,6 +326,8 @@ export default class DispatchManagerLogic extends AMLogic {
 
         const copyId: string = this.post('id');    // 被复制的版本条件分组主键 id
         const name: string = this.post('name');
+        const begin: number = this.post('begin');
+        const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
@@ -338,10 +340,10 @@ export default class DispatchManagerLogic extends AMLogic {
             versionGroupModel.getVo(copyId, ucId),
             abTestGroupModel.getDefault(copyId, ucId)
         ]);
-
         // 复制组不存在
         if (_.isEmpty(copyedVersionGroupVo) || _.isEmpty(copyedAbTestGroupVo)) {
             this.fail(TaleCode.DBFaild, '被复制组不存在！！！');
+
         }
 
         /**
@@ -362,6 +364,32 @@ export default class DispatchManagerLogic extends AMLogic {
             ) {
                 return this.fail(TaleCode.AuthFaild, '没有权限！！！');
             }
+        }
+
+        /**
+         * <br/>线上是否存在冲突组，一个起始版本和一个国家只能对应一个版本条件分组
+         */
+        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1, undefined);
+
+        for (const beginVersionGroupVo of beginVersionGroupVoList) {
+            const { code, include: beginInclude } = beginVersionGroupVo;
+            const beginCodeList = JSON.parse(code);
+
+            // 判断 codeList 和线上相同开始版本的 codeList 是否有重复项
+            const concatCodeList = _.concat(codeList, beginCodeList);
+            const isDupli = new Set(concatCodeList).size !== concatCodeList.length;
+            // 判断 codeList 是否是线上相同开始版本的 codeList 的子数组
+            const isContain = _.isEmpty(_.difference(codeList, beginCodeList));
+
+            // 包含，则不能有有重复项；不包含，则必须是线上的子数组
+            if (
+                (beginInclude === 1 && isDupli) ||
+                (beginInclude === 0 && !isContain)
+            ) {
+                return this.fail(TaleCode.DBFaild, '一个起始版本和一个国家只能对应一个版本条件分组！！！');
+
+            }
+
         }
 
         /**
@@ -434,6 +462,8 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         const versionGroupId: string = this.post('id');
+        const begin: number = this.post('begin');
+        const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
         const versionGroupVo = await versionGroupModel.getVo(versionGroupId, ucId);
@@ -442,7 +472,9 @@ export default class DispatchManagerLogic extends AMLogic {
             this.fail(TaleCode.DBFaild, '版本条件分组不存在!!!');
         }
 
-        // 权限检查
+        /**
+         * <br/>权限检查
+         */
         const { productId, type } = versionGroupVo;
         const productAuth = await this.productAuth(productId);
         const {
@@ -468,6 +500,31 @@ export default class DispatchManagerLogic extends AMLogic {
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
         }
 
+        /**
+         * <br/>线上是否存在冲突组，一个起始版本和一个国家只能对应一个版本条件分组
+         */
+        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1, undefined);
+
+        for (const beginVersionGroupVo of beginVersionGroupVoList) {
+            const { code, include: beginInclude } = beginVersionGroupVo;
+            const beginCodeList = JSON.parse(code);
+
+            // 判断 codeList 和线上相同开始版本的 codeList 是否有重复项
+            const concatCodeList = _.concat(codeList, beginCodeList);
+            const isDupli = new Set(concatCodeList).size !== concatCodeList.length;
+            // 判断 codeList 是否是线上相同开始版本的 codeList 的子数组
+            const isContain = _.isEmpty(_.difference(codeList, beginCodeList));
+
+            // 包含，则不能有有重复项；不包含，则必须是线上的子数组
+            if (
+                (beginInclude === 1 && isDupli) ||
+                (beginInclude === 0 && !isContain)
+            ) {
+                return this.fail(TaleCode.DBFaild, '一个起始版本和一个国家只能对应一个版本条件分组！！！');
+
+            }
+
+        }
     }
 
     /**

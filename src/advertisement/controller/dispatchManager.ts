@@ -163,7 +163,7 @@ export default class DispatchManagerController extends BaseController {
             // 默认 ab 测试分组对象
             const abTestGroupVo: AbTestGroupVO = {
                 versionGroupId, active, name: 'default', begin: -1, end: -1, description: '默认组',
-                creatorId: undefined, configGroupId: undefined, nativeTmplConfGroupId: undefined, activeTime: undefined
+                creatorId: ucId, configGroupId: undefined, nativeTmplConfGroupId: undefined, activeTime: undefined
             };
             // 向版本条件分组下创建默认 ab 分组
             await abTestGroupModel.addVo(abTestGroupVo);
@@ -188,7 +188,10 @@ export default class DispatchManagerController extends BaseController {
         const ucId: string = this.ctx.state.userId;
         const copyId: string = this.post('id');    // 被复制的版本条件分组主键 id
         const name: string = this.post('name');
+        const begin: number = this.post('begin');
         const description: string = this.post('description');
+        const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
+        const include: number = this.post('include');
         const active: number = this.post('active');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
@@ -204,14 +207,16 @@ export default class DispatchManagerController extends BaseController {
                 abTestGroupModel.getDefault(copyId, ucId)
             ]);
 
-            const { begin, description: copyedDescription, type, code, include, productId } = copyedVersionGroupVo;
+            // 版本条件分组类型和应用主键，和被复制组一样
+            const { type, productId } = copyedVersionGroupVo;
+            // 被复制组的 ab 测试分组信息
             const { id: copyedAbTestGroupId, configGroupId, nativeTmplConfGroupId } = copyedAbTestGroupVo;
 
             const CacheActiveTime = think.config('CacheActiveTime');    // 数据库暂存， activeTime 标识
             // 先创建版本条件分组表
             // 版本条件分组对象
             const createVersionGroupVo: VersionGroupVO = {
-                name, begin, description: description || copyedDescription, type, code, include,
+                name, begin, description, type, code: JSON.stringify(codeList), include,
                 active, activeTime: CacheActiveTime, creatorId: ucId, productId
             };
             const versionGroupId = await versionGroupModel.addVo(createVersionGroupVo);
@@ -220,7 +225,7 @@ export default class DispatchManagerController extends BaseController {
             // 默认 ab 测试对象
             const defaultAbTestGroupVo: AbTestGroupVO = {
                 name: 'default', begin: -1, end: -1, description: '默认组', active, activeTime: undefined,
-                creatorId: undefined, nativeTmplConfGroupId, configGroupId, versionGroupId
+                creatorId: ucId, nativeTmplConfGroupId, configGroupId, versionGroupId
             };
             const defaultAbTestGroupId = await abTestGroupModel.addVo(defaultAbTestGroupVo);    // 默认 ab 测试组主键
 
