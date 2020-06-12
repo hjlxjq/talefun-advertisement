@@ -25,11 +25,14 @@ export default class Utils {
     public static isEmptyObj(obj: object): boolean {
         let isEmpty = true;
         _.each(obj, (value: any) => {
-            if (value !== undefined && value !== null) {
+            if (value !== undefined) {
                 isEmpty = false;
+
             }
+
         });
         return isEmpty;
+
     }
 
     /**

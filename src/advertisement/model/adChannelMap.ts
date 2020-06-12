@@ -62,7 +62,7 @@ export default class AdChannelMapModel extends MBModel {
         await this.where({ adChannelId }).delete();
 
         // 如果不为空，则再批量添加
-        if (!think.isEmpty(adTypeIdList)) {
+        if (!Utils.isEmptyObj(adTypeIdList)) {
             const AdChannelMapVoList: AdChannelMapVO[] = _.map(adTypeIdList, (adTypeId) => {
 
                 const AdChannelMapVo: AdChannelMapVO = {

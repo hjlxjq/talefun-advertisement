@@ -34,7 +34,7 @@ export default class ProductModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateProduct(id: string, productUpdateVo: ProductVO) {
-        if (!_.isEmpty(productUpdateVo)) {
+        if (!Utils.isEmptyObj(productUpdateVo)) {
             return await this.where({ id }).update(productUpdateVo);
 
         }

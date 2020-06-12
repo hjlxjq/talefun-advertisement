@@ -851,10 +851,6 @@ export interface CreateNativeTmplConfResVO extends ResVO {
     data: 'created';
 }
 
-export interface CreateNativeTmplConfListResVO extends ResVO {
-    data: 'created';
-}
-
 /**
  * 更新应用 native 模板 /advertisement/dispatchManager/updateNativeTmplConf
  */

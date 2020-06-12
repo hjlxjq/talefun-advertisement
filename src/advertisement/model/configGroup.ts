@@ -35,7 +35,7 @@ export default class ConfigGroupModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, configGroupVo: ConfigGroupVO) {
-        if (!_.isEmpty(configGroupVo)) {
+        if (!Utils.isEmptyObj(configGroupVo)) {
             return await this.where({ id }).update(configGroupVo);
         }
 

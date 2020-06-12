@@ -37,7 +37,7 @@ export default class NativeTmplConfModel extends MBModel {
     public async addList(nativeTmplConfVoList: NativeTmplConfVO[]) {
         let idList: string[] = [];
 
-        if (!think.isEmpty(nativeTmplConfVoList)) {
+        if (!Utils.isEmptyObj(nativeTmplConfVoList)) {
             await this.addMany(nativeTmplConfVoList);
             idList = this.ID;
 
@@ -53,7 +53,7 @@ export default class NativeTmplConfModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, nativeTmplConfVo: NativeTmplConfVO) {
-        if (!_.isEmpty(nativeTmplConfVo)) {
+        if (!Utils.isEmptyObj(nativeTmplConfVo)) {
             return await this.where({ id }).update(nativeTmplConfVo);
 
         }

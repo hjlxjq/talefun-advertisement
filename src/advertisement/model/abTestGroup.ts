@@ -38,7 +38,7 @@ export default class AbTestGroupModel extends MBModel {
     public async addList(abTestGroupVoList: AbTestGroupVO[]) {
         let idList: string[] = [];
 
-        if (!think.isEmpty(abTestGroupVoList)) {
+        if (!Utils.isEmptyObj(abTestGroupVoList)) {
 
             await this.addMany(abTestGroupVoList);
             think.logger.debug(`插入ab 测试分组列表返回主键 id 列表： ${JSON.stringify(this.ID)}`);
@@ -56,7 +56,9 @@ export default class AbTestGroupModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, abTestGroupVo: AbTestGroupVO) {
-        if (!_.isEmpty(abTestGroupVo)) {
+        think.logger.debug(`abTestGroupVo1: ${JSON.stringify(abTestGroupVo)}`);
+        if (!Utils.isEmptyObj(abTestGroupVo)) {
+            think.logger.debug(`abTestGroupVo2: ${JSON.stringify(abTestGroupVo)}`);
             return await this.where({ id }).update(abTestGroupVo);
         }
 

@@ -38,7 +38,7 @@ export default class AbTestMapModel extends MBModel {
     public async addList(abTestMapVoList: AbTestMapVO[]) {
         let idList: string[] = [];
 
-        if (!think.isEmpty(abTestMapVoList)) {
+        if (!Utils.isEmptyObj(abTestMapVoList)) {
             await this.addMany(abTestMapVoList);
             idList = this.ID;
         }
@@ -54,7 +54,7 @@ export default class AbTestMapModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, abTestMapVo: AbTestMapVO) {
-        if (!_.isEmpty(abTestMapVo)) {
+        if (!Utils.isEmptyObj(abTestMapVo)) {
             return await this.where({ id }).update(abTestMapVo);
         }
 

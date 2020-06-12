@@ -29,7 +29,7 @@ export default class ChannelParamConfModel extends MBModel {
         productId: string,
         channelParamConfVo: ChannelParamConfVO
     ) {
-        if (!_.isEmpty(channelParamConfVo)) {
+        if (!Utils.isEmptyObj(channelParamConfVo)) {
             return await this.thenUpdate(channelParamConfVo, { adChannelId, productId });
 
         }

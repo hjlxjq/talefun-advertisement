@@ -36,12 +36,13 @@ export default class AdModel extends MBModel {
     public async addList(adVolist: AdVO[]) {
         let idList: string[] = [];
 
-        if (!think.isEmpty(adVolist)) {
-
+        if (!Utils.isEmptyObj(adVolist)) {
             await this.addMany(adVolist);
             idList = this.ID;
+
         }
         return idList;
+
     }
 
     /**
@@ -51,7 +52,7 @@ export default class AdModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, adVo: AdVO) {
-        if (!_.isEmpty(adVo)) {
+        if (!Utils.isEmptyObj(adVo)) {
             return await this.where({ id }).update(adVo);
         }
         return 0;

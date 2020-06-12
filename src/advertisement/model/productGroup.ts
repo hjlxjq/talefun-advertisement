@@ -35,7 +35,7 @@ export default class ProductGroupModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateProductGroup(id: string, productGroupUpdateVo: ProductGroupVO) {
-        if (!_.isEmpty(productGroupUpdateVo)) {
+        if (!Utils.isEmptyObj(productGroupUpdateVo)) {
             return await this.where({ id }).update(productGroupUpdateVo);
         }
         return 0;

@@ -39,7 +39,7 @@ export default class UserModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, userVo: UserVO) {
-        if (!_.isEmpty(userVo)) {
+        if (!Utils.isEmptyObj(userVo)) {
             const password: string = userVo.password;
 
             if (!think.isEmpty(password)) {

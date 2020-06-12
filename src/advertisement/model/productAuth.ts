@@ -39,7 +39,7 @@ export default class ProductAuthModel extends MBModel {
         userId: string,
         productAuthUpdateVo: ProductAuthVO
     ) {
-        if (!_.isEmpty(productAuthUpdateVo)) {
+        if (!Utils.isEmptyObj(productAuthUpdateVo)) {
             return await this.where({ productId, userId }).update(productAuthUpdateVo);
 
         }

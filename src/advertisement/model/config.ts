@@ -53,7 +53,7 @@ export default class ConfigModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, configVo: ConfigVO) {
-        if (!_.isEmpty(configVo)) {
+        if (!Utils.isEmptyObj(configVo)) {
             return await this.where({ id }).update(configVo);
 
         }

@@ -36,7 +36,7 @@ export default class VersionGroupModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, versionGroupVo: VersionGroupVO) {
-        if (!_.isEmpty(versionGroupVo)) {
+        if (!Utils.isEmptyObj(versionGroupVo)) {
             return await this.where({ id }).update(versionGroupVo);
         }
 
