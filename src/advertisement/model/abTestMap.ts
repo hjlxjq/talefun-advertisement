@@ -96,7 +96,7 @@ export default class AbTestMapModel extends MBModel {
     public async getVo(
         abTestGroupId: string,
         place: string,
-        creatorId?: string,
+        creatorId: string,
     ) {
         const queryStrings: string[] = [];
 

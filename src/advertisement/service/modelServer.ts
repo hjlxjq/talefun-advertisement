@@ -52,7 +52,7 @@ export default class ModelService extends BaseService {
         const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
         const adChannelMapModel = this.taleModel('adChannelMap', 'advertisement') as AdChannelMapModel;
 
-        const adChannelVoList = await adChannelModel.getList();
+        const adChannelVoList = await adChannelModel.getList(undefined, undefined, undefined);
         const adChannelResVoList = await Bluebird.map(adChannelVoList, async (adChannelVo) => {
             const { id, test } = adChannelVo;
             const adTypeIdList = await adChannelMapModel.getAdTypeIdList(id);
@@ -440,7 +440,7 @@ export default class ModelService extends BaseService {
                 adTypeVo, adChannelVo, adGroupVo
             ] = await Promise.all([
                 adTypeModel.getVo(adTypeId, undefined, undefined),
-                adChannelModel.getVo(adChannelId),
+                adChannelModel.getVo(adChannelId, undefined, undefined),
                 adGroupModel.getVo(adGroupId, creatorId)
             ]);
 
@@ -486,7 +486,7 @@ export default class ModelService extends BaseService {
         const adResVoList = await Bluebird.map(adVoList, async (adVo) => {
             // 获取广告平台名
             const { adChannelId } = adVo;
-            const adChannelVo = await adChannelModel.getVo(adChannelId);
+            const adChannelVo = await adChannelModel.getVo(adChannelId, undefined, undefined);
 
             if (think.isEmpty(adChannelVo)) {
                 return;
