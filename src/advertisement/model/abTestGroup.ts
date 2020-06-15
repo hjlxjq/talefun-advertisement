@@ -190,9 +190,10 @@ export default class AbTestGroupModel extends MBModel {
 
     /**
      * 获取默认 ab 测试分组信息列表
+     *  @argument {string} versionGroupId 分组条件表主键;
      */
-    public async getDefault() {
-        return await this.where({ name: 'default' }).find() as AbTestGroupVO;
+    public async getDefault(versionGroupId: string) {
+        return await this.where({ name: 'default',  versionGroupId}).find() as AbTestGroupVO;
 
     }
 

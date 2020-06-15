@@ -1303,7 +1303,7 @@ export default class DispatchManagerController extends BaseController {
             ]);
 
             // 默认 ab 测试分组主键
-            const { id: defaultId } = await abTestGroupModel.getDefault();
+            const { id: defaultId } = await abTestGroupModel.getDefault(versionGroupId);
             // 默认 ab 测试分组下的该广告位表主键
             const defaultAbTestMapVo = await abTestMapModel.getVo(defaultId, place, ucId);
 
