@@ -784,6 +784,7 @@ export default class ModelService extends BaseService {
      * @argument {string} creatorId 创建者 id
      */
     public async getPlaceList(abTestGroupId: string, creatorId: string) {
+        const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
@@ -808,8 +809,11 @@ export default class ModelService extends BaseService {
             // 广告组主键和广告类型名
             const { adGroupId, type } = abTestMapVo;
 
-            const placeResVo: PlaceResVO = _.assign({
-                adGroup: null
+            // 广告类型显示名称
+            const {name: typeName } = await adTypeModel.getByType(type);
+
+            const placeResVo: PlaceResVO = _.defaults({
+                adGroup: null, type: typeName
             }, abTestMapVo);
 
             think.logger.debug(`placeResVo : ${JSON.stringify(placeResVo)}`);
@@ -823,7 +827,7 @@ export default class ModelService extends BaseService {
                 const cacheAdGroupVo = cacheAdGroupVoHash[adGroupId] as AdGroupVO;
 
                 const adGroupResVo: AdGroupResVO = _.assign({
-                    type, adList, versionGroup: undefined
+                    type: typeName, adList, versionGroup: undefined
                 }, adGroupVo, cacheAdGroupVo);
 
                 // 删除不需要的字段

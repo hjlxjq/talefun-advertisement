@@ -1247,11 +1247,11 @@ export default class DispatchManagerController extends BaseController {
             adTypeModel.getByType(place),
         ]);
         // 广告位名称
-        const { name: type } = adTypeVo;
+        // const { name: type } = adTypeVo;
 
         // 待创建或更新的广告位表记录
         const updateAbTestMapVo: AbTestMapVO = {
-            place, type, abTestGroupId, adGroupId, creatorId: undefined, active
+            place, type: place, abTestGroupId, adGroupId, creatorId: undefined, active
         };
 
         try {
