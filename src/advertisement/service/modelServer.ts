@@ -807,9 +807,6 @@ export default class ModelService extends BaseService {
             // 缓存中有更新，则以缓存中数据为准
             _.assign(abTestMapVo, cacheAbTestMapVo);
 
-            if (abTestGroupId === 'c65810be-4dec-4a4d-96a0-06d501f6ddae') {
-                think.logger.debug(`abTestMapVo2: ${JSON.stringify(abTestMapVo)}`);
-            }
             // 广告组主键和广告类型名
             const { adGroupId, type } = abTestMapVo;
 
@@ -819,8 +816,6 @@ export default class ModelService extends BaseService {
             const placeResVo: PlaceResVO = _.defaults({
                 adGroup: null, type: typeName
             }, abTestMapVo);
-
-            think.logger.debug(`placeResVo : ${JSON.stringify(placeResVo)}`);
 
             if (adGroupId) {
                 const [adGroupVo, adList] = await Promise.all([
