@@ -1316,6 +1316,7 @@ export default class DispatchManagerController extends BaseController {
                 place, type, adGroupId
             };
 
+            think.logger.debug(`defaultId: ${defaultId}`);
             think.logger.debug(`versionGroupId: ${versionGroupId}`);
             think.logger.debug(`abTestMapId: ${abTestMapId}`);
             think.logger.debug(`adGroupId: ${adGroupId}`);
