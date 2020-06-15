@@ -225,6 +225,7 @@ export default class CommonManagerController extends BaseController {
             return this.success('updated');
 
         } catch (e) {
+            think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'update fail!!!');
         }
 
