@@ -791,8 +791,10 @@ export default class ModelService extends BaseService {
 
         // 数据库里的 ab 测试分组对象
         const abTestMapVoList = await abTestMapModel.getList(abTestGroupId, creatorId);
+        if (abTestGroupId === 'c65810be-4dec-4a4d-96a0-06d501f6ddae') {
+            think.logger.debug(`abTestMapVoList: ${JSON.stringify(abTestMapVoList)}`);
+        }
 
-        think.logger.debug(`abTestGroupId: ${abTestGroupId}`);
         // 未发布更新在缓存里的 ab 测试分组对象哈希表和广告组对象哈希表
         const [
             cacheAbTestMapVoHash, cacheAdGroupVoHash
@@ -806,7 +808,6 @@ export default class ModelService extends BaseService {
             // 获取缓存中未发布更新的 ab 测试分组对象
             const cacheAbTestMapVo = cacheAbTestMapVoHash[abTestMapVo.id] as AbTestMapVO;
             if (abTestGroupId === 'c65810be-4dec-4a4d-96a0-06d501f6ddae') {
-                think.logger.debug(`abTestMapVoList: ${JSON.stringify(abTestMapVoList)}`);
                 think.logger.debug(`abTestMapVo1: ${JSON.stringify(abTestMapVo)}`);
                 think.logger.debug(`cacheAbTestMapVo: ${JSON.stringify(cacheAbTestMapVo)}`);
             }
