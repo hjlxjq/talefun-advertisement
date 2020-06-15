@@ -1330,12 +1330,18 @@ export default class DispatchManagerController extends BaseController {
                 await abTestMapModel.addVo(updateDefaultAbTestMapVo);
 
             } else {
-                await cacheServer.setCacheData(ucId, 'abTestMap', defaultAbTestMapVo.id, updateDefaultAbTestMapVo);
-                await cacheServer.setCacheData(ucId, 'abTestMap', abTestMapId, updateAbTestMapVo);
+                think.logger.debug(`defaultAbTestMapVo: ${JSON.stringify(defaultAbTestMapVo)}`);
+                await Promise.all([
+                    cacheServer.setCacheData(ucId, 'abTestMap', defaultAbTestMapVo.id, updateDefaultAbTestMapVo),
+                    cacheServer.setCacheData(ucId, 'abTestMap', abTestMapId, updateAbTestMapVo)
+                ]);
+
             }
             // 缓存用户发布状态
             await cacheServer.setDeployStatus(ucId);
 
+            const abTestMapVoHash = await cacheServer.fetchCacheDataHash(ucId, 'abTestMap');
+            think.logger.debug(`abTestMapVoHash: ${JSON.stringify(abTestMapVoHash)}`); 
             this.success('completed');
 
         } catch (e) {
