@@ -1330,8 +1330,6 @@ export default class DispatchManagerController extends BaseController {
             // 缓存用户发布状态
             await cacheServer.setDeployStatus(ucId);
 
-            const abTestMapVoHash = await cacheServer.fetchCacheDataHash(ucId, 'abTestMap');
-            think.logger.debug(`abTestMapVoHash: ${JSON.stringify(abTestMapVoHash)}`);
             this.success('completed');
 
         } catch (e) {
