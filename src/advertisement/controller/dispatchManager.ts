@@ -1316,27 +1316,17 @@ export default class DispatchManagerController extends BaseController {
                 place, type, adGroupId
             };
 
-            think.logger.debug(`defaultId: ${defaultId}`);
-            think.logger.debug(`versionGroupId: ${versionGroupId}`);
-            think.logger.debug(`abTestMapId: ${abTestMapId}`);
-            think.logger.debug(`adGroupId: ${adGroupId}`);
-            think.logger.debug(`type: ${type}`);
-            think.logger.debug(`defaultAbTestMapVo: ${JSON.stringify(defaultAbTestMapVo)}`);
-            think.logger.debug(`updateAbTestMapVo: ${JSON.stringify(updateAbTestMapVo)}`);
-            think.logger.debug(`updateDefaultAbTestMapVo: ${JSON.stringify(updateDefaultAbTestMapVo)}`);
-            think.logger.debug(`defaultAbTestMapVo: ${JSON.stringify(defaultAbTestMapVo)}`);
             // 数据库中不存在默认 ab 分组测试下的该广告位，则直接插入数据库
             if (_.isEmpty(defaultAbTestMapVo)) {
                 updateDefaultAbTestMapVo.creatorId = ucId;
                 await abTestMapModel.addVo(updateDefaultAbTestMapVo);
 
             } else {
-                await Promise.all([
-                    cacheServer.setCacheData(ucId, 'abTestMap', defaultAbTestMapVo.id, updateDefaultAbTestMapVo),
-                    cacheServer.setCacheData(ucId, 'abTestMap', abTestMapId, updateAbTestMapVo)
-                ]);
+                await cacheServer.setCacheData(ucId, 'abTestMap', defaultAbTestMapVo.id, updateDefaultAbTestMapVo);
 
             }
+            // 更新该 ab 测试分组数据，即关闭这个 ab 测试分组下的广告位
+            await cacheServer.setCacheData(ucId, 'abTestMap', abTestMapId, updateAbTestMapVo);
             // 缓存用户发布状态
             await cacheServer.setDeployStatus(ucId);
 
