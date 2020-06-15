@@ -847,7 +847,7 @@ export default class ModelService extends BaseService {
             return placeResVo;
         });
 
-        return placeResVoList;
+        return _.compact(placeResVoList);
 
     }
 

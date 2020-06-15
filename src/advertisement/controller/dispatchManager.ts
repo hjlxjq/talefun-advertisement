@@ -1236,6 +1236,7 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupId: string = this.post('id');
         const adGroupId: string = this.post('adGroupId');
         const place: string = this.post('place');
+        const type: string = this.post('type');    // ??? 如果改变 place， 需要传广告类型 type
         const active: number = this.post('active');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
@@ -1248,6 +1249,7 @@ export default class DispatchManagerController extends BaseController {
         };
 
         try {
+            think.logger.debug(`abTestMapVo1: ${JSON.stringify(abTestMapVo)}`);
             // 数据库中不存在，则直接插入数据库
             if (_.isEmpty(abTestMapVo)) {
                 updateAbTestMapVo.creatorId = ucId;    // 更新需要更改 creatorId 为 ucId
@@ -1268,6 +1270,14 @@ export default class DispatchManagerController extends BaseController {
             }
             // 缓存用户发布状态
             await cacheServer.setDeployStatus(ucId);
+
+            const abTestMapVo2 = await abTestMapModel.getVo(abTestGroupId, place, ucId);
+            think.logger.debug(`abTestMapVo2: ${JSON.stringify(abTestMapVo2)}`);
+
+            if (!_.isEmpty(abTestMapVo)) {
+                const abTestMapVo3 = await cacheServer.fetchCacheData(ucId, 'abTestMap', abTestMapVo.id);
+                think.logger.debug(`abTestMapVo3: ${JSON.stringify(abTestMapVo3)}`);
+            }
 
             this.success('updated');
 
