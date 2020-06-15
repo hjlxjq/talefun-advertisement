@@ -816,7 +816,7 @@ export default class ModelService extends BaseService {
                 adGroup: null, type: typeName
             }, abTestMapVo);
 
-            // think.logger.debug(`placeResVo : ${JSON.stringify(placeResVo)}`);
+            think.logger.debug(`placeResVo : ${JSON.stringify(placeResVo)}`);
 
             if (adGroupId) {
                 const [adGroupVo, adList] = await Promise.all([
