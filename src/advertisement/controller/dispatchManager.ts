@@ -208,7 +208,7 @@ export default class DispatchManagerController extends BaseController {
                 copyedAbTestGroupVo
             ] = await Promise.all([
                 versionGroupModel.getVo(copyId, ucId),
-                abTestGroupModel.getDefault(copyId, ucId)
+                abTestGroupModel.getDefault()
             ]);
 
             // 版本条件分组类型和应用主键，和被复制组一样
@@ -1237,17 +1237,9 @@ export default class DispatchManagerController extends BaseController {
         const place: string = this.post('place');
         const active: number = this.post('active');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        const [
-            abTestMapVo, adTypeVo
-        ] = await Promise.all([
-            abTestMapModel.getVo(abTestGroupId, place, ucId),
-            adTypeModel.getByType(place),
-        ]);
-        // 广告位名称
-        // const { name: type } = adTypeVo;
+        const abTestMapVo = await abTestMapModel.getVo(abTestGroupId, place, ucId);
 
         // 待创建或更新的广告位表记录
         const updateAbTestMapVo: AbTestMapVO = {
@@ -1309,7 +1301,7 @@ export default class DispatchManagerController extends BaseController {
             ]);
 
             // 默认 ab 测试分组主键
-            const { id: defaultId } = await abTestGroupModel.getDefault(versionGroupId, ucId);
+            const { id: defaultId } = await abTestGroupModel.getDefault();
             // 默认 ab 测试分组下的该广告位表主键
             const defaultAbTestMapVo = await abTestMapModel.getVo(defaultId, place, ucId);
 

@@ -155,7 +155,7 @@ export default class AbTestGroupModel extends MBModel {
      * @returns {Promise<string[]>}  ab 测试分组表主键列表;
      */
     public async getIdListByVersionGroup(versionGroupId: string) {
-        const abTestGroupVoList =  await this.where({ versionGroupId }).select() as AbTestGroupVO[];
+        const abTestGroupVoList = await this.where({ versionGroupId }).select() as AbTestGroupVO[];
 
         return _.map(abTestGroupVoList, (abTestGroupVo) => {
             return abTestGroupVo.id;
@@ -190,20 +190,10 @@ export default class AbTestGroupModel extends MBModel {
 
     /**
      * 获取默认 ab 测试分组信息列表
-     * @argument {string} versionGroupId  版本分组条件表 id;
-     * @argument {string} creatorId 创建者 id
      */
-    public async getDefault(versionGroupId: string, creatorId: string) {
-        const queryStrings: string[] = [];
-        queryStrings.push(`versionGroupId = '${versionGroupId}'`);
+    public async getDefault() {
+        return await this.where({ name: 'default' }).find() as AbTestGroupVO;
 
-        if (!_.isUndefined(creatorId)) {
-            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
-
-        }
-        const queryString: string = queryStrings.join(' AND ');
-
-        return await this.where(queryString).find() as AbTestGroupVO;
     }
 
     /**

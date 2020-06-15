@@ -96,7 +96,7 @@ export default class AbTestMapModel extends MBModel {
     public async getVo(
         abTestGroupId: string,
         place: string,
-        creatorId: string,
+        creatorId: string
     ) {
         const queryStrings: string[] = [];
 
@@ -105,8 +105,8 @@ export default class AbTestMapModel extends MBModel {
 
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
-        }
 
+        }
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).find() as AbTestMapVO;
@@ -119,7 +119,7 @@ export default class AbTestMapModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestMapVO[]>} 广告位表列表;
      */
-    public async getList(abTestGroupId: string, creatorId?: string) {
+    public async getList(abTestGroupId: string, creatorId: string) {
         const queryStrings: string[] = [];
 
         queryStrings.push(`abTestGroupId = '${abTestGroupId}'`);
@@ -140,7 +140,7 @@ export default class AbTestMapModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestMapVO>} ab 测试分组主键 id 列表
      */
-    public async getAbTestGroupIdByAdGroup(adGroupId: string, creatorId?: string) {
+    public async getAbTestGroupIdByAdGroup(adGroupId: string, creatorId: string) {
         const queryStrings: string[] = [];
 
         queryStrings.push(`adGroupId = '${adGroupId}'`);

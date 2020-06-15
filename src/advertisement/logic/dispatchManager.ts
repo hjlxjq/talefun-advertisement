@@ -374,7 +374,7 @@ export default class DispatchManagerLogic extends AMLogic {
             copyedAbTestGroupVo
         ] = await Promise.all([
             versionGroupModel.getVo(copyId, ucId),
-            abTestGroupModel.getDefault(copyId, ucId)
+            abTestGroupModel.getDefault()
         ]);
         // 复制组不存在
         if (_.isEmpty(copyedVersionGroupVo) || _.isEmpty(copyedAbTestGroupVo)) {
