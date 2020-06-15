@@ -157,6 +157,11 @@ export default class CommonManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
+            name: {
+                string: true,       // 字段类型为 String 类型
+                cusTrim: true,      // 前后不能有空格
+                method: 'POST'       // 指定获取数据的方式
+            },
             test: {
                 int: true,       // 字段类型为 Number 类型
                 in: [0, 1],     // 0 为 false， 1 为 true

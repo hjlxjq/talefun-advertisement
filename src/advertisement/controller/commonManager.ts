@@ -118,12 +118,13 @@ export default class CommonManagerController extends BaseController {
     public async updateAdTypeAction() {
         const ucId: string = this.ctx.state.user.id;
         const id: string = this.post('id');
+        const name: string = this.post('name');
         const test: number = this.post('test');
         const active: number = this.post('active');
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
 
         const adTypeUpdateVo: AdTypeVO = {
-            type: undefined, name: undefined, test, active
+            type: undefined, name, test, active
         };
         await adTypeModel.updateVo(id, adTypeUpdateVo);
 

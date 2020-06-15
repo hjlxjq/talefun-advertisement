@@ -104,6 +104,7 @@ export interface CreateAdTypeResVO extends ResVO {
  */
 export interface UpdateAdTypeReqVO {
     id: string;    // 广告类型表 id
+    name?: string;    // 显示名称
     test?: number;    // 是否测试 app 可见
     active?: number;    // 是否生效
 }
