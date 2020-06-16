@@ -253,9 +253,13 @@ export default class DispatchManagerLogic extends AMLogic {
             const beginCodeList = JSON.parse(code);
 
             // 空数组表示都包含，肯定重复
-            if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
+            if (_.isEmpty(codeList) && _.isEmpty(beginCodeList)) {
                 isDupli = true;
                 break;
+
+                 // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
+            } else if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
+                continue;
 
             }
 
@@ -414,9 +418,13 @@ export default class DispatchManagerLogic extends AMLogic {
             const beginCodeList = JSON.parse(code);
 
             // 空数组表示都包含，肯定重复
-            if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
+            if (_.isEmpty(codeList) && _.isEmpty(beginCodeList)) {
                 isDupli = true;
                 break;
+
+                 // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
+            } else if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
+                continue;
 
             }
 
@@ -580,9 +588,13 @@ export default class DispatchManagerLogic extends AMLogic {
             const beginCodeList = JSON.parse(code);
 
             // 空数组表示都包含，肯定重复
-            if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
+            if (_.isEmpty(codeList) && _.isEmpty(beginCodeList)) {
                 isDupli = true;
                 break;
+
+                 // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
+            } else if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
+                continue;
 
             }
 
