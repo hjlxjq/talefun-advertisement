@@ -208,7 +208,7 @@ export default class DispatchManagerController extends BaseController {
                 copyedAbTestGroupVo
             ] = await Promise.all([
                 versionGroupModel.getVo(copyId, ucId),
-                abTestGroupModel.getDefault()
+                abTestGroupModel.getDefault(copyId)
             ]);
 
             // 版本条件分组类型和应用主键，和被复制组一样
