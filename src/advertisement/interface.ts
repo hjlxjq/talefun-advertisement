@@ -543,7 +543,7 @@ export interface CreateVersionGroupReqVO {
     begin: number;    // 起始版本
     type: number;    // 0 广告 1 游戏常量 2 商店
     description: string;    // 描述
-    codeList?: string[];    // 支持的国家代码列表
+    codeList: string[];    // 支持的国家代码列表
     include: number;    // 国家代码是否包含
 }
 
@@ -559,7 +559,7 @@ export interface CopyVersionGroupReqVO {
     name: string;    // 分组名
     begin: number;    // 起始版本
     description: string;    // 描述
-    codeList?: string[];    // 支持的国家代码列表
+    codeList: string[];    // 支持的国家代码列表
     include: number;    // 国家代码是否包含
 }
 

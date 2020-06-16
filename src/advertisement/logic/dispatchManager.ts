@@ -339,10 +339,31 @@ export default class DispatchManagerLogic extends AMLogic {
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
+            begin: {
+                int: { min: 0 },       // 字段类型为 Number 类型且最小值为 0
+                required: true,     // 字段必填
+                method: 'POST'       // 指定获取数据的方式
+            },
             description: {
                 string: true,       // 字段类型为 String 类型
                 cusTrim: true,      // 前后不能有空格
                 required: true,     // 字段必填
+                method: 'POST'       // 指定获取数据的方式
+            },
+            codeList: {
+                array: true,
+                children: {
+                    string: true,       // 字段类型为 String 类型
+                    cusTrim: true,      // 前后不能有空格
+                    required: true,     // 字段必填
+                    length: 2,          // 长度为 2
+                },
+                method: 'POST'       // 指定获取数据的方式
+            },
+            include: {
+                int: true,       // 字段类型为 Number 类型
+                in: [0, 1],     // 0 为 false， 1 为 true
+                default: 1,     // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
