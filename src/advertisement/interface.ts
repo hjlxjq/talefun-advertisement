@@ -1361,5 +1361,7 @@ export interface RollBackResVO extends ResVO {
  * </br>获取用户发布状态 /advertisement/deployManager/deployStatus
  */
 export interface DeployStatusResVO extends ResVO {
-    data: 1;    // 返回发布状态
+    data: {
+        deployStatus: number    // 返回发布状态
+    };
 }

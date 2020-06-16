@@ -124,8 +124,12 @@ export default class DeployManagerController extends BaseController {
         // 从缓存中获取用户发布状态
         const deployStatus = await cacheServer.fetchDeployStatus(ucId);
 
-        this.success(deployStatus);
+        if (deployStatus) {
+            return this.success({ deployStatus: 1 });
 
+        }
+
+        return this.success({ deployStatus: 0 });
     }
 
 }
