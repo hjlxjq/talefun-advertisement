@@ -50,7 +50,10 @@ import {
     AdListInAdGroupResVO, CreateAdReqVO, CreateAdResVO, CopyAdGroupReqVO, CopyAdGroupResVO, UpdateAdReqVO,
     UpdateAdResVO, NationDefineListResVO, CopyConfigGroupReqVO, CopyConfigGroupResVO, CopyVersionGroupReqVO,
     CopyVersionGroupResVO, CompletePlaceReqVO, CompletePlaceResVO, UpdateAdConfigReqVO, UpdateAdConfigResVO,
-    DeleteABTestGroupReqVO, DeleteABTestGroupResVO,
+    DeleteABTestGroupReqVO, DeleteABTestGroupResVO, PlaceGroupListInAbReqVO, PlaceGroupListInAbResVO,
+    ConfigGroupListInAbReqVO, ConfigGroupListInAbResVO, NativeTmplConfGroupListInAbReqVO,
+    NativeTmplConfGroupListInAbResVO,
+
 } from '../interface';
 
 export default class DispatchManagerController extends BaseController {
@@ -238,11 +241,11 @@ export default class DispatchManagerController extends BaseController {
             const copyedAbTestMapVoList = await abTestMapModel.getList(copyedAbTestGroupId, ucId);
             // 复制组的默认 ab 测试下的广告位信息列表
             const defaultAbTestMapVoList = _.map(copyedAbTestMapVoList, (copyedAbTestMapVo) => {
-                const { place, type: adType, adGroupId } = copyedAbTestMapVo;
+                const { place, adGroupId } = copyedAbTestMapVo;
 
                 // 默认 ab 测试下的广告位信息
                 const defaultAbTestMapVo: AbTestMapVO = {
-                    place, type: adType, adGroupId, abTestGroupId: defaultAbTestGroupId, creatorId: ucId, active: 1
+                    place, adGroupId, abTestGroupId: defaultAbTestGroupId, creatorId: ucId, active: 1
                 };
                 return defaultAbTestMapVo;
             });
@@ -353,41 +356,8 @@ export default class DispatchManagerController extends BaseController {
             const { id: abTestGroupId } = abTestGroupVo;
             // 更新的缓存数据
             const cacheAbTestGroupVo = cacheAbTestGroupVoHash[abTestGroupId] as AbTestGroupVO;
-
             // 返回线上数据和未发布的数据，以未发布数据为准
-            const abTestGroupResVo: AbTestGroupResVO = _.assign({
-                configGroup: null, nativeTmplConfGroup: null, placeGroup: null
-            }, abTestGroupVo, cacheAbTestGroupVo);
-
-            const { configGroupId, nativeTmplConfGroupId } = abTestGroupResVo;
-
-            // 获取 ab 分组下的广告，常量， native模板配置
-            const [
-                adGroupResVoList,
-                configGroupResVo,
-                nativeTmplConfGroupResVo
-            ] = await Promise.all([
-                this.adInAb(abTestGroupId, ucId),
-                this.configInAb(configGroupId, ucId),
-                this.nativeTmplConfInAb(nativeTmplConfGroupId, ucId)
-            ]);
-
-            // think.logger.debug(`adGroupResVoList: ${JSON.stringify(adGroupResVoList)}`);
-            if (!think.isEmpty(configGroupResVo)) {
-                abTestGroupResVo.configGroup = configGroupResVo;
-
-            }
-            if (!think.isEmpty(nativeTmplConfGroupResVo)) {
-                // lodash defaults 方法不会覆盖 null
-                abTestGroupResVo.nativeTmplConfGroup = nativeTmplConfGroupResVo;
-                // _.defaults(abTestGroupResVo, {
-                //     nativeTmplConfGroup: nativeTmplConfGroupResVo
-                // });
-
-            }
-            if (!think.isEmpty(adGroupResVoList)) {
-                abTestGroupResVo.placeGroup = adGroupResVoList;
-            }
+            const abTestGroupResVo = _.assign(abTestGroupVo, cacheAbTestGroupVo);
 
             // 删除不需要的字段
             delete abTestGroupResVo.configGroupId;
@@ -405,67 +375,100 @@ export default class DispatchManagerController extends BaseController {
     }
 
     /**
-     * <br/>获取 ab 分组下常量组信息
-     * @argument {string} configGroupId 常量组表 id
-     * @returns {ConfigGroupResVO} ab 分组下的常量配置
-     * @argument {string} creatorId 创建者 id
+     * <br/>获取 ab 分组下广告位配置
+     * @argument {PlaceGroupListInAbReqVO}
+     * @returns {PlaceGroupListInAbReqVO}
+     * @debugger yes
      */
-    private async configInAb(configGroupId: string, creatorId: string) {
+    public async placeGroupListInAbAction() {
+        const ucId: string = this.ctx.state.userId;
+        const abTestGroupId: string = this.post('id');
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
-        if (configGroupId) {
-            const configGroupVo = await modelServer.getConfigGroup(configGroupId, creatorId);
-            const configResVoList = await modelServer.getConfigList(configGroupId, creatorId);
-
-            const configGroupResVo: ConfigGroupResVO = _.defaults({ configList: configResVoList }, configGroupVo);
-            return configGroupResVo;
-        }
-
-        return null;
+        const placeGroupVoList = await modelServer.getPlaceList(abTestGroupId, ucId);
+        return this.success(placeGroupVoList);
 
     }
 
     /**
-     * <br/>获取 ab 分组下 native 模板信息
-     * @argument {string} nativeTmplConfGroupId 应用下的 native 模板组 id
-     * @returns {NativeTmplConfGroupResVO}  ab 分组下的应用下的 native 模板配置
-     * @argument {string} creatorId 创建者 id
+     * <br/>获取 ab 分组下的常量组及常量组下常量列表配置
+     * @argument {ConfigGroupListInAbReqVO}
+     * @returns {ConfigGroupListInAbResVO}
+     * @debugger yes
      */
-    private async nativeTmplConfInAb(nativeTmplConfGroupId: string, creatorId: string) {
+    public async configGroupInAbAction() {
+        const ucId: string = this.ctx.state.userId;
+        const abTestGroupId: string = this.post('id');
+        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
+        // 数据库里的 ab 分组对象
+        const abTestGroupVo = await abTestGroupModel.getVo(abTestGroupId, ucId);
+        // 未发布更新在缓存里的 ab 分组对象
+        const cacheAbTestGroupVo = await cacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupId);
+
+        // 返回线上数据和未发布的数据，以未发布数据为准
+        const abTestGroupResVo = _.assign(abTestGroupVo, cacheAbTestGroupVo);
+
+        const { configGroupId } = abTestGroupResVo;
+
+        // 获取 ab 分组下的常量组及常量组下的常量列表数据
+        let configGroupResVo: ConfigGroupResVO = null;
+        if (configGroupId) {
+            const configGroupVo = await modelServer.getConfigGroup(configGroupId, ucId);
+            const configResVoList = await modelServer.getConfigList(configGroupId, ucId);
+
+            configGroupResVo = _.defaults({ configList: configResVoList }, configGroupVo);
+        }
+
+        return this.success(configGroupResVo);
+
+    }
+
+    /**
+     * <br/>获取 ab 分组下的 native 模板组及包含的 native 模板列表
+     * @argument {NativeTmplConfGroupListInAbReqVO}
+     * @returns {NativeTmplConfGroupListInAbResVO}
+     * @debugger yes
+     */
+    public async nativeTmplConfGroupListInAbAction() {
+        const ucId: string = this.ctx.state.userId;
+        const abTestGroupId: string = this.post('id');
+        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
+
+        // 数据库里的 ab 分组对象
+        const abTestGroupVo = await abTestGroupModel.getVo(abTestGroupId, ucId);
+        // 未发布更新在缓存里的 ab 分组对象
+        const cacheAbTestGroupVo: AbTestGroupVO =
+            await cacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupId);
+
+        // 返回线上数据和未发布的数据，以未发布数据为准
+        const abTestGroupResVo = _.assign(abTestGroupVo, cacheAbTestGroupVo);
+
+        const { nativeTmplConfGroupId } = abTestGroupResVo;
+
+        // 获取 ab 分组下的常量组及常量组下的常量列表数据
+        let nativeTmplConfGroupResVo: NativeTmplConfGroupResVO = null;
         if (nativeTmplConfGroupId) {
             // 模板组数据
             const nativeTmplConfGroupVo =
-                await modelServer.getNativeTmplConfGroup(nativeTmplConfGroupId, creatorId);
+                await modelServer.getNativeTmplConfGroup(nativeTmplConfGroupId, ucId);
 
             // 模板数据
             const nativeTmplConfResVoList =
-                await modelServer.getNativeTmplConfList(nativeTmplConfGroupId, creatorId);
+                await modelServer.getNativeTmplConfList(nativeTmplConfGroupId, ucId);
 
             // 返回数据
-            const nativeTmplConfGroupResVo: NativeTmplConfGroupResVO = _.defaults({
+            nativeTmplConfGroupResVo = _.defaults({
                 nativeTmplConfList: nativeTmplConfResVoList
             }, nativeTmplConfGroupVo);
 
-            return nativeTmplConfGroupResVo;
         }
 
-        return null;
-
-    }
-
-    /**
-     * <br/>获取 ab 测试分组下广告位信息
-     * @argument {string} abTestGroupId ab 测试分组表 id
-     * @returns {AdGroupResVO[]} ab 测试分组下的广告位配置
-     * @argument {string} creatorId 创建者 id
-     */
-    private async adInAb(abTestGroupId: string, creatorId: string) {
-        const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
-
-        const adGroupResVoList = await modelServer.getPlaceList(abTestGroupId, creatorId);
-        return adGroupResVoList;
+        return this.success(nativeTmplConfGroupResVo);
 
     }
 
@@ -1245,7 +1248,7 @@ export default class DispatchManagerController extends BaseController {
 
         // 待创建或更新的广告位表记录
         const updateAbTestMapVo: AbTestMapVO = {
-            place, type: place, abTestGroupId, adGroupId, creatorId: undefined, active
+            place, abTestGroupId, adGroupId, creatorId: undefined, active
         };
 
         try {
@@ -1305,7 +1308,7 @@ export default class DispatchManagerController extends BaseController {
             // 获取被全量的 ab 测试分组相关的版本条件分组 id 和 广告位表主键 id以及绑定的广告组，广告类型
             const [
                 { versionGroupId },
-                { id: abTestMapId, adGroupId, type }
+                { id: abTestMapId, adGroupId }
             ] = await Promise.all([
                 abTestGroupModel.getVo(id, ucId),
                 abTestMapModel.getVo(id, place, ucId)
@@ -1319,12 +1322,12 @@ export default class DispatchManagerController extends BaseController {
             // 默认 ab 测试分组下的广告位表对象更新
             const updateDefaultAbTestMapVo: AbTestMapVO = {
                 abTestGroupId: defaultId, creatorId: undefined, active: 1,
-                place, type, adGroupId
+                place, adGroupId
             };
             // 被全量的 ab 测试分组下的广告位表对象更新
             const updateAbTestMapVo: AbTestMapVO = {
                 abTestGroupId: id, creatorId: undefined, active: 0,
-                place, type, adGroupId
+                place, adGroupId
             };
 
             // 数据库中不存在默认 ab 分组测试下的该广告位，则直接插入数据库

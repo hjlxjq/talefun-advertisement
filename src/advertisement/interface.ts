@@ -597,37 +597,67 @@ export interface AbTestGroupListResVO extends ResVO {
         description: string;    // 描述
         begin: number;    // 用户开始范围
         end: number;    // 用户结束范围
-        configGroup: {
-            id: string;    // 常量组表主键 id
-            name: string;    // 常量组名称
-            type: number;    // 0 广告 1 游戏常量
-            versionGroup: string[];    // 支持的条件组
-            dependent: string;    // 依赖的常量组名
-            description: string;    // 描述
-            active: number;    // 是否生效
-            configList: ConfigVO[];    // 常量列表
-        };
-        placeGroup: Array<{
+    }>;
+}
+
+/**
+ * 获取 ab 分组下广告位配置 /advertisement/dispatchManager/placeGroupListInAb
+ */
+export interface PlaceGroupListInAbReqVO {
+    id: string;    // ab 测试分组表主键 id
+}
+
+export interface PlaceGroupListInAbResVO extends ResVO {
+    data: Array<{
+        type: string;    // 广告类型显示名称
+        place: string;    // 广告位
+        adGroup?: {
+            id: string;    // 广告组表主键 id
+            name: string;    // 广告组名称
             type: string;    // 广告类型显示名称
-            place: string;    // 广告位
-            adGroup?: {
-                id: string;    // 广告组表主键 id
-                name: string;    // 广告组名称
-                type: string;    // 广告类型显示名称
-                description: string;    // 描述
-                versionGroup: string[];    // 支持的条件组
-                active: number;    // 是否生效
-                adList: AdVO[];    // 广告列表
-            };
-        }>,
-        nativeTmplConfGroup?: {
-            id: string;    // native 模板配置组表主键 id
-            name: string;    // native 模板配置组表名称
             description: string;    // 描述
-            nativeTmplConfList: NativeTmplConfVO[];    // native 模板列表
+            versionGroup: string[];    // 支持的条件组
             active: number;    // 是否生效
+            adList: AdVO[];    // 广告列表
         };
     }>;
+}
+
+/**
+ * 获取 ab 分组下的常量组及常量组下常量列表配置 /advertisement/dispatchManager/configGroupListInAb
+ */
+export interface ConfigGroupListInAbReqVO {
+    id: string;    // ab 测试分组表主键 id
+}
+
+export interface ConfigGroupListInAbResVO extends ResVO {
+    data: {
+        id: string;    // 常量组表主键 id
+        name: string;    // 常量组名称
+        type: number;    // 0 广告 1 游戏常量
+        versionGroup: string[];    // 支持的条件组
+        dependent: string;    // 依赖的常量组名
+        description: string;    // 描述
+        active: number;    // 是否生效
+        configList: ConfigVO[];    // 常量列表
+    };
+}
+
+/**
+ * 获取 ab 分组下的 native 模板组及包含的 native 模板列表 /advertisement/dispatchManager/nativeTmplConfGroupListInAb
+ */
+export interface NativeTmplConfGroupListInAbReqVO {
+    id: string;    // ab 测试分组表主键 id
+}
+
+export interface NativeTmplConfGroupListInAbResVO extends ResVO {
+    data: {
+        id: string;    // native 模板配置组表主键 id
+        name: string;    // native 模板配置组表名称
+        description: string;    // 描述
+        nativeTmplConfList: NativeTmplConfVO[];    // native 模板列表
+        active: number;    // 是否生效
+    };
 }
 
 /**

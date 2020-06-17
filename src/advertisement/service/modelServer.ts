@@ -789,10 +789,10 @@ export default class ModelService extends BaseService {
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
-        // 数据库里的 ab 测试分组对象
+        // 数据库里的广告位对象
         const abTestMapVoList = await abTestMapModel.getList(abTestGroupId, creatorId);
 
-        // 未发布更新在缓存里的 ab 测试分组对象哈希表和广告组对象哈希表
+        // 未发布更新在缓存里的广告位对象哈希表 和 广告组对象哈希表
         const [
             cacheAbTestMapVoHash, cacheAdGroupVoHash
         ] = await Promise.all([
@@ -808,10 +808,10 @@ export default class ModelService extends BaseService {
             _.assign(abTestMapVo, cacheAbTestMapVo);
 
             // 广告组主键和广告类型名
-            const { adGroupId, type } = abTestMapVo;
+            const { adGroupId, place } = abTestMapVo;
 
             // 广告类型显示名称
-            const {name: typeName } = await adTypeModel.getByType(type);
+            const { name: typeName } = await adTypeModel.getByType(place);
 
             const placeResVo: PlaceResVO = _.defaults({
                 adGroup: null, type: typeName

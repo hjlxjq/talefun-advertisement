@@ -257,7 +257,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 isDupli = true;
                 break;
 
-                 // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
+                // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
             } else if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
                 continue;
 
@@ -443,7 +443,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 isDupli = true;
                 break;
 
-                 // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
+                // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
             } else if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
                 continue;
 
@@ -613,7 +613,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 isDupli = true;
                 break;
 
-                 // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
+                // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
             } else if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
                 continue;
 
@@ -679,6 +679,171 @@ export default class DispatchManagerLogic extends AMLogic {
 
         const versionGroupId: string = this.post('id');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
+
+        try {
+            const { productId, type } = await versionGroupModel.getVo(versionGroupId, ucId);
+            const productAuth = await this.productAuth(productId);
+            const {
+                viewAd, viewGameConfig, viewPurchase, master
+            } = productAuth;
+
+            if (master === 0) {
+
+                if (viewAd === 0 && type === 0) {
+                    throw new Error('没有权限！！！');
+                }
+                if (viewGameConfig === 0 && type === 1) {
+                    throw new Error('没有权限！！！');
+                }
+                if (viewPurchase === 0 && type === 2) {
+                    throw new Error('没有权限！！！');
+                }
+            }
+
+        } catch (e) {
+            think.logger.debug(e);
+            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        }
+
+    }
+
+    /**
+     * <br/>获取 ab 分组下广告位配置
+     */
+    public async placeGroupListInAbAction() {
+        const ucId: string = this.ctx.state.user.id;
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
+
+        const rules = {
+            id: {
+                string: true,       // 字段类型为 String 类型
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
+                required: true,     // 字段必填
+                method: 'POST'       // 指定获取数据的方式
+            }
+        };
+        const flag = this.validate(rules);
+
+        if (!flag) {
+            return this.fail(TaleCode.ValidData, this.validateMsg());
+        }
+
+        const abTestGroupId: string = this.post('id');
+        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
+
+        const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
+
+        try {
+            const { productId, type } = await versionGroupModel.getVo(versionGroupId, ucId);
+            const productAuth = await this.productAuth(productId);
+            const {
+                viewAd, viewGameConfig, viewPurchase, master
+            } = productAuth;
+
+            if (master === 0) {
+
+                if (viewAd === 0 && type === 0) {
+                    throw new Error('没有权限！！！');
+                }
+                if (viewGameConfig === 0 && type === 1) {
+                    throw new Error('没有权限！！！');
+                }
+                if (viewPurchase === 0 && type === 2) {
+                    throw new Error('没有权限！！！');
+                }
+            }
+
+        } catch (e) {
+            think.logger.debug(e);
+            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        }
+
+    }
+
+    /**
+     * <br/>获取 ab 分组下的常量组及常量组下常量列表配置
+     */
+    public async configGroupInAbAction() {
+        const ucId: string = this.ctx.state.user.id;
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
+
+        const rules = {
+            id: {
+                string: true,       // 字段类型为 String 类型
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
+                required: true,     // 字段必填
+                method: 'POST'       // 指定获取数据的方式
+            }
+        };
+        const flag = this.validate(rules);
+
+        if (!flag) {
+            return this.fail(TaleCode.ValidData, this.validateMsg());
+        }
+
+        const abTestGroupId: string = this.post('id');
+        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
+
+        const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
+
+        try {
+            const { productId, type } = await versionGroupModel.getVo(versionGroupId, ucId);
+            const productAuth = await this.productAuth(productId);
+            const {
+                viewAd, viewGameConfig, viewPurchase, master
+            } = productAuth;
+
+            if (master === 0) {
+
+                if (viewAd === 0 && type === 0) {
+                    throw new Error('没有权限！！！');
+                }
+                if (viewGameConfig === 0 && type === 1) {
+                    throw new Error('没有权限！！！');
+                }
+                if (viewPurchase === 0 && type === 2) {
+                    throw new Error('没有权限！！！');
+                }
+            }
+
+        } catch (e) {
+            think.logger.debug(e);
+            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        }
+
+    }
+
+    /**
+     * <br/>获取 ab 分组下的 native 模板组及包含的 native 模板列表
+     */
+    public async nativeTmplConfGroupListInAbAction() {
+        const ucId: string = this.ctx.state.user.id;
+        this.allowMethods = 'post';    // 只允许 POST 请求类型
+
+        const rules = {
+            id: {
+                string: true,       // 字段类型为 String 类型
+                regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
+                length: 36,         // 长度为 36
+                required: true,     // 字段必填
+                method: 'POST'       // 指定获取数据的方式
+            }
+        };
+        const flag = this.validate(rules);
+
+        if (!flag) {
+            return this.fail(TaleCode.ValidData, this.validateMsg());
+        }
+
+        const abTestGroupId: string = this.post('id');
+        const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
+
+        const { versionGroupId } = await abTestGroupModel.getVo(abTestGroupId, ucId);
 
         try {
             const { productId, type } = await versionGroupModel.getVo(versionGroupId, ucId);

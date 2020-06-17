@@ -264,7 +264,6 @@ export interface AbTestGroupVO extends BaseVO {
  */
 export interface AbTestMapVO extends BaseVO {
     place: string; // 广告位
-    type: string; // 广告类型
     active: number;    // 控制生效
     creatorId: string;    // 创建者 id
     abTestGroupId: string;    // ab 分组测试表 id
@@ -435,6 +434,7 @@ export interface AdGroupResVO extends AdGroupVO {
 
 // ab 测试分组下广告位列表信息
 export interface PlaceResVO extends AbTestMapVO {
+    type: string;    // 广告类型显示名称
     adGroup: AdGroupResVO;    // ab 分组下的广告组及广告组下广告列表
 }
 
