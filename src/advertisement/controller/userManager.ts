@@ -259,7 +259,7 @@ export default class UserController extends BaseController {
         const productId: string = this.post('id');
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
-        const productAuth = await authServer.fetchProductGroupAuth(ucId, productId);
+        const productAuth = await authServer.fetchProductAuth(ucId, productId);
 
         return this.success(productAuth);
 

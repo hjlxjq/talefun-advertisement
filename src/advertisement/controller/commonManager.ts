@@ -396,7 +396,7 @@ export default class CommonManagerController extends BaseController {
     }
 
     /**
-     * <br/>创建基础常量列表
+     * <br/>创建基础常量
      * @argument {CreateBaseConfigReqVO}
      * @returns {CreateBaseConfigResVO}
      * @debugger yes

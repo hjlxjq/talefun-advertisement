@@ -14,7 +14,6 @@ import * as moment from 'moment-mini-ts';
 import { TaleCode } from '../../common/tale/TaleDefine';
 import BaseController from '../../common/tale/BaseController';
 
-import AdTypeModel from '../model/adType';
 import VersionGroupModel from '../model/versionGroup';
 import NationDefineModel from '../model/nationDefine';
 import AbTestGroupModel from '../model/abTestGroup';

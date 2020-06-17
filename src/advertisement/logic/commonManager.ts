@@ -4,6 +4,9 @@ import AuthServer from '../service/authServer';
 
 import * as _ from 'lodash';
 import { think } from 'thinkjs';
+
+import ConfigModel from '../model/config';
+
 import { FileVO } from '../defines';
 
 export default class CommonManagerLogic extends AMLogic {
@@ -617,6 +620,19 @@ export default class CommonManagerLogic extends AMLogic {
 
         if (!flag) {
             return this.fail(TaleCode.ValidData, this.validateMsg());
+        }
+
+        /**
+         * <br/>判断 key 在基础常量中是否存在，存在不可创建
+         */
+        const key: string = this.post('key');
+        const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+
+        const configVoList = await configModel.getListByKey(key, 1);
+
+        if (!_.isEmpty(configVoList)) {
+            return this.fail(TaleCode.ValidData, '游戏常量存在相同 key');
+
         }
 
     }

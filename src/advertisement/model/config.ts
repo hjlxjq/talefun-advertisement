@@ -156,4 +156,28 @@ export default class ConfigModel extends MBModel {
 
     }
 
+    /**
+     * 根据常量 key 获取常量列表
+     * @argument {string} key 常量 key;
+     * @argument {number} active 是否生效
+     * @returns {Promise<ConfigVO>} 常量表信息;
+     */
+    public async getListByKey(
+        key: string,
+        active: number
+    ) {
+        const queryStrings: string[] = [];
+
+        queryStrings.push(`\`key\`='${key}'`);    // key 为 mysql 关键字
+
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as ConfigVO[];
+
+    }
+
 }

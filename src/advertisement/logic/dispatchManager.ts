@@ -3,6 +3,7 @@ import AMLogic from './managerBaseLogic';
 
 import AuthServer from '../service/authServer';
 
+import BaseConfigModel from '../model/baseConfig';
 import VersionGroupModel from '../model/versionGroup';
 import AbTestGroupModel from '../model/abTestGroup';
 import AdGroupModel from '../model/adGroup';
@@ -16,7 +17,7 @@ import AdChannelModel from '../model/adChannel';
 
 import CacheService from '../service/cacheServer';
 
-import { UserAuthVO, ProductAuthVO, AbTestGroupVO } from '../defines';
+import { ProductAuthVO, AbTestGroupVO } from '../defines';
 
 import * as _ from 'lodash';
 import { think } from 'thinkjs';
@@ -1589,6 +1590,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         const configGroupId: string = this.post('id');
         const key: string = this.post('key');
+        const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
@@ -1618,6 +1620,16 @@ export default class DispatchManagerLogic extends AMLogic {
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        }
+
+        /**
+         * <br/>判断 key 在基础常量中是否存在，存在不可创建
+         */
+        const baseConfigVo = await baseConfigModel.getByKey(key);
+
+        if (!_.isEmpty(baseConfigVo)) {
+            return this.fail(TaleCode.ValidData, '基础常量存在相同 key');
+
         }
 
         /**

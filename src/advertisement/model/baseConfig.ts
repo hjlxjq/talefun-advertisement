@@ -45,6 +45,16 @@ export default class BaseConfigModel extends MBModel {
     }
 
     /**
+     * 根据基础常量表 key 获取基础常量
+     * @argument {string} key 基础常量表 key;
+     * @returns {Promise<BaseConfigVO>} 基础常量表信息;
+     */
+    public async getByKey(key: string) {
+        return await this.where({ key }).find() as BaseConfigVO;
+
+    }
+
+    /**
      * 获取基础常量信息列表
      * @argument {number} active 是否生效;
      * @argument {number} test 是否测试 app 可见;
