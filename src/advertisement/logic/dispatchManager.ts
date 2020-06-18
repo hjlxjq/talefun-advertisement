@@ -1304,6 +1304,9 @@ export default class DispatchManagerLogic extends AMLogic {
         const productId: string = this.post('id');
         const type: number = this.post('type');    // 0 广告 1 游戏常量 2 商店
 
+        /**
+         * <br/>权限判断
+         */
         try {
             const productAuth = await this.productAuth(productId);
             const {
@@ -1323,7 +1326,9 @@ export default class DispatchManagerLogic extends AMLogic {
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
+
     }
 
     /**
@@ -1369,6 +1374,9 @@ export default class DispatchManagerLogic extends AMLogic {
         const configGroupId: string = this.post('id');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
 
+        /**
+         * <br/>权限判断
+         */
         try {
             const configGroupVo = await configGroupModel.getVo(configGroupId, ucId);
             const { type, productId } = configGroupVo;
@@ -1437,6 +1445,9 @@ export default class DispatchManagerLogic extends AMLogic {
         const dependentId: string = this.post('dependentId');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
 
+        /**
+         * <br/>权限判断
+         */
         try {
             const configGroupVo = await configGroupModel.getVo(configGroupId, ucId);
             const { type, productId } = configGroupVo;

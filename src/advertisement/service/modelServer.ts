@@ -535,8 +535,6 @@ export default class ModelService extends BaseService {
             configModel.getList(dependentId, creatorId, 1),
             configGroupModel.getVo(dependentId, creatorId)
         ]);
-        think.logger.debug(`configVoList: ${JSON.stringify(configVoList)}`);
-        think.logger.debug(`configGroupVo: ${JSON.stringify(configGroupVo)}`);
 
         // 依赖组未配置或者失效直接返回
         if (think.isEmpty(configGroupVo) || !configGroupVo.active) {
@@ -550,7 +548,6 @@ export default class ModelService extends BaseService {
         });
 
         _.defaults(dpdConfigVoHash, configVoHash);
-        think.logger.debug(`dpdConfigVoHash: ${JSON.stringify(dpdConfigVoHash)}`);
 
         // 依赖组存在依赖组继续迭代，否则返回
         if (configGroupVo.dependentId) {
