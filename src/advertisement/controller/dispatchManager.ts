@@ -402,7 +402,6 @@ export default class DispatchManagerController extends BaseController {
 
         // 数据库里的 ab 分组对象
         const abTestGroupVo = await abTestGroupModel.getVo(abTestGroupId, ucId);
-        think.logger.debug(`abTestGroupVo: ${JSON.stringify(abTestGroupVo)}`);
         // 未发布更新在缓存里的 ab 分组对象
         const cacheAbTestGroupVo = await cacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupId);
 

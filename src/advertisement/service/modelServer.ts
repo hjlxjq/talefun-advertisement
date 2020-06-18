@@ -535,6 +535,8 @@ export default class ModelService extends BaseService {
             configModel.getList(dependentId, creatorId, 1),
             configGroupModel.getVo(dependentId, creatorId)
         ]);
+        think.logger.debug(`configVoList: ${JSON.stringify(configVoList)}`);
+        think.logger.debug(`configGroupVo: ${JSON.stringify(configGroupVo)}`);
 
         // 依赖组未配置或者失效直接返回
         if (think.isEmpty(configGroupVo) || !configGroupVo.active) {
@@ -548,6 +550,7 @@ export default class ModelService extends BaseService {
         });
 
         _.defaults(dpdConfigVoHash, configVoHash);
+        think.logger.debug(`dpdConfigVoHash: ${JSON.stringify(dpdConfigVoHash)}`);
 
         // 依赖组存在依赖组继续迭代，否则返回
         if (configGroupVo.dependentId) {
@@ -597,7 +600,7 @@ export default class ModelService extends BaseService {
             configVoHash[key] = _.defaults({ dependent: null }, configVo) as ConfigResVO;
         });
 
-        think.logger.debug(`configVoHash1: ${JSON.stringify(configVoHash)}`);
+        // think.logger.debug(`configVoHash1: ${JSON.stringify(configVoHash)}`);
 
         // 依赖组常量
         let dpdConfigVoHash: { [propName: string]: ConfigResVO; } = {};
@@ -607,12 +610,12 @@ export default class ModelService extends BaseService {
 
             dpdConfigVoHash = await this.getDpdConfigVoHash(dependent, dependentId, creatorId);
 
-            think.logger.debug(`dpdConfigVoHash: ${JSON.stringify(dpdConfigVoHash)}`);
+            // think.logger.debug(`dpdConfigVoHash: ${JSON.stringify(dpdConfigVoHash)}`);
             // 以当前常量组常量为准
             _.defaults(configVoHash, dpdConfigVoHash);
 
         }
-        think.logger.debug(`configVoHash2: ${JSON.stringify(configVoHash)}`);
+        // think.logger.debug(`configVoHash2: ${JSON.stringify(configVoHash)}`);
 
         // 广告常量依赖于基础常量
         const baseConfigVoHash: { [propName: string]: ConfigResVO; } = {};
