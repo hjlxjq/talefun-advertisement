@@ -1100,7 +1100,6 @@ export default class DispatchManagerLogic extends AMLogic {
                 string: true,       // 字段类型为 String 类型
                 regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
                 length: 36,         // 长度为 36
-                // required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -1435,6 +1434,7 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         const configGroupId: string = this.post('id');
+        const dependentId: string = this.post('dependentId');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
 
         try {
@@ -1459,6 +1459,12 @@ export default class DispatchManagerLogic extends AMLogic {
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        }
+
+        // 空字符串也默认删除
+        if (dependentId === '') {
+            this.post('dependentId', null);
+
         }
 
     }
@@ -1736,7 +1742,6 @@ export default class DispatchManagerLogic extends AMLogic {
                 string: true,       // 字段类型为 String 类型
                 regexp: /^[a-z0-9-]+$/,    // 字段值要匹配给出的正则
                 length: 36,         // 长度为 36
-                required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -1747,6 +1752,7 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         const abTestGroupId: string = this.post('id');
+        const nativeTmplConfGroupId: string = this.post('nativeTmplConfGroupId');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
@@ -1770,6 +1776,12 @@ export default class DispatchManagerLogic extends AMLogic {
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        }
+
+        // 空字符串也默认删除
+        if (nativeTmplConfGroupId === '') {
+            this.post('nativeTmplConfGroupId', null);
+
         }
 
     }
@@ -2285,6 +2297,7 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         const abTestGroupId: string = this.post('id');
+        const adGroupId: string = this.post('adGroupId');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
 
@@ -2308,6 +2321,12 @@ export default class DispatchManagerLogic extends AMLogic {
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        }
+
+        // 空字符串也默认删除
+        if (adGroupId === '') {
+            this.post('adGroupId', null);
+
         }
 
     }

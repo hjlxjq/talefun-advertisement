@@ -580,7 +580,7 @@ export default class ModelService extends BaseService {
             configGroupVo
         ] = await Promise.all([
             configModel.getList(configGroupId, creatorId, undefined),
-            configGroupModel.getVo(configGroupId, creatorId)    // 关联组 id
+            configGroupModel.getVo(configGroupId, creatorId)
         ]);
 
         if (!configGroupVo) {
