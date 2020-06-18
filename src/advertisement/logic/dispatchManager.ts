@@ -821,7 +821,7 @@ export default class DispatchManagerLogic extends AMLogic {
     /**
      * <br/>获取 ab 分组下的 native 模板组及包含的 native 模板列表
      */
-    public async nativeTmplConfGroupListInAbAction() {
+    public async nativeTmplConfGroupInAbAction() {
         const ucId: string = this.ctx.state.user.id;
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
