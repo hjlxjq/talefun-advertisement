@@ -418,7 +418,9 @@ export default class DispatchManagerController extends BaseController {
         let configGroupResVo: ConfigGroupResVO = null;
         if (configGroupId) {
             const configGroupVo = await modelServer.getConfigGroup(configGroupId, ucId);
+            think.logger.debug(`configGroupVo: ${JSON.stringify(configGroupVo)}`);
             const configResVoList = await modelServer.getConfigList(configGroupId, ucId);
+            think.logger.debug(`configResVoList: ${JSON.stringify(configResVoList)}`);
 
             configGroupResVo = _.defaults({ configList: configResVoList }, configGroupVo);
         }
