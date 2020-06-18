@@ -50,9 +50,7 @@ import {
     UpdateAdResVO, NationDefineListResVO, CopyConfigGroupReqVO, CopyConfigGroupResVO, CopyVersionGroupReqVO,
     CopyVersionGroupResVO, CompletePlaceReqVO, CompletePlaceResVO, UpdateAdConfigReqVO, UpdateAdConfigResVO,
     DeleteABTestGroupReqVO, DeleteABTestGroupResVO, PlaceGroupListInAbReqVO, PlaceGroupListInAbResVO,
-    ConfigGroupListInAbReqVO, ConfigGroupListInAbResVO, NativeTmplConfGroupListInAbReqVO,
-    NativeTmplConfGroupListInAbResVO,
-
+    ConfigGroupInAbReqVO, ConfigGroupInAbResVO, NativeTmplConfGroupInAbReqVO, NativeTmplConfGroupInAbResVO,
 } from '../interface';
 
 export default class DispatchManagerController extends BaseController {
@@ -391,8 +389,8 @@ export default class DispatchManagerController extends BaseController {
 
     /**
      * <br/>获取 ab 分组下的常量组及常量组下常量列表配置
-     * @argument {ConfigGroupListInAbReqVO}
-     * @returns {ConfigGroupListInAbResVO}
+     * @argument {ConfigGroupInAbReqVO}
+     * @returns {ConfigGroupInAbResVO}
      * @debugger yes
      */
     public async configGroupInAbAction() {
@@ -427,11 +425,11 @@ export default class DispatchManagerController extends BaseController {
 
     /**
      * <br/>获取 ab 分组下的 native 模板组及包含的 native 模板列表
-     * @argument {NativeTmplConfGroupListInAbReqVO}
-     * @returns {NativeTmplConfGroupListInAbResVO}
+     * @argument {NativeTmplConfGroupInAbReqVO}
+     * @returns {NativeTmplConfGroupInAbResVO}
      * @debugger yes
      */
-    public async nativeTmplConfGroupListInAbAction() {
+    public async nativeTmplConfGroupInAbAction() {
         const ucId: string = this.ctx.state.userId;
         const abTestGroupId: string = this.post('id');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;

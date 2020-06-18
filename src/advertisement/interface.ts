@@ -624,13 +624,13 @@ export interface PlaceGroupListInAbResVO extends ResVO {
 }
 
 /**
- * 获取 ab 分组下的常量组及常量组下常量列表配置 /advertisement/dispatchManager/configGroupListInAb
+ * 获取 ab 分组下的常量组及常量组下常量列表配置 /advertisement/dispatchManager/configGroupInAb
  */
-export interface ConfigGroupListInAbReqVO {
+export interface ConfigGroupInAbReqVO {
     id: string;    // ab 测试分组表主键 id
 }
 
-export interface ConfigGroupListInAbResVO extends ResVO {
+export interface ConfigGroupInAbResVO extends ResVO {
     data: {
         id: string;    // 常量组表主键 id
         name: string;    // 常量组名称
@@ -644,13 +644,13 @@ export interface ConfigGroupListInAbResVO extends ResVO {
 }
 
 /**
- * 获取 ab 分组下的 native 模板组及包含的 native 模板列表 /advertisement/dispatchManager/nativeTmplConfGroupListInAb
+ * 获取 ab 分组下的 native 模板组及包含的 native 模板列表 /advertisement/dispatchManager/nativeTmplConfGroupInAb
  */
-export interface NativeTmplConfGroupListInAbReqVO {
+export interface NativeTmplConfGroupInAbReqVO {
     id: string;    // ab 测试分组表主键 id
 }
 
-export interface NativeTmplConfGroupListInAbResVO extends ResVO {
+export interface NativeTmplConfGroupInAbResVO extends ResVO {
     data: {
         id: string;    // native 模板配置组表主键 id
         name: string;    // native 模板配置组表名称
