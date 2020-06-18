@@ -632,7 +632,7 @@ export default class ModelService extends BaseService {
                     baseConfigVo
                 ) as ConfigResVO;
             });
-            think.logger.debug(`baseConfigVoHash: ${JSON.stringify(baseConfigVoHash)}`);
+            // think.logger.debug(`baseConfigVoHash: ${JSON.stringify(baseConfigVoHash)}`);
 
             // 以基础常量 key 为准， 基础常量关闭则不返回
             for (const key in baseConfigVoHash) {
@@ -649,6 +649,7 @@ export default class ModelService extends BaseService {
             // 缓存中数据
             const cacheConfigVo = cacheConfigVoHash[configVo.id] as ConfigResVO;
             const configResVo = _.assign(configVo, cacheConfigVo);
+
             // 删除不需要的字段
             delete configResVo.configGroupId;
             delete configResVo.createAt;
