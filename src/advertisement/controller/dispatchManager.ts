@@ -405,22 +405,17 @@ export default class DispatchManagerController extends BaseController {
         think.logger.debug(`abTestGroupVo: ${JSON.stringify(abTestGroupVo)}`);
         // 未发布更新在缓存里的 ab 分组对象
         const cacheAbTestGroupVo = await cacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupId);
-        think.logger.debug(`cacheAbTestGroupVo: ${JSON.stringify(cacheAbTestGroupVo)}`);
 
         // 返回线上数据和未发布的数据，以未发布数据为准
         const abTestGroupResVo = _.assign(abTestGroupVo, cacheAbTestGroupVo);
-        think.logger.debug(`abTestGroupResVo: ${JSON.stringify(abTestGroupResVo)}`);
 
         const { configGroupId } = abTestGroupResVo;
-        think.logger.debug(`configGroupId: ${configGroupId}`);
 
         // 获取 ab 分组下的常量组及常量组下的常量列表数据
         let configGroupResVo: ConfigGroupResVO = null;
         if (configGroupId) {
             const configGroupVo = await modelServer.getConfigGroup(configGroupId, ucId);
-            think.logger.debug(`configGroupVo: ${JSON.stringify(configGroupVo)}`);
             const configResVoList = await modelServer.getConfigList(configGroupId, ucId);
-            think.logger.debug(`configResVoList: ${JSON.stringify(configResVoList)}`);
 
             configGroupResVo = _.defaults({ configList: configResVoList }, configGroupVo);
         }
