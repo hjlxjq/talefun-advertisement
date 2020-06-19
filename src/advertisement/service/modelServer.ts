@@ -255,11 +255,14 @@ export default class ModelService extends BaseService {
         const versionGroupResVoList = await Bluebird.map(versionGroupVoList, async (versionGroupVo) => {
             // 更新的缓存数据
             const cacheVersionGroupVo = cacheVersionGroupVoHash[versionGroupVo.id] as VersionGroupVO;
-            // 国家代码返回数组
-            const codeList: string[] = JSON.parse(versionGroupVo.code);
-
             // 返回线上数据和未发布的数据，以未发布数据为准
-            const versionGroupResVo: VersionGroupResVO = _.assign({ codeList }, versionGroupVo, cacheVersionGroupVo);
+            const versionGroupResVo: VersionGroupResVO = _.assign({
+                codeList: []
+            }, versionGroupVo, cacheVersionGroupVo);
+
+            // 国家代码返回数组
+            const codeList: string[] = JSON.parse(versionGroupResVo.code);
+            versionGroupResVo.codeList = codeList;
 
             // 删除不需要返回的数据
             delete versionGroupResVo.code;
