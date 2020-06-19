@@ -17,7 +17,7 @@ import AdChannelModel from '../model/adChannel';
 
 import CacheService from '../service/cacheServer';
 
-import { ProductAuthVO, AbTestGroupVO } from '../defines';
+import { ProductAuthVO, AbTestGroupVO, VersionGroupVO } from '../defines';
 
 import * as _ from 'lodash';
 import { think } from 'thinkjs';
@@ -184,6 +184,9 @@ export default class DispatchManagerLogic extends AMLogic {
             this.fail(TaleCode.DBFaild, '国家代码为空，则肯定包含!!!');
         }
 
+        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
+        const cacheVersionGroupVoHash = await cacheServer.fetchCacheDataHash(ucId, 'versionGroup');
+
         /**
          * <br/>权限检查
          */
@@ -229,6 +232,8 @@ export default class DispatchManagerLogic extends AMLogic {
                 return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
 
             }
+            _.assign(defaultVersionGroupVo, cacheVersionGroupVoHash[defaultVersionGroupVo.id]);
+
             const { begin: defaultBegin, code, include: defaultInclude } = defaultVersionGroupVo;
             const defaultCodeList = JSON.parse(code);
 
@@ -250,7 +255,12 @@ export default class DispatchManagerLogic extends AMLogic {
         // 是否有重复项
         let isDupli = false;
         for (const beginVersionGroupVo of beginVersionGroupVoList) {
+            // 更新的缓存数据
+            const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
+            // 返回线上数据和未发布的数据，以未发布数据为准
+            _.assign(beginVersionGroupVo, cacheVersionGroupVo);
             const { code, include: beginInclude } = beginVersionGroupVo;
+
             const beginCodeList = JSON.parse(code);
 
             // 空数组表示都包含，肯定重复
@@ -304,8 +314,7 @@ export default class DispatchManagerLogic extends AMLogic {
             await versionGroupModel.getByName(name, type, productId, 1, 1);
 
         if (!_.isEmpty(versionGroupVo) && versionGroupVo.id) {
-            const cacheVersionGroupVo =
-                await cacheServer.fetchCacheData(ucId, 'versionGroup', versionGroupVo.id);
+            const cacheVersionGroupVo = cacheVersionGroupVoHash[versionGroupVo.id];
 
             // 未更新（不存在）或者未禁用则报唯一性错误
             if (_.isEmpty(cacheVersionGroupVo) || cacheVersionGroupVo.active !== 0) {
@@ -408,6 +417,9 @@ export default class DispatchManagerLogic extends AMLogic {
 
         }
 
+        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
+        const cacheVersionGroupVoHash = await cacheServer.fetchCacheDataHash(ucId, 'versionGroup');
+
         /**
          * <br/>权限检查
          */
@@ -436,7 +448,12 @@ export default class DispatchManagerLogic extends AMLogic {
         // 是否有重复项
         let isDupli = false;
         for (const beginVersionGroupVo of beginVersionGroupVoList) {
+            // 更新的缓存数据
+            const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
+            // 返回线上数据和未发布的数据，以未发布数据为准
+            _.assign(beginVersionGroupVo, cacheVersionGroupVo);
             const { code, include: beginInclude } = beginVersionGroupVo;
+
             const beginCodeList = JSON.parse(code);
 
             // 空数组表示都包含，肯定重复
@@ -491,8 +508,7 @@ export default class DispatchManagerLogic extends AMLogic {
             await versionGroupModel.getByName(name, type, productId, 1, 1);
 
         if (!_.isEmpty(versionGroupVo) && versionGroupVo.id) {
-            const cacheVersionGroupVo =
-                await cacheServer.fetchCacheData(ucId, 'versionGroup', versionGroupVo.id);
+            const cacheVersionGroupVo = cacheVersionGroupVoHash[versionGroupVo.id];
 
             // 未更新（不存在）或者未禁用则报唯一性错误
             if (_.isEmpty(cacheVersionGroupVo) || cacheVersionGroupVo.active !== 0) {
@@ -558,6 +574,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const include: number = this.post('include');
         const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
+        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 国家代码为空，则肯定包含
         if (_.isEmpty(codeList) && include === 0) {
@@ -570,6 +587,8 @@ export default class DispatchManagerLogic extends AMLogic {
             this.fail(TaleCode.DBFaild, '版本条件分组不存在!!!');
         }
 
+        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
+        const cacheVersionGroupVoHash = await cacheServer.fetchCacheDataHash(ucId, 'versionGroup');
         /**
          * <br/>权限检查
          */
@@ -601,12 +620,16 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/>线上是否存在冲突组，一个起始版本和一个国家只能对应一个版本条件分组
          */
-        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1, undefined);
-
+        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1, undefined);\
         // 是否有重复项
         let isDupli = false;
         for (const beginVersionGroupVo of beginVersionGroupVoList) {
+            // 更新的缓存数据
+            const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
+            // 返回线上数据和未发布的数据，以未发布数据为准
+            _.assign(beginVersionGroupVo, cacheVersionGroupVo);
             const { code, include: beginInclude } = beginVersionGroupVo;
+
             const beginCodeList = JSON.parse(code);
 
             // 空数组表示都包含，肯定重复
