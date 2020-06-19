@@ -30,18 +30,18 @@ export default class CommonManagerLogic extends AMLogic {
     public async adTypeListAction() {
         this.allowMethods = 'get';    // 只允许 GET 请求类型
 
-        try {
-            const userAuth = await this.comAuth();
-            const { master, viewComConf } = userAuth;
+        // try {
+        //     const userAuth = await this.comAuth();
+        //     const { master, viewComConf } = userAuth;
 
-            if (master === 0 && viewComConf === 0) {
-                throw new Error('没有权限！！！');
-            }
+        //     if (master === 0 && viewComConf === 0) {
+        //         throw new Error('没有权限！！！');
+        //     }
 
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        // } catch (e) {
+        //     think.logger.debug(e);
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
     }
 
@@ -51,18 +51,18 @@ export default class CommonManagerLogic extends AMLogic {
     public async adTypeAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
-        try {
-            const userAuth = await this.comAuth();
-            const { master, viewComConf } = userAuth;
+        // try {
+        //     const userAuth = await this.comAuth();
+        //     const { master, viewComConf } = userAuth;
 
-            if (master === 0 && viewComConf === 0) {
-                throw new Error('没有权限！！！');
-            }
+        //     if (master === 0 && viewComConf === 0) {
+        //         throw new Error('没有权限！！！');
+        //     }
 
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        // } catch (e) {
+        //     think.logger.debug(e);
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
         const rules = {
             name: {
@@ -191,18 +191,18 @@ export default class CommonManagerLogic extends AMLogic {
     public async adChannelListAction() {
         this.allowMethods = 'get';    // 只允许 GET 请求类型
 
-        try {
-            const userAuth = await this.comAuth();
-            const { master, viewComConf } = userAuth;
+        // try {
+        //     const userAuth = await this.comAuth();
+        //     const { master, viewComConf } = userAuth;
 
-            if (master === 0 && viewComConf === 0) {
-                throw new Error('没有权限！！！');
-            }
+        //     if (master === 0 && viewComConf === 0) {
+        //         throw new Error('没有权限！！！');
+        //     }
 
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        // } catch (e) {
+        //     think.logger.debug(e);
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
     }
 
@@ -212,18 +212,18 @@ export default class CommonManagerLogic extends AMLogic {
     public async adChannelAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
-        try {
-            const userAuth = await this.comAuth();
-            const { master, viewComConf } = userAuth;
+        // try {
+        //     const userAuth = await this.comAuth();
+        //     const { master, viewComConf } = userAuth;
 
-            if (master === 0 && viewComConf === 0) {
-                throw new Error('没有权限！！！');
-            }
+        //     if (master === 0 && viewComConf === 0) {
+        //         throw new Error('没有权限！！！');
+        //     }
 
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        // } catch (e) {
+        //     think.logger.debug(e);
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
         const rules = {
             channel: {
@@ -400,18 +400,18 @@ export default class CommonManagerLogic extends AMLogic {
     public async nativeTmplListAction() {
         this.allowMethods = 'get';    // 只允许 GET 请求类型
 
-        try {
-            const userAuth = await this.comAuth();
-            const { master, viewComConf } = userAuth;
+        // try {
+        //     const userAuth = await this.comAuth();
+        //     const { master, viewComConf } = userAuth;
 
-            if (master === 0 && viewComConf === 0) {
-                throw new Error('没有权限！！！');
-            }
+        //     if (master === 0 && viewComConf === 0) {
+        //         throw new Error('没有权限！！！');
+        //     }
 
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        // } catch (e) {
+        //     think.logger.debug(e);
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
     }
 
@@ -550,18 +550,18 @@ export default class CommonManagerLogic extends AMLogic {
     public async baseConfigListAction() {
         this.allowMethods = 'get';    // 只允许 GET 请求类型
 
-        try {
-            const userAuth = await this.comAuth();
-            const { master, viewComConf } = userAuth;
+        // try {
+        //     const userAuth = await this.comAuth();
+        //     const { master, viewComConf } = userAuth;
 
-            if (master === 0 && viewComConf === 0) {
-                throw new Error('没有权限！！！');
-            }
+        //     if (master === 0 && viewComConf === 0) {
+        //         throw new Error('没有权限！！！');
+        //     }
 
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        // } catch (e) {
+        //     think.logger.debug(e);
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
     }
 
@@ -700,17 +700,17 @@ export default class CommonManagerLogic extends AMLogic {
     public async packParamListAction() {
         this.allowMethods = 'get';    // 只允许 GET 请求类型
 
-        try {
-            const userAuth = await this.comAuth();
-            const { master, viewComConf } = userAuth;
+        // try {
+        //     const userAuth = await this.comAuth();
+        //     const { master, viewComConf } = userAuth;
 
-            if (master === 0 && viewComConf === 0) {
-                throw new Error('没有权限！！！');
-            }
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        //     if (master === 0 && viewComConf === 0) {
+        //         throw new Error('没有权限！！！');
+        //     }
+        // } catch (e) {
+        //     think.logger.debug(e);
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
     }
 
