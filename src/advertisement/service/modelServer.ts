@@ -690,10 +690,12 @@ export default class ModelService extends BaseService {
         const cacheConfigGroupVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'configGroup');
 
         const configGroupResVoList = await Bluebird.map(configGroupVoList, async (configGroupVo) => {
-            const { id, dependentId } = configGroupVo;
+            const { id } = configGroupVo;
             // 未发布更新在缓存里的常量组对象
             const cacheConfigGroupVo = cacheConfigGroupVoHash[id] as ConfigGroupVO;
+            _.assign(configGroupVo, cacheConfigGroupVo);
 
+            const { dependentId } = configGroupVo;
             // 获取依赖组名
             let dependent: string;
             if (dependentId) {
@@ -706,7 +708,7 @@ export default class ModelService extends BaseService {
 
             const configGroupResVo: ConfigGroupResVO = _.assign({
                 dependent: dependent || null, versionGroup: versionGroupNameList, configList: undefined
-            }, configGroupVo, cacheConfigGroupVo);
+            }, configGroupVo);
 
             // 删除不需要的字段
             delete configGroupResVo.productId;
@@ -740,6 +742,8 @@ export default class ModelService extends BaseService {
         if (!configGroupVo) {
             return;
         }
+
+        _.assign(configGroupVo, cacheConfigGroupVo);
         const { dependentId } = configGroupVo;
 
         let dependent: string;
@@ -753,8 +757,8 @@ export default class ModelService extends BaseService {
         }
 
         const configGroupResVo: ConfigGroupResVO = _.assign({
-            dependent: dependent || null, versionGroup: undefined
-        }, configGroupVo, cacheConfigGroupVo);
+            dependent: dependent || null, versionGroup: undefined, configList: null
+        }, configGroupVo);
 
         delete configGroupResVo.productId;
         delete configGroupResVo.dependentId;
