@@ -520,12 +520,14 @@ export default class ModelService extends BaseService {
      * @argument {string} dependent 关联组名
      * @argument {string} dependentId 关联组主键 id
      * @argument {string} creatorId 创建者 id
+     * @argument {string[]} dependentIdList 所有前置依赖的组主键
      * @argument {{ [propName: string]: ConfigResVO; }} dpdConfigVoHash 关联组下常量数据
      */
     private async getDpdConfigVoHash(
         dependent: string,
         dependentId: string,
         creatorId: string,
+        dependentIdList: string[],
         dpdConfigVoHash: { [propName: string]: ConfigResVO; } = {}
     ): Promise<{ [propName: string]: ConfigResVO; }> {
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
@@ -540,7 +542,11 @@ export default class ModelService extends BaseService {
         ]);
 
         // 依赖组未配置或者失效直接返回
-        if (think.isEmpty(configGroupVo) || !configGroupVo.active) {
+        if (
+            think.isEmpty(configGroupVo) ||
+            !configGroupVo.active ||
+            _.indexOf(dependentIdList, dependentId) !== -1
+        ) {
             return dpdConfigVoHash;
         }
 
@@ -554,7 +560,10 @@ export default class ModelService extends BaseService {
 
         // 依赖组存在依赖组继续迭代，否则返回
         if (configGroupVo.dependentId) {
-            return await this.getDpdConfigVoHash(dependent, configGroupVo.dependentId, creatorId, dpdConfigVoHash);
+            dependentIdList.push(dependentId);
+            return await this.getDpdConfigVoHash(
+                dependent, configGroupVo.dependentId, creatorId, dependentIdList, dpdConfigVoHash
+            );
 
         } else {
             return dpdConfigVoHash;
@@ -608,7 +617,7 @@ export default class ModelService extends BaseService {
             const { name: dependent } = await configGroupModel.getVo(dependentId, creatorId);    // 关联组名
             think.logger.debug(`dependent: ${dependent}`);
 
-            dpdConfigVoHash = await this.getDpdConfigVoHash(dependent, dependentId, creatorId);
+            dpdConfigVoHash = await this.getDpdConfigVoHash(dependent, dependentId, creatorId, [configGroupId]);
 
             // think.logger.debug(`dpdConfigVoHash: ${JSON.stringify(dpdConfigVoHash)}`);
             // 以当前常量组常量为准

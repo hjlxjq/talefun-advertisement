@@ -620,7 +620,7 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/>线上是否存在冲突组，一个起始版本和一个国家只能对应一个版本条件分组
          */
-        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1, undefined);\
+        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1, undefined);
         // 是否有重复项
         let isDupli = false;
         for (const beginVersionGroupVo of beginVersionGroupVoList) {
