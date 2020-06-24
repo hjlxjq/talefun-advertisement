@@ -924,12 +924,12 @@ export default class DispatchManagerLogic extends AMLogic {
                 method: 'POST'       // 指定获取数据的方式
             },
             begin: {
-                int: { min: 1, max: 98 },       // 字段类型为 Number 类型
+                int: { min: 1, max: 99 },       // 字段类型为 Number 类型
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             end: {
-                int: { min: 2, max: 99 },       // 字段类型为 Number 类型
+                int: { min: 2, max: 100 },       // 字段类型为 Number 类型
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },

@@ -25,7 +25,7 @@ export default class NationDefineModel extends MBModel {
     public async addList(nationDefineVoList: NationDefineVO[]) {
         let idList: string[] = [];
 
-        if (!Utils.isEmptyObj(nationDefineVoList)) {
+        if (!_.isEmpty(nationDefineVoList)) {
             await this.addMany(nationDefineVoList);
             idList = this.ID;
         }
