@@ -79,7 +79,15 @@ export default class AdModel extends MBModel {
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
         const queryString: string = queryStrings.join(' AND ');
-        return await this.where(queryString).find() as AdVO;
+        const adVo = await this.where(queryString).find() as AdVO;
+
+        // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
+        if (adVo.ecpm) {
+            adVo.ecpm = Number(adVo.ecpm);
+
+        }
+        return adVo;
+
     }
 
     /**
@@ -96,10 +104,20 @@ export default class AdModel extends MBModel {
 
         if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
+
         }
         const queryString: string = queryStrings.join(' AND ');
+        const adVoList = await this.where(queryString).order('name ASC').select() as AdVO[];
 
-        return await this.where(queryString).order('name ASC').select() as AdVO[];
+        return _.map(adVoList, (adVo) => {
+            // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
+            if (adVo.ecpm) {
+                adVo.ecpm = Number(adVo.ecpm);
+
+            }
+            return adVo;
+        });
+
     }
 
     /**
@@ -130,8 +148,15 @@ export default class AdModel extends MBModel {
 
         }
         const queryString: string = queryStrings.join(' AND ');
+        const adVo = await this.where(queryString).find() as AdVO;
 
-        return await this.where(queryString).find() as AdVO;
+        // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
+        if (adVo.ecpm) {
+            adVo.ecpm = Number(adVo.ecpm);
+
+        }
+        return adVo;
+
     }
 
     /**
@@ -165,8 +190,15 @@ export default class AdModel extends MBModel {
 
         }
         const queryString: string = queryStrings.join(' AND ');
+        const adVo = await this.where(queryString).find() as AdVO;
 
-        return await this.where(queryString).find() as AdVO;
+        // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
+        if (adVo.ecpm) {
+            adVo.ecpm = Number(adVo.ecpm);
+
+        }
+        return adVo;
+
     }
 
     /**
@@ -181,21 +213,17 @@ export default class AdModel extends MBModel {
         queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
         const queryString: string = queryStrings.join(' AND ');
+        const adVoList = await this.where(queryString).order('name ASC').select() as AdVO[];
 
-        return await this.where(queryString).select() as AdVO[];
+        return _.map(adVoList, (adVo) => {
+            // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
+            if (adVo.ecpm) {
+                adVo.ecpm = Number(adVo.ecpm);
+
+            }
+            return adVo;
+        });
+
     }
 
-    /**
-     * 根据广告组表主键 id 获取广告数量
-     * @argument {string} adGroupId 广告组表 id;
-     * @argument {number} active 是否生效;
-     * @returns {Promise<number>} 广告数量;
-     */
-    // public async getNum(adGroupId: string, active?: number) {
-    //     if (!_.isUndefined(active)) {
-    //         return await this.where({ adGroupId, active }).count('id');
-
-    //     }
-    //     return await this.where({ adGroupId }).count('id');
-    // }
 }
