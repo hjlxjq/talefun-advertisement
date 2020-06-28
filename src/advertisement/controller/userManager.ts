@@ -241,11 +241,21 @@ export default class UserController extends BaseController {
     public async userAuthInProductGroupAction() {
         const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const productGroupId: string = this.post('id');
+        const userModel = this.taleModel('user', 'advertisement') as UserModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
+        const userVo = await userModel.getVo(ucId);
         const productGroupAuth = await authServer.fetchProductGroupAuth(ucId, productGroupId);
 
-        return this.success(productGroupAuth);
+        const userResVo: UserResVO = _.defaults({
+            userAuth: undefined, productAuth: undefined, productGroupAuth
+        }, userVo);
+
+        // 删除不必要的字段
+        delete userResVo.createAt;
+        delete userResVo.updateAt;
+
+        return this.success(userResVo);
 
     }
 
@@ -257,11 +267,21 @@ export default class UserController extends BaseController {
     public async userAuthInProductAction() {
         const ucId: string = this.ctx.state.userId;    // 获取已登录用的 userId
         const productId: string = this.post('id');
+        const userModel = this.taleModel('user', 'advertisement') as UserModel;
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
+        const userVo = await userModel.getVo(ucId);
         const productAuth = await authServer.fetchProductAuth(ucId, productId);
 
-        return this.success(productAuth);
+        const userResVo: UserResVO = _.defaults({
+            userAuth: undefined, productAuth, productGroupAuth: undefined
+        }, userVo);
+
+        // 删除不必要的字段
+        delete userResVo.createAt;
+        delete userResVo.updateAt;
+
+        return this.success(userResVo);
 
     }
 
@@ -354,7 +374,7 @@ export default class UserController extends BaseController {
 
         // 返回用户信息列表
         const userResVoList = await Bluebird.map(productGroupAuthVoList, async (productGroupAuthVo) => {
-            const userVo = await userModel.getUser(productGroupAuthVo.userId);
+            const userVo = await userModel.getVo(productGroupAuthVo.userId);
             // 返回用户信息
             const userResVo: UserResVO = _.assign({
                 userAuth: undefined, productGroupAuth: undefined, productAuth: undefined
@@ -391,7 +411,7 @@ export default class UserController extends BaseController {
 
         // 返回用户信息列表
         const userResVoList = await Bluebird.map(productAuthVoList, async (productAuthVo) => {
-            const userVo = await userModel.getUser(productAuthVo.userId);
+            const userVo = await userModel.getVo(productAuthVo.userId);
             // 返回用户信息
             const userResVo: UserResVO = _.assign({
                 userAuth: undefined, productGroupAuth: undefined, productAuth: undefined

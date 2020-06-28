@@ -34,7 +34,7 @@ export default class ManagerBaseLogic extends BaseLogic {
             default:
                 const ucId = tokenVerifyVO.tradeVO.userId;    // 透传 token解析的数据
 
-                const userVo = await userModel.getUser(ucId);
+                const userVo = await userModel.getVo(ucId);
 
                 if (think.isEmpty(userVo)) {
                     return this.fail(10, '用户不存在！！！');

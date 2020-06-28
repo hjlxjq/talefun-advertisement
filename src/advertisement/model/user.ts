@@ -62,7 +62,7 @@ export default class UserModel extends MBModel {
      * @argument {string} id 用户表 id;
      * @returns {Promise<UserVO>} 用户表对象;
      */
-    public async getUser(id: string): Promise<UserVO> {
+    public async getVo(id: string): Promise<UserVO> {
         const userVo = await this.where({ id }).find() as UserVO;
 
         delete userVo.password;

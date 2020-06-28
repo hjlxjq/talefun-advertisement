@@ -310,7 +310,7 @@ export default class UserManagerLogic extends AMLogic {
         const userModel = this.taleModel('user', 'advertisement') as UserModel;
 
         // 判断 user 是否已经创建
-        const user = await userModel.getUser(id);
+        const user = await userModel.getVo(id);
 
         if (think.isEmpty(user)) {
             return this.fail(TaleCode.ValidData, '用户不存在！！！');
