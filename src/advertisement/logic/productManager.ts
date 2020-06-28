@@ -19,6 +19,7 @@ export default class ProductManagerLogic extends AMLogic {
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productAuth = await authServer.fetchProductAuth(ucId, productId);
+        think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
         return productAuth;
 
     }
@@ -79,18 +80,18 @@ export default class ProductManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, this.validateMsg());
         }
 
-        // const productId: string = this.post('id');
+        const productId: string = this.post('id');
 
-        // try {
-        //     const productAuth = await this.productAuth(productId);
-        //     if (think.isEmpty(productAuth)) {
-        //         throw new Error('没有权限！！！');
-        //     }
-        //
-        // } catch (e) {
-        //    think.logger.debug(e);
-        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        // }
+        try {
+            const productAuth = await this.productAuth(productId);
+            if (think.isEmpty(productAuth)) {
+                throw new Error('没有权限！！！');
+            }
+
+        } catch (e) {
+            think.logger.debug(e);
+            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        }
 
     }
 
