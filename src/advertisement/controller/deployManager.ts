@@ -24,7 +24,7 @@ export default class DeployManagerController extends BaseController {
      */
     public async deployAction() {
         const ucId: string = this.ctx.state.userId;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 下发相关的所有数据表
         const tableNameList = [
@@ -81,7 +81,7 @@ export default class DeployManagerController extends BaseController {
      */
     public async rollBackAction() {
         const ucId: string = this.ctx.state.userId;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 下发相关的所有数据表
         const tableNameList = [
@@ -119,7 +119,7 @@ export default class DeployManagerController extends BaseController {
      */
     public async deployStatusAction() {
         const ucId: string = this.ctx.state.userId;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 从缓存中获取用户发布状态
         const deployStatus = await cacheServer.fetchDeployStatus(ucId);

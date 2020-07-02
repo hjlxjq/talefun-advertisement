@@ -147,7 +147,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         try {
             // 数据库暂存， activeTime 标识
@@ -199,7 +199,7 @@ export default class DispatchManagerController extends BaseController {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         try {
             // 被复制组的默认配置
@@ -278,7 +278,7 @@ export default class DispatchManagerController extends BaseController {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 数据库 code 字段为 json 字符串
         let code: string;
@@ -341,7 +341,7 @@ export default class DispatchManagerController extends BaseController {
         const ucId: string = this.ctx.state.userId;
         const versionGroupId: string = this.post('id');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         think.logger.debug(`versionGroupId: ${versionGroupId}`);
         // 数据库里的 ab 分组对象
@@ -397,7 +397,7 @@ export default class DispatchManagerController extends BaseController {
         const ucId: string = this.ctx.state.userId;
         const abTestGroupId: string = this.post('id');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
         // 数据库里的 ab 分组对象
@@ -433,7 +433,7 @@ export default class DispatchManagerController extends BaseController {
         const ucId: string = this.ctx.state.userId;
         const abTestGroupId: string = this.post('id');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
         // 数据库里的 ab 分组对象
@@ -484,7 +484,7 @@ export default class DispatchManagerController extends BaseController {
         let end: number = this.post('end');
         const groupNum: number = this.post('groupNum');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         try {
             // 数据库暂存， activeTime 标识
@@ -538,7 +538,7 @@ export default class DispatchManagerController extends BaseController {
         const name: string = this.post('name');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         const now = moment().format('YYYY-MM-DD HH:mm:ss');
         const updateAbTestGroupVo: AbTestGroupVO = {
@@ -598,7 +598,7 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupId: string = this.post('id');
         const configGroupId: string = this.post('configGroupId');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // ab 分组对象
         const abTestGroupVo = await abTestGroupModel.getVo(abTestGroupId, ucId);
@@ -678,7 +678,7 @@ export default class DispatchManagerController extends BaseController {
         const type: number = this.post('type');
         const active: number = this.post('active');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         const configGroupVo: ConfigGroupVO = {
             name, description, type, active,
@@ -707,7 +707,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         const [
             copyedConfigGroupVo, copyedConfigVoList
@@ -767,7 +767,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 当前常量组对象
         const configGroupVo = await configGroupModel.getVo(id, ucId);
@@ -813,7 +813,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 广告常量的 active 和 activeTime 都为默认值（线上值）
         const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId, 1);
@@ -862,7 +862,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 数据库暂存， activeTime 标识
         const CacheActiveTime = think.config('CacheActiveTime');
@@ -893,7 +893,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         const configVo = await configModel.getVo(id, ucId);
 
@@ -942,7 +942,7 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupId: string = this.post('id');
         const nativeTmplConfGroupId: string = this.post('nativeTmplConfGroupId');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // ab 分组对象
         const abTestGroupVo = await abTestGroupModel.getVo(abTestGroupId, ucId);
@@ -1019,7 +1019,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
 
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
 
@@ -1051,7 +1051,7 @@ export default class DispatchManagerController extends BaseController {
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         const [
             copyedNativeTmplConfGroupVo, copyedNativeTmplConfVoList
@@ -1107,7 +1107,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 应用 native 模板组对象
         const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getVo(id, ucId);
@@ -1153,7 +1153,7 @@ export default class DispatchManagerController extends BaseController {
         const isFull: number = this.post('isFull');
         const active: number = this.post('active');
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 数据库暂存， activeTime 标识
         const CacheActiveTime = think.config('CacheActiveTime');
@@ -1184,7 +1184,7 @@ export default class DispatchManagerController extends BaseController {
         const clickArea: number = this.post('clickArea');
         const isFull: number = this.post('isFull');
         const active: number = this.post('active');
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
         const nativeTmplConfModel =
             this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
 
@@ -1239,7 +1239,7 @@ export default class DispatchManagerController extends BaseController {
         const type: string = this.post('type');    // ??? 如果改变 place， 需要传广告类型 type
         const active: number = this.post('active');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         const abTestMapVo = await abTestMapModel.getVo(abTestGroupId, place, ucId);
 
@@ -1299,7 +1299,7 @@ export default class DispatchManagerController extends BaseController {
         const place: string = this.post('place');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         try {
             // 获取被全量的 ab 测试分组相关的版本条件分组 id 和 广告位表主键 id以及绑定的广告组，广告类型
@@ -1378,7 +1378,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         const adGroupVo: AdGroupVO = {
             name, description, creatorId: ucId,
@@ -1405,7 +1405,7 @@ export default class DispatchManagerController extends BaseController {
         const name: string = this.post('name');
         const description: string = this.post('description');
         const active: number = this.post('active');
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
 
@@ -1459,7 +1459,7 @@ export default class DispatchManagerController extends BaseController {
         const id: string = this.post('id');
         const description: string = this.post('description');
         const active: number = this.post('active');
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         const adGroupVo: AdGroupVO = {
             name: undefined, description, creatorId: undefined, adTypeId: undefined, productId: undefined, active
@@ -1526,7 +1526,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         try {
             const { adTypeId, productId } = await adGroupModel.getVo(adGroupId, ucId);
@@ -1572,7 +1572,7 @@ export default class DispatchManagerController extends BaseController {
         const bidding: number = this.post('bidding');
         const active: number = this.post('active');
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 该广告对象
         const adVo = await adModel.getVo(id, ucId);

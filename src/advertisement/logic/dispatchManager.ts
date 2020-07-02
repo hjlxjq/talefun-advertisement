@@ -177,7 +177,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const include: number = this.post('include');
         const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 国家代码为空，则肯定包含
         if (_.isEmpty(codeList) && include === 0) {
@@ -396,7 +396,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 国家代码为空，则肯定包含
         if (_.isEmpty(codeList) && include === 0) {
@@ -574,7 +574,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const include: number = this.post('include');
         const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 国家代码为空，则肯定包含
         if (_.isEmpty(codeList) && include === 0) {
@@ -952,7 +952,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const name: string = this.post('name');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // 用户范围结束大于开始
         if (begin >= end) {
@@ -1633,7 +1633,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         /**
          * <br/>权限判断
@@ -2154,7 +2154,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         const nativeTmplId: string = this.post('nativeTmplId');
         const nativeTmplConfGroupId: string = this.post('id');
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
         const nativeTmplConfModel =
             this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
         const nativeTmplConfGroupModel =
@@ -2803,7 +2803,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as AdChannelConfModel;
         const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-        const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
+        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
         // ecpm 非负
         if (ecpm < 0) {
