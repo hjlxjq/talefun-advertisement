@@ -343,7 +343,7 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
 
-        think.logger.debug(`versionGroupId: ${versionGroupId}`);
+        // think.logger.debug(`versionGroupId: ${versionGroupId}`);
         // 数据库里的 ab 分组对象
         const abTestGroupVoList = await abTestGroupModel.getListByVersionGroup(versionGroupId, ucId);
         // 未发布更新在缓存里的 ab 分组对象

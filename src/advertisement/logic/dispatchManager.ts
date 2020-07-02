@@ -1900,7 +1900,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
             const productAuth = await this.productAuth(productId);
 
-            think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
+            // think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
             const {
                 viewAd, master
             } = productAuth;
