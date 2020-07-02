@@ -102,15 +102,6 @@ export default class ProductGroupAuthModel extends MBModel {
             userId: undefined, productId: undefined
         };
 
-        // 删除权限为 0 的字段，即只返回拥有的权限。lodash defaults 函数只覆盖 undefined
-        for (const key of Object.keys(productAuthVo)) {
-            const auth = productAuthVo[key];
-
-            if (auth === 0) {
-                delete productAuthVo[key];
-            }
-
-        }
         // 项目组下排除 项目组下所有应用都包含的权限
         const productGroupAuthVo: ProductGroupAuthVO = {
             createProduct, master, userId: undefined, productGroupId: undefined,

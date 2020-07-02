@@ -48,7 +48,7 @@ export default class AuthService extends BaseService {
 
         const [
             productVo,
-            currentProductAuthVo,    // 应用下配置的权限
+            productAuthVo,    // 应用下配置的权限
             userAuthVo
         ] = await Promise.all([
             productModel.getVo(productId),
@@ -63,7 +63,17 @@ export default class AuthService extends BaseService {
         } = await productGroupAuthModel.getVo(userId, productGroupId);
 
         // 最终应用权限，为应用下配置的权限加上项目组下的所有应用权限
-        const productAuthVo = _.defaults(currentProductAuthVo, InGroupProductAuthVo);
+        // lodash defaults 函数只覆盖 undefined
+        for (const auth in InGroupProductAuthVo) {
+            if (_.isNil(productAuthVo[auth])) {
+                productAuthVo[auth] = InGroupProductAuthVo[auth];
+
+            } else if (InGroupProductAuthVo[auth] === 1) {
+                productAuthVo[auth] = 1;
+
+            }
+
+        }
 
         // 用户为管理员，则拥有全部权限
         if (userAuthVo.master === 1) {
