@@ -46,25 +46,10 @@ export default class AdChannelModel extends MBModel {
     /**
      * 根据主键 id 获取广告平台信息
      * @argument {string} id 广告平台表 id;
-     * @argument {number} active 是否生效;
-     * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<AdChannelVO>} 广告平台信息;
      */
-    public async getVo(id: string, active: number, test: number) {
-        const queryStrings: string[] = [];
-        queryStrings.push(`id='${id}'`);
-
-        if (test === 0) {
-            queryStrings.push(`test=${test}`);
-
-        }
-        if (!_.isUndefined(active)) {
-            queryStrings.push(`active=${active}`);
-
-        }
-        const queryString: string = queryStrings.join(' AND ');
-
-        return await this.where(queryString).find() as AdChannelVO;
+    public async getVo(id: string) {
+        return await this.where({ id }).find() as AdChannelVO;
 
     }
 
@@ -85,7 +70,7 @@ export default class AdChannelModel extends MBModel {
      * @argument {number} test 是否测试 app 可见;
      * @argument {string[]} idList 查询的主键列表;
      */
-    public async getList(active: number, test: number, idList: string[]) {
+    public async getList(active?: number, test?: number, idList?: string[]) {
         const queryStrings: string[] = [];
         queryStrings.push('1=1');
 

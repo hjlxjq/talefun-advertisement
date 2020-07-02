@@ -60,7 +60,7 @@ export default class BaseConfigModel extends MBModel {
      * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<BaseConfigVO[]>} 基础常量信息列表;
      */
-    public async getList(active: number, test: number) {
+    public async getList(active?: number, test?: number) {
         const queryStrings: string[] = [];
         queryStrings.push('1=1');
 

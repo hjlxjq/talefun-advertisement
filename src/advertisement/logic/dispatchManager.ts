@@ -15,7 +15,7 @@ import NativeTmplConfModel from '../model/nativeTmplConf';
 import AdChannelConfModel from '../model/channelParamConf';
 import AdChannelModel from '../model/adChannel';
 
-import CacheService from '../service/cacheServer';
+import CacheService from '../service/updateCacheServer';
 
 import { ProductAuthVO, AbTestGroupVO, VersionGroupVO } from '../defines';
 
@@ -1014,7 +1014,7 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/> ab 测试分组范围检测
          */
-        const currentAbTestGroupVoList = await abTestGroupModel.getList(versionGroupId, undefined, 1);
+        const currentAbTestGroupVoList = await abTestGroupModel.getListByVersionGroup(versionGroupId, undefined, 1);
         // 终止判断条件
         currentAbTestGroupVoList[currentAbTestGroupVoList.length] = {
             begin: 100, end: 100, nativeTmplConfGroupId: undefined, configGroupId: undefined, versionGroupId: undefined,
@@ -1675,7 +1675,7 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
          */
-        const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId, 1, 1);
+        const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId, undefined, 1);
 
         if (!_.isEmpty(configVo) && configVo.id) {
             const cacheConfigVo = await cacheServer.fetchCacheData(ucId, 'config', configVo.id);
@@ -2193,7 +2193,7 @@ export default class DispatchManagerLogic extends AMLogic {
          * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
          */
         const nativeTmplConfVo =
-            await nativeTmplConfModel.getByGroupAndNativeTmpl(nativeTmplId, nativeTmplConfGroupId, ucId, 1, 1);
+            await nativeTmplConfModel.getByGroupAndNativeTmpl(nativeTmplId, nativeTmplConfGroupId, ucId, 1);
 
         if (!_.isEmpty(nativeTmplConfVo) && nativeTmplConfVo.id) {
             const cacheNativeTmplConfVo =
@@ -2817,7 +2817,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const { productId } = await adGroupModel.getVo(adGroupId, ucId);
 
         const [adChannelVo, channelParamConfVo] = await Promise.all([
-            adChannelModel.getVo(adChannelId, undefined, undefined),
+            adChannelModel.getVo(adChannelId),
             channelParamConfModel.getVo(adChannelId, productId)
         ]);
 
@@ -2856,8 +2856,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const [
             adByPlacementIDVo, adByNameVo
         ] = await Promise.all([
-            adModel.getByPlacementID(adGroupId, placementID, 1, 1),
-            adModel.getByName(adGroupId, adChannelId, name, 1, 1)
+            adModel.getByPlacementID(adGroupId, placementID),
+            adModel.getByName(adGroupId, adChannelId, name)
         ]);
 
         think.logger.debug(`adByPlacementIDVo: ${JSON.stringify(adByPlacementIDVo)}`);

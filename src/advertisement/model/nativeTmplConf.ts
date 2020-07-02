@@ -37,7 +37,7 @@ export default class NativeTmplConfModel extends MBModel {
     public async addList(nativeTmplConfVoList: NativeTmplConfVO[]) {
         let idList: string[] = [];
 
-        if (!Utils.isEmptyObj(nativeTmplConfVoList)) {
+        if (!_.isEmpty(nativeTmplConfVoList)) {
             await this.addMany(nativeTmplConfVoList);
             idList = this.ID;
 
@@ -91,19 +91,18 @@ export default class NativeTmplConfModel extends MBModel {
     }
 
     /**
-     * 根据 native 模板组表主键和 native 模板表主键获取常量
+     * 线上正式数据,
+     * <br/>根据 native 模板组表主键和 native 模板表主键获取 native 模板
      * @argument {string} nativeTmplId native 模板表主键;
      * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表 id;
      * @argument {string} creatorId 创建者 id
-     * @argument {number} active 是否生效;
      * @argument {number} live 是否线上已发布数据
-     * @returns {Promise<ConfigVO>} 常量表信息;
+     * @returns {Promise<ConfigVO>}  native 模板表信息;
      */
     public async getByGroupAndNativeTmpl(
         nativeTmplId: string,
         nativeTmplConfGroupId: string,
         creatorId: string,
-        active: number,
         live: number,
     ) {
         const queryStrings: string[] = [];
@@ -111,11 +110,7 @@ export default class NativeTmplConfModel extends MBModel {
         queryStrings.push(`nativeTmplId='${nativeTmplId}'`);
         queryStrings.push(`nativeTmplConfGroupId = '${nativeTmplConfGroupId}'`);
 
-        if (!_.isUndefined(active)) {
-            queryStrings.push(`active=${active}`);
-
-        }
-        if (!_.isUndefined(live)) {
+        if (live === 1) {
             const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`activeTime = '${LiveActiveTime}'`);
 
@@ -132,15 +127,75 @@ export default class NativeTmplConfModel extends MBModel {
     }
 
     /**
+     * 线上正式数据,
+     * <br/>获取 native 模板信息列表
+     * @argument {number} live 是否线上已发布数据
+     */
+    public async getList(live: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push('1=1');
+
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as NativeTmplConfVO[];
+
+    }
+
+    /**
      * 根据 native 模板组表主键 id 获取应用下 native 模板信息列表
      * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表 id;
      * @argument {string} creatorId 创建者 id
+     * @returns {Promise<ConfigVO[]>} native 模板数据列表;
      */
-    public async getList(nativeTmplConfGroupId: string, creatorId: string = '') {
-        const query = `nativeTmplConfGroupId = '${nativeTmplConfGroupId}' AND
-        (creatorId IS NULL OR creatorId = '${creatorId}')`;
+    public async getListByGroup(nativeTmplConfGroupId: string, creatorId: string) {
+        const queryStrings: string[] = [];
 
-        return await this.where(query).select() as NativeTmplConfVO[];
+        queryStrings.push(`nativeTmplConfGroupId='${nativeTmplConfGroupId}'`);
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as NativeTmplConfVO[];
+
+    }
+
+    /**
+     * 根据 native 模板组表主键 id 获取应用下 native 模板信息列表
+     * @argument {string[]} nativeTmplConfGroupIdList 应用下 native 模板组表主键列表;
+     * @argument {number} live 是否线上已发布数据
+     * @returns {Promise<ConfigVO[]>} native 模板数据列表;
+     */
+    public async getListByGroupList(nativeTmplConfGroupIdList: string[], live: number) {
+        const queryStrings: string[] = [];
+
+        // 为空数组直接返回空
+        if (_.isEmpty(nativeTmplConfGroupIdList)) {
+            return [];
+        }
+
+        // in 查询逻辑
+        const nativeTmplConfGroupIdListString = _.map(nativeTmplConfGroupIdList, (id) => {
+            return `'${id}'`;
+
+        });
+        queryStrings.push(`nativeTmplConfGroupId IN (${nativeTmplConfGroupIdListString})`);
+
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as NativeTmplConfVO[];
 
     }
 

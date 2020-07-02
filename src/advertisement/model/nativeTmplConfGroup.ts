@@ -49,12 +49,16 @@ export default class NativeTmplConfGroupModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<nativeTmplConfGroupVO>}应用下 native 模板组信息;
      */
-    public async getVo(id: string, creatorId: string) {
+    public async getVo(id: string, creatorId?: string, active?: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
 
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
 
         }
         const queryString: string = queryStrings.join(' AND ');
@@ -63,17 +67,41 @@ export default class NativeTmplConfGroupModel extends MBModel {
     }
 
     /**
-     * 获取应用下 native 模板组信息列表
+     * 线上正式数据,
+     * <br/>获取 native 模板组信息列表
+     * @argument {number} active 是否生效;
+     */
+    public async getList(active: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push('1=1');
+
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as NativeTmplConfGroupVO[];
+
+    }
+
+    /**
+     * 根据应用主键 id 获取获取应用下 native 模板组信息列表
      * @argument {string} productId 应用表 id;
      * @argument {string} creatorId 创建者 id
+     * @argument {number} active 是否生效;
      */
-    public async getList(productId: string, creatorId: string) {
+    public async getListByProduct(productId: string, creatorId?: string, active?: number) {
         const queryStrings: string[] = [];
 
         queryStrings.push(`productId='${productId}'`);
 
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
 
         }
         const queryString: string = queryStrings.join(' AND ');

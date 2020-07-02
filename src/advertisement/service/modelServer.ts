@@ -29,7 +29,7 @@ import ProductAuthModel from '../model/productAuth';
 import ProductGroupAuthModel from '../model/productGroupAuth';
 
 import BaseService from '../../common/tale/BaseService';
-import CacheService from './cacheServer';
+import CacheService from './updateCacheServer';
 
 import {
     VersionGroupVO, AdChannelResVO, PackParamConfResVO, ChannelParamConfResVO, ConfigGroupResVO, ConfigResVO,
@@ -52,7 +52,7 @@ export default class ModelService extends BaseService {
         const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
         const adChannelMapModel = this.taleModel('adChannelMap', 'advertisement') as AdChannelMapModel;
 
-        const adChannelVoList = await adChannelModel.getList(undefined, undefined, undefined);
+        const adChannelVoList = await adChannelModel.getList();
         const adChannelResVoList = await Bluebird.map(adChannelVoList, async (adChannelVo) => {
             const { id, test } = adChannelVo;
             const adTypeIdList = await adChannelMapModel.getAdTypeIdList(id);
@@ -247,7 +247,7 @@ export default class ModelService extends BaseService {
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 数据库里的版本条件分组对象
-        const versionGroupVoList = await versionGroupModel.getList(productId, type, creatorId);
+        const versionGroupVoList = await versionGroupModel.getListByProduct(productId, type, creatorId);
         // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
         const cacheVersionGroupVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'versionGroup');
 
@@ -292,7 +292,7 @@ export default class ModelService extends BaseService {
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 数据库里的 native 模板组对象
-        const nativeTmplConfGroupVoList = await nativeTmplConfGroupModel.getList(productId, creatorId);
+        const nativeTmplConfGroupVoList = await nativeTmplConfGroupModel.getListByProduct(productId, creatorId);
         // 未发布更新在缓存里的 native 模板组对象哈希表
         const cacheNativeTmplConfGroupVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'nativeTmplConfGroup');
 
@@ -334,7 +334,7 @@ export default class ModelService extends BaseService {
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 数据库里的 native 模板对象
-        const nativeTmplConfVoList = await nativeTmplConfModel.getList(nativeTmplConfGroupId, creatorId);
+        const nativeTmplConfVoList = await nativeTmplConfModel.getListByGroup(nativeTmplConfGroupId, creatorId);
         // 未发布更新在缓存里的 native 模板对象哈希表，优化批量取出，减少 redis io
         const cacheNativeTmplConfVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'nativeTmplConf');
 
@@ -381,7 +381,7 @@ export default class ModelService extends BaseService {
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 数据库里的广告组对象
-        const adGroupVoList = await adGroupModel.getList(productId, creatorId);
+        const adGroupVoList = await adGroupModel.getListByProduct(productId, creatorId);
         // 未发布更新在缓存里的广告组对象
         const cacheAdGroupVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'adGroup');
 
@@ -389,7 +389,7 @@ export default class ModelService extends BaseService {
             const { id, adTypeId } = adGroupVo;
 
             const cacheAdGroupVo = cacheAdGroupVoHash[id] as AdGroupVO;
-            const adTypeVo = await adTypeModel.getVo(adTypeId, undefined, undefined);
+            const adTypeVo = await adTypeModel.getVo(adTypeId);
 
             if (think.isEmpty(adTypeVo)) {
                 return;
@@ -442,8 +442,8 @@ export default class ModelService extends BaseService {
             const [
                 adTypeVo, adChannelVo, adGroupVo
             ] = await Promise.all([
-                adTypeModel.getVo(adTypeId, undefined, undefined),
-                adChannelModel.getVo(adChannelId, undefined, undefined),
+                adTypeModel.getVo(adTypeId),
+                adChannelModel.getVo(adChannelId),
                 adGroupModel.getVo(adGroupId, creatorId)
             ]);
 
@@ -489,7 +489,7 @@ export default class ModelService extends BaseService {
         const adResVoList = await Bluebird.map(adVoList, async (adVo) => {
             // 获取广告平台名
             const { adChannelId } = adVo;
-            const adChannelVo = await adChannelModel.getVo(adChannelId, undefined, undefined);
+            const adChannelVo = await adChannelModel.getVo(adChannelId);
 
             if (think.isEmpty(adChannelVo)) {
                 return;
@@ -537,14 +537,14 @@ export default class ModelService extends BaseService {
             configVoList,
             configGroupVo
         ] = await Promise.all([
-            configModel.getList(dependentId, creatorId, 1),
+            configModel.getListByGroup(dependentId, creatorId, 1),
             configGroupModel.getVo(dependentId, creatorId)
         ]);
 
         // 依赖组未配置或者失效直接返回
         if (
             think.isEmpty(configGroupVo) ||
-            !configGroupVo.active ||
+            configGroupVo.active === 0 ||
             _.indexOf(dependentIdList, dependentId) !== -1
         ) {
             return dpdConfigVoHash;
@@ -567,6 +567,7 @@ export default class ModelService extends BaseService {
 
         } else {
             return dpdConfigVoHash;
+
         }
 
     }
@@ -591,7 +592,7 @@ export default class ModelService extends BaseService {
             configVoList,
             configGroupVo
         ] = await Promise.all([
-            configModel.getList(configGroupId, creatorId, undefined),
+            configModel.getListByGroup(configGroupId, creatorId),
             configGroupModel.getVo(configGroupId, creatorId)
         ]);
 
@@ -811,7 +812,7 @@ export default class ModelService extends BaseService {
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 数据库里的广告位对象
-        const abTestMapVoList = await abTestMapModel.getList(abTestGroupId, creatorId);
+        const abTestMapVoList = await abTestMapModel.getListByAbTestGroup(abTestGroupId, creatorId);
 
         // 未发布更新在缓存里的广告位对象哈希表 和 广告组对象哈希表
         const [

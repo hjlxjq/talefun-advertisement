@@ -113,7 +113,7 @@ export default class AbTestGroupModel extends MBModel {
             queryStrings.push(`active=${active}`);
 
         }
-        if (!_.isUndefined(live)) {
+        if (live === 1) {
             const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`activeTime = '${LiveActiveTime}'`);
 
@@ -164,12 +164,35 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
+     * 线上正式数据,
+     * <br/>获取 ab 测试分组信息列表
+     * @argument {number} live 是否线上已发布数据
+     */
+    public async getList(live: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push('1=1');
+
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as AbTestGroupVO[];
+
+    }
+
+    /**
      * 获取 ab 测试分组信息列表,
      * @argument {string} versionGroupId 分组条件表主键;
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效
+     * @argument {number} live 是否线上已发布数据
      */
-    public async getList(versionGroupId: string, creatorId: string, active: number) {
+    public async getListByVersionGroup(
+        versionGroupId: string, creatorId?: string, active?: number, live?: number
+    ) {
         const queryStrings: string[] = [];
         queryStrings.push(`versionGroupId='${versionGroupId}'`);
 
@@ -179,6 +202,11 @@ export default class AbTestGroupModel extends MBModel {
         }
         if (!_.isUndefined(active)) {
             queryStrings.push(`active='${active}'`);
+
+        }
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
 
         }
 

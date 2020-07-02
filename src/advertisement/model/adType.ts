@@ -49,7 +49,7 @@ export default class AdTypeModel extends MBModel {
      * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<AdTypeVO>} 广告类型信息;
      */
-    public async getVo(id: string, active: number, test: number) {
+    public async getVo(id: string, active?: number, test?: number) {
         const queryStrings: string[] = [];
         queryStrings.push(`id='${id}'`);
 

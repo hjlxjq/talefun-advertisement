@@ -38,7 +38,7 @@ export default class AbTestMapModel extends MBModel {
     public async addList(abTestMapVoList: AbTestMapVO[]) {
         let idList: string[] = [];
 
-        if (!Utils.isEmptyObj(abTestMapVoList)) {
+        if (!_.isEmpty(abTestMapVoList)) {
             await this.addMany(abTestMapVoList);
             idList = this.ID;
         }
@@ -56,8 +56,8 @@ export default class AbTestMapModel extends MBModel {
     public async updateVo(id: string, abTestMapVo: AbTestMapVO) {
         if (!Utils.isEmptyObj(abTestMapVo)) {
             return await this.where({ id }).update(abTestMapVo);
-        }
 
+        }
         return 0;
 
     }
@@ -114,20 +114,44 @@ export default class AbTestMapModel extends MBModel {
     }
 
     /**
+     * 线上正式数据,
+     * <br/>获取广告位表信息列表
+     * @argument {number} active 是否生效;
+     */
+    public async getList(active: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push('1=1');
+
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as AbTestMapVO[];
+
+    }
+
+    /**
      * 根据 ab 测试分组表主键 id 获取广告位表列表
      * @argument {string} abTestGroupId ab 测试分组表 id;
      * @argument {string} creatorId 创建者 id
+     * @argument {number} active 是否生效;
      * @returns {Promise<AbTestMapVO[]>} 广告位表列表;
      */
-    public async getList(abTestGroupId: string, creatorId: string) {
+    public async getListByAbTestGroup(abTestGroupId: string, creatorId?: string, active?: number) {
         const queryStrings: string[] = [];
 
         queryStrings.push(`abTestGroupId = '${abTestGroupId}'`);
 
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
-        }
 
+        }
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
+
+        }
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).select() as AbTestMapVO[];

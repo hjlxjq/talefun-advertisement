@@ -7,7 +7,6 @@
  */
 import { think } from 'thinkjs';
 import * as Bluebird from 'bluebird';
-import ModelServer from '../service/modelServer';
 import * as _ from 'lodash';
 import * as moment from 'moment-mini-ts';
 
@@ -25,7 +24,8 @@ import NativeTmplConfModel from '../model/nativeTmplConf';
 import AdGroupModel from '../model/adGroup';
 import AdModel from '../model/ad';
 
-import CacheService from '../service/cacheServer';
+import CacheService from '../service/updateCacheServer';
+import ModelServer from '../service/modelServer';
 
 import {
     VersionGroupVO, AbTestGroupVO, ConfigGroupVO, ConfigVO, NativeTmplConfGroupVO, NativeTmplConfVO,
@@ -235,7 +235,7 @@ export default class DispatchManagerController extends BaseController {
 
             // 再创建版本条件分组下默认 ab 测试下的广告位信息测试
             // 被复制组的默认 ab 测试下的广告位信息列表
-            const copyedAbTestMapVoList = await abTestMapModel.getList(copyedAbTestGroupId, ucId);
+            const copyedAbTestMapVoList = await abTestMapModel.getListByAbTestGroup(copyedAbTestGroupId, ucId);
             // 复制组的默认 ab 测试下的广告位信息列表
             const defaultAbTestMapVoList = _.map(copyedAbTestMapVoList, (copyedAbTestMapVo) => {
                 const { place, adGroupId } = copyedAbTestMapVo;
@@ -345,7 +345,7 @@ export default class DispatchManagerController extends BaseController {
 
         think.logger.debug(`versionGroupId: ${versionGroupId}`);
         // 数据库里的 ab 分组对象
-        const abTestGroupVoList = await abTestGroupModel.getList(versionGroupId, ucId, undefined);
+        const abTestGroupVoList = await abTestGroupModel.getListByVersionGroup(versionGroupId, ucId);
         // 未发布更新在缓存里的 ab 分组对象
         const cacheAbTestGroupVoHash = await cacheServer.fetchCacheDataHash(ucId, 'abTestGroup');
 
@@ -713,7 +713,7 @@ export default class DispatchManagerController extends BaseController {
             copyedConfigGroupVo, copyedConfigVoList
         ] = await Promise.all([
             configGroupModel.getVo(copyId, ucId),
-            configModel.getList(copyId, ucId, undefined)
+            configModel.getListByGroup(copyId, ucId)
         ]);
 
         if (_.isEmpty(copyedConfigGroupVo)) {
@@ -816,7 +816,7 @@ export default class DispatchManagerController extends BaseController {
         const cacheServer = this.taleService('cacheServer', 'advertisement') as CacheService;
 
         // 广告常量的 active 和 activeTime 都为默认值（线上值）
-        const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId, undefined, undefined);
+        const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId, 1);
 
         // 待更新的广告常量
         const updateConfigVo: ConfigVO = {
@@ -1057,7 +1057,7 @@ export default class DispatchManagerController extends BaseController {
             copyedNativeTmplConfGroupVo, copyedNativeTmplConfVoList
         ] = await Promise.all([
             nativeTmplConfGroupModel.getVo(copyId, ucId),
-            nativeTmplConfModel.getList(copyId, ucId)
+            nativeTmplConfModel.getListByGroup(copyId, ucId)
         ]);
 
         if (_.isEmpty(copyedNativeTmplConfGroupVo)) {

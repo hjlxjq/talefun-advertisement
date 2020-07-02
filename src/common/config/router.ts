@@ -1,12 +1,9 @@
 module.exports = [
-    // ['/advertisement/ad/:id?', '/advertisement/ad', 'rest'], // 第二种方式
-    // ['/jsonrpc', '/user/jsonrpcsub/jsonrpc']
-    // ['/advertisement/test/adInfo', '/distributeAd/index/adInfo', 'post'],
-    ['/1.1/functions/adControlInfo', '/distributeAd/index/adControlInfo'],
-    ['/adInfo', '/distributeAd/index/adInfo', 'post'],
-    ['/acig', '/distributeAd/index/acig', 'post'],
-    ['/configInfo', '/distributeAd/index/configInfo', 'post'],
-    ['/instantAdInfo', '/distributeAd/index/instantAdInfo', 'post'],
-    ['/getIPAdress', '/distributeAd/index/getIPAdress', 'get'],
-    ['/getClientIp', '/distributeAd/index/getClientIp', 'get'],
+    ['/1.1/functions/adControlInfo', '/dispatch/index/adControlInfo'],
+    ['/adInfo', '/dispatch/index/adInfo', 'post'],
+    ['/acig', '/dispatch/index/acig', 'post'],
+    ['/configInfo', '/dispatch/index/configInfo', 'post'],
+    ['/instantAdInfo', '/dispatch/index/instantAdInfo', 'post'],
+    ['/getIPAdress', '/dispatch/index/getIPAdress', 'get'],
+    ['/getClientIp', '/dispatch/index/getClientIp', 'get'],
 ];

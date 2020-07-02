@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 import BaseController from '../../common/tale/BaseController';
 
 import MBModel from '../model/managerBaseModel';
-import CacheService from '../service/cacheServer';
+import CacheService from '../service/updateCacheServer';
 
 import { DeployResVO, RollBackResVO, DeployStatusResVO } from '../interface';
 

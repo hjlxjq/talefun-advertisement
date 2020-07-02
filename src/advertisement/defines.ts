@@ -152,7 +152,7 @@ export interface AdGroupVO extends BaseVO {
  */
 export interface AdVO extends BaseVO {
     name: string;    // 广告名称
-    placementID: string;    // 广告唯一 id
+    placementID: string;    // 广告唯一 ID
     ecpm: number;    // 分层控制
     loader: string;    // 加载器
     subloader: string;    // 子加载器
@@ -357,6 +357,16 @@ export interface FileVO {
     mtime: string;
 }
 
+// 哈希表接口
+export interface HashVO {
+    [propName: string]: string;
+}
+
+// 嵌套一层的哈希表接口
+export interface HashHashVO {
+    [propName: string]: HashVO;
+}
+
 /**
  * *********************************************************************************************************************
  * 扩展 thinkjs 原生 interface 结构
@@ -457,4 +467,100 @@ export interface UserResVO extends UserVO {
     userAuth: UserAuthVO;    // 用户权限
     productGroupAuth: ProductGroupAuthVO;    // 用户在项目组权限
     productAuth: ProductAuthVO;    // 用户在应用下权限
+}
+
+/**
+ * *********************************************************************************************************************
+ * 下发模块的缓存 redis 以及内存中的数据结构，快速下发，数据库访问速度慢
+ * *********************************************************************************************************************
+ */
+
+/**
+ * redis AdGroup_cache
+ */
+export interface AdCacheVO {
+    adID: string;    // 广告唯一 ID
+    ecpm: number;    // 分层控制
+    loader: string;    // 加载器
+    subloader: string;    // 子加载器
+    interval: number;    // 间隔
+    weight: number;    // 权重
+    bidding: boolean;    // 实时竞价
+    channel: string;    // 广告渠道
+    adType: string;    // 广告类型
+}
+
+/**
+ * redis Native_cache
+ */
+export interface NativeTmplCacheVO {
+    key: string;    // 模板编号
+    weight: number;    // 权重
+    clickArea: number;    // 点击区域配置
+    isFull: boolean;    // 是否支持全屏点击
+}
+
+/**
+ * redis Config_cache
+ */
+export interface ConfigCacheVO {
+    weightGroup: string;    // 常量组名
+    [propName: string]: string;
+}
+
+/**
+ * redis VersionGroup_cache
+ */
+export interface VersionGroupCacheVO {
+    id: string;    // 版本条件分组表主键
+    begin: number;    // 起始版本
+    include: number;    // 是否包含
+    code: string; // 国家代码列表 json 字符串
+}
+
+/**
+ * redis AbTestGroup_cache
+ */
+export interface AbTestGroupCacheVO {
+    id: string;    // 版本条件分组表主键
+    name: string;    // ab 测试组名
+    begin: number;    // 开始范围
+    end: number;    // 结束范围
+    nativeTmplConfGroupId?: string;    // native 模板组表 id
+    configGroupId?: string;    // 常量组表 id
+}
+
+/**
+ * redis AbTestMap_cache
+ */
+export interface AbTestMapCacheVO {
+    place: string; // 广告位
+    adGroupId: string;    // 广告组表 id
+}
+
+/**
+ * redis key
+ */
+export interface RedisKeyVO {
+    // baseConfigKey: string;    // 基础常量 key
+    // productKey: string;    // 应用 key
+    appPackageKey: string;    // 下发缓存中应用的 key
+    abTestGroupKey: string;    // ab 分组 key
+    abTestMapKey: string;    // ab 分组下广告位 key
+    adGroupKey: string;    // 广告 key
+    nativeTmplKey: string;    // native 模板 key
+    configKey: string;    // 常量 key
+}
+
+/**
+ * 请求参数
+ */
+export interface RequestParamVO {
+    countryCode?: string;    // 国家代码
+    ip: string;    // ip地址
+    idfa?: string;    // idfa
+    dId?: string;    // 设备id
+    packageName: string;    // 包名
+    platform: string;    // 平台名
+    versionCode: number;    // 版本号
 }

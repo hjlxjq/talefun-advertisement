@@ -23,9 +23,9 @@ export default class AdModel extends MBModel {
      * @returns {Promise<string>} 主键 id;
      */
     public async addVo(adVo: AdVO) {
-
         await this.add(adVo);
         return this.ID[0];
+
     }
 
     /**
@@ -36,7 +36,7 @@ export default class AdModel extends MBModel {
     public async addList(adVolist: AdVO[]) {
         let idList: string[] = [];
 
-        if (!Utils.isEmptyObj(adVolist)) {
+        if (!_.isEmpty(adVolist)) {
             await this.addMany(adVolist);
             idList = this.ID;
 
@@ -54,8 +54,10 @@ export default class AdModel extends MBModel {
     public async updateVo(id: string, adVo: AdVO) {
         if (!Utils.isEmptyObj(adVo)) {
             return await this.where({ id }).update(adVo);
+
         }
         return 0;
+
     }
 
     /**
@@ -65,6 +67,7 @@ export default class AdModel extends MBModel {
      */
     public async delVo(id: string) {
         return await this.where({ id }).delete();
+
     }
 
     /**
@@ -73,11 +76,15 @@ export default class AdModel extends MBModel {
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AdVO>} 广告信息;
      */
-    public async getVo(id: string, creatorId: string = '') {
+    public async getVo(id: string, creatorId: string) {
         const queryStrings: string[] = [];
-        queryStrings.push(`id='${id}'`);
-        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
+        queryStrings.push(`id='${id}'`);
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
         const queryString: string = queryStrings.join(' AND ');
         const adVo = await this.where(queryString).find() as AdVO;
 
@@ -87,6 +94,26 @@ export default class AdModel extends MBModel {
 
         }
         return adVo;
+
+    }
+
+    /**
+     * 线上正式数据,
+     * <br/>获取广告信息列表
+     * @argument {number} live 是否线上已发布数据
+     */
+    public async getList(live: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push('1=1');
+
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as AdVO[];
 
     }
 
@@ -94,18 +121,18 @@ export default class AdModel extends MBModel {
      * 根据广告组表主键 id 获取广告信息
      * @argument {string} adGroupId 广告组表 id;
      * @argument {string} creatorId 创建者 id
-     * @argument {number} active 是否生效;
      * 获取广告组下广告信息列表
      */
-    public async getListByAdGroup(adGroupId: string, creatorId: string = '', active?: number) {
+    public async getListByAdGroup(adGroupId: string, creatorId: string) {
         const queryStrings: string[] = [];
-        queryStrings.push(`adGroupId='${adGroupId}'`);
-        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
-        if (!_.isUndefined(active)) {
-            queryStrings.push(`active=${active}`);
+        queryStrings.push(`adGroupId='${adGroupId}'`);
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
         }
+
         const queryString: string = queryStrings.join(' AND ');
         const adVoList = await this.where(queryString).order('name ASC').select() as AdVO[];
 
@@ -117,87 +144,6 @@ export default class AdModel extends MBModel {
             }
             return adVo;
         });
-
-    }
-
-    /**
-     * 根据广告组表主键 id 和 广告 placementID 获取广告信息列表
-     * @argument {string} adGroupId 广告组表 id;
-     * @argument {string} placementID 广告 placementID
-     * @argument {number} active 是否生效;
-     * @argument {number} live 是否线上已发布数据
-     * 获取广告组下广告信息列表
-     */
-    public async getByPlacementID(
-        adGroupId: string,
-        placementID: string,
-        active: number,
-        live: number
-    ) {
-        const queryStrings: string[] = [];
-        queryStrings.push(`adGroupId = '${adGroupId}'`);
-        queryStrings.push(`placementID = '${placementID}'`);
-
-        if (!_.isUndefined(active)) {
-            queryStrings.push(`active=${active}`);
-
-        }
-        if (!_.isUndefined(live)) {
-            const LiveActiveTime = think.config('LiveActiveTime');
-            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
-
-        }
-        const queryString: string = queryStrings.join(' AND ');
-        const adVo = await this.where(queryString).find() as AdVO;
-
-        // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
-        if (adVo.ecpm) {
-            adVo.ecpm = Number(adVo.ecpm);
-
-        }
-        return adVo;
-
-    }
-
-    /**
-     * 根据广告组表主键 id, 广告渠道 和 广告名称获取广告信息列表
-     * @argument {string} adGroupId 广告组表 id;
-     * @argument {string} adChannelId 广告组表 id;
-     * @argument {string} name 广告 placementID
-     * @argument {number} active 是否生效;
-     * @argument {number} live 是否线上已发布数据
-     * 获取广告组下广告信息列表
-     */
-    public async getByName(
-        adGroupId: string,
-        adChannelId: string,
-        name: string,
-        active: number,
-        live: number,
-    ) {
-        const queryStrings: string[] = [];
-        queryStrings.push(`adGroupId = '${adGroupId}'`);
-        queryStrings.push(`adChannelId = '${adChannelId}'`);
-        queryStrings.push(`name = '${name}'`);
-
-        if (!_.isUndefined(active)) {
-            queryStrings.push(`active=${active}`);
-
-        }
-        if (!_.isUndefined(live)) {
-            const LiveActiveTime = think.config('LiveActiveTime');
-            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
-
-        }
-        const queryString: string = queryStrings.join(' AND ');
-        const adVo = await this.where(queryString).find() as AdVO;
-
-        // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
-        if (adVo.ecpm) {
-            adVo.ecpm = Number(adVo.ecpm);
-
-        }
-        return adVo;
 
     }
 
@@ -205,15 +151,25 @@ export default class AdModel extends MBModel {
      * 根据应用表主键 id 获取广告信息
      * @argument {string} productId 应用表 id;
      * @argument {string} creatorId 创建者 id
+     * @argument {number} live 是否线上已发布数据
      * 获取应用下广告信息列表
      */
-    public async getListByProduct(productId: string, creatorId: string = '') {
+    public async getListByProduct(productId: string, creatorId?: string, live?: number) {
         const queryStrings: string[] = [];
-        queryStrings.push(`productId='${productId}'`);
-        queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
+        queryStrings.push(`productId='${productId}'`);
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
         const queryString: string = queryStrings.join(' AND ');
-        const adVoList = await this.where(queryString).order('name ASC').select() as AdVO[];
+        const adVoList = await this.where(queryString).select() as AdVO[];
 
         return _.map(adVoList, (adVo) => {
             // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
@@ -223,6 +179,73 @@ export default class AdModel extends MBModel {
             }
             return adVo;
         });
+
+    }
+
+    /**
+     * 线上正式数据,
+     * <br/>根据广告组表主键 id 和 广告 placementID 获取广告信息列表
+     * @argument {string} adGroupId 广告组表 id;
+     * @argument {string} placementID 广告 placementID
+     * @argument {number} live 是否线上已发布数据
+     * 获取广告组下广告信息列表
+     */
+    public async getByPlacementID(adGroupId: string, placementID: string, live: number = 1) {
+        const queryStrings: string[] = [];
+
+        queryStrings.push(`adGroupId = '${adGroupId}'`);
+        queryStrings.push(`placementID = '${placementID}'`);
+
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        const adVo = await this.where(queryString).find() as AdVO;
+
+        // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
+        if (adVo.ecpm) {
+            adVo.ecpm = Number(adVo.ecpm);
+
+        }
+        return adVo;
+
+    }
+
+    /**
+     * 线上正式数据,
+     * <br/>根据广告组表主键 id, 广告渠道 和 广告名称获取广告信息列表
+     * @argument {string} adGroupId 广告组表 id;
+     * @argument {string} adChannelId 广告平台表 id;
+     * @argument {string} name 广告名称
+     * @argument {number} live 是否线上已发布数据
+     * 获取广告组下广告信息列表
+     */
+    public async getByName(
+        adGroupId: string, adChannelId: string, name: string, live: number = 1
+    ) {
+        const queryStrings: string[] = [];
+
+        queryStrings.push(`adGroupId = '${adGroupId}'`);
+        queryStrings.push(`adChannelId = '${adChannelId}'`);
+        queryStrings.push(`name = '${name}'`);
+
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+        const adVo = await this.where(queryString).find() as AdVO;
+
+        // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
+        if (adVo.ecpm) {
+            adVo.ecpm = Number(adVo.ecpm);
+
+        }
+        return adVo;
 
     }
 

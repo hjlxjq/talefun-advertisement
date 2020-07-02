@@ -30,7 +30,7 @@ export default class ConfigModel extends MBModel {
 
     /**
      * 批量
-     * 入常量
+     * 插入常量列表
      * @argument {ConfigVO[]} configVoList 常量对象列表;
      * @returns {Promise<string[]>} 主键 id 列表;
      */
@@ -94,27 +94,27 @@ export default class ConfigModel extends MBModel {
         key: string,
         configGroupId: string,
         creatorId: string,
-        active: number,
-        live: number,
+        active?: number,
+        live?: number,
     ) {
         const queryStrings: string[] = [];
 
         queryStrings.push(`\`key\`='${key}'`);    // key 为 mysql 关键字
         queryStrings.push(`configGroupId='${configGroupId}'`);
 
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
         if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
 
         }
-        if (!_.isUndefined(live)) {
+        if (live === 1) {
             const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`activeTime = '${LiveActiveTime}'`);
 
         }
-        if (!_.isUndefined(creatorId)) {
-            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
-        }
-
         const queryString: string = queryStrings.join(' AND ');
         think.logger.debug(`queryString: ${queryString}`);
 
@@ -133,21 +133,83 @@ export default class ConfigModel extends MBModel {
     }
 
     /**
+     * 线上正式数据,
+     * <br/>获取常量信息列表
+     * @argument {number} live 是否线上已发布数据
+     */
+    public async getList(live: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push('1=1');
+
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as ConfigVO[];
+
+    }
+
+    /**
      * 按常量组主键获取常量信息
      * @argument {string} configGroupId 常量组表 id;
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;
+     * @argument {number} live 是否线上已发布数据
      * @returns {Promise<ConfigVO[]>} 常量数据列表;
      */
-    public async getList(configGroupId: string, creatorId: string, active: number) {
+    public async getListByGroup(
+        configGroupId: string, creatorId: string, active?: number, live?: number
+    ) {
         const queryStrings: string[] = [];
+
         queryStrings.push(`configGroupId='${configGroupId}'`);
 
-        if (!_.isUndefined(active)) {
-            queryStrings.push(`active=${active}`);
-        }
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
+
+        }
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as ConfigVO[];
+
+    }
+
+    /**
+     * 根据常量组表主键 id 获取应用下常量信息列表
+     * @argument {string[]} configGroupIdList 应用下常量组表主键列表;
+     * @argument {number} live 是否线上已发布数据
+     * @returns {Promise<ConfigVO[]>}常量数据列表;
+     */
+    public async getListByGroupList(configGroupIdList: string[], live: number) {
+        const queryStrings: string[] = [];
+
+        // 为空数组直接返回空
+        if (_.isEmpty(configGroupIdList)) {
+            return [];
+        }
+
+        // in 查询逻辑
+        const configGroupIdListString = _.map(configGroupIdList, (id) => {
+            return `'${id}'`;
+
+        });
+        queryStrings.push(`configGroupId IN (${configGroupIdListString})`);
+
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
 
         }
         const queryString: string = queryStrings.join(' AND ');
@@ -162,10 +224,7 @@ export default class ConfigModel extends MBModel {
      * @argument {number} active 是否生效
      * @returns {Promise<ConfigVO>} 常量表信息;
      */
-    public async getListByKey(
-        key: string,
-        active: number
-    ) {
+    public async getListByKey(key: string, active: number) {
         const queryStrings: string[] = [];
 
         queryStrings.push(`\`key\`='${key}'`);    // key 为 mysql 关键字

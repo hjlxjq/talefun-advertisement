@@ -7,7 +7,7 @@ import * as Bluebird from 'bluebird';
 const rp = require('request-promise');
 import * as moment from 'moment-mini-ts';
 import * as fs from 'fs';
-import * as path from 'path';
+import { HashVO } from './defines';
 
 const fsPromises = fs.promises;
 
@@ -18,9 +18,8 @@ interface IExecFunctionOptions extends ExecOptions {
 const WxHook = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=537847c6-5bf0-45e5-af04-69c311cb3416';
 
 export default class Utils {
-
     /**
-     * 是否为空或者null
+     * 是否为空或者 null
      */
     public static isEmptyObj(obj: object): boolean {
         let isEmpty = true;
@@ -36,27 +35,26 @@ export default class Utils {
     }
 
     /**
-     * 自动生成主键id
+     * 自动生成主键 id
      */
     public static generateId(): string {
         return uuid.v4();
+
     }
 
     /**
-     * 对象子数组处理, redis hash表数据
-     * @argument {{[propName: string]: object;}} cacheData mysql取出处理的缓存数据对象
-     * @returns {{[propName: string]: string;}} redis hash表对象
+     * 对象子数组处理, redis hash 表数据
+     * @argument {{ [propName: string]: object; }} cacheData mysql 取出处理的缓存数据对象
+     * @returns {{ [propName: string]: string; }} redis hash 表对象
      */
-    public static redisHashObj(cacheData: {
-        [propName: string]: object;
-    }) {
-        const hashObj: {
-            [propName: string]: string;
-        } = {};
+    public static getRedisHash(cacheData: { [propName: string]: object; }) {
+        const redisHash: HashVO = {};
         _.each(cacheData, (value, key) => {
-            hashObj[key] = JSON.stringify(value);
+            redisHash[key] = JSON.stringify(value);
+
         });
-        return hashObj;
+        return redisHash;
+
     }
 
     public static asyncExec(
@@ -74,12 +72,16 @@ export default class Utils {
                         e.message = stderr;
                         e.name = String(code);
                         reject(e);
+
                     } else {
                         resolve(String(code));
+
                     }
                 }
             );
+
         });
+
     }
 
     public static async sendWxBot() {
@@ -91,6 +93,7 @@ export default class Utils {
                     >原因：[测试结果](http://ad-manager.weplayer.cc/testReport/mochawesome.html)`
             }
         };
+
         const option = {
             method: 'POST',
             uri: WxHook,
@@ -99,7 +102,9 @@ export default class Utils {
             resolveWithFullResponse: true,
             json: true
         };
+
         await rp(option);
+
     }
 
     public static async setLastTestDate(dir: string, date: string) {
@@ -114,48 +119,63 @@ export default class Utils {
                 // think.logger.debug(`versionPath: ${versionPath}`);
                 await fsPromises.writeFile(versionPath, date);
                 await fsPromises.copyFile(datePath, lastPath);
+
             }
+
         } catch (e) { }
+
     }
 
     public static async getLastTestDate(dir: string) {
         const lastPath = dir + '/version';
         const version = await fsPromises.readFile(lastPath);
+
         return version.toString();
+
     }
 
     public static async delFile(dir: string, days: number) {
         const files = await fsPromises.readdir(dir);
         const needDelFiles = files.filter((f) => {
             return f.endsWith('.html') || f.endsWith('.json');
+
         }, files);
         // think.logger.debug(`needDelFiles: ${JSON.stringify(needDelFiles)}`);
         return await Bluebird.map(needDelFiles, (needDelFile) => {
             const date = needDelFile.substring(0, needDelFile.length - 5);
             if (date === 'last' || date === 'mochawesome') {
                 return;
+
             }
             const met = moment().endOf('day').subtract(days, 'days');
             const bool = moment(date).isBefore(met);
+
             if (bool) {
                 return fsPromises.unlink(dir + '/' + needDelFile);
+
             }
+
         });
     }
 
     public static genVerifiCode(length: number = 6) {
         if (isNaN(length)) {
             throw new TypeError('Length must be a number');
+
         }
         if (length < 1) {
             throw new RangeError('Length must be at least 1');
+
         }
         const possible = '0123456789';
         let verifiCode = '';
+
         for (let i = 0; i < length; i++) {
             verifiCode += possible.charAt(Math.floor(Math.random() * possible.length));
+
         }
         return verifiCode;
+
     }
 
     /**
@@ -167,7 +187,9 @@ export default class Utils {
 
         } catch (e) {
             await fsPromises.mkdir(DirPath, { recursive: true });
+
         }
+
     }
 
 }

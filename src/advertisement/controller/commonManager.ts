@@ -381,7 +381,7 @@ export default class CommonManagerController extends BaseController {
     public async baseConfigListAction() {
         const ucId: string = this.ctx.state.user.id;
         const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
-        const baseConfigVoList = await baseConfigModel.getList(undefined, undefined);
+        const baseConfigVoList = await baseConfigModel.getList();
 
         const baseConfigResVoList = _.map(baseConfigVoList, (baseConfigVo) => {
             // 删除不必要的字段

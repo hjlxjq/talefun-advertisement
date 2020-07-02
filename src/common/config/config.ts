@@ -10,7 +10,7 @@ module.exports = {
     local_domain: 'http://adtest.weplayer.cc/',
     manager_domain: 'http://ad-manager.weplayer.cc/',
     distribute_domain: 'http://ad-dis.weplayer.cc/',
-    LiveActiveTime: '2020-05-01 00:00:00',    // 线上数据
+    LiveActiveTime: '2020-05-01 08:00:00',    // 线上数据
     CacheActiveTime: '2020-05-02 00:00:00',    // 未发布的数据
     redis_config: {
         redis1: {

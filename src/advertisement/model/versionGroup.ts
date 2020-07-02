@@ -99,7 +99,7 @@ export default class VersionGroupModel extends MBModel {
             queryStrings.push(`active=${active}`);
 
         }
-        if (!_.isUndefined(live)) {
+        if (live === 1) {
             const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`activeTime = '${LiveActiveTime}'`);
 
@@ -135,7 +135,28 @@ export default class VersionGroupModel extends MBModel {
             queryStrings.push(`active=${active}`);
 
         }
-        if (!_.isUndefined(live)) {
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as VersionGroupVO[];
+
+    }
+
+    /**
+     * 线上正式数据,
+     * <br/>获取版本条件分组信息列表
+     * @argument {string} type 版本条件分组表类型;
+     * @argument {number} live 是否线上已发布数据
+     */
+    public async getList(type: number, live: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push(`type = '${type}'`);
+
+        if (live === 1) {
             const LiveActiveTime = think.config('LiveActiveTime');
             queryStrings.push(`activeTime = '${LiveActiveTime}'`);
 
@@ -152,15 +173,22 @@ export default class VersionGroupModel extends MBModel {
      * @argument {string} type 版本条件分组表类型;
      * @argument {string} creatorId 创建者 id
      */
-    public async getList(productId: string, type: number, creatorId: string) {
+    public async getListByProduct(
+        productId: string, type: number, creatorId?: string, live?: number
+    ) {
         const queryStrings: string[] = [];
         queryStrings.push(`type = '${type}'`);
         queryStrings.push(`productId = '${productId}'`);
 
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
-        }
 
+        }
+        if (live === 1) {
+            const LiveActiveTime = think.config('LiveActiveTime');
+            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+
+        }
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).select() as VersionGroupVO[];
@@ -196,8 +224,8 @@ export default class VersionGroupModel extends MBModel {
 
         if (!_.isUndefined(active)) {
             queryStrings.push(`active=${active}`);
-        }
 
+        }
         const queryString: string = queryStrings.join(' AND ');
         const versionGroupVoList = await this.where(queryString).select() as VersionGroupVO[];
 

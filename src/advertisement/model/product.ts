@@ -44,10 +44,41 @@ export default class ProductModel extends MBModel {
 
     /**
      * 获取全部应用列表
+     * @argument {number} active 是否生效;
      * @returns {Promise<ProductVO[]>} 应用列表;
      */
-    public async getList() {
-        return await this.select() as ProductVO[];
+    public async getList(active?: number) {
+        const queryStrings: string[] = [];
+        queryStrings.push('1=1');
+
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as ProductVO[];
+
+    }
+
+    /**
+     * 根据平台获取应用列表
+     * @argument {string} platform 应用平台;
+     * @argument {number} active 是否生效;
+     * @returns {Promise<ProductVO[]>} 应用列表;
+     */
+    public async getListByPlatform(platform: string, active: number) {
+        const queryStrings: string[] = [];
+
+        queryStrings.push(`platform = '${platform}'`);
+
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active=${active}`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).select() as ProductVO[];
 
     }
 
