@@ -315,7 +315,7 @@ export default class CommonManagerController extends BaseController {
 
         // 预览图地址
         // const preview = new URL(filepath, domain).toString();
-        const preview = domain + 'image/preview/' + key + fileName;
+        const preview = domain + 'image/preview/' + key + '/' + fileName;
         // native 模板表对象
         const nativeTmplVo: NativeTmplVO = {
             key, preview, test, active,
@@ -362,7 +362,7 @@ export default class CommonManagerController extends BaseController {
         await rename(file.path, filepath);
 
         // 预览图地址
-        const preview = domain + 'image/preview/' + key + fileName;
+        const preview = domain + 'image/preview/' + key + '/' + fileName;
 
         const nativeTmplUpdateVo: NativeTmplVO = {
             key: undefined, preview, test, active,
