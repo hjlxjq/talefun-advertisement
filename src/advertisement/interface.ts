@@ -177,6 +177,7 @@ export interface NativeTmplListResVO extends ResVO {
  */
 export interface CreateNativeTmplReqVO {
     key: string;    // 模板编号
+    file: object;    // 选取的图片对象
 }
 
 export interface CreateNativeTmplResVO extends ResVO {
@@ -189,6 +190,7 @@ export interface CreateNativeTmplResVO extends ResVO {
  */
 export interface UpdateNativeTmplReqVO {
     id: string;    // native 模板表 id
+    file?: object;    // 选取的图片对象
     test?: number;    // 是否测试 app 可见
     active?: number;    // 是否生效
 }

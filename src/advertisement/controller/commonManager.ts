@@ -288,7 +288,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async createNativeTmplAction() {
-        const ucId: string = this.ctx.state.user.id;
+        // const ucId: string = this.ctx.state.user.id;
         const file = this.file('file') as FileVO;    // 上传的文件
         const key: string = this.post('key');
         const test: number = this.post('test');

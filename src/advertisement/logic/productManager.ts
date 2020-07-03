@@ -1,9 +1,5 @@
 import { TaleCode, TokenExemptVO } from '../../common/tale/TaleDefine';
 import AMLogic from './managerBaseLogic';
-
-import ProductGroupModel from '../model/productGroup';
-import ProductModel from '../model/product';
-
 import AuthServer from '../service/authServer';
 
 import * as _ from 'lodash';

@@ -421,18 +421,18 @@ export default class CommonManagerLogic extends AMLogic {
     public async createNativeTmplAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
-        try {
-            const userAuth = await this.comAuth();
-            const { master, editComConf } = userAuth;
+        // try {
+        //     const userAuth = await this.comAuth();
+        //     const { master, editComConf } = userAuth;
 
-            if (master === 0 && editComConf === 0) {
-                throw new Error('没有权限！！！');
-            }
+        //     if (master === 0 && editComConf === 0) {
+        //         throw new Error('没有权限！！！');
+        //     }
 
-        } catch (e) {
-            think.logger.debug(e);
-            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        }
+        // } catch (e) {
+        //     think.logger.debug(e);
+        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+        // }
 
         const rules = {
             key: {
@@ -824,6 +824,7 @@ export default class CommonManagerLogic extends AMLogic {
     tokenExempts(): TokenExemptVO[] {
         const exes = super.tokenExempts();
         exes.push({ action: 'index' });
+        exes.push({ action: 'createNativeTmpl' });
 
         return exes;
 
