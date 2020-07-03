@@ -15,7 +15,7 @@ import NativeTmplConfModel from '../model/nativeTmplConf';
 import AdChannelConfModel from '../model/channelParamConf';
 import AdChannelModel from '../model/adChannel';
 
-import CacheService from '../service/updateCacheServer';
+import UpdateCacheServer from '../service/updateCacheServer';
 
 import { ProductAuthVO, AbTestGroupVO, VersionGroupVO } from '../defines';
 
@@ -177,7 +177,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const include: number = this.post('include');
         const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 国家代码为空，则肯定包含
         if (_.isEmpty(codeList) && include === 0) {
@@ -185,7 +185,7 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
-        const cacheVersionGroupVoHash = await cacheServer.fetchCacheDataHash(ucId, 'versionGroup');
+        const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(ucId, 'versionGroup');
 
         /**
          * <br/>权限检查
@@ -396,7 +396,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 国家代码为空，则肯定包含
         if (_.isEmpty(codeList) && include === 0) {
@@ -418,7 +418,7 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
-        const cacheVersionGroupVoHash = await cacheServer.fetchCacheDataHash(ucId, 'versionGroup');
+        const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(ucId, 'versionGroup');
 
         /**
          * <br/>权限检查
@@ -574,7 +574,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const include: number = this.post('include');
         const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 国家代码为空，则肯定包含
         if (_.isEmpty(codeList) && include === 0) {
@@ -588,7 +588,7 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
-        const cacheVersionGroupVoHash = await cacheServer.fetchCacheDataHash(ucId, 'versionGroup');
+        const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(ucId, 'versionGroup');
         /**
          * <br/>权限检查
          */
@@ -952,7 +952,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const name: string = this.post('name');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 用户范围结束大于开始
         if (begin >= end) {
@@ -1002,7 +1002,7 @@ export default class DispatchManagerLogic extends AMLogic {
         if (!_.isEmpty(abTestGroupVo) && abTestGroupVo.id) {
             // 缓存中个更新
             const cacheAbTestGroupVo: AbTestGroupVO =
-                await cacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupVo.id);
+                await updateCacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupVo.id);
 
             // 未更新（不存在）或者未禁用则报唯一性错误
             if (_.isEmpty(cacheAbTestGroupVo) || cacheAbTestGroupVo.active !== 0) {
@@ -1633,7 +1633,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         /**
          * <br/>权限判断
@@ -1678,7 +1678,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId, undefined, 1);
 
         if (!_.isEmpty(configVo) && configVo.id) {
-            const cacheConfigVo = await cacheServer.fetchCacheData(ucId, 'config', configVo.id);
+            const cacheConfigVo = await updateCacheServer.fetchCacheData(ucId, 'config', configVo.id);
 
             // 未更新（不存在）或者未禁用则报唯一性错误
             if (_.isEmpty(cacheConfigVo) || cacheConfigVo.active !== 0) {
@@ -2154,7 +2154,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         const nativeTmplId: string = this.post('nativeTmplId');
         const nativeTmplConfGroupId: string = this.post('id');
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
         const nativeTmplConfModel =
             this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
         const nativeTmplConfGroupModel =
@@ -2197,7 +2197,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         if (!_.isEmpty(nativeTmplConfVo) && nativeTmplConfVo.id) {
             const cacheNativeTmplConfVo =
-                await cacheServer.fetchCacheData(ucId, 'nativeTmplConf', nativeTmplConfVo.id);
+                await updateCacheServer.fetchCacheData(ucId, 'nativeTmplConf', nativeTmplConfVo.id);
 
             // 未更新（不存在）或者未禁用则报唯一性错误
             if (_.isEmpty(cacheNativeTmplConfVo) || cacheNativeTmplConfVo.active !== 0) {
@@ -2803,7 +2803,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const channelParamConfModel = this.taleModel('channelParamConf', 'advertisement') as AdChannelConfModel;
         const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // ecpm 非负
         if (ecpm < 0) {
@@ -2864,7 +2864,7 @@ export default class DispatchManagerLogic extends AMLogic {
         think.logger.debug(`adByNameVo: ${JSON.stringify(adByNameVo)}`);
 
         if (!_.isEmpty(adByPlacementIDVo) && adByPlacementIDVo.id) {
-            const cacheAdByPlacementIDVo = await cacheServer.fetchCacheData(ucId, 'ad', adByPlacementIDVo.id);
+            const cacheAdByPlacementIDVo = await updateCacheServer.fetchCacheData(ucId, 'ad', adByPlacementIDVo.id);
 
             think.logger.debug(`cacheAdByPlacementIDVo: ${JSON.stringify(cacheAdByPlacementIDVo)}`);
 
@@ -2875,7 +2875,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         }
         if (!_.isEmpty(adByNameVo) && adByNameVo.id) {
-            const cacheAdByNameVo = await cacheServer.fetchCacheData(ucId, 'ad', adByNameVo.id);
+            const cacheAdByNameVo = await updateCacheServer.fetchCacheData(ucId, 'ad', adByNameVo.id);
 
             think.logger.debug(`cacheAdByNameVo: ${JSON.stringify(cacheAdByNameVo)}`);
 

@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 import BaseController from '../../common/tale/BaseController';
 
 import MBModel from '../model/managerBaseModel';
-import CacheService from '../service/updateCacheServer';
+import UpdateCacheServer from '../service/updateCacheServer';
 
 import { DeployResVO, RollBackResVO, DeployStatusResVO } from '../interface';
 
@@ -24,7 +24,7 @@ export default class DeployManagerController extends BaseController {
      */
     public async deployAction() {
         const ucId: string = this.ctx.state.userId;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 下发相关的所有数据表
         const tableNameList = [
@@ -36,7 +36,7 @@ export default class DeployManagerController extends BaseController {
             // 所有数据表都发布
             await Bluebird.map(tableNameList, async (tableName) => {
                 // 待更新的表数据对象
-                const modelVohash = await cacheServer.fetchCacheDataHash(ucId, tableName);
+                const modelVohash = await updateCacheServer.fetchCacheDataHash(ucId, tableName);
                 // 待更新的数据库表对象列表组装，需要包含主键
                 const modelVoList = [];
                 for (const id in modelVohash) {
@@ -58,12 +58,12 @@ export default class DeployManagerController extends BaseController {
                     deployModel.deployVo(ucId)
                 ]);
                 // 从缓存中删除
-                await cacheServer.delCacheDataList(tableNameList, ucId);
+                await updateCacheServer.delCacheDataList(tableNameList, ucId);
 
             });
 
             // 从缓存中删除用户发布状态
-            await cacheServer.delDeployStatus(ucId);
+            await updateCacheServer.delDeployStatus(ucId);
             this.success('发布成功！！！');
 
         } catch (e) {
@@ -81,7 +81,7 @@ export default class DeployManagerController extends BaseController {
      */
     public async rollBackAction() {
         const ucId: string = this.ctx.state.userId;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 下发相关的所有数据表
         const tableNameList = [
@@ -99,8 +99,8 @@ export default class DeployManagerController extends BaseController {
 
             });
             // 从缓存中删除
-            await cacheServer.delCacheDataList(tableNameList, ucId);
-            await cacheServer.delDeployStatus(ucId);
+            await updateCacheServer.delCacheDataList(tableNameList, ucId);
+            await updateCacheServer.delDeployStatus(ucId);
 
             this.success('回滚成功！！！');
 
@@ -119,10 +119,10 @@ export default class DeployManagerController extends BaseController {
      */
     public async deployStatusAction() {
         const ucId: string = this.ctx.state.userId;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 从缓存中获取用户发布状态
-        const deployStatus = await cacheServer.fetchDeployStatus(ucId);
+        const deployStatus = await updateCacheServer.fetchDeployStatus(ucId);
 
         if (deployStatus) {
             return this.success({ deployStatus: 1 });

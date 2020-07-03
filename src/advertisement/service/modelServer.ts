@@ -29,7 +29,7 @@ import ProductAuthModel from '../model/productAuth';
 import ProductGroupAuthModel from '../model/productGroupAuth';
 
 import BaseService from '../../common/tale/BaseService';
-import CacheService from './updateCacheServer';
+import UpdateCacheServer from './updateCacheServer';
 
 import {
     VersionGroupVO, AdChannelResVO, PackParamConfResVO, ChannelParamConfResVO, ConfigGroupResVO, ConfigResVO,
@@ -244,12 +244,12 @@ export default class ModelService extends BaseService {
      */
     public async getVersionGroupList(productId: string, type: number, creatorId: string) {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库里的版本条件分组对象
         const versionGroupVoList = await versionGroupModel.getListByProduct(productId, type, creatorId);
         // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
-        const cacheVersionGroupVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'versionGroup');
+        const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'versionGroup');
 
         // 返回的版本条件分组列表信息
         const versionGroupResVoList = await Bluebird.map(versionGroupVoList, async (versionGroupVo) => {
@@ -289,12 +289,12 @@ export default class ModelService extends BaseService {
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库里的 native 模板组对象
         const nativeTmplConfGroupVoList = await nativeTmplConfGroupModel.getListByProduct(productId, creatorId);
         // 未发布更新在缓存里的 native 模板组对象哈希表
-        const cacheNativeTmplConfGroupVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'nativeTmplConfGroup');
+        const cacheNativeTmplConfGroupVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'nativeTmplConfGroup');
 
         // native 模板组列表信息
         const nativeTmplConfGroupResVoList =
@@ -331,12 +331,12 @@ export default class ModelService extends BaseService {
     public async getNativeTmplConfList(nativeTmplConfGroupId: string, creatorId: string) {
         const nativeTmplModel = this.taleModel('nativeTmpl', 'advertisement') as NativeTmplModel;
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库里的 native 模板对象
         const nativeTmplConfVoList = await nativeTmplConfModel.getListByGroup(nativeTmplConfGroupId, creatorId);
         // 未发布更新在缓存里的 native 模板对象哈希表，优化批量取出，减少 redis io
-        const cacheNativeTmplConfVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'nativeTmplConf');
+        const cacheNativeTmplConfVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'nativeTmplConf');
 
         const nativeTmplConfResVoList = await Bluebird.map(nativeTmplConfVoList, async (nativeTmplConfVo) => {
 
@@ -378,12 +378,12 @@ export default class ModelService extends BaseService {
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库里的广告组对象
         const adGroupVoList = await adGroupModel.getListByProduct(productId, creatorId);
         // 未发布更新在缓存里的广告组对象
-        const cacheAdGroupVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'adGroup');
+        const cacheAdGroupVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'adGroup');
 
         const adGroupResVoList = await Bluebird.map(adGroupVoList, async (adGroupVo) => {
             const { id, adTypeId } = adGroupVo;
@@ -427,12 +427,12 @@ export default class ModelService extends BaseService {
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
         const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
 
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库里的广告对象
         const adVoList = await adModel.getListByProduct(productId, creatorId);
         // 未发布更新在缓存里的广告对象
-        const cacheAdVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'ad');
+        const cacheAdVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'ad');
 
         const adResVoList: AdResVO[] = await Bluebird.map(adVoList, async (adVo) => {
             const { id, adChannelId, adTypeId, adGroupId } = adVo;
@@ -479,12 +479,12 @@ export default class ModelService extends BaseService {
     public async getAdListInAdGroup(adGroupId: string, creatorId: string) {
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
         const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库里的广告对象
         const adVoList = await adModel.getListByAdGroup(adGroupId, creatorId);
         // 未发布更新在缓存里的广告对象哈希表
-        const cacheAdVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'ad');
+        const cacheAdVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'ad');
 
         const adResVoList = await Bluebird.map(adVoList, async (adVo) => {
             // 获取广告平台名
@@ -583,10 +583,10 @@ export default class ModelService extends BaseService {
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 未发布更新在缓存里的常量对象
-        const cacheConfigVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'config');
+        const cacheConfigVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'config');
 
         const [
             configVoList,
@@ -683,12 +683,12 @@ export default class ModelService extends BaseService {
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库里的常量组对象
         const configGroupVoList = await configGroupModel.getListByProductAndType(productId, type, creatorId);
         // 未发布更新在缓存里的常量组对象哈希表
-        const cacheConfigGroupVoHash = await cacheServer.fetchCacheDataHash(creatorId, 'configGroup');
+        const cacheConfigGroupVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'configGroup');
 
         const configGroupResVoList = await Bluebird.map(configGroupVoList, async (configGroupVo) => {
             const { id } = configGroupVo;
@@ -731,13 +731,13 @@ export default class ModelService extends BaseService {
      */
     public async getConfigGroup(configGroupId: string, creatorId: string) {
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库里的常量组对象
         const configGroupVo = await configGroupModel.getVo(configGroupId, creatorId);
         // 未发布更新在缓存里的常量组对象
         const cacheConfigGroupVo =
-            await cacheServer.fetchCacheData(creatorId, 'configGroup', configGroupId);
+            await updateCacheServer.fetchCacheData(creatorId, 'configGroup', configGroupId);
 
         // 不能看到其他人创建的组
         if (!configGroupVo) {
@@ -777,14 +777,14 @@ export default class ModelService extends BaseService {
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
 
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库里的 native 模板组对象
         const nativeTmplConfGroupVo =
             await nativeTmplConfGroupModel.getVo(nativeTmplConfGroupId, creatorId);
         // 未发布更新在缓存里的 native 模板组对象
         const cacheNativeTmplConfGroupVo =
-            await cacheServer.fetchCacheData(creatorId, 'nativeTmplConfGroup', nativeTmplConfGroupId);
+            await updateCacheServer.fetchCacheData(creatorId, 'nativeTmplConfGroup', nativeTmplConfGroupId);
 
         if (!nativeTmplConfGroupVo) {
             return;
@@ -809,7 +809,7 @@ export default class ModelService extends BaseService {
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库里的广告位对象
         const abTestMapVoList = await abTestMapModel.getListByAbTestGroup(abTestGroupId, creatorId);
@@ -818,8 +818,8 @@ export default class ModelService extends BaseService {
         const [
             cacheAbTestMapVoHash, cacheAdGroupVoHash
         ] = await Promise.all([
-            cacheServer.fetchCacheDataHash(creatorId, 'abTestMap'),
-            cacheServer.fetchCacheDataHash(creatorId, 'adGroup')
+            updateCacheServer.fetchCacheDataHash(creatorId, 'abTestMap'),
+            updateCacheServer.fetchCacheDataHash(creatorId, 'adGroup')
         ]);
 
         // 广告位列表信息

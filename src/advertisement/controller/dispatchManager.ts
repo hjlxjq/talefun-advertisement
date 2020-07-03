@@ -24,7 +24,7 @@ import NativeTmplConfModel from '../model/nativeTmplConf';
 import AdGroupModel from '../model/adGroup';
 import AdModel from '../model/ad';
 
-import CacheService from '../service/updateCacheServer';
+import UpdateCacheServer from '../service/updateCacheServer';
 import ModelServer from '../service/modelServer';
 
 import {
@@ -147,7 +147,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         try {
             // 数据库暂存， activeTime 标识
@@ -169,7 +169,7 @@ export default class DispatchManagerController extends BaseController {
             await abTestGroupModel.addVo(abTestGroupVo);
 
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('created');
 
@@ -199,7 +199,7 @@ export default class DispatchManagerController extends BaseController {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         try {
             // 被复制组的默认配置
@@ -250,7 +250,7 @@ export default class DispatchManagerController extends BaseController {
             await abTestMapModel.addList(defaultAbTestMapVoList);
 
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('copyed');
 
@@ -278,7 +278,7 @@ export default class DispatchManagerController extends BaseController {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库 code 字段为 json 字符串
         let code: string;
@@ -317,10 +317,10 @@ export default class DispatchManagerController extends BaseController {
                     updateVersionGroupVo.activeTime = now;
 
                 }
-                await cacheServer.setCacheData(ucId, 'versionGroup', id, updateVersionGroupVo);
+                await updateCacheServer.setCacheData(ucId, 'versionGroup', id, updateVersionGroupVo);
             }
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('updated');
 
@@ -341,13 +341,13 @@ export default class DispatchManagerController extends BaseController {
         const ucId: string = this.ctx.state.userId;
         const versionGroupId: string = this.post('id');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // think.logger.debug(`versionGroupId: ${versionGroupId}`);
         // 数据库里的 ab 分组对象
         const abTestGroupVoList = await abTestGroupModel.getListByVersionGroup(versionGroupId, ucId);
         // 未发布更新在缓存里的 ab 分组对象
-        const cacheAbTestGroupVoHash = await cacheServer.fetchCacheDataHash(ucId, 'abTestGroup');
+        const cacheAbTestGroupVoHash = await updateCacheServer.fetchCacheDataHash(ucId, 'abTestGroup');
 
         const abTestGroupResVoList = await Bluebird.map(abTestGroupVoList, async (abTestGroupVo) => {
             const { id: abTestGroupId } = abTestGroupVo;
@@ -397,13 +397,13 @@ export default class DispatchManagerController extends BaseController {
         const ucId: string = this.ctx.state.userId;
         const abTestGroupId: string = this.post('id');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
         // 数据库里的 ab 分组对象
         const abTestGroupVo = await abTestGroupModel.getVo(abTestGroupId, ucId);
         // 未发布更新在缓存里的 ab 分组对象
-        const cacheAbTestGroupVo = await cacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupId);
+        const cacheAbTestGroupVo = await updateCacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupId);
 
         // 返回线上数据和未发布的数据，以未发布数据为准
         const abTestGroupResVo = _.assign(abTestGroupVo, cacheAbTestGroupVo);
@@ -433,14 +433,14 @@ export default class DispatchManagerController extends BaseController {
         const ucId: string = this.ctx.state.userId;
         const abTestGroupId: string = this.post('id');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
 
         // 数据库里的 ab 分组对象
         const abTestGroupVo = await abTestGroupModel.getVo(abTestGroupId, ucId);
         // 未发布更新在缓存里的 ab 分组对象
         const cacheAbTestGroupVo: AbTestGroupVO =
-            await cacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupId);
+            await updateCacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupId);
 
         // 返回线上数据和未发布的数据，以未发布数据为准
         const abTestGroupResVo = _.assign(abTestGroupVo, cacheAbTestGroupVo);
@@ -484,7 +484,7 @@ export default class DispatchManagerController extends BaseController {
         let end: number = this.post('end');
         const groupNum: number = this.post('groupNum');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         try {
             // 数据库暂存， activeTime 标识
@@ -515,7 +515,7 @@ export default class DispatchManagerController extends BaseController {
 
             await abTestGroupModel.addList(createAbTestGroupVoList);
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('created');
 
@@ -538,7 +538,7 @@ export default class DispatchManagerController extends BaseController {
         const name: string = this.post('name');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         const now = moment().format('YYYY-MM-DD HH:mm:ss');
         const updateAbTestGroupVo: AbTestGroupVO = {
@@ -569,14 +569,14 @@ export default class DispatchManagerController extends BaseController {
                     // 广告位开关不用更新
                 } else {
                     await Bluebird.map(abTestGroupVoList, (abTestGroupVo) => {
-                        return cacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupVo.id, updateAbTestGroupVo);
+                        return updateCacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupVo.id, updateAbTestGroupVo);
                     });
 
                 }
 
             }
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('deleted');
 
@@ -598,7 +598,7 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupId: string = this.post('id');
         const configGroupId: string = this.post('configGroupId');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // ab 分组对象
         const abTestGroupVo = await abTestGroupModel.getVo(abTestGroupId, ucId);
@@ -617,11 +617,11 @@ export default class DispatchManagerController extends BaseController {
 
                 // 线上数据更新到缓存
             } else {
-                await cacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupId, updateAbTestGroupVo);
+                await updateCacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupId, updateAbTestGroupVo);
 
             }
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('binded');
 
@@ -678,7 +678,7 @@ export default class DispatchManagerController extends BaseController {
         const type: number = this.post('type');
         const active: number = this.post('active');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         const configGroupVo: ConfigGroupVO = {
             name, description, type, active,
@@ -687,7 +687,7 @@ export default class DispatchManagerController extends BaseController {
         await configGroupModel.addVo(configGroupVo);
 
         // 缓存用户发布状态
-        await cacheServer.setDeployStatus(ucId);
+        await updateCacheServer.setDeployStatus(ucId);
 
         this.success('created');
 
@@ -707,7 +707,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         const [
             copyedConfigGroupVo, copyedConfigVoList
@@ -748,7 +748,7 @@ export default class DispatchManagerController extends BaseController {
         await configModel.addList(configVoList);
 
         // 缓存用户发布状态
-        await cacheServer.setDeployStatus(ucId);
+        await updateCacheServer.setDeployStatus(ucId);
 
         return this.success('copyed');
 
@@ -767,7 +767,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 当前常量组对象
         const configGroupVo = await configGroupModel.getVo(id, ucId);
@@ -784,11 +784,11 @@ export default class DispatchManagerController extends BaseController {
 
                 // 线上数据更新到缓存
             } else {
-                await cacheServer.setCacheData(ucId, 'configGroup', id, updateConfigGroupVo);
+                await updateCacheServer.setCacheData(ucId, 'configGroup', id, updateConfigGroupVo);
 
             }
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('updated');
 
@@ -813,7 +813,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 广告常量的 active 和 activeTime 都为默认值（线上值）
         const configVo = await configModel.getByGroupAndKey(key, configGroupId, ucId, 1);
@@ -833,11 +833,11 @@ export default class DispatchManagerController extends BaseController {
                 // 存在加入缓存
             } else {
                 const { id } = configVo;
-                await cacheServer.setCacheData(ucId, 'config', id, updateConfigVo);
+                await updateCacheServer.setCacheData(ucId, 'config', id, updateConfigVo);
 
             }
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('updated');
 
@@ -862,7 +862,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库暂存， activeTime 标识
         const CacheActiveTime = think.config('CacheActiveTime');
@@ -874,7 +874,7 @@ export default class DispatchManagerController extends BaseController {
         await configModel.addVo(configVo);
 
         // 缓存用户发布状态
-        await cacheServer.setDeployStatus(ucId);
+        await updateCacheServer.setDeployStatus(ucId);
 
         this.success('created');
 
@@ -893,7 +893,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         const configVo = await configModel.getVo(id, ucId);
 
@@ -918,10 +918,10 @@ export default class DispatchManagerController extends BaseController {
                     const now = moment().format('YYYY-MM-DD HH:mm:ss');
                     updateConfigVo.activeTime = now;
                 }
-                await cacheServer.setCacheData(ucId, 'versionGroup', id, updateConfigVo);
+                await updateCacheServer.setCacheData(ucId, 'versionGroup', id, updateConfigVo);
             }
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('updated');
 
@@ -942,7 +942,7 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupId: string = this.post('id');
         const nativeTmplConfGroupId: string = this.post('nativeTmplConfGroupId');
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // ab 分组对象
         const abTestGroupVo = await abTestGroupModel.getVo(abTestGroupId, ucId);
@@ -961,11 +961,11 @@ export default class DispatchManagerController extends BaseController {
 
                 // 线上数据更新到缓存
             } else {
-                await cacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupId, updateAbTestGroupVo);
+                await updateCacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupId, updateAbTestGroupVo);
 
             }
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('updated');
 
@@ -1019,7 +1019,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
 
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
 
@@ -1029,7 +1029,7 @@ export default class DispatchManagerController extends BaseController {
         await nativeTmplConfGroupModel.addVo(nativeTmplConfGroupVo);
 
         // 缓存用户发布状态
-        await cacheServer.setDeployStatus(ucId);
+        await updateCacheServer.setDeployStatus(ucId);
 
         this.success('created');
 
@@ -1051,7 +1051,7 @@ export default class DispatchManagerController extends BaseController {
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         const [
             copyedNativeTmplConfGroupVo, copyedNativeTmplConfVoList
@@ -1088,7 +1088,7 @@ export default class DispatchManagerController extends BaseController {
         await nativeTmplConfModel.addList(nativeTmplConfVoList);
 
         // 缓存用户发布状态
-        await cacheServer.setDeployStatus(ucId);
+        await updateCacheServer.setDeployStatus(ucId);
 
         this.success('copyed');
 
@@ -1107,7 +1107,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 应用 native 模板组对象
         const nativeTmplConfGroupVo = await nativeTmplConfGroupModel.getVo(id, ucId);
@@ -1123,11 +1123,11 @@ export default class DispatchManagerController extends BaseController {
 
                 // 线上数据更新到缓存
             } else {
-                await cacheServer.setCacheData(ucId, 'nativeTmplConfGroup', id, updateNativeTmplConfGroupVo);
+                await updateCacheServer.setCacheData(ucId, 'nativeTmplConfGroup', id, updateNativeTmplConfGroupVo);
 
             }
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('updated');
 
@@ -1153,7 +1153,7 @@ export default class DispatchManagerController extends BaseController {
         const isFull: number = this.post('isFull');
         const active: number = this.post('active');
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库暂存， activeTime 标识
         const CacheActiveTime = think.config('CacheActiveTime');
@@ -1164,7 +1164,7 @@ export default class DispatchManagerController extends BaseController {
 
         await nativeTmplConfModel.addVo(nativeTmplConfVo);
         // 缓存用户发布状态
-        await cacheServer.setDeployStatus(ucId);
+        await updateCacheServer.setDeployStatus(ucId);
 
         this.success('created');
 
@@ -1184,7 +1184,7 @@ export default class DispatchManagerController extends BaseController {
         const clickArea: number = this.post('clickArea');
         const isFull: number = this.post('isFull');
         const active: number = this.post('active');
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
         const nativeTmplConfModel =
             this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
 
@@ -1211,10 +1211,10 @@ export default class DispatchManagerController extends BaseController {
                     const now = moment().format('YYYY-MM-DD HH:mm:ss');
                     updateNativeTmplConfVo.activeTime = now;
                 }
-                await cacheServer.setCacheData(ucId, 'nativeTmplConf', id, updateNativeTmplConfVo);
+                await updateCacheServer.setCacheData(ucId, 'nativeTmplConf', id, updateNativeTmplConfVo);
             }
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('updated');
 
@@ -1239,7 +1239,7 @@ export default class DispatchManagerController extends BaseController {
         const type: string = this.post('type');    // ??? 如果改变 place， 需要传广告类型 type
         const active: number = this.post('active');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         const abTestMapVo = await abTestMapModel.getVo(abTestGroupId, place, ucId);
 
@@ -1263,19 +1263,19 @@ export default class DispatchManagerController extends BaseController {
 
                     // 线上数据更新到缓存
                 } else {
-                    await cacheServer.setCacheData(ucId, 'abTestMap', id, updateAbTestMapVo);
+                    await updateCacheServer.setCacheData(ucId, 'abTestMap', id, updateAbTestMapVo);
 
                 }
 
             }
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             const abTestMapVo2 = await abTestMapModel.getVo(abTestGroupId, place, ucId);
             think.logger.debug(`abTestMapVo2: ${JSON.stringify(abTestMapVo2)}`);
 
             if (!_.isEmpty(abTestMapVo)) {
-                const abTestMapVo3 = await cacheServer.fetchCacheData(ucId, 'abTestMap', abTestMapVo.id);
+                const abTestMapVo3 = await updateCacheServer.fetchCacheData(ucId, 'abTestMap', abTestMapVo.id);
                 think.logger.debug(`abTestMapVo3: ${JSON.stringify(abTestMapVo3)}`);
             }
 
@@ -1299,7 +1299,7 @@ export default class DispatchManagerController extends BaseController {
         const place: string = this.post('place');
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         try {
             // 获取被全量的 ab 测试分组相关的版本条件分组 id 和 广告位表主键 id以及绑定的广告组，广告类型
@@ -1333,13 +1333,13 @@ export default class DispatchManagerController extends BaseController {
                 await abTestMapModel.addVo(updateDefaultAbTestMapVo);
 
             } else {
-                await cacheServer.setCacheData(ucId, 'abTestMap', defaultAbTestMapVo.id, updateDefaultAbTestMapVo);
+                await updateCacheServer.setCacheData(ucId, 'abTestMap', defaultAbTestMapVo.id, updateDefaultAbTestMapVo);
 
             }
             // 更新该 ab 测试分组数据，即关闭这个 ab 测试分组下的广告位
-            await cacheServer.setCacheData(ucId, 'abTestMap', abTestMapId, updateAbTestMapVo);
+            await updateCacheServer.setCacheData(ucId, 'abTestMap', abTestMapId, updateAbTestMapVo);
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('completed');
 
@@ -1378,7 +1378,7 @@ export default class DispatchManagerController extends BaseController {
         const description: string = this.post('description');
         const active: number = this.post('active');
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         const adGroupVo: AdGroupVO = {
             name, description, creatorId: ucId,
@@ -1387,7 +1387,7 @@ export default class DispatchManagerController extends BaseController {
 
         await adGroupModel.addVo(adGroupVo);
         // 缓存用户发布状态
-        await cacheServer.setDeployStatus(ucId);
+        await updateCacheServer.setDeployStatus(ucId);
 
         this.success('created');
 
@@ -1405,7 +1405,7 @@ export default class DispatchManagerController extends BaseController {
         const name: string = this.post('name');
         const description: string = this.post('description');
         const active: number = this.post('active');
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
 
@@ -1442,7 +1442,7 @@ export default class DispatchManagerController extends BaseController {
         await adModel.addList(adVoList);
 
         // 缓存用户发布状态
-        await cacheServer.setDeployStatus(ucId);
+        await updateCacheServer.setDeployStatus(ucId);
 
         this.success('copyed');
 
@@ -1459,17 +1459,17 @@ export default class DispatchManagerController extends BaseController {
         const id: string = this.post('id');
         const description: string = this.post('description');
         const active: number = this.post('active');
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         const adGroupVo: AdGroupVO = {
             name: undefined, description, creatorId: undefined, adTypeId: undefined, productId: undefined, active
         };
 
         try {
-            await cacheServer.setCacheData(ucId, 'adGroup', id, adGroupVo);
+            await updateCacheServer.setCacheData(ucId, 'adGroup', id, adGroupVo);
 
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('updated');
 
@@ -1526,7 +1526,7 @@ export default class DispatchManagerController extends BaseController {
         const active: number = this.post('active');
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         try {
             const { adTypeId, productId } = await adGroupModel.getVo(adGroupId, ucId);
@@ -1543,7 +1543,7 @@ export default class DispatchManagerController extends BaseController {
             await adModel.addVo(adVo);
 
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('created');
 
@@ -1572,7 +1572,7 @@ export default class DispatchManagerController extends BaseController {
         const bidding: number = this.post('bidding');
         const active: number = this.post('active');
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
-        const cacheServer = this.taleService('updateCacheServer', 'advertisement') as CacheService;
+        const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 该广告对象
         const adVo = await adModel.getVo(id, ucId);
@@ -1602,12 +1602,12 @@ export default class DispatchManagerController extends BaseController {
                     updateAdVo.activeTime = now;
 
                 }
-                await cacheServer.setCacheData(ucId, 'ad', id, updateAdVo);
+                await updateCacheServer.setCacheData(ucId, 'ad', id, updateAdVo);
 
             }
 
             // 缓存用户发布状态
-            await cacheServer.setDeployStatus(ucId);
+            await updateCacheServer.setDeployStatus(ucId);
 
             this.success('updated');
 

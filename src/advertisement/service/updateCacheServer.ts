@@ -1,6 +1,6 @@
 /**
  * advertisement cacheService
- * @module advertisement/service/cacheServer
+ * @module advertisement/service/updateCacheServer
  * @see module:../../common/tale/BaseService
  */
 import { think } from 'thinkjs';
@@ -15,7 +15,7 @@ import BaseService from '../../common/tale/BaseService';
  * @extends @link:common/tale/BaseService
  * @author jianlong <jianlong@talefun.com>
  */
-export default class CacheService extends BaseService {
+export default class UpdateCacheServer extends BaseService {
     private redis: Redis.Redis;
     private oneDaySeconds = 24 * 60 * 60;
     private cacheKeyPrefix = 'updateCache:';    // 数据库更新缓存数据，redis 哈希表的 key 前缀
