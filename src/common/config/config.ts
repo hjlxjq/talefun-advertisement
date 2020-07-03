@@ -6,7 +6,7 @@ module.exports = {
     TLF_TokenSecret: 'www.talefun.com',
     XXTEA_KEY_2: '):NGnA.>L5yO',
     XXTEA_KEY: 'gn:g>-7WSWN/',
-    PreviewDir: 'upload/preview',
+    PreviewDir: 'upload/image/preview',
     local_domain: 'http://adtest.weplayer.cc/',
     manager_domain: 'http://ad-manager.weplayer.cc/',
     distribute_domain: 'http://ad-dis.weplayer.cc/',
