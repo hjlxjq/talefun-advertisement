@@ -20,8 +20,8 @@ export default class ChannelParamConfModel extends MBModel {
     /**
      * 创建或更新应用广告平台参数,
      * <br/>不存在则创建，否者更新
-     * @argument {string} adChannelId 广告平台参数表 id;
-     * @argument {string} productId 应用表 id;
+     * @argument {string} adChannelId 广告平台参数表主键;
+     * @argument {string} productId 应用表主键;
      * @argument {ChannelParamConfVO} channelParamConfVo 应用广告平台参数表对象;
      */
     public async thenUpdateVo(
@@ -37,10 +37,10 @@ export default class ChannelParamConfModel extends MBModel {
     }
 
     /**
-     * 根据广告平台表主键 id 获取应用广告平台参数信息
-     * @argument {string} id 应用广告平台参数表 id;
-     * @argument {string} adChannelId 广告平台表 id;
-     * @argument {string} productId 应用表 id;
+     * 根据广告平台表主键 获取应用广告平台参数信息
+     * @argument {string} id 应用广告平台参数表主键;
+     * @argument {string} adChannelId 广告平台表主键;
+     * @argument {string} productId 应用表主键;
      * @returns {Promise<ChannelParamConfVO>} 应用广告平台参数信息;
      */
     public async getVo(adChannelId: string, productId: string) {
@@ -49,7 +49,7 @@ export default class ChannelParamConfModel extends MBModel {
     }
 
     /**
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      * 获取应用广告平台参数信息列表
      */
     public async getList(productId: string) {
@@ -59,8 +59,8 @@ export default class ChannelParamConfModel extends MBModel {
 
     /**
      * 删除应用广告平台参数信息
-     * @argument {string} adChannelId 广告平台参数表 id;
-     * @argument {string} productId 应用表 id;
+     * @argument {string} adChannelId 广告平台参数表主键;
+     * @argument {string} productId 应用表主键;
      * @returns {Promise<number>} 删除行数;
      */
     public async delVo(adChannelId: string, productId: string) {

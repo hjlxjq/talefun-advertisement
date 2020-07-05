@@ -23,7 +23,6 @@ import { think } from 'thinkjs';
 import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as url from 'url';
 
 const rename = think.promisify(fs.rename, fs); // 通过 promisify 方法把 rename 方法包装成 Promise 接口
 
@@ -33,8 +32,8 @@ import {
 
 import {
     AdTypeListResVO,
-    GetAdTypeReqVO, GetAdTypeResVO, CreateAdTypeReqVO, CreateAdTypeResVO, UpdateAdTypeReqVO, UpdateAdTypeResVO,
-    AdChannelListResVO, GetAdChannelReqVO, GetAdChannelResVO, CreateAdChannelReqVO, CreateAdChannelResVO,
+    AdTypeReqVO, AdTypeResVO, CreateAdTypeReqVO, CreateAdTypeResVO, UpdateAdTypeReqVO, UpdateAdTypeResVO,
+    AdChannelListResVO, AdChannelReqVO, AdChannelResVO, CreateAdChannelReqVO, CreateAdChannelResVO,
     UpdateAdChannelReqVO, UpdateAdChannelResVO, NativeTmplListResVO, CreateNativeTmplReqVO, CreateNativeTmplResVO,
     UpdateNativeTmplReqVO, UpdateNativeTmplResVO, BaseConfigListResVO, CreateBaseConfigReqVO,
     CreateBaseConfigResVO, UpdateBaseConfigReqVO, UpdateBaseConfigResVO, PackParamListResVO,
@@ -67,9 +66,9 @@ export default class CommonManagerController extends BaseController {
     }
 
     /**
-     * <br/>获取广告类型
-     * @argument {GetAdTypeReqVO}
-     * @returns {GetAdTypeResVO}
+     * <br/>根据广告类型显示名称获取广告类型
+     * @argument {AdTypeReqVO}
+     * @returns {AdTypeResVO}
      * @debugger yes
      */
     public async adTypeAction() {
@@ -149,8 +148,8 @@ export default class CommonManagerController extends BaseController {
 
     /**
      * <br/>获取广告平台
-     * @argument {GetAdChannelReqVO}
-     * @returns {GetAdChannelResVO}
+     * @argument {AdChannelReqVO}
+     * @returns {AdChannelResVO}
      * @debugger yes
      */
     public async adChannelAction() {
@@ -172,9 +171,9 @@ export default class CommonManagerController extends BaseController {
     public async createAdChannelAction() {
         const ucId: string = this.ctx.state.user.id;
         const channel: string = this.post('channel');
-        const key1: string = this.post('key1') || undefined;
-        const key2: string = this.post('key2') || undefined;
-        const key3: string = this.post('key3') || undefined;
+        const key1: string = this.post('key1') || undefined;    // 空字符串处理
+        const key2: string = this.post('key2') || undefined;    // 空字符串处理
+        const key3: string = this.post('key3') || undefined;    // 空字符串处理
         const test: number = this.post('test');
         const active: number = this.post('active');
         const adChannelModel = this.taleModel('adChannel', 'advertisement') as AdChannelModel;
@@ -213,6 +212,7 @@ export default class CommonManagerController extends BaseController {
 
                 if (rows !== adTypeIdList.length) {
                     throw new Error('没有全部更新！！！');
+
                 }
 
             } else {
@@ -226,7 +226,8 @@ export default class CommonManagerController extends BaseController {
 
         } catch (e) {
             think.logger.debug(e);
-            this.fail(TaleCode.DBFaild, 'update fail!!!');
+            this.fail(TaleCode.DBFaild, e.message);
+
         }
 
     }
@@ -243,42 +244,16 @@ export default class CommonManagerController extends BaseController {
 
         const nativeTmplVoList = await nativeTmplModel.getList();
 
-        return this.success(nativeTmplVoList);
-    }
+        const nativeTmplResVoList = _.map(nativeTmplVoList, (nativeTmplVo) => {
+            // 删除不必要的字段
+            delete nativeTmplVo.createAt;
+            delete nativeTmplVo.updateAt;
 
-    /**
-     * <br/>上传 native 模板预览图
-     * @debugger yes
-     */
-    public async uploadPreviewAction() {
-        think.logger.debug(`files: ${JSON.stringify(this.file())}`);
-        think.logger.debug(`posts: ${JSON.stringify(this.post())}`);
-        const file = this.file('file');
-        think.logger.debug(`file: ${JSON.stringify(file)}`);
+            return nativeTmplVo;
 
-        if (!file || !file.type.startsWith('image') || !file.name) {
-            return this.fail(10, '上传失败');
-        }
+        });
+        return this.success(nativeTmplResVoList);
 
-        const fireName: string = file.name;
-
-        think.logger.debug(`file: ${fireName}`);
-        think.logger.debug(`file: ${file.path}`);
-
-        const CTR_ENV = process.env.CTR_ENV;
-        think.logger.debug(`CTR_ENV: ${CTR_ENV}`);
-
-        const domain: string = think.config(CTR_ENV + '_domain');
-
-        think.logger.debug(`domain: ${domain}`);
-
-        const PreviewDir = path.resolve(think.ROOT_PATH, '..', think.config('PreviewDir'));
-        const filepath = path.resolve(PreviewDir, fireName);
-
-        await rename(file.path, filepath);
-
-        const preview = domain + 'image/preview/' + fireName;
-        this.success({ preview });
     }
 
     /**
@@ -288,7 +263,7 @@ export default class CommonManagerController extends BaseController {
      * @debugger yes
      */
     public async createNativeTmplAction() {
-        // const ucId: string = this.ctx.state.user.id;
+        const ucId: string = this.ctx.state.user.id;
         const file = this.file('file') as FileVO;    // 上传的文件
         const key: string = this.post('key');
         const test: number = this.post('test');
@@ -308,13 +283,12 @@ export default class CommonManagerController extends BaseController {
         await Utils.thenCreateDir(nativeTmplDir);
         // 模板图片名
         const fileName = path.basename(file.path);
-        // 模板图片地址
+        // 模板图片存放地址
         const filepath = path.resolve(nativeTmplDir, fileName);
         // 把图片从暂存中 move 到图片目录
         await rename(file.path, filepath);
 
         // 预览图地址
-        // const preview = new URL(filepath, domain).toString();
         const preview = domain + 'image/preview/' + key + '/' + fileName;
         // native 模板表对象
         const nativeTmplVo: NativeTmplVO = {
@@ -341,29 +315,33 @@ export default class CommonManagerController extends BaseController {
         const nativeTmplModel = this.taleModel('nativeTmpl', 'advertisement') as NativeTmplModel;
 
         // 当前 native 模板的 key
-        const { key } = await nativeTmplModel.getVo(id, undefined, undefined);
+        const { key } = await nativeTmplModel.getVo(id);
+        // 模板预览图
+        let preview: string;
 
-        // 服务器环境。本地服务器，管理服务器或者分发服务器
-        const CTR_ENV = process.env.CTR_ENV;
-        // 服务器域名 -暂时，后期考虑加上 CDN
-        const domain: string = think.config(CTR_ENV + '_domain');
-        // 上传图片保存目录
-        const PreviewDir = think.config('PreviewDir');
+        if (_.isEmpty(file)) {
+            // 服务器环境。本地服务器，管理服务器或者分发服务器
+            const CTR_ENV = process.env.CTR_ENV;
+            // 服务器域名 -暂时，后期考虑加上 CDN
+            const domain: string = think.config(CTR_ENV + '_domain');
+            // 上传图片保存目录
+            const PreviewDir = think.config('PreviewDir');
 
-        // 模板图片保存在上传图片保存目录的子目录，目录名为 key
-        const nativeTmplDir = path.resolve(PreviewDir, key);
-        // 不存在这创建
-        await Utils.thenCreateDir(nativeTmplDir);
-        // 模板图片名
-        const fileName = path.basename(file.path);
-        // 模板图片地址
-        const filepath = path.resolve(nativeTmplDir, fileName);
-        // 把图片从暂存中 move 到图片目录
-        await rename(file.path, filepath);
+            // 模板图片保存在上传图片保存目录的子目录，目录名为 key
+            const nativeTmplDir = path.resolve(PreviewDir, key);
+            // 不存在这创建
+            await Utils.thenCreateDir(nativeTmplDir);
+            // 模板图片名
+            const fileName = path.basename(file.path);
+            // 模板图片存储地址
+            const filepath = path.resolve(nativeTmplDir, fileName);
+            // 把图片从暂存中 move 到图片目录
+            await rename(file.path, filepath);
 
-        // 预览图地址
-        const preview = domain + 'image/preview/' + key + '/' + fileName;
+            // 预览图地址
+            preview = domain + 'image/preview/' + key + '/' + fileName;
 
+        }
         const nativeTmplUpdateVo: NativeTmplVO = {
             key: undefined, preview, test, active,
         };
@@ -454,7 +432,7 @@ export default class CommonManagerController extends BaseController {
         const ucId: string = this.ctx.state.user.id;
         const packParamModel = this.taleModel('packParam', 'advertisement') as PackParamModel;
 
-        const packParamVoList = await packParamModel.getList(undefined, undefined);
+        const packParamVoList = await packParamModel.getList();
 
         const packParamResVoList = _.map(packParamVoList, (packParamVo) => {
             // 删除不必要的字段

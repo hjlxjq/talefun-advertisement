@@ -583,7 +583,7 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>返回所有待写入 redis 的 ab 测试分组相关数据对象，以版本条件分组表主键 id 为 key
+     * <br/>返回所有待写入 redis 的 ab 测试分组相关数据对象，以版本条件分组表主键 为 key
      * @return {{ [propName: string]: AbTestGroupCacheVO[]; }} 所有待写入 redis 的 ab 测试分组相关数据对象
      */
     public async abTestGroupData() {
@@ -618,7 +618,7 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>返回所有待写入 redis 的 ab 测试分组广告位相关数据对象，以 ab 测试分组表主键 id 为 key
+     * <br/>返回所有待写入 redis 的 ab 测试分组广告位相关数据对象，以 ab 测试分组表主键 为 key
      * @return {{ [propName: string]: AbTestMapCacheVO[] }} 所有待写入 redis 的 ab 测试分组广告位相关数据对象
      */
     public async abTestMapData() {

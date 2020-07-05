@@ -189,7 +189,7 @@ export default class DispatchManagerController extends BaseController {
      */
     public async copyVersionGroupAction() {
         const ucId: string = this.ctx.state.userId;
-        const copyId: string = this.post('id');    // 被复制的版本条件分组主键 id
+        const copyId: string = this.post('id');    // 被复制的版本条件分组主键
         const name: string = this.post('name');
         const begin: number = this.post('begin');
         const description: string = this.post('description');
@@ -569,7 +569,9 @@ export default class DispatchManagerController extends BaseController {
                     // 广告位开关不用更新
                 } else {
                     await Bluebird.map(abTestGroupVoList, (abTestGroupVo) => {
-                        return updateCacheServer.setCacheData(ucId, 'abTestGroup', abTestGroupVo.id, updateAbTestGroupVo);
+                        return updateCacheServer.setCacheData(
+                            ucId, 'abTestGroup', abTestGroupVo.id, updateAbTestGroupVo
+                        );
                     });
 
                 }
@@ -1302,7 +1304,7 @@ export default class DispatchManagerController extends BaseController {
         const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         try {
-            // 获取被全量的 ab 测试分组相关的版本条件分组 id 和 广告位表主键 id以及绑定的广告组，广告类型
+            // 获取被全量的 ab 测试分组相关的版本条件分组 id 和 广告位表主键以及绑定的广告组，广告类型
             const [
                 { versionGroupId },
                 { id: abTestMapId, adGroupId }
@@ -1333,7 +1335,9 @@ export default class DispatchManagerController extends BaseController {
                 await abTestMapModel.addVo(updateDefaultAbTestMapVo);
 
             } else {
-                await updateCacheServer.setCacheData(ucId, 'abTestMap', defaultAbTestMapVo.id, updateDefaultAbTestMapVo);
+                await updateCacheServer.setCacheData(
+                    ucId, 'abTestMap', defaultAbTestMapVo.id, updateDefaultAbTestMapVo
+                );
 
             }
             // 更新该 ab 测试分组数据，即关闭这个 ab 测试分组下的广告位

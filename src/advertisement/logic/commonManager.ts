@@ -30,39 +30,13 @@ export default class CommonManagerLogic extends AMLogic {
     public async adTypeListAction() {
         this.allowMethods = 'get';    // 只允许 GET 请求类型
 
-        // try {
-        //     const userAuth = await this.comAuth();
-        //     const { master, viewComConf } = userAuth;
-
-        //     if (master === 0 && viewComConf === 0) {
-        //         throw new Error('没有权限！！！');
-        //     }
-
-        // } catch (e) {
-        //     think.logger.debug(e);
-        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        // }
-
     }
 
     /**
-     * <br/>获取广告类型
+     * <br/>根据广告类型显示名称获取广告类型
      */
     public async adTypeAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
-
-        // try {
-        //     const userAuth = await this.comAuth();
-        //     const { master, viewComConf } = userAuth;
-
-        //     if (master === 0 && viewComConf === 0) {
-        //         throw new Error('没有权限！！！');
-        //     }
-
-        // } catch (e) {
-        //     think.logger.debug(e);
-        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        // }
 
         const rules = {
             name: {
@@ -92,11 +66,13 @@ export default class CommonManagerLogic extends AMLogic {
 
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
         const rules = {
@@ -145,11 +121,13 @@ export default class CommonManagerLogic extends AMLogic {
 
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
         const rules = {
@@ -191,19 +169,6 @@ export default class CommonManagerLogic extends AMLogic {
     public async adChannelListAction() {
         this.allowMethods = 'get';    // 只允许 GET 请求类型
 
-        // try {
-        //     const userAuth = await this.comAuth();
-        //     const { master, viewComConf } = userAuth;
-
-        //     if (master === 0 && viewComConf === 0) {
-        //         throw new Error('没有权限！！！');
-        //     }
-
-        // } catch (e) {
-        //     think.logger.debug(e);
-        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        // }
-
     }
 
     /**
@@ -211,19 +176,6 @@ export default class CommonManagerLogic extends AMLogic {
      */
     public async adChannelAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
-
-        // try {
-        //     const userAuth = await this.comAuth();
-        //     const { master, viewComConf } = userAuth;
-
-        //     if (master === 0 && viewComConf === 0) {
-        //         throw new Error('没有权限！！！');
-        //     }
-
-        // } catch (e) {
-        //     think.logger.debug(e);
-        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        // }
 
         const rules = {
             channel: {
@@ -253,11 +205,13 @@ export default class CommonManagerLogic extends AMLogic {
 
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
         const rules = {
@@ -317,10 +271,13 @@ export default class CommonManagerLogic extends AMLogic {
 
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
+
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
         const rules = {
@@ -400,19 +357,6 @@ export default class CommonManagerLogic extends AMLogic {
     public async nativeTmplListAction() {
         this.allowMethods = 'get';    // 只允许 GET 请求类型
 
-        // try {
-        //     const userAuth = await this.comAuth();
-        //     const { master, viewComConf } = userAuth;
-
-        //     if (master === 0 && viewComConf === 0) {
-        //         throw new Error('没有权限！！！');
-        //     }
-
-        // } catch (e) {
-        //     think.logger.debug(e);
-        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        // }
-
     }
 
     /**
@@ -421,18 +365,20 @@ export default class CommonManagerLogic extends AMLogic {
     public async createNativeTmplAction() {
         this.allowMethods = 'post';    // 只允许 POST 请求类型
 
-        // try {
-        //     const userAuth = await this.comAuth();
-        //     const { master, editComConf } = userAuth;
+        try {
+            const userAuth = await this.comAuth();
+            const { master, editComConf } = userAuth;
 
-        //     if (master === 0 && editComConf === 0) {
-        //         throw new Error('没有权限！！！');
-        //     }
+            if (master === 0 && editComConf === 0) {
+                throw new Error('没有权限！！！');
 
-        // } catch (e) {
-        //     think.logger.debug(e);
-        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        // }
+            }
+
+        } catch (e) {
+            think.logger.debug(e);
+            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
+        }
 
         const rules = {
             key: {
@@ -472,7 +418,7 @@ export default class CommonManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, '请上传图片');
 
         }
-        // 图片小于 10M
+        // 图片要小于 10M
         if (file.size > 10485760) {
             return this.fail(TaleCode.ValidData, '图片大于 10M！！！');
 
@@ -492,11 +438,13 @@ export default class CommonManagerLogic extends AMLogic {
 
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
         const rules = {
@@ -550,19 +498,6 @@ export default class CommonManagerLogic extends AMLogic {
     public async baseConfigListAction() {
         this.allowMethods = 'get';    // 只允许 GET 请求类型
 
-        // try {
-        //     const userAuth = await this.comAuth();
-        //     const { master, viewComConf } = userAuth;
-
-        //     if (master === 0 && viewComConf === 0) {
-        //         throw new Error('没有权限！！！');
-        //     }
-
-        // } catch (e) {
-        //     think.logger.debug(e);
-        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        // }
-
     }
 
     /**
@@ -577,11 +512,13 @@ export default class CommonManagerLogic extends AMLogic {
 
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
         const rules = {
@@ -623,7 +560,7 @@ export default class CommonManagerLogic extends AMLogic {
         }
 
         /**
-         * <br/>判断 key 在基础常量中是否存在，存在不可创建
+         * <br/>判断 key 在游戏常量中是否存在，存在不可创建
          */
         const key: string = this.post('key');
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
@@ -649,11 +586,13 @@ export default class CommonManagerLogic extends AMLogic {
 
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
         const rules = {
@@ -700,18 +639,6 @@ export default class CommonManagerLogic extends AMLogic {
     public async packParamListAction() {
         this.allowMethods = 'get';    // 只允许 GET 请求类型
 
-        // try {
-        //     const userAuth = await this.comAuth();
-        //     const { master, viewComConf } = userAuth;
-
-        //     if (master === 0 && viewComConf === 0) {
-        //         throw new Error('没有权限！！！');
-        //     }
-        // } catch (e) {
-        //     think.logger.debug(e);
-        //     return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-        // }
-
     }
 
     /**
@@ -726,10 +653,13 @@ export default class CommonManagerLogic extends AMLogic {
 
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
+
             }
+
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
         const rules = {
@@ -778,11 +708,13 @@ export default class CommonManagerLogic extends AMLogic {
 
             if (master === 0 && editComConf === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
         const rules = {
@@ -824,7 +756,7 @@ export default class CommonManagerLogic extends AMLogic {
     tokenExempts(): TokenExemptVO[] {
         const exes = super.tokenExempts();
         exes.push({ action: 'index' });
-        exes.push({ action: 'createNativeTmpl' });
+        // exes.push({ action: 'createNativeTmpl' });
 
         return exes;
 

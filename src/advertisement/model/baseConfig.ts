@@ -17,11 +17,10 @@ import Utils from '../utils';
  * @author jianlong <jianlong@talefun.com>
  */
 export default class BaseConfigModel extends MBModel {
-
     /**
      * 插入基础常量
      * @argument {BaseConfigVO} baseConfigVo 基础常量表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(baseConfigVo: BaseConfigVO) {
         await this.add(baseConfigVo);
@@ -31,7 +30,7 @@ export default class BaseConfigModel extends MBModel {
 
     /**
      * 更新基础常量
-     * @argument {string} id 基础常量表 id;
+     * @argument {string} id 基础常量表主键;
      * @argument {BaseConfigVO} baseConfigVo 基础常量表对象;
      * @returns {Promise<number>} 返回影响的行数
      */

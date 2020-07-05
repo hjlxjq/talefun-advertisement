@@ -46,8 +46,8 @@ export interface AdChannelVO extends BaseVO {
  * 通用广告平台与广告类型关系表基本字段
  */
 export interface AdChannelMapVO extends BaseVO {
-    adChannelId: string;    // 广告平台表 id
-    adTypeId: string;    // 广告类型表 id
+    adChannelId: string;    // 广告平台表主键
+    adTypeId: string;    // 广告类型表主键
 }
 
 /**
@@ -106,7 +106,7 @@ export interface ProductVO extends BaseVO {
     pid: string;    // 苹果 id
     test: number;    // 是否测试 app 可见
     active: number;    // 是否生效
-    productGroupId: string;    // 项目组表 id
+    productGroupId: string;    // 项目组表主键
 }
 
 /**
@@ -114,8 +114,8 @@ export interface ProductVO extends BaseVO {
  */
 export interface PackParamConfVO extends BaseVO {
     value: string;    // 值
-    packParamId: string;    // 打包参数表 id
-    productId: string;    // 应用表 id
+    packParamId: string;    // 打包参数表主键
+    productId: string;    // 应用表主键
 }
 
 /**
@@ -125,8 +125,8 @@ export interface ChannelParamConfVO extends BaseVO {
     value1: string;    // 启动参数 1 的值
     value2: string;    // 启动参数 2 的值
     value3: string;    // 启动参数 3 的值
-    adChannelId: string;    // 广告平台表 id
-    productId: string;    // 应用表 id
+    adChannelId: string;    // 广告平台表主键
+    productId: string;    // 应用表主键
 }
 
 /**
@@ -143,8 +143,8 @@ export interface AdGroupVO extends BaseVO {
     description: string; // 广告组描述
     active: number;    // 是否生效
     creatorId: string;    // 创建者 id
-    adTypeId?: string;    // 广告类型表 id
-    productId?: string;    // 应用表 id
+    adTypeId?: string;    // 广告类型表主键
+    productId?: string;    // 应用表主键
 }
 
 /**
@@ -162,10 +162,10 @@ export interface AdVO extends BaseVO {
     activeTime: string;    // 失效时间戳
     active: number;    // 控制生效
     creatorId: string;    // 创建者 id
-    adChannelId: string;    // 广告平台表 id
-    adTypeId: string;    // 广告类型表 id
-    adGroupId: string;    // 广告组表 id
-    productId: string;    // 应用表 id
+    adChannelId: string;    // 广告平台表主键
+    adTypeId: string;    // 广告类型表主键
+    adGroupId: string;    // 广告组表主键
+    productId: string;    // 应用表主键
 }
 
 /**
@@ -176,7 +176,7 @@ export interface NativeTmplConfGroupVO extends BaseVO {
     description: string; // native 模板配置组描述
     active: number;    // 控制生效
     creatorId: string;    // 创建者 id
-    productId: string;    // 应用表 id
+    productId: string;    // 应用表主键
 }
 
 /**
@@ -189,8 +189,8 @@ export interface NativeTmplConfVO extends BaseVO {
     active: number;    // 控制生效
     activeTime: string;    // 失效时间戳
     creatorId: string;    // 创建者 id
-    nativeTmplId: string;    // native 模板表 id
-    nativeTmplConfGroupId: string;    // native 模板配置组表 id
+    nativeTmplId: string;    // native 模板表主键
+    nativeTmplConfGroupId: string;    // native 模板配置组表主键
 }
 
 /**
@@ -202,8 +202,8 @@ export interface ConfigGroupVO extends BaseVO {
     type: number;    // 0 广告 1 游戏常量
     active: number;    // 控制生效
     creatorId: string;    // 创建者 id
-    dependentId: string;    // 依赖的常量组表 id
-    productId: string;    // 应用表 id
+    dependentId: string;    // 依赖的常量组表主键
+    productId: string;    // 应用表主键
 }
 
 /**
@@ -216,7 +216,7 @@ export interface ConfigVO extends BaseVO {
     active: number;    // 控制生效
     activeTime: string;    // 失效时间戳
     creatorId: string;    // 创建者 id
-    configGroupId: string;    // 常量组表 id
+    configGroupId: string;    // 常量组表主键
 }
 
 /**
@@ -232,7 +232,7 @@ export interface VersionGroupVO extends BaseVO {
     type: number;    // 0 广告 1 游戏常量 2 商店
     activeTime: string;    // 失效时间戳
     code: string; // 国家代码列表 json 字符串
-    productId: string;    // 应用表 id
+    productId: string;    // 应用表主键
 }
 
 /**
@@ -254,9 +254,9 @@ export interface AbTestGroupVO extends BaseVO {
     creatorId: string;    // 创建者 id
     active: number;    // 控制生效
     activeTime: string;    // 失效时间戳
-    nativeTmplConfGroupId: string;    // native 模板组表 id
-    configGroupId: string;    // 常量组表 id
-    versionGroupId: string;    // 版本条件分组表 id
+    nativeTmplConfGroupId: string;    // native 模板组表主键
+    configGroupId: string;    // 常量组表主键
+    versionGroupId: string;    // 版本条件分组表主键
 }
 
 /**
@@ -266,8 +266,8 @@ export interface AbTestMapVO extends BaseVO {
     place: string; // 广告位
     active: number;    // 控制生效
     creatorId: string;    // 创建者 id
-    abTestGroupId: string;    // ab 分组测试表 id
-    adGroupId: string;    // 广告组表 id
+    abTestGroupId: string;    // ab 分组测试表主键
+    adGroupId: string;    // 广告组表主键
 }
 
 /**
@@ -296,7 +296,7 @@ export interface UserAuthVO extends BaseVO {
     viewComConf: number;    // 查看常规配置权限
     createProductGroup: number;    // 创建项目组权限
     master: number;    // 是否管理员
-    userId?: string;    // 用户表 id
+    userId?: string;    // 用户表主键
 }
 
 /**
@@ -305,8 +305,8 @@ export interface UserAuthVO extends BaseVO {
 export interface ProductGroupAuthVO extends BaseProductAuthVO {
     master: number;    // 项目组管理员
     createProduct: number; // 创建应用
-    userId: string;    // 用户表 id
-    productGroupId: string;    // 项目组表 id
+    userId: string;    // 用户表主键
+    productGroupId: string;    // 项目组表主键
 }
 
 /**
@@ -314,8 +314,8 @@ export interface ProductGroupAuthVO extends BaseProductAuthVO {
  */
 export interface ProductAuthVO extends BaseProductAuthVO {
     master: number;    // 应用管理员
-    userId: string;    // 用户表 id
-    productId: string;    // 应用表 id
+    userId: string;    // 用户表主键
+    productId: string;    // 应用表主键
 }
 
 /**
@@ -526,8 +526,8 @@ export interface AbTestGroupCacheVO {
     name: string;    // ab 测试组名
     begin: number;    // 开始范围
     end: number;    // 结束范围
-    nativeTmplConfGroupId?: string;    // native 模板组表 id
-    configGroupId?: string;    // 常量组表 id
+    nativeTmplConfGroupId?: string;    // native 模板组表主键
+    configGroupId?: string;    // 常量组表主键
 }
 
 /**
@@ -535,7 +535,7 @@ export interface AbTestGroupCacheVO {
  */
 export interface AbTestMapCacheVO {
     place: string; // 广告位
-    adGroupId: string;    // 广告组表 id
+    adGroupId: string;    // 广告组表主键
 }
 
 /**

@@ -20,7 +20,7 @@ export default class ConfigModel extends MBModel {
     /**
      * 插入常量
      * @argument {ConfigVO} configVo 常量表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(configVo: ConfigVO) {
         await this.add(configVo);
@@ -32,7 +32,7 @@ export default class ConfigModel extends MBModel {
      * 批量
      * 插入常量列表
      * @argument {ConfigVO[]} configVoList 常量对象列表;
-     * @returns {Promise<string[]>} 主键 id 列表;
+     * @returns {Promise<string[]>} 主键 列表;
      */
     public async addList(configVoList: ConfigVO[]) {
         let idList: string[] = [];
@@ -48,7 +48,7 @@ export default class ConfigModel extends MBModel {
 
     /**
      * 更新游戏常量
-     * @argument {string} id 常量表 id;
+     * @argument {string} id 常量表主键;
      * @argument {ConfigVO} configVo 常量表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -62,8 +62,8 @@ export default class ConfigModel extends MBModel {
     }
 
     /**
-     * 根据常量表主键 id 获取常量
-     * @argument {string} id 常量表 id;
+     * 根据常量表主键 获取常量
+     * @argument {string} id 常量表主键;
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<ConfigVO>} 常量表信息;
      */
@@ -82,9 +82,9 @@ export default class ConfigModel extends MBModel {
     }
 
     /**
-     * 根据常量组表主键 id 和 key 获取常量
+     * 根据常量组表主键 和 key 获取常量
      * @argument {string} key 常量 key;
-     * @argument {string} configGroupId 常量组表 id;
+     * @argument {string} configGroupId 常量组表主键;
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效
      * @argument {number} live 是否线上已发布数据
@@ -124,7 +124,7 @@ export default class ConfigModel extends MBModel {
 
     /**
      * 删除常量
-     * @argument {string} id 常量表 id;
+     * @argument {string} id 常量表主键;
      * @returns {Promise<number>} 删除行数;
      */
     public async delVo(id: string) {
@@ -154,7 +154,7 @@ export default class ConfigModel extends MBModel {
 
     /**
      * 按常量组主键获取常量信息
-     * @argument {string} configGroupId 常量组表 id;
+     * @argument {string} configGroupId 常量组表主键;
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;
      * @argument {number} live 是否线上已发布数据
@@ -187,7 +187,7 @@ export default class ConfigModel extends MBModel {
     }
 
     /**
-     * 根据常量组表主键 id 获取应用下常量信息列表
+     * 根据常量组表主键 获取应用下常量信息列表
      * @argument {string[]} configGroupIdList 应用下常量组表主键列表;
      * @argument {number} live 是否线上已发布数据
      * @returns {Promise<ConfigVO[]>}常量数据列表;

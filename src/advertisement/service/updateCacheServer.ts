@@ -65,7 +65,7 @@ export default class UpdateCacheServer extends BaseService {
 
     /**
      * 缓存更新数据，
-     * 以用户表主键 id 加数据表名作为 key, 以表主键 id 作为 field, 已更新的 json 对象作为 value
+     * 以用户表主键 加数据表名作为 key, 以表主键 作为 field, 已更新的 json 对象作为 value
      */
     public async setCacheData(
         userId: string,

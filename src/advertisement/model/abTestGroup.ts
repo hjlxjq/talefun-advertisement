@@ -20,7 +20,7 @@ export default class AbTestGroupModel extends MBModel {
     /**
      * 插入 ab 测试分组
      * @argument {AbTestGroupVO} abTestGroupVo ab 测试分组表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(abTestGroupVo: AbTestGroupVO) {
         await this.add(abTestGroupVo);
@@ -33,7 +33,7 @@ export default class AbTestGroupModel extends MBModel {
      * 批量，
      * <br/>插入 ab 测试分组列表
      * @argument {AbTestGroupVO[]} abTestGroupVoList ab 测试分组表对象列表;
-     * @returns {Promise<string[]>} 主键 id 列表;
+     * @returns {Promise<string[]>} 主键 列表;
      */
     public async addList(abTestGroupVoList: AbTestGroupVO[]) {
         let idList: string[] = [];
@@ -41,7 +41,7 @@ export default class AbTestGroupModel extends MBModel {
         if (!Utils.isEmptyObj(abTestGroupVoList)) {
 
             await this.addMany(abTestGroupVoList);
-            think.logger.debug(`插入ab 测试分组列表返回主键 id 列表： ${JSON.stringify(this.ID)}`);
+            think.logger.debug(`插入ab 测试分组列表返回主键 列表： ${JSON.stringify(this.ID)}`);
             idList = this.ID;
         }
 
@@ -51,7 +51,7 @@ export default class AbTestGroupModel extends MBModel {
 
     /**
      * 更新 ab 测试分组
-     * @argument {string} id ab 测试分组表 id;
+     * @argument {string} id ab 测试分组表主键;
      * @argument {AbTestGroupVO} abTestGroupVo ab 测试分组表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -68,7 +68,7 @@ export default class AbTestGroupModel extends MBModel {
 
     /**
      * 删除 ab 测试分组
-     * @argument {string} versionGroupId  版本分组条件表 id;
+     * @argument {string} versionGroupId  版本分组条件表主键;
      * @returns {Promise<number>} 删除行数;
      */
     public async delByVersionGroup(versionGroupId: string) {
@@ -91,7 +91,7 @@ export default class AbTestGroupModel extends MBModel {
     /**
      * 根据测试名获取 ab 测试分组列表
      * <br/>
-     * @argument {string} versionGroupId  版本分组条件表 id;
+     * @argument {string} versionGroupId  版本分组条件表主键;
      * @argument {string} name ab 测试分组名;
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效
@@ -130,8 +130,8 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取 ab 测试分组信息
-     * @argument {string} id ab 测试分组表 id;
+     * 根据主键 获取 ab 测试分组信息
+     * @argument {string} id ab 测试分组表主键;
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestGroupVO>} ab 测试分组信息;
      */
@@ -226,10 +226,10 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 获取版本条件分组表主键 id 列表，
-     * @argument {string} nativeTmplConfGroupId native 模板组表 id;
+     * 获取版本条件分组表主键 列表，
+     * @argument {string} nativeTmplConfGroupId native 模板组表主键;
      * @argument {string} creatorId 创建者 id
-     * @returns {Promise<string[]>} 版本条件分组表主键 id 列表;
+     * @returns {Promise<string[]>} 版本条件分组表主键 列表;
      */
     public async getVerionGroupIdListByNative(nativeTmplConfGroupId: string, creatorId: string) {
         const queryStrings: string[] = [];
@@ -252,10 +252,10 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 获取版本条件分组表主键 id 列表，
-     * @argument {string} configGroupId 常量组表 id;
+     * 获取版本条件分组表主键 列表，
+     * @argument {string} configGroupId 常量组表主键;
      * @argument {string} creatorId 创建者 id
-     * @returns {Promise<string[]>} 版本条件分组表主键 id 列表;
+     * @returns {Promise<string[]>} 版本条件分组表主键 列表;
      */
     public async getVerionGroupIdListByConfig(configGroupId: string, creatorId: string) {
         const queryStrings: string[] = [];

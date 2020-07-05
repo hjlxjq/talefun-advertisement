@@ -184,7 +184,7 @@ export default class DispatchManagerLogic extends AMLogic {
             this.fail(TaleCode.DBFaild, '国家代码为空，则肯定包含!!!');
         }
 
-        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
+        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键
         const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(ucId, 'versionGroup');
 
         /**
@@ -389,7 +389,7 @@ export default class DispatchManagerLogic extends AMLogic {
             return this.fail(TaleCode.ValidData, this.validateMsg());
         }
 
-        const copyId: string = this.post('id');    // 被复制的版本条件分组主键 id
+        const copyId: string = this.post('id');    // 被复制的版本条件分组主键
         const name: string = this.post('name');
         const begin: number = this.post('begin');
         const include: number = this.post('include');
@@ -417,7 +417,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
         }
 
-        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
+        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键
         const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(ucId, 'versionGroup');
 
         /**
@@ -587,7 +587,7 @@ export default class DispatchManagerLogic extends AMLogic {
             this.fail(TaleCode.DBFaild, '版本条件分组不存在!!!');
         }
 
-        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
+        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键
         const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(ucId, 'versionGroup');
         /**
          * <br/>权限检查

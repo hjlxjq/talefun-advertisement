@@ -20,7 +20,7 @@ export default class PackParamModel extends MBModel {
     /**
      * 插入打包参数,
      * @argument {PackParamVO} packParamVo 打包参数表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(packParamVo: PackParamVO) {
         await this.add(packParamVo);
@@ -30,7 +30,7 @@ export default class PackParamModel extends MBModel {
 
     /**
      * 更新打包参数,
-     * @argument {string} id 打包参数表 id;
+     * @argument {string} id 打包参数表;
      * @argument {PackParamVO} packParamVo 打包参数表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -48,7 +48,7 @@ export default class PackParamModel extends MBModel {
      * @argument {number} active 是否生效;
      * @argument {number} test 是否测试 app 可见;
      */
-    public async getList(active: number, test: number) {
+    public async getList(active?: number, test?: number) {
         const queryStrings: string[] = [];
         queryStrings.push('1=1');
 

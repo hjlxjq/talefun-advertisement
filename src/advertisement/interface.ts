@@ -10,10 +10,10 @@ interface ResVO {
  */
 
 /**
- * 常规广告类型返回字段
+ * 常规广告类型
  */
 interface AdTypeVO {
-    id: string;    // 广告类型表 id
+    id: string;    // 广告类型表主键
     type: string;    // 类型名称
     name: string;    // 显示名称
     test: number;    // 是否测试 app 可见
@@ -21,10 +21,10 @@ interface AdTypeVO {
 }
 
 /**
- * 常规广告平台返回字段
+ * 常规广告平台
  */
 interface AdChannelVO {
-    id: string;    // 广告平台表 id
+    id: string;    // 广告平台表主键
     channel: string;    // 平台名
     key1: string;    // 启动参数 1
     key2: string;    // 启动参数 2
@@ -35,10 +35,10 @@ interface AdChannelVO {
 }
 
 /**
- * 常规 native 模板返回字段
+ * 常规 native 模板
  */
 interface NativeTmplVO {
-    id: string;    // native 模板表 id
+    id: string;    // native 模板表主键
     key: string;    // 模板编号
     preview: string;    // 预览图地址
     test: number;    // 是否测试 app 可见
@@ -46,10 +46,10 @@ interface NativeTmplVO {
 }
 
 /**
- * 常规基础常量返回字段
+ * 常规基础常量
  */
 interface BaseConfigVO {
-    id: string;    // 通用基础常量表 id
+    id: string;    // 通用基础常量表主键
     key: string;    // 键
     value: string;    // 值
     description: string;    // 描述
@@ -58,14 +58,23 @@ interface BaseConfigVO {
 }
 
 /**
- * 常规打包参数返回字段
+ * 常规打包参数
  */
 interface PackParamVO {
-    id: string;    // 通用打包参数表 id
+    id: string;    // 通用打包参数表主键
     key: string;    // 键
     description: string;    // 描述
     test: number;    // 是否测试 app 可见
     active: number;    // 是否生效
+}
+
+// 上传的文件类型
+interface FileVO {
+    size: number;
+    path: string;
+    name: string;
+    type: string;
+    mtime: string;
 }
 
 /**
@@ -77,13 +86,13 @@ export interface AdTypeListResVO extends ResVO {
 }
 
 /**
- * 获取广告类型 /advertisement/commonManager/adType
+ * 根据广告类型显示名称获取广告类型 /advertisement/commonManager/adType
  */
-export interface GetAdTypeReqVO {
+export interface AdTypeReqVO {
     name: string;    // 类型名称
 }
 
-export interface GetAdTypeResVO extends ResVO {
+export interface AdTypeResVO extends ResVO {
     data: AdTypeVO;
 }
 
@@ -103,7 +112,7 @@ export interface CreateAdTypeResVO extends ResVO {
  * 更新广告类型 /advertisement/commonManager/updateAdType
  */
 export interface UpdateAdTypeReqVO {
-    id: string;    // 广告类型表 id
+    id: string;    // 广告类型表主键
     name?: string;    // 显示名称
     test?: number;    // 是否测试 app 可见
     active?: number;    // 是否生效
@@ -124,11 +133,11 @@ export interface AdChannelListResVO extends ResVO {
 /**
  * 获取广告平台 /advertisement/commonManager/adChannel
  */
-export interface GetAdChannelReqVO {
+export interface AdChannelReqVO {
     channel: string;    // 平台名
 }
 
-export interface GetAdChannelResVO extends ResVO {
+export interface AdChannelResVO extends ResVO {
     data: AdChannelVO;
 }
 
@@ -150,7 +159,7 @@ export interface CreateAdChannelResVO extends ResVO {
  * 更新广告平台 /advertisement/commonManager/updateAdChannel
  */
 export interface UpdateAdChannelReqVO {
-    id: string;    // 广告平台表 id
+    id: string;    // 广告平台表主键
     key1?: string;    // 启动参数 1
     key2?: string;    // 启动参数 2
     key3?: string;    // 启动参数 3
@@ -177,7 +186,7 @@ export interface NativeTmplListResVO extends ResVO {
  */
 export interface CreateNativeTmplReqVO {
     key: string;    // 模板编号
-    file: object;    // 选取的图片对象
+    file: FileVO;    // 选取的图片对象
 }
 
 export interface CreateNativeTmplResVO extends ResVO {
@@ -189,8 +198,8 @@ export interface CreateNativeTmplResVO extends ResVO {
  * <br/>更新预览图需要上传图片
  */
 export interface UpdateNativeTmplReqVO {
-    id: string;    // native 模板表 id
-    file?: object;    // 选取的图片对象
+    id: string;    // native 模板表主键
+    file?: FileVO;    // 选取的图片对象
     test?: number;    // 是否测试 app 可见
     active?: number;    // 是否生效
 }
@@ -224,7 +233,7 @@ export interface CreateBaseConfigResVO extends ResVO {
  * 更新基础常量 /advertisement/commonManager/updateBaseConfig
  */
 export interface UpdateBaseConfigReqVO {
-    id: string;    // 基础常量表 id
+    id: string;    // 基础常量表主键
     value?: string;    // 值
     description?: string;    // 描述
     test?: number;    // 是否测试 app 可见
@@ -259,7 +268,7 @@ export interface CreatePackParamResVO extends ResVO {
  * 更新打包参数 /advertisement/commonManager/updatePackParam
  */
 export interface UpdatePackParamReqVO {
-    id: string;    // 打包参数表 id
+    id: string;    // 打包参数表主键
     description?: string;    // 描述
     test?: number;    // 是否测试 app 可见
     active?: number;    // 是否生效
@@ -276,7 +285,7 @@ export interface UpdatePackParamResVO extends ResVO {
  */
 
 interface ProductVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
     name: string;    // 应用名
     packageName: string;     // 包名
     platform: string;    // 平台名
@@ -288,7 +297,7 @@ interface ProductVO {
 }
 
 interface ProductGroupVO {
-    id: string;    // 项目组表主键 id
+    id: string;    // 项目组表主键
     name: string;    // 项目组名
     description: string;    // 项目组描述
     active: number;    // 是否生效
@@ -306,7 +315,7 @@ export interface ProductListResVO extends ResVO {
  * 获取应用详情 /advertisement/productManager/product
  */
 export interface GetProductReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
 }
 
 export interface GetProductResVO extends ResVO {
@@ -317,7 +326,7 @@ export interface GetProductResVO extends ResVO {
  * 更新应用 /advertisement/productManager/updateProduct
  */
 export interface UpdateProductReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
     pid?: string;    // 苹果 id
     test?: number;    // 是否测试 app 可见
     active?: number;    // 是否生效
@@ -331,12 +340,12 @@ export interface UpdateProductResVO extends ResVO {
  * 获取应用打包参数 /advertisement/productManager/packParamConfList
  */
 export interface PackParamConfListReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
 }
 
 export interface PackParamConfListResVO extends ResVO {
     data: Array<{
-        id: string;    // 应用打包参数表主键 id
+        id: string;    // 应用打包参数表主键
         key: string;    // 参数名
         value: string;    // 参数值
         description: string;    // 描述
@@ -347,13 +356,13 @@ export interface PackParamConfListResVO extends ResVO {
  * 获取应用平台参数 /advertisement/productManager/channelParamConfList
  */
 export interface ChannelParamConfListReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
     type?: string;    // 广告类型显示名称
 }
 
 export interface ChannelParamConfListResVO extends ResVO {
     data: Array<{
-        id: string;    // 应用广告平台参数表主键 id
+        id: string;    // 应用广告平台参数表主键
         channel: string;    // 平台名
         key1: string;    // 启动参数 1
         key2: string;    // 启动参数 2
@@ -368,8 +377,8 @@ export interface ChannelParamConfListResVO extends ResVO {
  * 更新应用应用打包参数 /advertisement/productManager/updatePackParamConf
  */
 export interface UpdatePackParamConfReqVO {
-    id: string;    // 打包参数表主键 id
-    productId: string;    // 应用表主键 id
+    id: string;    // 打包参数表主键
+    productId: string;    // 应用表主键
     value: string;    // 打包参数值
 }
 
@@ -381,8 +390,8 @@ export interface UpdatePackParamConfResVO extends ResVO {
  * 更新应用平台参数 /advertisement/productManager/updateChannelParamConf
  */
 export interface UpdateChannelParamConfReqVO {
-    id: string;    // 广告平台表主键 id
-    productId: string;    // 应用表主键 id
+    id: string;    // 广告平台表主键
+    productId: string;    // 应用表主键
     value1?: string;    // 应用平台参数 1 值
     value2?: string;    // 应用平台参数 2 值
     value3?: string;    // 应用平台参数 3 值
@@ -404,7 +413,7 @@ export interface ProductGroupListResVO extends ResVO {
  * 获取项目组详情 /advertisement/productManager/productGroup
  */
 export interface GetProductGroupReqVO {
-    id: string;    // 项目组表主键 id
+    id: string;    // 项目组表主键
 }
 
 export interface GetProductGroupResVO extends ResVO {
@@ -427,7 +436,7 @@ export interface CreateProductGroupResVO extends ResVO {
  * 更新项目组 /advertisement/productManager/updateProductGroup
  */
 export interface UpdateProductGroupReqVO {
-    id: string;    // 项目组表 id
+    id: string;    // 项目组表主键
     description?: string;    // 项目组描述
     active?: number;    // 是否生效
 }
@@ -440,7 +449,7 @@ export interface UpdateProductGroupResVO extends ResVO {
  * 获取项目组下授权应用列表 /advertisement/productManager/productListInProductGroup
  */
 export interface ProductListInProductGroupReqVO {
-    id: string;    // 项目组表 id
+    id: string;    // 项目组表主键
 }
 
 export interface ProductListInProductGroupResVO extends ResVO {
@@ -451,7 +460,7 @@ export interface ProductListInProductGroupResVO extends ResVO {
  * 项目组下创建应用 /advertisement/productManager/createProduct
  */
 export interface CreateProductReqVO {
-    id: string;    // 项目组表主键 id
+    id: string;    // 项目组表主键
     name: string;    // 应用名
     packageName: string;     // 包名
     platform: string;    // 平台名
@@ -469,7 +478,7 @@ export interface CreateProductResVO extends ResVO {
  */
 
 interface AdVO {
-    id: string;    // 广告表主键 id
+    id: string;    // 广告表主键
     name: string;    // 广告名称
     placementID: string;    // 广告唯一 ID
     ecpm: number;    // 分层控制
@@ -486,7 +495,7 @@ interface AdVO {
 }
 
 interface NativeTmplConfVO {
-    id: string;    // native 模板配置表主键 id
+    id: string;    // native 模板配置表主键
     clickArea: number;    // 点击区域
     isFull: number;    // 是否全屏点击
     weight: number;    // 权重
@@ -497,7 +506,7 @@ interface NativeTmplConfVO {
 }
 
 interface ConfigVO {
-    id: string;    // 常量表主键 id
+    id: string;    // 常量表主键
     key: string;    // 常量键
     dependent: string;    // 依赖的常量组名
     value: string;    // 值
@@ -509,13 +518,13 @@ interface ConfigVO {
  * 获取应用所有版本条件分组信息 /advertisement/dispatchManager/versionGroupList
  */
 export interface VersionGroupListReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
     type: number;    // 0 广告 1 游戏常量 2 商店
 }
 
 export interface VersionGroupListResVO extends ResVO {
     data: Array<{
-        id: string;    // 版本条件分组表主键 id
+        id: string;    // 版本条件分组表主键
         name: string;    // 版本条件分组组名
         begin: number;    // 起始版本
         codeList: string[];    // 支持的国家代码列表
@@ -540,7 +549,7 @@ export interface NationDefineListResVO extends ResVO {
  * 创建版本条件分组 /advertisement/dispatchManager/createVersionGroup
  */
 export interface CreateVersionGroupReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
     name: string;    // 分组名
     begin: number;    // 起始版本
     type: number;    // 0 广告 1 游戏常量 2 商店
@@ -557,7 +566,7 @@ export interface CreateVersionGroupResVO extends ResVO {
  * 复制版本条件分组 /advertisement/dispatchManager/copyVersionGroup
  */
 export interface CopyVersionGroupReqVO {
-    id: string;    // 被复制的版本条件分组主键 id
+    id: string;    // 被复制的版本条件分组主键
     name: string;    // 分组名
     begin: number;    // 起始版本
     description: string;    // 描述
@@ -573,7 +582,7 @@ export interface CopyVersionGroupResVO extends ResVO {
  * 向应用中更新版本条件分组 /advertisement/dispatchManager/updateVersionGroup
  */
 export interface UpdateVersionGroupReqVO {
-    id: string;    // 版本条件分组表主键 id
+    id: string;    // 版本条件分组表主键
     codeList?: string[];    // 支持的国家代码列表, 有变动就传所有的 code
     include?: number;    // 国家代码是否包含
     begin?: number;    // 起始版本
@@ -589,12 +598,12 @@ export interface UpdateVersionGroupResVO extends ResVO {
  * 获取 ab 分组列表 /advertisement/dispatchManager/abTestGroupList
  */
 export interface AbTestGroupListReqVO {
-    id: string;    // 版本条件分组表主键 id
+    id: string;    // 版本条件分组表主键
 }
 
 export interface AbTestGroupListResVO extends ResVO {
     data: Array<{
-        id: string;    // ab 分组表主键 id
+        id: string;    // ab 分组表主键
         name: string;    // ab 组名
         description: string;    // 描述
         begin: number;    // 用户开始范围
@@ -606,7 +615,7 @@ export interface AbTestGroupListResVO extends ResVO {
  * 获取 ab 分组下广告位配置 /advertisement/dispatchManager/placeGroupListInAb
  */
 export interface PlaceGroupListInAbReqVO {
-    id: string;    // ab 测试分组表主键 id
+    id: string;    // ab 测试分组表主键
 }
 
 export interface PlaceGroupListInAbResVO extends ResVO {
@@ -614,7 +623,7 @@ export interface PlaceGroupListInAbResVO extends ResVO {
         type: string;    // 广告类型显示名称
         place: string;    // 广告位
         adGroup?: {
-            id: string;    // 广告组表主键 id
+            id: string;    // 广告组表主键
             name: string;    // 广告组名称
             type: string;    // 广告类型显示名称
             description: string;    // 描述
@@ -629,12 +638,12 @@ export interface PlaceGroupListInAbResVO extends ResVO {
  * 获取 ab 分组下的常量组及常量组下常量列表配置 /advertisement/dispatchManager/configGroupInAb
  */
 export interface ConfigGroupInAbReqVO {
-    id: string;    // ab 测试分组表主键 id
+    id: string;    // ab 测试分组表主键
 }
 
 export interface ConfigGroupInAbResVO extends ResVO {
     data: {
-        id: string;    // 常量组表主键 id
+        id: string;    // 常量组表主键
         name: string;    // 常量组名称
         type: number;    // 0 广告 1 游戏常量
         versionGroup: string[];    // 支持的条件组
@@ -649,12 +658,12 @@ export interface ConfigGroupInAbResVO extends ResVO {
  * 获取 ab 分组下的 native 模板组及包含的 native 模板列表 /advertisement/dispatchManager/nativeTmplConfGroupInAb
  */
 export interface NativeTmplConfGroupInAbReqVO {
-    id: string;    // ab 测试分组表主键 id
+    id: string;    // ab 测试分组表主键
 }
 
 export interface NativeTmplConfGroupInAbResVO extends ResVO {
     data: {
-        id: string;    // native 模板配置组表主键 id
+        id: string;    // native 模板配置组表主键
         name: string;    // native 模板配置组表名称
         description: string;    // 描述
         nativeTmplConfList: NativeTmplConfVO[];    // native 模板列表
@@ -666,7 +675,7 @@ export interface NativeTmplConfGroupInAbResVO extends ResVO {
  * 创建 ab 分组 /advertisement/dispatchManager/createAbTestGroup
  */
 export interface CreateAbTestGroupReqVO {
-    id: string;    // 版本条件分组表主键 id
+    id: string;    // 版本条件分组表主键
     name: string;    // 创建的 ab 分组名
     description: string;    // 描述
     groupNum: number;    // 测试组数
@@ -682,7 +691,7 @@ export interface CreateAbTestGroupResVO extends ResVO {
  * 测试结束 /advertisement/dispatchManager/deleteABTestGroup
  */
 export interface DeleteABTestGroupReqVO {
-    id: string;    // 版本条件分组表主键 id
+    id: string;    // 版本条件分组表主键
     name: string;    // 创建的 ab 分组名
 }
 
@@ -694,8 +703,8 @@ export interface DeleteABTestGroupResVO extends ResVO {
  * 向 ab 分组绑定常量组 /advertisement/dispatchManager/bindConfigGroup
  */
 export interface BindConfigGroupReqVO {
-    id: string;    // ab 分组表主键 id
-    configGroupId: string;    // 常量组主键 id
+    id: string;    // ab 分组表主键
+    configGroupId: string;    // 常量组主键
 }
 
 export interface BindConfigGroupResVO extends ResVO {
@@ -706,13 +715,13 @@ export interface BindConfigGroupResVO extends ResVO {
  * 获取常量组列表 /advertisement/dispatchManager/configGroupList
  */
 export interface ConfigGroupListReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
     type: number;    // 0 广告 1 游戏常量
 }
 
 export interface ConfigGroupListResVO extends ResVO {
     data: Array<{
-        id: string;    // 常量组表主键 id
+        id: string;    // 常量组表主键
         name: string;    // 常量组名称
         type: number;    // 0 广告 1 游戏常量
         versionGroup: string[];    // 支持的条件组
@@ -726,7 +735,7 @@ export interface ConfigGroupListResVO extends ResVO {
  * 获取常量组下常量列表 /advertisement/dispatchManager/configList
  */
 export interface ConfigListReqVO {
-    id: string;    // 常量组主键 id
+    id: string;    // 常量组主键
 }
 
 export interface ConfigListResVO extends ResVO {
@@ -737,7 +746,7 @@ export interface ConfigListResVO extends ResVO {
  * 创建常量组 /advertisement/dispatchManager/createConfigGroup
  */
 export interface CreateConfigGroupReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
     name: string;    // 常量组名称
     description: string;    // 常量组描述
     type: number;    // 0 广告 1 游戏常量
@@ -754,7 +763,7 @@ export interface CreateConfigGroupResVO extends ResVO {
 export interface CopyConfigGroupReqVO {
     name: string;    // 常量组名称
     description: string;    // 常量组描述
-    id: string;    // 被复制的常量组主键 id
+    id: string;    // 被复制的常量组主键
 }
 
 export interface CopyConfigGroupResVO extends ResVO {
@@ -765,9 +774,9 @@ export interface CopyConfigGroupResVO extends ResVO {
  * 更新常量组 /advertisement/dispatchManager/updateConfigGroup
  */
 export interface UpdateConfigGroupReqVO {
-    id: string;    // 常量组主键 id
+    id: string;    // 常量组主键
     description?: string;    // 常量组描述
-    dependentId?: string;    // 依赖的常量组主键 id
+    dependentId?: string;    // 依赖的常量组主键
     active?: number;    // 是否生效
 }
 
@@ -779,7 +788,7 @@ export interface UpdateConfigGroupResVO extends ResVO {
  * 创建游戏常量 /advertisement/dispatchManager/createConfig
  */
 export interface CreateConfigReqVO {
-    id: string;    // 常量组主键 id
+    id: string;    // 常量组主键
     key: string;    // 唯一名称 key
     value: string;    // 对应值 value
     description: string;    // 描述
@@ -793,7 +802,7 @@ export interface CreateConfigResVO extends ResVO {
  * 更新广告常量 /advertisement/dispatchManager/updateAdConfig
  */
 export interface UpdateAdConfigReqVO {
-    id: string;    // 常量组主键 id
+    id: string;    // 常量组主键
     key: string;    // 唯一名称 key
     value: string;    // 对应值 value
     description: string;    // 描述
@@ -807,7 +816,7 @@ export interface UpdateAdConfigResVO extends ResVO {
  * 更新游戏常量 /advertisement/dispatchManager/updateConfig
  */
 export interface UpdateConfigReqVO {
-    id: string;    // 常量主键 id
+    id: string;    // 常量主键
     value?: string;    // 对应值 value
     description?: string;    // 描述
     active?: number;    // 控制生效
@@ -821,8 +830,8 @@ export interface UpdateConfigResVO extends ResVO {
  * 向 ab 分组绑定 native 组 /advertisement/dispatchManager/bindNativeTmplConfGroup
  */
 export interface BindNativeTmplConfGroupReqVO {
-    id: string;    // ab 分组表主键 id
-    nativeTmplConfGroupId: string;    // native 模板配置组表主键 id
+    id: string;    // ab 分组表主键
+    nativeTmplConfGroupId: string;    // native 模板配置组表主键
 }
 
 export interface BindNativeTmplConfGroupResVO extends ResVO {
@@ -833,7 +842,7 @@ export interface BindNativeTmplConfGroupResVO extends ResVO {
  * 创建应用 native 模板配置组 /advertisement/dispatchManager/createNativeTmplConfGroup
  */
 export interface CreateNativeTmplConfGroupReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
     name: string;    // 应用 native 模板配置组名称
     description: string;    // 应用 native 模板配置组描述
 }
@@ -846,7 +855,7 @@ export interface CreateNativeTmplConfGroupResVO extends ResVO {
  * 复制应用 native 模板配置组 /advertisement/dispatchManager/copyNativeTmplConfGroup
  */
 export interface CopyNativeTmplConfGroupReqVO {
-    id: string;    // 被复制的常量组主键 id
+    id: string;    // 被复制的常量组主键
     name: string;    // 应用 native 模板配置组名称
     description: string;    // 应用 native 模板配置组描述
 }
@@ -859,7 +868,7 @@ export interface CopyNativeTmplConfGroupResVO extends ResVO {
  * 更新应用 native 模板组 /advertisement/dispatchManager/updateNativeTmplConfGroup
  */
 export interface UpdateNativeTmplConfGroupReqVO {
-    id: string;    // 应用 native 模板组配置表主键 id
+    id: string;    // 应用 native 模板组配置表主键
     name?: string;    // 应用 native 模板配置组名称
     description?: string;    // 应用 native 模板配置组描述
     active?: number;    // 控制生效
@@ -873,7 +882,7 @@ export interface UpdateNativeTmplConfGroupResVO extends ResVO {
  * 创建应用 native 模板配置 /advertisement/dispatchManager/createNativeTmplConf
  */
 export interface CreateNativeTmplConfReqVO {
-    id: string;    // 应用 native 模板配置组表主键 id
+    id: string;    // 应用 native 模板配置组表主键
     nativeTmplId: string;    // native 模板表主键
     weight: number;    // 权重
     clickArea: number;    // 点击区域配置
@@ -888,7 +897,7 @@ export interface CreateNativeTmplConfResVO extends ResVO {
  * 更新应用 native 模板 /advertisement/dispatchManager/updateNativeTmplConf
  */
 export interface UpdateNativeTmplConfReqVO {
-    id: string;    // 应用 native 模板配置表主键 id
+    id: string;    // 应用 native 模板配置表主键
     weight?: number;    // 权重
     clickArea?: number;    // 点击区域配置
     isFull?: boolean;    // 是否支持全屏点击
@@ -903,12 +912,12 @@ export interface UpdateNativeTmplConfResVO extends ResVO {
  * 获取应用 native 模板组列表 /advertisement/dispatchManager/nativeTmplConfGroupList
  */
 export interface NativeTmplConfGroupListReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
 }
 
 export interface NativeTmplConfGroupListResVO extends ResVO {
     data: Array<{
-        id: string;    // native 模板配置组表主键 id
+        id: string;    // native 模板配置组表主键
         name: string;    // native 模板配置组表名称
         versionGroup: string[];    // 支持的条件组
         description: string;    // 描述
@@ -920,7 +929,7 @@ export interface NativeTmplConfGroupListResVO extends ResVO {
  * 获取应用 native 模板组下模板列表 /advertisement/dispatchManager/nativeTmplConfList
  */
 export interface NativeTmplConfListReqVO {
-    id: string;    // 应用 native 模板组表主键 id
+    id: string;    // 应用 native 模板组表主键
 }
 
 export interface NativeTmplConfListResVO extends ResVO {
@@ -933,10 +942,10 @@ export interface NativeTmplConfListResVO extends ResVO {
  * 向 ab 分组创建广告位(绑定广告组) /advertisement/dispatchManager/bindAdGroup
  */
 export interface BindAdGroupReqVO {
-    id: string;    // ab 分组表主键 id
+    id: string;    // ab 分组表主键
     place: string;    // 广告位
     active: number;    // 是否生效
-    adGroupId?: string;    // 广告组表主键 id
+    adGroupId?: string;    // 广告组表主键
 }
 
 export interface BindAdGroupResVO extends ResVO {
@@ -947,7 +956,7 @@ export interface BindAdGroupResVO extends ResVO {
  * 全量 ab 分组下广告位到默认组 /advertisement/dispatchManager/completePlace
  */
 export interface CompletePlaceReqVO {
-    id: string;    // ab 分组表主键 id
+    id: string;    // ab 分组表主键
     place: string;    // 广告位
 }
 
@@ -959,12 +968,12 @@ export interface CompletePlaceResVO extends ResVO {
  * 获取广告组列表 /advertisement/dispatchManager/adGroupList
  */
 export interface AdGroupListReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
 }
 
 export interface AdGroupListResVO extends ResVO {
     data: Array<{
-        id: string;    // 广告组表主键 id
+        id: string;    // 广告组表主键
         name: string;    // 广告组名称
         type: string;    // 广告类型显示名称
         place: string;    // 广告位
@@ -978,9 +987,9 @@ export interface AdGroupListResVO extends ResVO {
  * 创建广告组 /advertisement/dispatchManager/createAdGroup
  */
 export interface CreateAdGroupReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
     name: string;    // 广告组名称
-    adTypeId: string;    // 广告类型表主键 id
+    adTypeId: string;    // 广告类型表主键
     description: string;     // 描述
 }
 
@@ -992,7 +1001,7 @@ export interface CreateAdGroupResVO extends ResVO {
  * 复制广告组 /advertisement/dispatchManager/copyAdGroup
  */
 export interface CopyAdGroupReqVO {
-    id: string;    // 被复制的广告组表主键 id
+    id: string;    // 被复制的广告组表主键
     name: string;    // 广告组名称
     description: string;     // 描述
 }
@@ -1005,7 +1014,7 @@ export interface CopyAdGroupResVO extends ResVO {
  * 更新广告组 /advertisement/dispatchManager/updateAdGroup
  */
 export interface UpdateAdGroupReqVO {
-    id: string;    // 广告组主键 id
+    id: string;    // 广告组主键
     description?: string;     // 描述
     active?: number;    // 是否生效
 }
@@ -1019,7 +1028,7 @@ export interface UpdateAdGroupResVO extends ResVO {
  * </br>获取广告列表 /advertisement/dispatchManager/adList
  */
 export interface AdListReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
 }
 
 export interface AdListResVO extends ResVO {
@@ -1042,7 +1051,7 @@ export interface AdListInAdGroupResVO extends ResVO {
  */
 export interface CreateAdReqVO {
     id: string;    // 广告组 id
-    adChannelId: string;    // 广告平台主键 id
+    adChannelId: string;    // 广告平台主键
     name: string;    // 广告名称
     placementID: string;    // 广告唯一 ID
     ecpm: number;    // 分层控制
@@ -1057,7 +1066,7 @@ export interface CreateAdResVO extends ResVO {
  * 更新广告 /advertisement/dispatchManager/updateAd
  */
 export interface UpdateAdReqVO {
-    id: string;    // 广告表主键 id
+    id: string;    // 广告表主键
     name?: string;    // 广告名称
     ecpm?: number;    // 分层控制
     loader?: string;    // 加载器
@@ -1147,7 +1156,7 @@ export interface CreateUserResVO extends ResVO {
  * 更新用户密码 /advertisement/userManager/updateUser
  */
 export interface UpdateUserReqVO {
-    id: string;    // 用户表 id
+    id: string;    // 用户表主键
     password: string;    // 密码
 }
 
@@ -1159,7 +1168,7 @@ export interface UpdateUserResVO extends ResVO {
  * 禁用或者解禁用户信息 /advertisement/userManager/disableUser
  */
 export interface DisableUserReqVO {
-    id: string;    // 用户表 id
+    id: string;    // 用户表主键
     active: number;    // 控制生效
 }
 
@@ -1171,7 +1180,7 @@ export interface DisableUserResVO extends ResVO {
  * </br>重置密码 /advertisement/userManager/resetPassword
  */
 export interface ResetPasswordReqVO {
-    id: string;    // 用户表 id
+    id: string;    // 用户表主键
 }
 
 export interface ResetPasswordResVO extends ResVO {
@@ -1190,7 +1199,7 @@ export interface UserListResVO extends ResVO {
  * 获取用户权限 /advertisement/userManager/userAuth
  */
 export interface UserAuthReqVO {
-    id: string;    // 用户表 id
+    id: string;    // 用户表主键
 }
 
 export interface UserAuthResVO extends ResVO {
@@ -1201,7 +1210,7 @@ export interface UserAuthResVO extends ResVO {
  * 获取用户在项目组下权限 /advertisement/userManager/userAuthInProductGroup
  */
 export interface UserAuthInProductGroupReqVO {
-    id: string;    // 项目组表主键 id
+    id: string;    // 项目组表主键
 }
 
 export interface UserAuthInProductGroupResVO extends ResVO {
@@ -1212,7 +1221,7 @@ export interface UserAuthInProductGroupResVO extends ResVO {
  * 获取用户在应用下权限 /advertisement/userManager/userAuthInProduct
  */
 export interface UserAuthInProductReqVO {
-    id: string;    // 应用表主键 id
+    id: string;    // 应用表主键
 }
 
 export interface UserAuthInProductResVO extends ResVO {
@@ -1223,7 +1232,7 @@ export interface UserAuthInProductResVO extends ResVO {
  * 更新用户权限 /advertisement/userManager/updateUserAuth
  */
 export interface UpdateUserAuthReqVO {
-    id: string;    // 用户表 id
+    id: string;    // 用户表主键
     editComConf?: number;    // 编辑常规配置权限
     viewComConf?: number;    // 查看常规配置权限
     createProductGroup?: number;    // 创建项目组权限
@@ -1238,7 +1247,7 @@ export interface UpdateUserAuthResVO extends ResVO {
  * </br>获取项目组下用户列表 /advertisement/userManager/userListInProductGroup
  */
 export interface UserListInProductGroupReqVO {
-    id: string;    // 项目组主键 id
+    id: string;    // 项目组主键
 }
 
 export interface UserListInProductGroupResVO extends ResVO {
@@ -1249,7 +1258,7 @@ export interface UserListInProductGroupResVO extends ResVO {
  * </br>获取应用下用户列表 /advertisement/userManager/userListInProduct
  */
 export interface UserListInProductReqVO {
-    id: string;    // 应用主键 id
+    id: string;    // 应用主键
 }
 
 export interface UserListInProductResVO extends ResVO {
@@ -1260,8 +1269,8 @@ export interface UserListInProductResVO extends ResVO {
  * 项目组创建成员 /advertisement/userManager/createUserToProductGroup
  */
 export interface CreateUserToProductGroupReqVO {
-    id: string;    // 项目组表主键 id
-    userId: string;    // 用户表 id
+    id: string;    // 项目组表主键
+    userId: string;    // 用户表主键
     editAd?: number;    // 编辑广告权限
     viewAd?: number;    // 查看广告权限
     editGameConfig?: number;    // 编辑游戏常量权限
@@ -1283,8 +1292,8 @@ export interface CreateUserToProductGroupResVO extends ResVO {
  * 应用创建成员 /advertisement/userManager/createUserToProduct
  */
 export interface CreateUserToProductReqVO {
-    id: string;    // 应用表主键 id
-    userId: string;    // 用户表 id
+    id: string;    // 应用表主键
+    userId: string;    // 用户表主键
     editAd?: number;    // 编辑广告权限
     viewAd?: number;    // 查看广告权限
     editGameConfig?: number;    // 编辑游戏常量权限
@@ -1305,8 +1314,8 @@ export interface CreateUserToProductResVO extends ResVO {
  * 更新项目组成员权限 /advertisement/userManager/updateUserAuthInProductGroup
  */
 export interface UpdateUserAuthInProductGroupReqVO {
-    id: string;    // 项目组表主键 id
-    userId: string;    // 用户表 id
+    id: string;    // 项目组表主键
+    userId: string;    // 用户表主键
     editAd?: number;    // 编辑广告权限
     viewAd?: number;    // 查看广告权限
     editGameConfig?: number;    // 编辑游戏常量权限
@@ -1326,8 +1335,8 @@ export interface UpdateUserAuthInProductGroupResVO extends ResVO {
  * 更新应用成员权限 /advertisement/userManager/updateUserAuthInProduct
  */
 export interface UpdateUserAuthInProductReqVO {
-    id: string;    // 应用表主键 id
-    userId: string;    // 用户表 id
+    id: string;    // 应用表主键
+    userId: string;    // 用户表主键
     editAd?: number;    // 编辑广告权限
     viewAd?: number;    // 查看广告权限
     editGameConfig?: number;    // 编辑游戏常量权限
@@ -1346,8 +1355,8 @@ export interface UpdateUserAuthInProductResVO extends ResVO {
  * 删除项目组下成员 /advertisement/userManager/deleteUserFromProductGroup
  */
 export interface DeleteUserFromProductGroupReqVO {
-    id: string;    // 项目组表主键 id
-    userId: string;    // 用户表 id
+    id: string;    // 项目组表主键
+    userId: string;    // 用户表主键
 }
 
 export interface DeleteUserFromProductGroupResVO extends ResVO {
@@ -1358,8 +1367,8 @@ export interface DeleteUserFromProductGroupResVO extends ResVO {
  * 删除应用下成员 /advertisement/userManager/deleteUserFromProduct
  */
 export interface DeleteUserFromProductReqVO {
-    id: string;    // 应用表主键 id
-    userId: string;    // 用户表 id
+    id: string;    // 应用表主键
+    userId: string;    // 用户表主键
 }
 
 export interface DeleteUserFromProductResVO extends ResVO {

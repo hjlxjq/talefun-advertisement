@@ -19,7 +19,7 @@ export default class AdTypeModel extends MBModel {
     /**
      * 插入广告类型
      * @argument {AdTypeVO} adTypeVo 广告类型表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键主键;
      */
     public async addVo(adTypeVo: AdTypeVO) {
         await this.add(adTypeVo);
@@ -29,7 +29,7 @@ export default class AdTypeModel extends MBModel {
 
     /**
      * 更新广告类型
-     * @argument {string} id 广告类型表 id;
+     * @argument {string} id 广告类型表主键;
      * @argument {AdTypeVO} adTypeVo 广告类型表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -43,14 +43,15 @@ export default class AdTypeModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取广告类型信息
-     * @argument {string} id 广告类型表 id;
+     * 根据主键 获取广告类型信息
+     * @argument {string} id 广告类型表主键;
      * @argument {number} active 是否生效;
      * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<AdTypeVO>} 广告类型信息;
      */
     public async getVo(id: string, active?: number, test?: number) {
         const queryStrings: string[] = [];
+
         queryStrings.push(`id='${id}'`);
 
         if (test === 0) {
@@ -68,7 +69,7 @@ export default class AdTypeModel extends MBModel {
     }
 
     /**
-     * 根据广告类型名称，获取广告类型信息
+     * 根据广告类型显示名称，获取广告类型信息
      * @argument {string} name 广告类型显示名称;
      * @returns {Promise<AdTypeVO>} 广告类型信息;
      */
@@ -89,7 +90,6 @@ export default class AdTypeModel extends MBModel {
 
     /**
      * 获取广告类型信息列表
-     * </br> 按广告类型从小到大排序
      * @returns {Promise<AdTypeVO[]>} 广告类型信息列表;
      */
     public async getList() {

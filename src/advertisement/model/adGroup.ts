@@ -20,7 +20,7 @@ export default class AdGroupModel extends MBModel {
     /**
      * 插入广告组
      * @argument {AdGroupVO} adGroupVo 广告组表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(adGroupVo: AdGroupVO) {
         await this.add(adGroupVo);
@@ -30,7 +30,7 @@ export default class AdGroupModel extends MBModel {
 
     /**
      * 更新广告组
-     * @argument {string} id 广告组表 id;
+     * @argument {string} id 广告组表主键;
      * @argument {AdGroupVO} adGroupVo 广告组表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -44,8 +44,8 @@ export default class AdGroupModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取广告组信息
-     * @argument {string} id 广告组表 id;
+     * 根据主键 获取广告组信息
+     * @argument {string} id 广告组表主键;
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AdGroupVO>} 广告组信息;
      */
@@ -83,8 +83,8 @@ export default class AdGroupModel extends MBModel {
     }
 
     /**
-     * 根据应用主键 id 获取广告组信息列表
-     * @argument {string} productId 应用表 id;
+     * 根据应用主键 获取广告组信息列表
+     * @argument {string} productId 应用表主键;
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;
      */

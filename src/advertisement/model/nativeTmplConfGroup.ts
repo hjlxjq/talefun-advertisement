@@ -20,7 +20,7 @@ export default class NativeTmplConfGroupModel extends MBModel {
     /**
      * 插入应用下 native 模板组
      * @argument {NativeTmplConfGroupVO} nativeTmplConfGroupVo 应用下 native 模板组表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(nativeTmplConfGroupVo: NativeTmplConfGroupVO) {
         await this.add(nativeTmplConfGroupVo);
@@ -30,7 +30,7 @@ export default class NativeTmplConfGroupModel extends MBModel {
 
     /**
      * 更新应用下 native 模板组
-     * @argument {string} id 应用下 native 模板组表 id;
+     * @argument {string} id 应用下 native 模板组表主键;
      * @argument {NativeTmplConfGroupVO} nativeTmplConfGroupVo 应用下 native 模板组表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -44,8 +44,8 @@ export default class NativeTmplConfGroupModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取应用下 native 模板组信息
-     * @argument {string} id 应用下 native 模板组表 id;
+     * 根据主键 获取应用下 native 模板组信息
+     * @argument {string} id 应用下 native 模板组表主键;
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<nativeTmplConfGroupVO>}应用下 native 模板组信息;
      */
@@ -86,8 +86,8 @@ export default class NativeTmplConfGroupModel extends MBModel {
     }
 
     /**
-     * 根据应用主键 id 获取获取应用下 native 模板组信息列表
-     * @argument {string} productId 应用表 id;
+     * 根据应用主键 获取获取应用下 native 模板组信息列表
+     * @argument {string} productId 应用表主键;
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;
      */

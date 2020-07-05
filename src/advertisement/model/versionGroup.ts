@@ -20,7 +20,7 @@ export default class VersionGroupModel extends MBModel {
     /**
      * 插入版本条件分组
      * @argument {VersionGroupVO} versionGroupVo 版本条件分组表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(versionGroupVo: VersionGroupVO) {
         await this.add(versionGroupVo);
@@ -31,7 +31,7 @@ export default class VersionGroupModel extends MBModel {
 
     /**
      * 更新版本条件分组
-     * @argument {string} id 版本条件分组表 id;
+     * @argument {string} id 版本条件分组表主键;
      * @argument {VersionGroupVO} versionGroupVo 版本条件分组表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -55,8 +55,8 @@ export default class VersionGroupModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取版本条件分组信息
-     * @argument {string} id 版本条件分组表 id;
+     * 根据主键 获取版本条件分组信息
+     * @argument {string} id 版本条件分组表主键;
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<VersionGroupVO>} 版本条件分组信息;
      */
@@ -78,7 +78,7 @@ export default class VersionGroupModel extends MBModel {
      * 根据 版本条件分组名称 获取版本条件分组列表
      * @argument {string} name 版本条件分组名;
      * @argument {string} type 版本条件分组表类型;
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      * @argument {number} active 是否生效;
      * @argument {number} live 是否线上已发布数据
      * @returns {Promise<string[]>} 版本条件分组列表;
@@ -114,7 +114,7 @@ export default class VersionGroupModel extends MBModel {
      * 根据 版本条件分组的开始版本 获取版本条件分组列表
      * @argument {number} begin 版本条件分组的开始版本;
      * @argument {string} type 版本条件分组表类型;
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      * @argument {number} active 是否生效;
      * @argument {number} live 是否线上已发布数据
      * @returns {Promise<string[]>} 版本条件分组列表;
@@ -169,7 +169,7 @@ export default class VersionGroupModel extends MBModel {
 
     /**
      * 获取版本条件分组信息列表
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      * @argument {string} type 版本条件分组表类型;
      * @argument {string} creatorId 创建者 id
      */
@@ -197,7 +197,7 @@ export default class VersionGroupModel extends MBModel {
 
     /**
      * 获取版本条件分组名列表,
-     * @argument {string[]} idList 版本条件分组表 id 列表;
+     * @argument {string[]} idList 版本条件分组表主键 列表;
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;
      * @returns {Promise<string[]>} 版本条件分组名列表;

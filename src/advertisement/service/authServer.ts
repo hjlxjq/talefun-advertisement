@@ -36,8 +36,8 @@ export default class AuthService extends BaseService {
 
     /**
      * <br/>获取用户在应用下权限。
-     * @augments {string} userId 用户表主键 id
-     * @augments {string} productId 应用表主键 id
+     * @augments {string} userId 用户表主键
+     * @augments {string} productId 应用表主键
      * @returns {CusProductAuth} 用户在应用下权限
      */
     private async getProductAuth(userId: string, productId: string) {
@@ -86,8 +86,8 @@ export default class AuthService extends BaseService {
 
     /**
      * <br/>获取用户在项目组下操作权限
-     * @augments {string} userId 用户表主键 id
-     * @augments {string} productGroupId 项目组表主键 id
+     * @augments {string} userId 用户表主键
+     * @augments {string} productGroupId 项目组表主键
      * @returns {CusProductGroupAuth} 用户在项目组下能操作权限
      */
     private async getProductGroupAuth(userId: string, productGroupId: string) {
@@ -113,7 +113,7 @@ export default class AuthService extends BaseService {
 
     /**
      * <br/>获取用户权限
-     * @augments {string} userId 用户表主键 id
+     * @augments {string} userId 用户表主键
      * @returns {UserAuthVO} 用户权限
      */
     private async getUserAuth(userId: string) {
@@ -127,8 +127,8 @@ export default class AuthService extends BaseService {
     /**
      * 获取用户在应用下权限,
      * <br/>从 redis 中获取，不存在则从数据库中获取
-     * @augments {string} userId 用户表主键 id
-     * @augments {string} productId 应用表主键 id
+     * @augments {string} userId 用户表主键
+     * @augments {string} productId 应用表主键
      * @returns {CusProductAuth} 用户在应用下权限
      */
     public async fetchProductAuth(userId: string, productId: string) {
@@ -160,8 +160,8 @@ export default class AuthService extends BaseService {
     /**
      * 获取用户在项目组下权限,
      * <br/>从 redis 中获取，不存在则从数据库中获取
-     * @augments {string} userId 用户表主键 id
-     * @augments {string} productGroupId 项目组表主键 id
+     * @augments {string} userId 用户表主键
+     * @augments {string} productGroupId 项目组表主键
      * @returns {CusProductGroupAuth} 用户在项目组下权限
      */
     public async fetchProductGroupAuth(userId: string, productGroupId: string) {
@@ -189,7 +189,7 @@ export default class AuthService extends BaseService {
     /**
      * 获取用户权限,
      * <br/>从 redis 中获取，不存在则从数据库中获取
-     * @augments {string} userId 用户表主键 id
+     * @augments {string} userId 用户表主键
      * @returns {UserAuthVO} 用户权限
      */
     public async fetchUserAuth(userId: string) {
@@ -213,8 +213,8 @@ export default class AuthService extends BaseService {
     /**
      * 从 redis 中删除用户在应用下权限数据，
      * <br/>登出或者更新权限需要删除再从数据库读取到 redis
-     * @augments {string} userId 用户表主键 id
-     * @augments {string} productId 应用表主键 id
+     * @augments {string} userId 用户表主键
+     * @augments {string} productId 应用表主键
      * @returns {boolean} 删除用户在应用下权限成功与否
      */
     public async deleteProductAuthFromRedis(userId: string, productId: string) {
@@ -229,7 +229,7 @@ export default class AuthService extends BaseService {
     /**
      * 从 redis 中删除用户所有权限数据，
      * <br/>登出或者更新用户权限需要删除再从数据库读取到 redis
-     * @augments {string} userId 用户表主键 id
+     * @augments {string} userId 用户表主键
      * @returns {boolean} 删除用户所有权限成功与否
      */
     public async deleteAllAuthFromRedis(userId: string) {

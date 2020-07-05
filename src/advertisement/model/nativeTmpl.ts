@@ -20,7 +20,7 @@ export default class NativeTmplModel extends MBModel {
     /**
      * 插入 native 模板
      * @argument {NativeTmplVO} nativeTmplVo native 模板表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(nativeTmplVo: NativeTmplVO) {
         await this.add(nativeTmplVo);
@@ -30,7 +30,7 @@ export default class NativeTmplModel extends MBModel {
 
     /**
      * 更新 native 模板
-     * @argument {string} id native 模板表 id;
+     * @argument {string} id native 模板表主键;
      * @argument {NativeTmplVO} nativeTmplVo native 模板表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -44,14 +44,15 @@ export default class NativeTmplModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取 native 模板信息
-     * @argument {string} id native 模板表 id;
+     * 根据主键获取 native 模板信息
+     * @argument {string} id native 模板表主键;
      * @argument {number} active 是否生效;
      * @argument {number} test 是否测试 app 可见;
      * @returns {Promise<nativeTmplVO>} native 模板信息;
      */
-    public async getVo(id: string, active: number, test: number) {
+    public async getVo(id: string, active?: number, test?: number) {
         const queryStrings: string[] = [];
+
         queryStrings.push(`id='${id}'`);
 
         if (test === 0) {
@@ -70,7 +71,6 @@ export default class NativeTmplModel extends MBModel {
 
     /**
      * 获取 native 模板信息列表
-     * </br> 按 native 模板 key 从小到大排序
      */
     public async getList() {
         return await this.select() as NativeTmplVO[];

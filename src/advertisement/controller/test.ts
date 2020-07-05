@@ -28,8 +28,8 @@ import {
 
 import {
     AdTypeListResVO,
-    GetAdTypeReqVO, GetAdTypeResVO, CreateAdTypeReqVO, CreateAdTypeResVO, UpdateAdTypeReqVO, UpdateAdTypeResVO,
-    AdChannelListResVO, GetAdChannelReqVO, GetAdChannelResVO, CreateAdChannelReqVO, CreateAdChannelResVO,
+    AdTypeReqVO, AdTypeResVO, CreateAdTypeReqVO, CreateAdTypeResVO, UpdateAdTypeReqVO, UpdateAdTypeResVO,
+    AdChannelListResVO, AdChannelReqVO, AdChannelResVO, CreateAdChannelReqVO, CreateAdChannelResVO,
     UpdateAdChannelReqVO, UpdateAdChannelResVO, NativeTmplListResVO, CreateNativeTmplReqVO, CreateNativeTmplResVO,
     UpdateNativeTmplReqVO, UpdateNativeTmplResVO, BaseConfigListResVO, CreateBaseConfigReqVO,
     CreateBaseConfigResVO, UpdateBaseConfigReqVO, UpdateBaseConfigResVO, PackParamListResVO,

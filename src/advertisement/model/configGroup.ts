@@ -20,7 +20,7 @@ export default class ConfigGroupModel extends MBModel {
     /**
      * 插入常量组
      * @argument {ConfigGroupVO} configGroupVo 常量组表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(configGroupVo: ConfigGroupVO) {
         await this.add(configGroupVo);
@@ -30,7 +30,7 @@ export default class ConfigGroupModel extends MBModel {
 
     /**
      * 更新常量组
-     * @argument {string} id 常量组表 id;
+     * @argument {string} id 常量组表主键;
      * @argument {ConfigGroupVO} configGroupVo 常量组表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -83,9 +83,9 @@ export default class ConfigGroupModel extends MBModel {
     }
 
     /**
-     * 根据应用主键 id 获取常量组列表
+     * 根据应用主键 获取常量组列表
      * </br> 按常量组名称从小到大排序
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      * @argument {number} type 0 广告 1 游戏常量
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;

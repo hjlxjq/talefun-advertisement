@@ -20,7 +20,7 @@ export default class AbTestMapModel extends MBModel {
     /**
      * <br/>插入广告位表对象
      * @argument {AbTestMapVO[]} abTestMapVo 广告位表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(abTestMapVo: AbTestMapVO) {
         await this.add(abTestMapVo);
@@ -49,7 +49,7 @@ export default class AbTestMapModel extends MBModel {
 
     /**
      * 更新广告位表
-     * @argument {string} id 广告位表 id;
+     * @argument {string} id 广告位表主键;
      * @argument {AbTestMapVO} abTestMapVo 广告位表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -64,7 +64,7 @@ export default class AbTestMapModel extends MBModel {
 
     /**
      * 删除广告位表对象
-     * @argument {string} abTestGroupId 分组表 id;
+     * @argument {string} abTestGroupId 分组表主键;
      * @argument {string} place 广告位;
      * @returns {Promise<number>} 删除行数;
      */
@@ -86,9 +86,9 @@ export default class AbTestMapModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取广告位信息,
+     * 根据主键 获取广告位信息,
      * <br/> 广告位表不需要判断是否开启
-     * @argument {string} abTestGroupId ab 测试分组表 id;
+     * @argument {string} abTestGroupId ab 测试分组表主键;
      * @argument {string} place 广告位;
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AbTestMapVO>} 广告位信息;
@@ -133,8 +133,8 @@ export default class AbTestMapModel extends MBModel {
     }
 
     /**
-     * 根据 ab 测试分组表主键 id 获取广告位表列表
-     * @argument {string} abTestGroupId ab 测试分组表 id;
+     * 根据 ab 测试分组表主键 获取广告位表列表
+     * @argument {string} abTestGroupId ab 测试分组表主键;
      * @argument {string} creatorId 创建者 id
      * @argument {number} active 是否生效;
      * @returns {Promise<AbTestMapVO[]>} 广告位表列表;
@@ -159,10 +159,10 @@ export default class AbTestMapModel extends MBModel {
     }
 
     /**
-     * 根据广告组表主键 id 获取 ab 测试分组主键 id 列表
-     * @argument {string} adGroupId 广告组表 id;
+     * 根据广告组表主键 获取 ab 测试分组主键 列表
+     * @argument {string} adGroupId 广告组表主键;
      * @argument {string} creatorId 创建者 id
-     * @returns {Promise<AbTestMapVO>} ab 测试分组主键 id 列表
+     * @returns {Promise<AbTestMapVO>} ab 测试分组主键 列表
      */
     public async getAbTestGroupIdByAdGroup(adGroupId: string, creatorId: string) {
         const queryStrings: string[] = [];

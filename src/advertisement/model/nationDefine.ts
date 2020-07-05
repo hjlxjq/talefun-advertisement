@@ -20,7 +20,7 @@ export default class NationDefineModel extends MBModel {
      * 批量，
      * <br/>插入国家代码定义对象列表；
      * @argument {NationDefineVO[]} nationDefineVoList 国家代码定义列表;
-     * @returns {Promise<string[]>} 主键 id 列表;
+     * @returns {Promise<string[]>} 主键 列表;
      */
     public async addList(nationDefineVoList: NationDefineVO[]) {
         let idList: string[] = [];

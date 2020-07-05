@@ -19,7 +19,7 @@ export default class ProductGroupAuthModel extends MBModel {
     /**
      * 插入项目组权限表
      * @argument {ProductGroupAuthVO} productGroupAuthVo 项目组权限对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(productGroupAuthVo: ProductGroupAuthVO) {
 
@@ -28,9 +28,9 @@ export default class ProductGroupAuthModel extends MBModel {
     }
 
     /**
-     * 根据项目组表主键 id 和 用户表主键 id 更新应用权限表
-     * @argument {string} productGroupId 项目组表主键 id ;
-     * @argument {string} userId 用户表主键 id;
+     * 根据项目组表主键 和 用户表主键 更新应用权限表
+     * @argument {string} productGroupId 项目组表主键 ;
+     * @argument {string} userId 用户表主键;
      * @argument {ProductGroupAuthVO} productGroupAuthUpdateVo 项目组权限对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -48,9 +48,9 @@ export default class ProductGroupAuthModel extends MBModel {
     }
 
     /**
-     * 根据项目组表主键 id 和 用户表主键 id 删除应用权限
-     * @argument {string} productGroupId 项目组表主键 id ;
-     * @argument {string} userId 用户表主键 id;
+     * 根据项目组表主键 和 用户表主键 删除应用权限
+     * @argument {string} productGroupId 项目组表主键 ;
+     * @argument {string} userId 用户表主键;
      * @returns {Promise<number>} 删除行数;
      */
     public async delVo(productGroupId: string, userId: string) {
@@ -59,8 +59,8 @@ export default class ProductGroupAuthModel extends MBModel {
     }
 
     /**
-     * 根据项目组表主键 id 获取项目组权限表列表
-     * @argument {string} productGroupId 项目组表 id;
+     * 根据项目组表主键 获取项目组权限表列表
+     * @argument {string} productGroupId 项目组表主键;
      * @returns {Promise<ProductGroupAuthVO[]>} 项目组权限表列表;
      */
     public async getList(productGroupId: string) {
@@ -69,9 +69,9 @@ export default class ProductGroupAuthModel extends MBModel {
     }
 
     /**
-     * 根据用户表主键 id 获取项目表主键 id 列表;
-     * @argument {string} userId 用户表 id;
-     * @returns {Promise<string[]>} 项目表主键 id 列表;
+     * 根据用户表主键 获取项目表主键 列表;
+     * @argument {string} userId 用户表主键;
+     * @returns {Promise<string[]>} 项目表主键 列表;
      */
     public async getIdListByUser(userId: string) {
         const productGroupAuthVoList = await this.where({ userId }).select() as ProductGroupAuthVO[];
@@ -84,8 +84,8 @@ export default class ProductGroupAuthModel extends MBModel {
 
     /**
      * 根据用户表主键和项目组表主键 获取 项目组和应用权限对象
-     * @argument {string} userId 用户表 id;
-     * @argument {string} productGroupId 项目组表 id;
+     * @argument {string} userId 用户表主键;
+     * @argument {string} productGroupId 项目组表主键;
      * @returns {Promise<{ productAuth: ProductAuthVO;productGroupAuth: ProductGroupAuthVO; }>} 项目组和应用权限对象;
      */
     public async getVo(userId: string, productGroupId: string) {

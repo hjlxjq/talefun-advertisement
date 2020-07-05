@@ -20,8 +20,8 @@ export default class PackParamConfModel extends MBModel {
     /**
      * 创建或者更新应用打包参数，
      * <br/>不存在则创建
-     * @argument {string} packParamId 打包参数表 id;
-     * @argument {string} productId 应用表 id;
+     * @argument {string} packParamId 打包参数表主键;
+     * @argument {string} productId 应用表主键;
      * @argument {PackParamConfVO} packParamConfUpdateVo 应用打包参数对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -36,8 +36,8 @@ export default class PackParamConfModel extends MBModel {
 
     /**
      * 获取应用打包参数信息
-     * @argument {string} id 打包参数表 id;
-     * @argument {string} productId 应用表 id;
+     * @argument {string} id 打包参数表主键;
+     * @argument {string} productId 应用表主键;
      * @returns {Promise<number>} 应用打包参数信息;
      */
     public async getVo(packParamId: string, productId: string) {
@@ -47,7 +47,7 @@ export default class PackParamConfModel extends MBModel {
 
     /**
      * 获取应用打包参数信息列表
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      */
     public async getList(productId: string) {
         return await this.where({ productId }).select() as PackParamConfVO[];
@@ -56,8 +56,8 @@ export default class PackParamConfModel extends MBModel {
 
     /**
      * 删除应用打包参数信息
-     * @argument {string} id 打包参数表 id;
-     * @argument {string} productId 应用表 id;
+     * @argument {string} id 打包参数表主键;
+     * @argument {string} productId 应用表主键;
      * @returns {Promise<number>} 删除行数;
      */
     public async delPackParamConf(packParamId: string, productId: string) {

@@ -20,7 +20,7 @@ export default class ProductGroupModel extends MBModel {
     /**
      * 插入项目组
      * @argument {ProductGroupVO} productGroupVo 项目组表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(productGroupVo: ProductGroupVO) {
         await this.add(productGroupVo);
@@ -30,7 +30,7 @@ export default class ProductGroupModel extends MBModel {
 
     /**
      * 更新项目组
-     * @argument {string} id 项目组表 id;
+     * @argument {string} id 项目组表主键;
      * @argument {ProductGroupVO} productGroupUpdateVo 项目组表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -71,8 +71,8 @@ export default class ProductGroupModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取项目组信息
-     * @argument {string} id 项目组表 id;
+     * 根据主键 获取项目组信息
+     * @argument {string} id 项目组表主键;
      * @returns {Promise<ProductGroupVO>} 项目组信息;
      */
     public async getVo(id: string) {

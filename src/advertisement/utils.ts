@@ -1,41 +1,48 @@
+/**
+ * 通用的函数实例，多处可用到
+ */
+
 'use strict';
+
 import { think } from 'thinkjs';
 import * as _ from 'lodash';
-const uuid = require('node-uuid');
 import { exec, ExecOptions } from 'shelljs';
 import * as Bluebird from 'bluebird';
-const rp = require('request-promise');
 import * as moment from 'moment-mini-ts';
 import * as fs from 'fs';
+
+const uuid = require('node-uuid');
+const rp = require('request-promise');
+
 import { HashVO } from './defines';
 
 const fsPromises = fs.promises;
 
-interface IExecFunctionOptions extends ExecOptions {
-    silent?: boolean;
-    async?: false;
-}
 const WxHook = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=537847c6-5bf0-45e5-af04-69c311cb3416';
 
 export default class Utils {
     /**
-     * 是否为空或者 null
+     * 判断对象所有属性是否全部为 undefined,
+     * <br/>主要用来判断是否插入或者更新数据表
      */
     public static isEmptyObj(obj: object): boolean {
         let isEmpty = true;
-        _.each(obj, (value: any) => {
-            if (value !== undefined) {
+
+        for (const key of _.keys(obj)) {
+
+            if (!_.isUndefined(obj[key])) {
                 isEmpty = false;
+                break;
 
             }
 
-        });
+        }
         return isEmpty;
 
     }
 
     /**
-     * 自动生成主键 id
+     * 自动生成主键
      */
     public static generateId(): string {
         return uuid.v4();
@@ -43,12 +50,13 @@ export default class Utils {
     }
 
     /**
-     * 对象子数组处理, redis hash 表数据
+     * 数据库数据 处理成 redis hash 表数据，
      * @argument {{ [propName: string]: object; }} cacheData mysql 取出处理的缓存数据对象
-     * @returns {{ [propName: string]: string; }} redis hash 表对象
+     * @returns {HashVO} redis hash 表
      */
     public static getRedisHash(cacheData: { [propName: string]: object; }) {
         const redisHash: HashVO = {};
+
         _.each(cacheData, (value, key) => {
             redisHash[key] = JSON.stringify(value);
 
@@ -57,15 +65,18 @@ export default class Utils {
 
     }
 
-    public static asyncExec(
-        command: string,
-        options: IExecFunctionOptions = {}
-    ): Promise<string> {
+    /**
+     * shell 异步执行，返回 Promise
+     * @argument {string} command shell 命令
+     * @argument {ExecOptions} options shelljs exec 函数执行参数
+     * @returns {Promise<string>} 执行结果 code
+     */
+    public static asyncExec(command: string, options: ExecOptions = {}): Promise<string> {
         return new Promise((resolve, reject) => {
             exec(
-                command,
-                { ...options, async: false },
+                command, options,
                 (code: number, stdout: string, stderr: string) => {
+
                     // think.logger.debug(`code: ${code}`);
                     if (code !== 0) {
                         const e: Error = new Error();
@@ -77,15 +88,23 @@ export default class Utils {
                         resolve(String(code));
 
                     }
+
                 }
+
             );
 
         });
 
     }
 
+    /**
+     * 发送企业微信机器人，
+     * <br>一般出现错误，需要通知负责人，则通过企业微信机器人 api 发送
+     * @returns {HashVO} redis hash 表
+     */
     public static async sendWxBot() {
-        const appName = think.config('TLF_AppName');
+        const appName = think.config('TLF_AppName');     // app 名
+        // 发送内容主体
         const body = {
             msgtype: 'markdown',
             markdown: {
@@ -107,18 +126,24 @@ export default class Utils {
 
     }
 
-    public static async setLastTestDate(dir: string, date: string) {
-        const datePath = dir + '/' + date + '.html';
-        const lastPath = dir + '/mochawesome.html';
-        // think.logger.debug(`datePath: ${datePath}`);
-        // think.logger.debug(`lastPath: ${lastPath}`);
+    /**
+     * 保存单元测试结果，
+     * @argument {string} reportDir 报告目录
+     * @argument {string} reportFilename 报告文件名称，报告名为日期形式
+     */
+    public static async setLastTestDate(reportDir: string, reportFilename: string) {
+        const reportFilePath = reportDir + '/' + reportFilename + '.html';    // 报告地址
+        const lastPath = reportDir + '/mochawesome.html';    // 最新更新的报告地址
+
         try {
-            const stats = await fsPromises.stat(datePath);
+            const stats = await fsPromises.stat(reportFilePath);
+
             if (stats.isFile()) {
-                const versionPath = dir + '/version';
-                // think.logger.debug(`versionPath: ${versionPath}`);
-                await fsPromises.writeFile(versionPath, date);
-                await fsPromises.copyFile(datePath, lastPath);
+                // 记录最新更新的报告名
+                const versionPath = reportDir + '/version';
+
+                await fsPromises.writeFile(versionPath, reportFilename);
+                await fsPromises.copyFile(reportFilePath, lastPath);
 
             }
 
@@ -126,38 +151,62 @@ export default class Utils {
 
     }
 
-    public static async getLastTestDate(dir: string) {
-        const lastPath = dir + '/version';
+    /**
+     * 获取最新更新的报告地址
+     * @argument {string} reportDir 报告目录
+     * @returns {string} 最新更新的报告地址
+     */
+    public static async getLastTestDate(reportDir: string) {
+        const lastPath = reportDir + '/version';
         const version = await fsPromises.readFile(lastPath);
 
         return version.toString();
 
     }
 
-    public static async delFile(dir: string, days: number) {
-        const files = await fsPromises.readdir(dir);
+    /**
+     * 删除单元测试报告，
+     * <br/>防止报告文件过多，时间太长的参考意义不大，故定期删除时间过长的
+     * @argument {string} reportDir 报告目录
+     * @argument {number} days 定期删除的多少天以前的报告
+     * @returns {HashVO} redis hash 表
+     */
+    public static async delFile(reportDir: string, days: number) {
+        const files = await fsPromises.readdir(reportDir);
+        // 获取报告文件，html 和 json 文件
         const needDelFiles = files.filter((f) => {
             return f.endsWith('.html') || f.endsWith('.json');
 
         }, files);
-        // think.logger.debug(`needDelFiles: ${JSON.stringify(needDelFiles)}`);
+
         return await Bluebird.map(needDelFiles, (needDelFile) => {
-            const date = needDelFile.substring(0, needDelFile.length - 5);
-            if (date === 'last' || date === 'mochawesome') {
+            // 不管 html 还是 json 文件，后缀都是 5 个字符
+            const reportFilename = needDelFile.substring(0, needDelFile.length - 5);
+
+            // 不删除最近的报告
+            if (reportFilename === 'last' || reportFilename === 'mochawesome') {
                 return;
 
             }
+            // 判断报告是否在需要删除的日期以前，报告名为日期形式
             const met = moment().endOf('day').subtract(days, 'days');
-            const bool = moment(date).isBefore(met);
+            const bool = moment(reportFilename).isBefore(met);
 
             if (bool) {
-                return fsPromises.unlink(dir + '/' + needDelFile);
+                return fsPromises.unlink(reportDir + '/' + needDelFile);
 
             }
 
         });
+
     }
 
+    /**
+     * 获取验证码，
+     * <br/>
+     * @argument {{ [propName: string]: object; }} length 验证码长度
+     * @returns {HashVO} redis hash 表
+     */
     public static genVerifiCode(length: number = 6) {
         if (isNaN(length)) {
             throw new TypeError('Length must be a number');
@@ -167,8 +216,9 @@ export default class Utils {
             throw new RangeError('Length must be at least 1');
 
         }
-        const possible = '0123456789';
         let verifiCode = '';
+        // 验证码取值范围
+        const possible = '0123456789';
 
         for (let i = 0; i < length; i++) {
             verifiCode += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -180,6 +230,7 @@ export default class Utils {
 
     /**
      * 检查目录，不存在则创建目录
+     * @argument {string} DirPath 目录
      */
     public static async thenCreateDir(DirPath: string) {
         try {

@@ -45,7 +45,7 @@ import {
  */
 export default class ModelService extends BaseService {
     /**
-     * <br/>获取所有的，广告平台和该平台下所有广告类型列表信息，列表
+     * <br/>获取所有的，广告平台和该平台下所有广告类型列表的列表
      */
     public async getAdChannelList() {
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;
@@ -64,6 +64,7 @@ export default class ModelService extends BaseService {
 
                 if (adTypeVo) {
                     return adTypeVo.name;
+
                 }
 
             });
@@ -101,6 +102,7 @@ export default class ModelService extends BaseService {
 
             if (adTypeVo) {
                 return adTypeVo.name;
+
             }
 
         });
@@ -116,8 +118,8 @@ export default class ModelService extends BaseService {
     }
 
     /**
-     * <br/>根据用户主键 id 获取应用列表
-     * @argument {string} userId 用户表 id;
+     * <br/>根据用户主键 获取应用列表
+     * @argument {string} userId 用户表主键;
      */
     public async getProductListByUser(userId: string) {
         const productAuthModel = this.taleModel('productAuth', 'advertisement') as ProductAuthModel;
@@ -139,7 +141,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取应用打包参数列表信息
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      */
     public async getPackParamConfList(productId: string) {
         const packParamModel = this.taleModel('packParam', 'advertisement') as PackParamModel;
@@ -175,7 +177,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取应用广告平台参数信息
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      * @argument {string} adType 广告类型显示名称;
      */
     public async getChannelParamConfList(productId: string, adType: string) {
@@ -238,7 +240,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取版本条件分组列表信息.
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      * @argument {string} type 版本条件分组类型;
      * @argument {string} creatorId 创建者 id;
      */
@@ -248,7 +250,7 @@ export default class ModelService extends BaseService {
 
         // 数据库里的版本条件分组对象
         const versionGroupVoList = await versionGroupModel.getListByProduct(productId, type, creatorId);
-        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键 id
+        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键
         const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'versionGroup');
 
         // 返回的版本条件分组列表信息
@@ -281,7 +283,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取 native 模板组列表信息
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      * @argument {string} creatorId 创建者 id
      */
     public async getNativeTmplConfGroupList(productId: string, creatorId: string) {
@@ -325,7 +327,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取应用下 native 模板列表信息
-     * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表 id;
+     * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表主键;
      * @argument {string} creatorId 创建者 id
      */
     public async getNativeTmplConfList(nativeTmplConfGroupId: string, creatorId: string) {
@@ -342,7 +344,7 @@ export default class ModelService extends BaseService {
 
             // 从 native 模板表常规配置中获取 key, preview
             const { nativeTmplId } = nativeTmplConfVo;
-            const nativeTmplVo = await nativeTmplModel.getVo(nativeTmplId, undefined, undefined);
+            const nativeTmplVo = await nativeTmplModel.getVo(nativeTmplId);
 
             if (think.isEmpty(nativeTmplVo)) {
                 return;
@@ -370,7 +372,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取广告组列表信息
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      * @argument {string} creatorId 创建者 id
      */
     public async getAdGroupList(productId: string, creatorId: string) {
@@ -418,7 +420,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取广告列表信息
-     * @argument {string} productId 应用表 id;
+     * @argument {string} productId 应用表主键;
      * @argument {string} creatorId 创建者 id
      */
     public async getAdList(productId: string, creatorId: string) {
@@ -473,7 +475,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取广告组下广告列表信息
-     * @argument {string} adGroupId 广告组表 id;
+     * @argument {string} adGroupId 广告组表主键;
      * @argument {string} creatorId 创建者 id
      */
     public async getAdListInAdGroup(adGroupId: string, creatorId: string) {
@@ -518,7 +520,7 @@ export default class ModelService extends BaseService {
      * 获取关联组下常量数据,
      * <br/>迭代查询关联组下的常量，一起返回
      * @argument {string} dependent 关联组名
-     * @argument {string} dependentId 关联组主键 id
+     * @argument {string} dependentId 关联组主键
      * @argument {string} creatorId 创建者 id
      * @argument {string[]} dependentIdList 所有前置依赖的组主键
      * @argument {{ [propName: string]: ConfigResVO; }} dpdConfigVoHash 关联组下常量数据
@@ -575,7 +577,7 @@ export default class ModelService extends BaseService {
     /**
      * <br/>获取常量组下常量数据列表,
      * <br/>迭代查询关联组下的常量，一起返回
-     * @argument {string} configGroupId 常量组主键 id
+     * @argument {string} configGroupId 常量组主键
      * @argument {string} creatorId 创建者 id
      */
     public async getConfigList(configGroupId: string, creatorId: string) {
@@ -675,7 +677,7 @@ export default class ModelService extends BaseService {
 
     /**
      * 获取常量组信息列表
-     * @argument {string} productId 应用表主键 id
+     * @argument {string} productId 应用表主键
      * @argument {number} type 0 广告 1 游戏常量
      * @argument {string} creatorId 创建者 id
      */
@@ -726,7 +728,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取常量组数据
-     * @argument {string} id 常量组主键 id
+     * @argument {string} id 常量组主键
      * @argument {string} creatorId 创建者 id
      */
     public async getConfigGroup(configGroupId: string, creatorId: string) {
@@ -770,7 +772,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取 native 模板组信息
-     * @argument {string} nativeTmplConfGroupId  native 模板组表 id;
+     * @argument {string} nativeTmplConfGroupId  native 模板组表主键;
      * @argument {string} creatorId 创建者 id
      */
     public async getNativeTmplConfGroup(nativeTmplConfGroupId: string, creatorId: string) {
@@ -802,7 +804,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取广告位列表信息
-     * @argument {string} abTestGroupId ab 测试分组表主键 id;
+     * @argument {string} abTestGroupId ab 测试分组表主键;
      * @argument {string} creatorId 创建者 id
      */
     public async getPlaceList(abTestGroupId: string, creatorId: string) {
@@ -844,7 +846,7 @@ export default class ModelService extends BaseService {
                     adGroupModel.getVo(adGroupId, creatorId),
                     this.getAdListInAdGroup(adGroupId, creatorId)
                 ]);
-                // 获取缓存中未发布更新，redis 哈希域为广告组表主键 id
+                // 获取缓存中未发布更新，redis 哈希域为广告组表主键
                 const cacheAdGroupVo = cacheAdGroupVoHash[adGroupId] as AdGroupVO;
 
                 const adGroupResVo: AdGroupResVO = _.assign({

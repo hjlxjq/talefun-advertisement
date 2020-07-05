@@ -34,7 +34,7 @@ export default class UserModel extends MBModel {
 
     /**
      * 更新用户
-     * @argument {string} id 用户表 id;
+     * @argument {string} id 用户表主键;
      * @argument {UserVO} userVo 用户表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -59,7 +59,7 @@ export default class UserModel extends MBModel {
 
     /**
      * 查看详细信息
-     * @argument {string} id 用户表 id;
+     * @argument {string} id 用户表主键;
      * @returns {Promise<UserVO>} 用户表对象;
      */
     public async getVo(id: string): Promise<UserVO> {

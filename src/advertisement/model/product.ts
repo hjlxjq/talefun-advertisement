@@ -19,7 +19,7 @@ export default class ProductModel extends MBModel {
     /**
      * 插入应用
      * @argument {ProductVO} productVo 应用表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(productVo: ProductVO) {
         await this.add(productVo);
@@ -84,7 +84,7 @@ export default class ProductModel extends MBModel {
 
     /**
      * 根据项目组 id 获取全部应用列表
-     * @argument {string} productGroupId 应用表 id;
+     * @argument {string} productGroupId 应用表主键;
      * @returns {Promise<ProductVO[]>} 应用列表;
      */
     public async getListByProductGroup(productGroupId: string) {
@@ -112,8 +112,8 @@ export default class ProductModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取应用表信息
-     * @argument {string} id 应用表 id;
+     * 根据主键 获取应用表信息
+     * @argument {string} id 应用表主键;
      * @returns {Promise<ProductVO>} 应用表信息;
      */
     public async getVo(id: string) {

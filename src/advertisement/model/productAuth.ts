@@ -19,7 +19,7 @@ export default class ProductAuthModel extends MBModel {
     /**
      * 插入应用权限表
      * @argument {ProductAuthVO} productAuthVo 应用权限对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(productAuthVo: ProductAuthVO) {
         await this.add(productAuthVo);
@@ -28,9 +28,9 @@ export default class ProductAuthModel extends MBModel {
     }
 
     /**
-     * 根据应用表主键 id 和 用户表主键 id 更新应用权限表
-     * @argument {string} productId 应用表主键 id ;
-     * @argument {string} userId 用户表主键 id;
+     * 根据应用表主键 和 用户表主键 更新应用权限表
+     * @argument {string} productId 应用表主键 ;
+     * @argument {string} userId 用户表主键;
      * @argument {ProductAuthVO} productAuthUpdateVo 应用权限对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -48,9 +48,9 @@ export default class ProductAuthModel extends MBModel {
     }
 
     /**
-     * 根据应用表主键 id 和 用户表主键 id 删除应用权限
-     * @argument {string} productId 应用表主键 id ;
-     * @argument {string} userId 用户表主键 id;
+     * 根据应用表主键 和 用户表主键 删除应用权限
+     * @argument {string} productId 应用表主键 ;
+     * @argument {string} userId 用户表主键;
      * @returns {Promise<number>} 删除行数;
      */
     public async delProductAuth(productId: string, userId: string) {
@@ -59,8 +59,8 @@ export default class ProductAuthModel extends MBModel {
     }
 
     /**
-     * 根据应用表主键 id 获取应用权限表列表
-     * @argument {string} productId 应用表 id;
+     * 根据应用表主键 获取应用权限表列表
+     * @argument {string} productId 应用表主键;
      * @returns {Promise<ProductAuthVO[]>} 应用权限表列表;
      */
     public async getList(productId: string) {
@@ -69,9 +69,9 @@ export default class ProductAuthModel extends MBModel {
     }
 
     /**
-     * 根据用户表主键 id 获取应用表主键 id 列表;
-     * @argument {string} userId 用户表 id;
-     * @returns {Promise<string[]>} 应用表主键 id 列表
+     * 根据用户表主键 获取应用表主键 列表;
+     * @argument {string} userId 用户表主键;
+     * @returns {Promise<string[]>} 应用表主键 列表
      */
     public async getIdListByUser(userId: string) {
         const productAuthVoList = await this.where({ userId }).select() as ProductAuthVO[];
@@ -84,8 +84,8 @@ export default class ProductAuthModel extends MBModel {
 
     /**
      * 根据用户表主键和应用表主键获取应用权限对象
-     * @argument {string} userId 用户表 id;
-     * @argument {string} productId 应用表 id;
+     * @argument {string} userId 用户表主键;
+     * @argument {string} productId 应用表主键;
      * @returns {Promise<ProductAuthVO[]>} 应用权限对象;
      */
     public async getVo(userId: string, productId: string) {

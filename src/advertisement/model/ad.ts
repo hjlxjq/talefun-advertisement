@@ -20,7 +20,7 @@ export default class AdModel extends MBModel {
     /**
      * 插入广告组下广告
      * @argument {AdVO} adVo 广告组下广告表对象;
-     * @returns {Promise<string>} 主键 id;
+     * @returns {Promise<string>} 主键;
      */
     public async addVo(adVo: AdVO) {
         await this.add(adVo);
@@ -31,7 +31,7 @@ export default class AdModel extends MBModel {
     /**
      * 批量插入广告表对象列表
      * @argument {AdVO[]} adVolist 广告表对象列表;
-     * @returns {Promise<string[]>} 主键 id 列表;
+     * @returns {Promise<string[]>} 主键 列表;
      */
     public async addList(adVolist: AdVO[]) {
         let idList: string[] = [];
@@ -47,7 +47,7 @@ export default class AdModel extends MBModel {
 
     /**
      * 更新广告组下广告
-     * @argument {string} id 广告组下广告表 id;
+     * @argument {string} id 广告组下广告表主键;
      * @argument {AdVO} adVo 广告组下广告表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -62,7 +62,7 @@ export default class AdModel extends MBModel {
 
     /**
      * 删除广告组下广告
-     * @argument {string} id 广告表 id;
+     * @argument {string} id 广告表主键;
      * @returns {Promise<number>} 删除行数;
      */
     public async delVo(id: string) {
@@ -71,8 +71,8 @@ export default class AdModel extends MBModel {
     }
 
     /**
-     * 根据主键 id 获取广告信息
-     * @argument {string} id 广告表 id;
+     * 根据主键 获取广告信息
+     * @argument {string} id 广告表主键;
      * @argument {string} creatorId 创建者 id
      * @returns {Promise<AdVO>} 广告信息;
      */
@@ -118,8 +118,8 @@ export default class AdModel extends MBModel {
     }
 
     /**
-     * 根据广告组表主键 id 获取广告信息
-     * @argument {string} adGroupId 广告组表 id;
+     * 根据广告组表主键 获取广告信息
+     * @argument {string} adGroupId 广告组表主键;
      * @argument {string} creatorId 创建者 id
      * 获取广告组下广告信息列表
      */
@@ -148,8 +148,8 @@ export default class AdModel extends MBModel {
     }
 
     /**
-     * 根据应用表主键 id 获取广告信息
-     * @argument {string} productId 应用表 id;
+     * 根据应用表主键 获取广告信息
+     * @argument {string} productId 应用表主键;
      * @argument {string} creatorId 创建者 id
      * @argument {number} live 是否线上已发布数据
      * 获取应用下广告信息列表
@@ -184,8 +184,8 @@ export default class AdModel extends MBModel {
 
     /**
      * 线上正式数据,
-     * <br/>根据广告组表主键 id 和 广告 placementID 获取广告信息列表
-     * @argument {string} adGroupId 广告组表 id;
+     * <br/>根据广告组表主键 和 广告 placementID 获取广告信息列表
+     * @argument {string} adGroupId 广告组表主键;
      * @argument {string} placementID 广告 placementID
      * @argument {number} live 是否线上已发布数据
      * 获取广告组下广告信息列表
@@ -216,9 +216,9 @@ export default class AdModel extends MBModel {
 
     /**
      * 线上正式数据,
-     * <br/>根据广告组表主键 id, 广告渠道 和 广告名称获取广告信息列表
-     * @argument {string} adGroupId 广告组表 id;
-     * @argument {string} adChannelId 广告平台表 id;
+     * <br/>根据广告组表主键, 广告渠道 和 广告名称获取广告信息列表
+     * @argument {string} adGroupId 广告组表主键;
+     * @argument {string} adChannelId 广告平台表主键;
      * @argument {string} name 广告名称
      * @argument {number} live 是否线上已发布数据
      * 获取广告组下广告信息列表

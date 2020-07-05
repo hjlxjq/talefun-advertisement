@@ -31,7 +31,7 @@ export default class UserAuthModel extends MBModel {
 
     /**
      * 更新用户权限
-     * @argument {string} userId 用户表 id;
+     * @argument {string} userId 用户表主键;
      * @argument {UserAuthVO} userAuthVo 用户权限表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -46,7 +46,7 @@ export default class UserAuthModel extends MBModel {
 
     /**
      * 查看用户权限
-     * @argument {string} id 用户表 id;
+     * @argument {string} id 用户表主键;
      * @returns {Promise<UserAuthVO>} 用户权限表对象;
      */
     public async getVo(userId: string) {
