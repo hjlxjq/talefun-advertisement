@@ -1,5 +1,5 @@
 /**
- * advertisement cacheService
+ * advertisement updateCacheServer
  * @module advertisement/service/updateCacheServer
  * @see module:../../common/tale/BaseService
  */
@@ -10,8 +10,8 @@ import * as Redis from 'ioredis';
 import BaseService from '../../common/tale/BaseService';
 
 /**
- * 发布之前数据更新缓存相关 service
- * @class cacheService
+ * 发布之前的数据更新缓存相关 service
+ * @class updateCacheServer
  * @extends @link:common/tale/BaseService
  * @author jianlong <jianlong@talefun.com>
  */
@@ -29,6 +29,7 @@ export default class UpdateCacheServer extends BaseService {
 
     /**
      * 缓存用户发布状态，
+     * <br/>用户在在应用下进行增删改操作的时候记录
      */
     public async setDeployStatus(userId: string) {
         //  用户发布状态，redis 哈希表的 key
@@ -46,26 +47,27 @@ export default class UpdateCacheServer extends BaseService {
         //  用户发布状态，redis 哈希表的 key
         const deployKey = this.deployKeyPrefix + userId;
 
-        // redis 记录用户更新状态为 true
+        // 用户更新状态
         return this.redis.get(deployKey);
 
     }
 
     /**
      * 删除缓存的用户发布状态，
+     * <br/>发布或者回滚操作之后，清除用户的发布状态
      */
     public async delDeployStatus(userId: string) {
         //  用户发布状态，redis 哈希表的 key
         const deployKey = this.deployKeyPrefix + userId;
 
-        // redis 记录用户更新状态为 true
+        // 删除用户更新状态
         return this.redis.del(deployKey);
 
     }
 
     /**
-     * 缓存更新数据，
-     * 以用户表主键 加数据表名作为 key, 以表主键 作为 field, 已更新的 json 对象作为 value
+     * 缓存更新数据，以用户表主键加数据表名作为 key, 以数据表主键作为 field, 已更新的 json 对象作为 value，
+     * <br/>更新线上的数据，不直接去更新数据库，而是把更新内容缓存在 redis 中，待发布的时候一起更新到数据库
      */
     public async setCacheData(
         userId: string,
@@ -76,7 +78,9 @@ export default class UpdateCacheServer extends BaseService {
         // 数据库更新缓存数据，redis 哈希表的 key
         const cacheKey = this.cacheKeyPrefix + userId + ':' + tableName;
 
+        // field 为数据表主键
         const cacheField = tableId;
+
         let cacheVo = modelVo;
 
         const preJsonStr = await this.redis.hget(cacheKey, cacheField);
@@ -86,11 +90,9 @@ export default class UpdateCacheServer extends BaseService {
             cacheVo = _.assign(preModelVo, cacheVo);
 
         }
-
-        const cacheValue = JSON.stringify(cacheVo);    // 哈希值为字符串
+        const cacheValue = JSON.stringify(cacheVo);    // 哈希表为字符串
 
         await this.redis.hset(cacheKey, cacheField, cacheValue);
-        await this.redis.expire(cacheKey, this.oneDaySeconds);    // 设置过期时间为一天
 
     }
 
@@ -104,6 +106,7 @@ export default class UpdateCacheServer extends BaseService {
     ) {
         // 数据库更新缓存数据，redis 哈希表的 key
         const cacheKey = this.cacheKeyPrefix + userId + ':' + tableName;
+        // field 为数据表主键
         const cacheField = tableId;
 
         const preJsonStr = await this.redis.hget(cacheKey, cacheField);
@@ -111,6 +114,7 @@ export default class UpdateCacheServer extends BaseService {
         let preModelVo;
         if (preJsonStr) {
             preModelVo = JSON.parse(preJsonStr);
+
         }
 
         // 返回用户缓存的更新数据
@@ -128,13 +132,17 @@ export default class UpdateCacheServer extends BaseService {
         // 数据库更新缓存数据，redis 哈希表的 key
         const cacheKey = this.cacheKeyPrefix + userId + ':' + tableName;
 
+        // 获取用户全部的缓存的更新数据，redis 中的哈希表
         const jsonhash = await this.redis.hgetall(cacheKey);
+        // 返回用户全部的缓存的更新数据，值为 json , 转换为对象
         const cacheDataHash = {};
 
         for (const key in jsonhash) {
+
             if (jsonhash.hasOwnProperty(key)) {
                 const preJsonStr = jsonhash[key];
                 let preModelVo;
+
                 if (preJsonStr) {
                     preModelVo = JSON.parse(preJsonStr);
 
@@ -170,8 +178,10 @@ export default class UpdateCacheServer extends BaseService {
     public async fetchDeployModelList(
         userId: string,
     ): Promise<{ tableNameList: string[], cachetKeyList: string[] }> {
+        // 模糊查询 pattern
         const pattern = this.cacheKeyPrefix + userId + ':' + '*';
         think.logger.debug(`pattern: ${pattern}`);
+
         const stream = this.redis.scanStream({
             // only returns keys following the pattern
             match: pattern,
@@ -179,16 +189,19 @@ export default class UpdateCacheServer extends BaseService {
             count: 9,
         });
 
+        // 返回组装成 promise
         return new Promise((resolve, reject) => {
             stream.on('data', (cachetKeyList: string[]) => {
                 // `resultKeys` is an array of strings representing key names.
                 // Note that resultKeys may contain 0 keys, and that it will sometimes
                 // contain duplicates due to SCAN's implementation in Redis.
                 const tableNameList = _.map(cachetKeyList, (resultKey) => {
-                    // cacheKeyPrefix 长度为 2， userId 长度为 36
-                    return resultKey.substr(39);
+                    // cacheKeyPrefix 长度为 12， userId 长度为 36
+                    return resultKey.substr(49);
+
                 });
                 think.logger.debug(`fetchDeployModelList: ${JSON.stringify(tableNameList)}`);
+
                 resolve({ tableNameList, cachetKeyList });
 
             });

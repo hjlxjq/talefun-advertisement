@@ -77,7 +77,7 @@ export default class ModelService extends BaseService {
             delete adChannelResVo.updateAt;
             return adChannelResVo;
 
-        });
+        }, { concurrency: 3 });
         return adChannelResVoList;
 
     }
@@ -169,7 +169,7 @@ export default class ModelService extends BaseService {
 
             return packParamConfResVo;
 
-        });
+        }, { concurrency: 3 });
 
         return packParamConfResVoList;
 
@@ -232,7 +232,7 @@ export default class ModelService extends BaseService {
 
             return channelParamConfResVo;
 
-        });
+        }, { concurrency: 3 });
 
         return channelParamConfResVoList;
 
@@ -254,7 +254,7 @@ export default class ModelService extends BaseService {
         const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'versionGroup');
 
         // 返回的版本条件分组列表信息
-        const versionGroupResVoList = await Bluebird.map(versionGroupVoList, async (versionGroupVo) => {
+        const versionGroupResVoList = _.map(versionGroupVoList, (versionGroupVo) => {
             // 更新的缓存数据
             const cacheVersionGroupVo = cacheVersionGroupVoHash[versionGroupVo.id] as VersionGroupVO;
             // 返回线上数据和未发布的数据，以未发布数据为准
@@ -275,6 +275,7 @@ export default class ModelService extends BaseService {
             delete versionGroupResVo.updateAt;
 
             return versionGroupResVo;
+
         });
 
         return versionGroupResVoList;
@@ -320,7 +321,7 @@ export default class ModelService extends BaseService {
 
                 return nativeTmplConfGroupResVo;
 
-            });
+            }, { concurrency: 3 });
 
         return nativeTmplConfGroupResVoList;
     }
@@ -364,8 +365,10 @@ export default class ModelService extends BaseService {
             delete nativeTmplConfResVo.activeTime;
             delete nativeTmplConfResVo.createAt;
             delete nativeTmplConfResVo.updateAt;
+
             return nativeTmplConfResVo;
-        });
+
+        }, { concurrency: 3 });
 
         return _.compact(nativeTmplConfResVoList);
     }
@@ -412,8 +415,10 @@ export default class ModelService extends BaseService {
             delete adGroupResVo.creatorId;
             delete adGroupResVo.createAt;
             delete adGroupResVo.updateAt;
+
             return adGroupResVo;
-        });
+
+        }, { concurrency: 3 });
 
         return _.compact(adGroupResVoList);
     }
@@ -467,8 +472,10 @@ export default class ModelService extends BaseService {
             delete adResVo.adChannelId;
             delete adResVo.createAt;
             delete adResVo.updateAt;
+
             return adResVo;
-        });
+
+        }, { concurrency: 3 });
 
         return _.compact(adResVoList);
     }
@@ -510,8 +517,10 @@ export default class ModelService extends BaseService {
             delete adResVo.activeTime;
             delete adResVo.createAt;
             delete adResVo.updateAt;
+
             return adResVo;
-        });
+
+        }, { concurrency: 3 });
 
         return _.compact(adResVoList);
     }
@@ -721,7 +730,8 @@ export default class ModelService extends BaseService {
 
             return configGroupResVo;
 
-        });
+        }, { concurrency: 3 });
+
         return configGroupResVoList;
 
     }
@@ -869,6 +879,7 @@ export default class ModelService extends BaseService {
             delete placeResVo.updateAt;
 
             return placeResVo;
+
         });
 
         return _.compact(placeResVoList);

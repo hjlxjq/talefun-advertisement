@@ -211,7 +211,7 @@ export default class UserController extends BaseController {
 
             return userResVo;
 
-        });
+        }, { concurrency: 3 });
 
         return this.success(userResVoList);
 
@@ -391,7 +391,7 @@ export default class UserController extends BaseController {
 
             return userResVo;
 
-        });
+        }, { concurrency: 3 });
 
         return this.success(userResVoList);
 
@@ -428,7 +428,7 @@ export default class UserController extends BaseController {
 
             return userResVo;
 
-        });
+        }, { concurrency: 3 });
 
         return this.success(userResVoList);
 

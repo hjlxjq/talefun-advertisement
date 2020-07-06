@@ -881,7 +881,7 @@ export default class DispatchCacheService extends BaseService {
 
             });
 
-        });
+        }, { concurrency: 3 });
         return {
             productCacheData, abGroupCacheData, abMapCacheData, adGroupCacheData, nativeTmplCacheData
         };
@@ -931,7 +931,7 @@ export default class DispatchCacheService extends BaseService {
 
             const abTestGroupVoList = await abTestGroupModel.getListByVersionGroup(id, undefined, undefined, 1);
 
-            await Bluebird.map(abTestGroupVoList, async (abTestGroupVo) => {
+            _.each(abTestGroupVoList, (abTestGroupVo) => {
                 const {
                     id: abTestGroupId, versionGroupId, name, begin: abTestGroupBegin, end: abTestGroupEnd,
                     nativeTmplConfGroupId
@@ -944,7 +944,7 @@ export default class DispatchCacheService extends BaseService {
 
             });
 
-        });
+        }, { concurrency: 3 });
         return {
             productCacheData, abGroupCacheData, configCacheData
         };

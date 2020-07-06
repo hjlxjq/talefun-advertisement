@@ -1,6 +1,6 @@
 /**
  * DeployManager Controller module.
- * <br/> 发布
+ * <br/>发布相关 api
  * @module advertisement/controller/deployManager
  * @see advertisement/controller/deployManager;
  * @debugger
@@ -8,8 +8,8 @@
 import { think } from 'thinkjs';
 import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
-import BaseController from '../../common/tale/BaseController';
 
+import BaseController from '../../common/tale/BaseController';
 import MBModel from '../model/managerBaseModel';
 import UpdateCacheServer from '../service/updateCacheServer';
 
@@ -37,9 +37,10 @@ export default class DeployManagerController extends BaseController {
             await Bluebird.map(tableNameList, async (tableName) => {
                 // 待更新的表数据对象
                 const modelVohash = await updateCacheServer.fetchCacheDataHash(ucId, tableName);
-                // 待更新的数据库表对象列表组装，需要包含主键
+                // 待更新的数据库表对象组装，需要包含主键
                 const modelVoList = [];
                 for (const id in modelVohash) {
+
                     if (modelVohash.hasOwnProperty(id)) {
                         const modelVo = modelVohash[id];
                         modelVo.id = id;
@@ -52,15 +53,15 @@ export default class DeployManagerController extends BaseController {
                 // think.logger.debug(`tableName: ${tableName}`);
                 // 初始化数据表 model
                 const deployModel = this.taleModel(tableName, 'advertisement') as MBModel;
-                // 数据表中更新，更新缓存到数据表 和 数据表中暂存更新到正式
+                // 数据表中更新，更新缓存数据到数据表中 和 数据表中暂存更新到正式
                 await Promise.all([
                     deployModel.updateModelVoList(modelVoList),
                     deployModel.deployVo(ucId)
                 ]);
-                // 从缓存中删除
+                // 从缓存中删除（数据表中更新成功再删除）
                 await updateCacheServer.delCacheDataList(tableNameList, ucId);
 
-            });
+            }, { concurrency: 3 });
 
             // 从缓存中删除用户发布状态
             await updateCacheServer.delDeployStatus(ucId);
@@ -69,6 +70,7 @@ export default class DeployManagerController extends BaseController {
         } catch (e) {
             think.logger.debug(e);
             this.fail(10, '发布失败！！！');
+
         }
 
     }
@@ -97,7 +99,8 @@ export default class DeployManagerController extends BaseController {
                 // 数据表中删除用户暂存的数据
                 await deployModel.delModelVoList(ucId);
 
-            });
+            }, { concurrency: 3 });
+
             // 从缓存中删除
             await updateCacheServer.delCacheDataList(tableNameList, ucId);
             await updateCacheServer.delDeployStatus(ucId);
@@ -107,6 +110,7 @@ export default class DeployManagerController extends BaseController {
         } catch (e) {
             think.logger.debug(e);
             this.fail(10, '回滚失败！！！');
+
         }
 
     }

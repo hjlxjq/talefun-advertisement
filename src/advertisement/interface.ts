@@ -1380,38 +1380,22 @@ export interface DeleteUserFromProductResVO extends ResVO {
  * 发布相关
  * *********************************************************************************************************************
  */
-
-/**
- * </br>发布用户操作 /advertisement/deployManager/deploy
- */
-export interface DeployReqVO extends ResVO {
-    type: number;    // 类型，0 广告 1 游戏常量 2 商店
-}
-
 export interface DeployResVO extends ResVO {
-    data: 'deployed';    // 发布成功！！！
+    data: '发布成功！！！';    // 发布成功！！！
 }
 
 /**
  * </br>删除用户操作 /advertisement/deployManager/rollBack
  */
-export interface RollBackReqVO extends ResVO {
-    type: number;    // 类型，0 广告 1 游戏常量 2 商店
-}
-
 export interface RollBackResVO extends ResVO {
-    data: 'rollbacked';    // 回滚成功！！！
+    data: '回滚成功！！！';    // 回滚成功！！！
 }
 
 /**
  * </br>获取用户发布状态 /advertisement/deployManager/deployStatus
  */
-export interface DeployStatusReqVO extends ResVO {
-    type: number;    // 类型，0 广告 1 游戏常量 2 商店
-}
-
 export interface DeployStatusResVO extends ResVO {
     data: {
-        deployStatus: number    // 返回发布状态
+        deployStatus: number    // 返回发布状态， 1 为待发布状态，0 为无发布状态
     };
 }

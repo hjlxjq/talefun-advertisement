@@ -10,7 +10,7 @@ import BaseModel from '../../common/tale/BaseModel';
 import Utils from '../utils';
 
 /**
- * 数据库基础方法，返回主键
+ * 数据库基础操作方法
  * @class managerBaseModel
  * @extends @link:common/tale/BaseModel
  * @author jianlong <jianlong@talefun.com>
@@ -21,11 +21,12 @@ export default class ManagerBaseModel extends BaseModel {
     constructor(...args: any[]) {
         super(...args);
         this.ID = [];
+
     }
 
     /**
      * 为需要创建的新数据增加主键 以及 createAt 和 updateAt 字段
-     * @argument {any} modelVo 需要创建的新数据;
+     * @argument {any} modelVo 需要创建的表数据;
      */
     protected beforeAdd(modelVo: any) {
         modelVo.id = Utils.generateId();
@@ -36,8 +37,9 @@ export default class ManagerBaseModel extends BaseModel {
     }
 
     /**
-     * 批量更新
-     * @argument {any[]} modelVoList 数据库对象列表;
+     * 批量更新，
+     * <br/> 数据库表对象必须包含主键
+     * @argument {any[]} modelVoList 数据库表对象列表;
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateModelVoList(modelVoList: any[]) {
@@ -47,7 +49,7 @@ export default class ManagerBaseModel extends BaseModel {
 
     /**
      * 批量删除
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<number>} 返回影响的行数
      */
     public async delModelVoList(creatorId: string) {
@@ -56,22 +58,19 @@ export default class ManagerBaseModel extends BaseModel {
     }
 
     /**
-     * 更新 ab 测试分组,
-     * <br/>
-     * @argument {string} creatorId 创建者 id;
+     * 发布数据库暂存的数据到正式环境,
+     * <br/>即删除创建者主键和更新 activeTime 为线上固定时间
+     * @argument {string} creatorId 创建者主键;
      * @returns {Promise<number>} 返回影响的行数
      */
     public async deployVo(creatorId: string) {
-        if (creatorId) {
-            // 线上的 activeTime 值
-            const LiveActiveTime = think.config('LiveActiveTime');
-            return await this.where({ creatorId }).update({
-                creatorId: null,
-                activeTime: LiveActiveTime
-            });
+        // 线上的 activeTime 值
+        const LiveActiveTime = think.config('LiveActiveTime');
 
-        }
-        return 0;
+        return await this.where({ creatorId }).update({
+            creatorId: null,
+            activeTime: LiveActiveTime
+        });
 
     }
 

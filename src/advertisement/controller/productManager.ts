@@ -88,7 +88,7 @@ export default class ProductManagerController extends BaseController {
 
             return productResVo;
 
-        });
+        }, { concurrency: 3 });
 
         return this.success(_.compact(productResVoList));
 
@@ -380,7 +380,7 @@ export default class ProductManagerController extends BaseController {
         const productVoList = await productModel.getListByProductGroup(productGroupId);
 
         // 返回的项目组下应用列表
-        const productResVoList = await Bluebird.map(productVoList, async (productVo) => {
+        const productResVoList = _.map(productVoList, (productVo) => {
             // 删除不必要的字段
             delete productVo.productGroupId;
             delete productVo.createAt;
