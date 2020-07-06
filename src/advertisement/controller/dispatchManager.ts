@@ -883,7 +883,7 @@ export default class DispatchManagerController extends BaseController {
                     updateConfigVo.activeTime = now;
 
                 }
-                await updateCacheServer.setCacheData(ucId, 'configGroup', id, updateConfigVo);
+                await updateCacheServer.setCacheData(ucId, 'config', id, updateConfigVo);
             }
             // 缓存用户发布状态
             await updateCacheServer.setDeployStatus(ucId);
