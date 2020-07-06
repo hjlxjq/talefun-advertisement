@@ -64,7 +64,7 @@ export default class NativeTmplConfModel extends MBModel {
     /**
      * 根据主键 获取应用下 native 模板信息
      * @argument {string} id 应用下 native 模板表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<nativeTmplConfVO>}应用下 native 模板信息;
      */
     public async getVo(id: string, creatorId: string) {
@@ -95,7 +95,7 @@ export default class NativeTmplConfModel extends MBModel {
      * <br/>根据 native 模板组表主键和 native 模板表主键获取 native 模板
      * @argument {string} nativeTmplId native 模板表主键;
      * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @argument {number} live 是否线上已发布数据
      * @returns {Promise<ConfigVO>}  native 模板表信息;
      */
@@ -149,7 +149,7 @@ export default class NativeTmplConfModel extends MBModel {
     /**
      * 根据 native 模板组表主键 获取应用下 native 模板信息列表
      * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<ConfigVO[]>} native 模板数据列表;
      */
     public async getListByGroup(nativeTmplConfGroupId: string, creatorId: string) {

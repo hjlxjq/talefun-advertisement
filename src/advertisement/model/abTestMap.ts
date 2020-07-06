@@ -90,7 +90,7 @@ export default class AbTestMapModel extends MBModel {
      * <br/> 广告位表不需要判断是否开启
      * @argument {string} abTestGroupId ab 测试分组表主键;
      * @argument {string} place 广告位;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<AbTestMapVO>} 广告位信息;
      */
     public async getVo(
@@ -135,7 +135,7 @@ export default class AbTestMapModel extends MBModel {
     /**
      * 根据 ab 测试分组表主键 获取广告位表列表
      * @argument {string} abTestGroupId ab 测试分组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效;
      * @returns {Promise<AbTestMapVO[]>} 广告位表列表;
      */
@@ -161,7 +161,7 @@ export default class AbTestMapModel extends MBModel {
     /**
      * 根据广告组表主键 获取 ab 测试分组主键 列表
      * @argument {string} adGroupId 广告组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<AbTestMapVO>} ab 测试分组主键 列表
      */
     public async getAbTestGroupIdByAdGroup(adGroupId: string, creatorId: string) {

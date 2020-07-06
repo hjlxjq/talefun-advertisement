@@ -1568,10 +1568,11 @@ export default class DispatchManagerLogic extends AMLogic {
 
                 if (type === 1) {
                     throw new Error('没有权限！！！');
-                }
 
+                }
                 if (editAd === 0 && type === 0) {
                     throw new Error('没有权限！！！');
+
                 }
 
             }
@@ -1744,11 +1745,13 @@ export default class DispatchManagerLogic extends AMLogic {
 
                 if (type === 0) {
                     throw new Error('没有权限！！！');
-                }
 
+                }
                 if (editGameConfig === 0 && type === 1) {
                     throw new Error('没有权限！！！');
+
                 }
+
             }
         } catch (e) {
             think.logger.debug(e);

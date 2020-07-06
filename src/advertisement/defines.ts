@@ -142,7 +142,7 @@ export interface AdGroupVO extends BaseVO {
     name: string;    // 广告组名称
     description: string; // 广告组描述
     active: number;    // 是否生效
-    creatorId: string;    // 创建者 id
+    creatorId: string;    // 创建者主键
     adTypeId?: string;    // 广告类型表主键
     productId?: string;    // 应用表主键
 }
@@ -161,7 +161,7 @@ export interface AdVO extends BaseVO {
     bidding: number;    // 实时竞价
     activeTime: string;    // 失效时间戳
     active: number;    // 控制生效
-    creatorId: string;    // 创建者 id
+    creatorId: string;    // 创建者主键
     adChannelId: string;    // 广告平台表主键
     adTypeId: string;    // 广告类型表主键
     adGroupId: string;    // 广告组表主键
@@ -175,7 +175,7 @@ export interface NativeTmplConfGroupVO extends BaseVO {
     name: string;    // native 模板配置组名称
     description: string; // native 模板配置组描述
     active: number;    // 控制生效
-    creatorId: string;    // 创建者 id
+    creatorId: string;    // 创建者主键
     productId: string;    // 应用表主键
 }
 
@@ -188,7 +188,7 @@ export interface NativeTmplConfVO extends BaseVO {
     isFull: number;    // 是否支持全屏点击
     active: number;    // 控制生效
     activeTime: string;    // 失效时间戳
-    creatorId: string;    // 创建者 id
+    creatorId: string;    // 创建者主键
     nativeTmplId: string;    // native 模板表主键
     nativeTmplConfGroupId: string;    // native 模板配置组表主键
 }
@@ -201,7 +201,7 @@ export interface ConfigGroupVO extends BaseVO {
     description: string; // 常量组描述
     type: number;    // 0 广告 1 游戏常量
     active: number;    // 控制生效
-    creatorId: string;    // 创建者 id
+    creatorId: string;    // 创建者主键
     dependentId: string;    // 依赖的常量组表主键
     productId: string;    // 应用表主键
 }
@@ -215,7 +215,7 @@ export interface ConfigVO extends BaseVO {
     description: string; // 描述
     active: number;    // 控制生效
     activeTime: string;    // 失效时间戳
-    creatorId: string;    // 创建者 id
+    creatorId: string;    // 创建者主键
     configGroupId: string;    // 常量组表主键
 }
 
@@ -228,7 +228,7 @@ export interface VersionGroupVO extends BaseVO {
     description: string; // 描述
     include: number;    // 是否包含
     active: number;    // 控制生效
-    creatorId: string;    // 创建者 id
+    creatorId: string;    // 创建者主键
     type: number;    // 0 广告 1 游戏常量 2 商店
     activeTime: string;    // 失效时间戳
     code: string; // 国家代码列表 json 字符串
@@ -251,7 +251,7 @@ export interface AbTestGroupVO extends BaseVO {
     begin: number;    // 开始范围
     end: number;    // 结束范围
     description: string; // 描述
-    creatorId: string;    // 创建者 id
+    creatorId: string;    // 创建者主键
     active: number;    // 控制生效
     activeTime: string;    // 失效时间戳
     nativeTmplConfGroupId: string;    // native 模板组表主键
@@ -265,7 +265,7 @@ export interface AbTestGroupVO extends BaseVO {
 export interface AbTestMapVO extends BaseVO {
     place: string; // 广告位
     active: number;    // 控制生效
-    creatorId: string;    // 创建者 id
+    creatorId: string;    // 创建者主键
     abTestGroupId: string;    // ab 分组测试表主键
     adGroupId: string;    // 广告组表主键
 }

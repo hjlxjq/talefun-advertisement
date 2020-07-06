@@ -46,7 +46,7 @@ export default class ConfigGroupModel extends MBModel {
     /**
      * 按常量组 id 获取常量组
      * @argument {string} id 常量组 id;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<ConfigGroupVO>} 常量组数据;
      */
     public async getVo(id: string, creatorId?: string) {
@@ -87,7 +87,7 @@ export default class ConfigGroupModel extends MBModel {
      * </br> 按常量组名称从小到大排序
      * @argument {string} productId 应用表主键;
      * @argument {number} type 0 广告 1 游戏常量
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效;
      * @returns {Promise<ConfigGroupVO[]>} 常量组列表;
      */

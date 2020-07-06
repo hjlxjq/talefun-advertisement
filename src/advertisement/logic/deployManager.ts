@@ -1,8 +1,7 @@
-import { TaleCode, TokenExemptVO } from '../../common/tale/TaleDefine';
+import { TokenExemptVO } from '../../common/tale/TaleDefine';
 import AMLogic from './managerBaseLogic';
 
 import * as _ from 'lodash';
-import { think } from 'thinkjs';
 
 export default class DeployManagerLogic extends AMLogic {
     /**

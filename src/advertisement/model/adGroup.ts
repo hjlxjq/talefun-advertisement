@@ -46,7 +46,7 @@ export default class AdGroupModel extends MBModel {
     /**
      * 根据主键 获取广告组信息
      * @argument {string} id 广告组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<AdGroupVO>} 广告组信息;
      */
     public async getVo(id: string, creatorId: string) {
@@ -85,7 +85,7 @@ export default class AdGroupModel extends MBModel {
     /**
      * 根据应用主键 获取广告组信息列表
      * @argument {string} productId 应用表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效;
      */
     public async getListByProduct(productId: string, creatorId?: string, active?: number) {

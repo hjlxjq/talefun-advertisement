@@ -64,7 +64,7 @@ export default class ConfigModel extends MBModel {
     /**
      * 根据常量表主键 获取常量
      * @argument {string} id 常量表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<ConfigVO>} 常量表信息;
      */
     public async getVo(id: string, creatorId: string) {
@@ -85,7 +85,7 @@ export default class ConfigModel extends MBModel {
      * 根据常量组表主键 和 key 获取常量
      * @argument {string} key 常量 key;
      * @argument {string} configGroupId 常量组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效
      * @argument {number} live 是否线上已发布数据
      * @returns {Promise<ConfigVO>} 常量表信息;
@@ -155,7 +155,7 @@ export default class ConfigModel extends MBModel {
     /**
      * 按常量组主键获取常量信息
      * @argument {string} configGroupId 常量组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效;
      * @argument {number} live 是否线上已发布数据
      * @returns {Promise<ConfigVO[]>} 常量数据列表;

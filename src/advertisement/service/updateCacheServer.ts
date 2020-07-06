@@ -30,6 +30,7 @@ export default class UpdateCacheServer extends BaseService {
     /**
      * 缓存用户发布状态，
      * <br/>用户在在应用下进行增删改操作的时候记录
+     * @argument {string} userId 用户表主键;
      */
     public async setDeployStatus(userId: string) {
         //  用户发布状态，redis 哈希表的 key
@@ -42,6 +43,7 @@ export default class UpdateCacheServer extends BaseService {
 
     /**
      * 获取缓存的用户发布状态，
+     * @argument {string} userId 用户表主键;
      */
     public async fetchDeployStatus(userId: string) {
         //  用户发布状态，redis 哈希表的 key
@@ -55,6 +57,7 @@ export default class UpdateCacheServer extends BaseService {
     /**
      * 删除缓存的用户发布状态，
      * <br/>发布或者回滚操作之后，清除用户的发布状态
+     * @argument {string} userId 用户表主键;
      */
     public async delDeployStatus(userId: string) {
         //  用户发布状态，redis 哈希表的 key
@@ -68,6 +71,10 @@ export default class UpdateCacheServer extends BaseService {
     /**
      * 缓存更新数据，以用户表主键加数据表名作为 key, 以数据表主键作为 field, 已更新的 json 对象作为 value，
      * <br/>更新线上的数据，不直接去更新数据库，而是把更新内容缓存在 redis 中，待发布的时候一起更新到数据库
+     * @argument {string} userId 用户表主键;
+     * @argument {string} tableName 数据表名;
+     * @argument {string} tableId 数据表主键;
+     * @argument {object} modelVo 待更新的数据表对象;
      */
     public async setCacheData(
         userId: string,
@@ -98,6 +105,9 @@ export default class UpdateCacheServer extends BaseService {
 
     /**
      * 获取用户缓存的更新数据
+     * @argument {string} userId 用户表主键;
+     * @argument {string} tableName 数据表名;
+     * @argument {string} tableId 数据表主键;
      */
     public async fetchCacheData(
         userId: string,
@@ -124,6 +134,8 @@ export default class UpdateCacheServer extends BaseService {
 
     /**
      * 批量获取用户缓存的更新数据
+     * @argument {string} userId 用户表主键;
+     * @argument {string} tableName 数据表名;
      */
     public async fetchCacheDataHash(
         userId: string,
@@ -158,6 +170,8 @@ export default class UpdateCacheServer extends BaseService {
 
     /**
      * 批量删除用户缓存的更新数据
+     * @argument {string} tableNameList 数据表名列表;
+     * @argument {string} userId 用户表主键;
      */
     public async delCacheDataList(tableNameList: string[], userId: string) {
         const pipeline = this.redis.pipeline();
@@ -174,6 +188,7 @@ export default class UpdateCacheServer extends BaseService {
 
     /**
      * 批量获取用户缓存的更新数据
+     *  @argument {string} userId 用户表主键;
      */
     public async fetchDeployModelList(
         userId: string,

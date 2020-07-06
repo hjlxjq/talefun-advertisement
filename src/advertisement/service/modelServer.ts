@@ -239,10 +239,10 @@ export default class ModelService extends BaseService {
     }
 
     /**
-     * <br/>获取版本条件分组列表信息.
+     * <br/>获取版本条件分组列表信息;
      * @argument {string} productId 应用表主键;
      * @argument {string} type 版本条件分组类型;
-     * @argument {string} creatorId 创建者 id;
+     * @argument {string} creatorId 创建者主键;
      */
     public async getVersionGroupList(productId: string, type: number, creatorId: string) {
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
@@ -250,12 +250,12 @@ export default class ModelService extends BaseService {
 
         // 数据库里的版本条件分组对象
         const versionGroupVoList = await versionGroupModel.getListByProduct(productId, type, creatorId);
-        // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键
+        // 未发布的数据表更新，在缓存里的版本条件分组对象哈希表，键值为主键
         const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'versionGroup');
 
         // 返回的版本条件分组列表信息
         const versionGroupResVoList = _.map(versionGroupVoList, (versionGroupVo) => {
-            // 更新的缓存数据
+            // 未发布的数据表更新对象
             const cacheVersionGroupVo = cacheVersionGroupVoHash[versionGroupVo.id] as VersionGroupVO;
             // 返回线上数据和未发布的数据，以未发布数据为准
             const versionGroupResVo: VersionGroupResVO = _.assign({
@@ -285,7 +285,7 @@ export default class ModelService extends BaseService {
     /**
      * <br/>获取 native 模板组列表信息
      * @argument {string} productId 应用表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      */
     public async getNativeTmplConfGroupList(productId: string, creatorId: string) {
         const nativeTmplConfGroupModel =
@@ -329,7 +329,7 @@ export default class ModelService extends BaseService {
     /**
      * <br/>获取应用下 native 模板列表信息
      * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      */
     public async getNativeTmplConfList(nativeTmplConfGroupId: string, creatorId: string) {
         const nativeTmplModel = this.taleModel('nativeTmpl', 'advertisement') as NativeTmplModel;
@@ -376,7 +376,7 @@ export default class ModelService extends BaseService {
     /**
      * <br/>获取广告组列表信息
      * @argument {string} productId 应用表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      */
     public async getAdGroupList(productId: string, creatorId: string) {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
@@ -426,7 +426,7 @@ export default class ModelService extends BaseService {
     /**
      * <br/>获取广告列表信息
      * @argument {string} productId 应用表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      */
     public async getAdList(productId: string, creatorId: string) {
         const adGroupModel = this.taleModel('adGroup', 'advertisement') as AdGroupModel;
@@ -483,7 +483,7 @@ export default class ModelService extends BaseService {
     /**
      * <br/>获取广告组下广告列表信息
      * @argument {string} adGroupId 广告组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      */
     public async getAdListInAdGroup(adGroupId: string, creatorId: string) {
         const adModel = this.taleModel('ad', 'advertisement') as AdModel;
@@ -530,7 +530,7 @@ export default class ModelService extends BaseService {
      * <br/>迭代查询关联组下的常量，一起返回
      * @argument {string} dependent 关联组名
      * @argument {string} dependentId 关联组主键
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @argument {string[]} dependentIdList 所有前置依赖的组主键
      * @argument {{ [propName: string]: ConfigResVO; }} dpdConfigVoHash 关联组下常量数据
      */
@@ -587,7 +587,7 @@ export default class ModelService extends BaseService {
      * <br/>获取常量组下常量数据列表,
      * <br/>迭代查询关联组下的常量，一起返回
      * @argument {string} configGroupId 常量组主键
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      */
     public async getConfigList(configGroupId: string, creatorId: string) {
         const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
@@ -688,7 +688,7 @@ export default class ModelService extends BaseService {
      * 获取常量组信息列表
      * @argument {string} productId 应用表主键
      * @argument {number} type 0 广告 1 游戏常量
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      */
     public async getConfigGroupList(productId: string, type: number, creatorId: string) {
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
@@ -739,7 +739,7 @@ export default class ModelService extends BaseService {
     /**
      * <br/>获取常量组数据
      * @argument {string} id 常量组主键
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      */
     public async getConfigGroup(configGroupId: string, creatorId: string) {
         const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
@@ -783,7 +783,7 @@ export default class ModelService extends BaseService {
     /**
      * <br/>获取 native 模板组信息
      * @argument {string} nativeTmplConfGroupId  native 模板组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      */
     public async getNativeTmplConfGroup(nativeTmplConfGroupId: string, creatorId: string) {
         const nativeTmplConfGroupModel =
@@ -815,7 +815,7 @@ export default class ModelService extends BaseService {
     /**
      * <br/>获取广告位列表信息
      * @argument {string} abTestGroupId ab 测试分组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      */
     public async getPlaceList(abTestGroupId: string, creatorId: string) {
         const adTypeModel = this.taleModel('adType', 'advertisement') as AdTypeModel;

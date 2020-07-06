@@ -55,13 +55,14 @@ export default class VersionGroupModel extends MBModel {
     }
 
     /**
-     * 根据主键 获取版本条件分组信息
+     * 根据主键获取版本条件分组信息
      * @argument {string} id 版本条件分组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<VersionGroupVO>} 版本条件分组信息;
      */
     public async getVo(id: string, creatorId: string) {
         const queryStrings: string[] = [];
+
         queryStrings.push(`id = '${id}'`);
 
         if (!_.isUndefined(creatorId)) {
@@ -171,12 +172,13 @@ export default class VersionGroupModel extends MBModel {
      * 获取版本条件分组信息列表
      * @argument {string} productId 应用表主键;
      * @argument {string} type 版本条件分组表类型;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      */
     public async getListByProduct(
         productId: string, type: number, creatorId?: string, live?: number
     ) {
         const queryStrings: string[] = [];
+
         queryStrings.push(`type = '${type}'`);
         queryStrings.push(`productId = '${productId}'`);
 
@@ -198,7 +200,7 @@ export default class VersionGroupModel extends MBModel {
     /**
      * 获取版本条件分组名列表,
      * @argument {string[]} idList 版本条件分组表主键 列表;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效;
      * @returns {Promise<string[]>} 版本条件分组名列表;
      */

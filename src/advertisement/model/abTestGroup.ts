@@ -93,7 +93,7 @@ export default class AbTestGroupModel extends MBModel {
      * <br/>
      * @argument {string} versionGroupId  版本分组条件表主键;
      * @argument {string} name ab 测试分组名;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效
      * @argument {number} live 是否线上已发布数据
      * @returns {Promise<string[]>} 返回 ab 测试分组列表
@@ -132,7 +132,7 @@ export default class AbTestGroupModel extends MBModel {
     /**
      * 根据主键 获取 ab 测试分组信息
      * @argument {string} id ab 测试分组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<AbTestGroupVO>} ab 测试分组信息;
      */
     public async getVo(id: string, creatorId: string) {
@@ -186,7 +186,7 @@ export default class AbTestGroupModel extends MBModel {
     /**
      * 获取 ab 测试分组信息列表,
      * @argument {string} versionGroupId 分组条件表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效
      * @argument {number} live 是否线上已发布数据
      */
@@ -228,7 +228,7 @@ export default class AbTestGroupModel extends MBModel {
     /**
      * 获取版本条件分组表主键 列表，
      * @argument {string} nativeTmplConfGroupId native 模板组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<string[]>} 版本条件分组表主键 列表;
      */
     public async getVerionGroupIdListByNative(nativeTmplConfGroupId: string, creatorId: string) {
@@ -254,7 +254,7 @@ export default class AbTestGroupModel extends MBModel {
     /**
      * 获取版本条件分组表主键 列表，
      * @argument {string} configGroupId 常量组表主键;
-     * @argument {string} creatorId 创建者 id
+     * @argument {string} creatorId 创建者主键
      * @returns {Promise<string[]>} 版本条件分组表主键 列表;
      */
     public async getVerionGroupIdListByConfig(configGroupId: string, creatorId: string) {
