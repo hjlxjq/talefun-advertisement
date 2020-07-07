@@ -83,7 +83,7 @@ export default class UserManagerLogic extends AMLogic {
             name: {
                 string: true,       // 字段类型为 String 类型
                 cusTrim: true,      // 前后不能有空格
-                length: { min: 2, max: 5 },    // 长度范围
+                length: { min: 2, max: 10 },    // 长度范围
                 default: 'admin',    // 字段默认值
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -142,7 +142,7 @@ export default class UserManagerLogic extends AMLogic {
             name: {
                 string: true,       // 字段类型为 String 类型
                 cusTrim: true,      // 前后不能有空格
-                length: { min: 2, max: 5 },    // 长度范围
+                length: { min: 2, max: 10 },    // 长度范围
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },

@@ -11,15 +11,15 @@ import { NativeTmplConfGroupVO } from '../defines';
 import Utils from '../utils';
 
 /**
- * 应用下 native 模板组配置相关模型
+ * 应用下的 native 模板组配置相关模型
  * @class nativeTmplConfGroupModel
  * @extends @link:advertisement/model/managerBaseModel
  * @author jianlong <jianlong@talefun.com>
  */
 export default class NativeTmplConfGroupModel extends MBModel {
     /**
-     * 插入应用下 native 模板组
-     * @argument {NativeTmplConfGroupVO} nativeTmplConfGroupVo 应用下 native 模板组表对象;
+     * 插入应用下的 native 模板组
+     * @argument {NativeTmplConfGroupVO} nativeTmplConfGroupVo 应用下的 native 模板组表对象;
      * @returns {Promise<string>} 主键;
      */
     public async addVo(nativeTmplConfGroupVo: NativeTmplConfGroupVO) {
@@ -29,9 +29,9 @@ export default class NativeTmplConfGroupModel extends MBModel {
     }
 
     /**
-     * 更新应用下 native 模板组
-     * @argument {string} id 应用下 native 模板组表主键;
-     * @argument {NativeTmplConfGroupVO} nativeTmplConfGroupVo 应用下 native 模板组表对象;
+     * 更新应用下的 native 模板组
+     * @argument {string} id 应用下的 native 模板组表主键;
+     * @argument {NativeTmplConfGroupVO} nativeTmplConfGroupVo 应用下的 native 模板组表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, nativeTmplConfGroupVo: NativeTmplConfGroupVO) {
@@ -44,10 +44,10 @@ export default class NativeTmplConfGroupModel extends MBModel {
     }
 
     /**
-     * 根据主键 获取应用下 native 模板组信息
-     * @argument {string} id 应用下 native 模板组表主键;
+     * 根据主键 获取应用下的 native 模板组信息
+     * @argument {string} id 应用下的 native 模板组表主键;
      * @argument {string} creatorId 创建者主键
-     * @returns {Promise<nativeTmplConfGroupVO>}应用下 native 模板组信息;
+     * @returns {Promise<nativeTmplConfGroupVO>}应用下的 native 模板组信息;
      */
     public async getVo(id: string, creatorId?: string, active?: number) {
         const queryStrings: string[] = [];
@@ -86,7 +86,7 @@ export default class NativeTmplConfGroupModel extends MBModel {
     }
 
     /**
-     * 根据应用主键 获取获取应用下 native 模板组信息列表
+     * 根据应用主键 获取获取应用下的 native 模板组信息列表
      * @argument {string} productId 应用表主键;
      * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效;

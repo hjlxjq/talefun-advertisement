@@ -59,7 +59,7 @@ function beginSort(groupVo1: any, groupVo2: any) {
  */
 export default class DispatchCacheService extends BaseService {
     private redis: Redis.Redis;
-    private keyPrefix = 'dispatch:';    // redis 哈希表的 key 前缀
+    private keyPrefix = 'dispatch:';    // 下发 redis 哈希表的 key 前缀
     // 定义下发缓存中的 key 对应 获取数据数据的方法
     private CACHE_DEFINE: { [propName: string]: () => Promise<any> };
 
@@ -67,6 +67,7 @@ export default class DispatchCacheService extends BaseService {
         super();
         this.redis = (think as any).redis('redis1');
 
+        // 下发 redis 缓存哈希表 key 对应的映射数据获取方法
         this.CACHE_DEFINE = {
             // BaseConfig: this.baseConfigData.bind(this),
             // Product: this.productData.bind(this),
@@ -283,15 +284,17 @@ export default class DispatchCacheService extends BaseService {
 
             // interval 处理
             let newInterval = interval;
-            if (adType === 'Native' || adType === 'Native_Menu') {
-                newInterval = interval || defaultInterval;
+            if (
+                !interval && (adType === 'Native' || adType === 'Native_Menu')
+            ) {
+                newInterval = defaultInterval;
 
             }
 
             // 下发的广告数据
             const adCacheVo: AdCacheVO = {
-                adType: newAdType, channel,
-                adID: placementID, ecpm, loader, subloader, interval: newInterval, weight, bidding: newBidding
+                adType: newAdType, adID: placementID, bidding: newBidding, interval: newInterval,
+                channel, ecpm, loader, subloader, weight
             };
 
             if (!cacheData[adGroupId]) {
@@ -436,14 +439,13 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按 native 模板组返回所有待写入 redis 的 native 模板相关数据对象，以 native 模板组 id 为 key
-     * @return {{ [propName: string]: NativeTmplCacheVO[]; }} 所有待写入 redis 的 native 模板相关数据对象
+     * <br/>按应用 native 模板组返回所有待写入 redis 的应用 native 模板相关数据对象，以应用 native 模板组 id 为 key
+     * @return {{ [propName: string]: NativeTmplCacheVO[]; }} 所有待写入 redis 的应用 native 模板相关数据对象
      */
     public async allNativeTmplData() {
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
-        const nativeTmplModel = this.taleModel('nativeTmpl', 'advertisement') as NativeTmplModel;
 
-        // 获取全部应用下 native 模板配置
+        // 获取全部应用下的 native 模板配置
         const nativeTmplConfVoList = await nativeTmplConfModel.getList(1);
 
         return await this.nativeTmplData(nativeTmplConfVoList);

@@ -18,8 +18,8 @@ import Utils from '../utils';
  */
 export default class AdModel extends MBModel {
     /**
-     * 插入广告组下广告
-     * @argument {AdVO} adVo 广告组下广告表对象;
+     * 广告组插入广告
+     * @argument {AdVO} adVo 广告表对象;
      * @returns {Promise<string>} 主键;
      */
     public async addVo(adVo: AdVO) {
@@ -31,7 +31,7 @@ export default class AdModel extends MBModel {
     /**
      * 批量插入广告表对象列表
      * @argument {AdVO[]} adVolist 广告表对象列表;
-     * @returns {Promise<string[]>} 主键 列表;
+     * @returns {Promise<string[]>} 主键列表;
      */
     public async addList(adVolist: AdVO[]) {
         let idList: string[] = [];
@@ -47,8 +47,8 @@ export default class AdModel extends MBModel {
 
     /**
      * 更新广告组下广告
-     * @argument {string} id 广告组下广告表主键;
-     * @argument {AdVO} adVo 广告组下广告表对象;
+     * @argument {string} id 广告表主键;
+     * @argument {AdVO} adVo 广告表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, adVo: AdVO) {
@@ -71,7 +71,8 @@ export default class AdModel extends MBModel {
     }
 
     /**
-     * 根据主键 获取广告信息
+     * 根据广告表主键获取广告信息，
+     * <br/>ecpm 返回正常数字
      * @argument {string} id 广告表主键;
      * @argument {string} creatorId 创建者主键
      * @returns {Promise<AdVO>} 广告信息;
@@ -86,6 +87,7 @@ export default class AdModel extends MBModel {
 
         }
         const queryString: string = queryStrings.join(' AND ');
+
         const adVo = await this.where(queryString).find() as AdVO;
 
         // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
@@ -118,10 +120,10 @@ export default class AdModel extends MBModel {
     }
 
     /**
-     * 根据广告组表主键 获取广告信息
+     * 根据广告组表主键获取广告信息，
+     * <br/>ecpm 返回正常数字
      * @argument {string} adGroupId 广告组表主键;
      * @argument {string} creatorId 创建者主键
-     * 获取广告组下广告信息列表
      */
     public async getListByAdGroup(adGroupId: string, creatorId: string) {
         const queryStrings: string[] = [];
@@ -132,9 +134,9 @@ export default class AdModel extends MBModel {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
         }
-
         const queryString: string = queryStrings.join(' AND ');
-        const adVoList = await this.where(queryString).order('name ASC').select() as AdVO[];
+
+        const adVoList = await this.where(queryString).select() as AdVO[];
 
         return _.map(adVoList, (adVo) => {
             // ecpm 返回正常数字，去掉小数后面的零，整数去掉小数点
@@ -148,11 +150,11 @@ export default class AdModel extends MBModel {
     }
 
     /**
-     * 根据应用表主键 获取广告信息
+     * 根据应用表主键获取广告信息，
+     * <br/>ecpm 返回正常数字
      * @argument {string} productId 应用表主键;
      * @argument {string} creatorId 创建者主键
      * @argument {number} live 是否线上已发布数据
-     * 获取应用下广告信息列表
      */
     public async getListByProduct(productId: string, creatorId?: string, live?: number) {
         const queryStrings: string[] = [];
@@ -169,6 +171,7 @@ export default class AdModel extends MBModel {
 
         }
         const queryString: string = queryStrings.join(' AND ');
+
         const adVoList = await this.where(queryString).select() as AdVO[];
 
         return _.map(adVoList, (adVo) => {
@@ -183,14 +186,13 @@ export default class AdModel extends MBModel {
     }
 
     /**
-     * 线上正式数据,
-     * <br/>根据广告组表主键 和 广告 placementID 获取广告信息列表
+     * 根据广告组表主键和广告 placementID 获取广告信息列表，
+     * <br/>ecpm 返回正常数字
      * @argument {string} adGroupId 广告组表主键;
      * @argument {string} placementID 广告 placementID
      * @argument {number} live 是否线上已发布数据
-     * 获取广告组下广告信息列表
      */
-    public async getByPlacementID(adGroupId: string, placementID: string, live: number = 1) {
+    public async getByPlacementID(adGroupId: string, placementID: string, live: number) {
         const queryStrings: string[] = [];
 
         queryStrings.push(`adGroupId = '${adGroupId}'`);
@@ -215,16 +217,15 @@ export default class AdModel extends MBModel {
     }
 
     /**
-     * 线上正式数据,
-     * <br/>根据广告组表主键, 广告渠道 和 广告名称获取广告信息列表
+     * 根据广告组表主键, 广告渠道 和 广告名称获取广告信息列表
+     * <br/>ecpm 返回正常数字
      * @argument {string} adGroupId 广告组表主键;
      * @argument {string} adChannelId 广告平台表主键;
      * @argument {string} name 广告名称
      * @argument {number} live 是否线上已发布数据
-     * 获取广告组下广告信息列表
      */
     public async getByName(
-        adGroupId: string, adChannelId: string, name: string, live: number = 1
+        adGroupId: string, adChannelId: string, name: string, live: number
     ) {
         const queryStrings: string[] = [];
 

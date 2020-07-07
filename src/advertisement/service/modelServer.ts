@@ -327,8 +327,8 @@ export default class ModelService extends BaseService {
     }
 
     /**
-     * <br/>获取应用下 native 模板列表信息
-     * @argument {string} nativeTmplConfGroupId 应用下 native 模板组表主键;
+     * <br/>获取应用下的 native 模板列表信息
+     * @argument {string} nativeTmplConfGroupId 应用下的 native 模板组表主键;
      * @argument {string} creatorId 创建者主键
      */
     public async getNativeTmplConfList(nativeTmplConfGroupId: string, creatorId: string) {

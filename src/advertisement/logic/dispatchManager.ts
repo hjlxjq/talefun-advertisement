@@ -2860,8 +2860,8 @@ export default class DispatchManagerLogic extends AMLogic {
         const [
             adByPlacementIDVo, adByNameVo
         ] = await Promise.all([
-            adModel.getByPlacementID(adGroupId, placementID),
-            adModel.getByName(adGroupId, adChannelId, name)
+            adModel.getByPlacementID(adGroupId, placementID, 1),
+            adModel.getByName(adGroupId, adChannelId, name, 1)
         ]);
 
         think.logger.debug(`adByPlacementIDVo: ${JSON.stringify(adByPlacementIDVo)}`);
