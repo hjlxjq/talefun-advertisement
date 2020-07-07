@@ -526,13 +526,13 @@ export default class ModelService extends BaseService {
     }
 
     /**
-     * 获取关联组下常量数据,
-     * <br/>迭代查询关联组下的常量，一起返回
-     * @argument {string} dependent 关联组名
-     * @argument {string} dependentId 关联组主键
+     * 获取依赖组下常量数据,
+     * <br/>迭代查询依赖组下的常量，一起返回
+     * @argument {string} dependent 依赖组名
+     * @argument {string} dependentId 依赖组主键
      * @argument {string} creatorId 创建者主键
      * @argument {string[]} dependentIdList 所有前置依赖的组主键
-     * @argument {{ [propName: string]: ConfigResVO; }} dpdConfigVoHash 关联组下常量数据
+     * @argument {{ [propName: string]: ConfigResVO; }} dpdConfigVoHash 依赖组下常量数据
      */
     private async getDpdConfigVoHash(
         dependent: string,
@@ -585,7 +585,7 @@ export default class ModelService extends BaseService {
 
     /**
      * <br/>获取常量组下常量数据列表,
-     * <br/>迭代查询关联组下的常量，一起返回
+     * <br/>迭代查询依赖组下的常量，一起返回
      * @argument {string} configGroupId 常量组主键
      * @argument {string} creatorId 创建者主键
      */
@@ -626,7 +626,7 @@ export default class ModelService extends BaseService {
         // 依赖组常量
         let dpdConfigVoHash: { [propName: string]: ConfigResVO; } = {};
         if (dependentId) {
-            const { name: dependent } = await configGroupModel.getVo(dependentId, creatorId);    // 关联组名
+            const { name: dependent } = await configGroupModel.getVo(dependentId, creatorId);    // 依赖组名
             think.logger.debug(`dependent: ${dependent}`);
 
             dpdConfigVoHash = await this.getDpdConfigVoHash(dependent, dependentId, creatorId, [configGroupId]);

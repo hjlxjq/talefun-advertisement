@@ -24,7 +24,6 @@ export default class VersionGroupModel extends MBModel {
      */
     public async addVo(versionGroupVo: VersionGroupVO) {
         await this.add(versionGroupVo);
-
         return this.ID[0];
 
     }
@@ -38,8 +37,8 @@ export default class VersionGroupModel extends MBModel {
     public async updateVo(id: string, versionGroupVo: VersionGroupVO) {
         if (!Utils.isEmptyObj(versionGroupVo)) {
             return await this.where({ id }).update(versionGroupVo);
-        }
 
+        }
         return 0;
 
     }
@@ -67,8 +66,8 @@ export default class VersionGroupModel extends MBModel {
 
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
-        }
 
+        }
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).find() as VersionGroupVO;
@@ -76,28 +75,29 @@ export default class VersionGroupModel extends MBModel {
     }
 
     /**
-     * 根据 版本条件分组名称 获取版本条件分组列表
+     * 根据 版本条件分组名称 获取版本条件分组
      * @argument {string} name 版本条件分组名;
      * @argument {string} type 版本条件分组表类型;
      * @argument {string} productId 应用表主键;
-     * @argument {number} active 是否生效;
+     * @argument {string} creatorId 创建者主键
      * @argument {number} live 是否线上已发布数据
-     * @returns {Promise<string[]>} 版本条件分组列表;
+     * @returns {Promise<VersionGroupVO>} 版本条件分组;
      */
     public async getByName(
         name: string,
         type: number,
         productId: string,
-        active: number,
-        live: number
+        creatorId?: string,
+        live?: number
     ) {
         const queryStrings: string[] = [];
+
         queryStrings.push(`type = '${type}'`);
         queryStrings.push(`name = '${name}'`);
         queryStrings.push(`productId = '${productId}'`);
 
-        if (!_.isUndefined(active)) {
-            queryStrings.push(`active=${active}`);
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
         }
         if (live === 1) {
@@ -116,24 +116,25 @@ export default class VersionGroupModel extends MBModel {
      * @argument {number} begin 版本条件分组的开始版本;
      * @argument {string} type 版本条件分组表类型;
      * @argument {string} productId 应用表主键;
-     * @argument {number} active 是否生效;
-     * @argument {number} live 是否线上已发布数据
+     * @argument {string} creatorId 创建者主键;
+     * @argument {number} live 是否线上已发布数据;
      * @returns {Promise<string[]>} 版本条件分组列表;
      */
     public async getByBegin(
         begin: number,
         type: number,
         productId: string,
-        active: number,
-        live: number
+        creatorId?: string,
+        live?: number
     ) {
         const queryStrings: string[] = [];
+
         queryStrings.push(`type = '${type}'`);
         queryStrings.push(`begin = '${begin}'`);
         queryStrings.push(`productId = '${productId}'`);
 
-        if (!_.isUndefined(active)) {
-            queryStrings.push(`active=${active}`);
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
         }
         if (live === 1) {
@@ -155,6 +156,7 @@ export default class VersionGroupModel extends MBModel {
      */
     public async getList(type: number, live: number) {
         const queryStrings: string[] = [];
+
         queryStrings.push(`type = '${type}'`);
 
         if (live === 1) {
@@ -199,8 +201,8 @@ export default class VersionGroupModel extends MBModel {
 
     /**
      * 获取版本条件分组名列表,
-     * @argument {string[]} idList 版本条件分组表主键 列表;
-     * @argument {string} creatorId 创建者主键
+     * @argument {string[]} idList 版本条件分组表主键列表;
+     * @argument {string} creatorId 创建者主键;
      * @argument {number} active 是否生效;
      * @returns {Promise<string[]>} 版本条件分组名列表;
      */

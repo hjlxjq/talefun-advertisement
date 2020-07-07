@@ -10,7 +10,7 @@ import { ProductVO } from '../defines';
 import Utils from '../utils';
 
 /**
- * 广告与常量配置相关模型
+ * 应用配置相关模型
  * @class productModel
  * @extends @link:advertisement/model/managerBaseModel
  * @author jianlong <jianlong@talefun.com>
@@ -29,7 +29,7 @@ export default class ProductModel extends MBModel {
 
     /**
      * 更新应用
-     * @argument {string} id 应用表id;
+     * @argument {string} id 应用表主键;
      * @argument {ProductVO} productUpdateVo 应用表对象;
      * @returns {Promise<number>} 返回影响的行数
      */
@@ -83,7 +83,7 @@ export default class ProductModel extends MBModel {
     }
 
     /**
-     * 根据项目组 id 获取全部应用列表
+     * 根据项目组主键获取全部应用列表
      * @argument {string} productGroupId 应用表主键;
      * @returns {Promise<ProductVO[]>} 应用列表;
      */
@@ -96,23 +96,23 @@ export default class ProductModel extends MBModel {
      * 获取应用列表,
      * <br/>多条件查询，查询用户拥有的所有权限的应用
      * @argument {string[]} idList 应用表主键列表;
-     * @argument {string[]} productGroupId 项目组表主键列表;
+     * @argument {string[]} productGroupIdList 项目组表主键列表;
      * @returns {Promise<ProductVO[]>} 应用列表;
      */
-    public async getListByAuth(idList: string[], ProductGroupIdList: string[]) {
+    public async getListByAuth(idList: string[], productGroupIdList: string[]) {
         idList.push('');    // 为空数组报错
-        ProductGroupIdList.push('');    // 为空数组报错
+        productGroupIdList.push('');    // 为空数组报错
 
         return await this.where({
             id: ['IN', idList],
-            productGroupId: ['IN', ProductGroupIdList],
+            productGroupId: ['IN', productGroupIdList],
             _logic: 'OR'
         }).select() as ProductVO[];
 
     }
 
     /**
-     * 根据主键 获取应用表信息
+     * 根据应用主键获取应用表信息
      * @argument {string} id 应用表主键;
      * @returns {Promise<ProductVO>} 应用表信息;
      */

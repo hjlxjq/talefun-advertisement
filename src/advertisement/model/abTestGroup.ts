@@ -24,27 +24,23 @@ export default class AbTestGroupModel extends MBModel {
      */
     public async addVo(abTestGroupVo: AbTestGroupVO) {
         await this.add(abTestGroupVo);
-
         return this.ID[0];
 
     }
 
     /**
-     * 批量，
-     * <br/>插入 ab 测试分组列表
+     * 批量插入 ab 测试分组列表
      * @argument {AbTestGroupVO[]} abTestGroupVoList ab 测试分组表对象列表;
-     * @returns {Promise<string[]>} 主键 列表;
+     * @returns {Promise<string[]>} 主键列表;
      */
     public async addList(abTestGroupVoList: AbTestGroupVO[]) {
         let idList: string[] = [];
 
-        if (!Utils.isEmptyObj(abTestGroupVoList)) {
-
+        if (!_.isEmpty(abTestGroupVoList)) {
             await this.addMany(abTestGroupVoList);
-            think.logger.debug(`插入ab 测试分组列表返回主键 列表： ${JSON.stringify(this.ID)}`);
             idList = this.ID;
-        }
 
+        }
         return idList;
 
     }
@@ -56,18 +52,16 @@ export default class AbTestGroupModel extends MBModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateVo(id: string, abTestGroupVo: AbTestGroupVO) {
-        think.logger.debug(`abTestGroupVo1: ${JSON.stringify(abTestGroupVo)}`);
         if (!Utils.isEmptyObj(abTestGroupVo)) {
-            think.logger.debug(`abTestGroupVo2: ${JSON.stringify(abTestGroupVo)}`);
             return await this.where({ id }).update(abTestGroupVo);
-        }
 
+        }
         return 0;
 
     }
 
     /**
-     * 删除 ab 测试分组
+     * 根据版本分组条件表主键删除 ab 测试分组
      * @argument {string} versionGroupId  版本分组条件表主键;
      * @returns {Promise<number>} 删除行数;
      */
@@ -77,7 +71,7 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 删除  ab 测试分组列表
+     * 根据 ab 测试分组主键列表批量删除  ab 测试分组列表
      * @argument {string[]} idList ab 测试分组主键列表;
      * @returns {Promise<number>} 删除行数;
      */
@@ -89,9 +83,8 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 根据测试名获取 ab 测试分组列表
-     * <br/>
-     * @argument {string} versionGroupId  版本分组条件表主键;
+     * 根据 ab 测试名获取 ab 测试分组列表
+     * @argument {string} versionGroupId 版本分组条件表主键;
      * @argument {string} name ab 测试分组名;
      * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效
@@ -106,6 +99,7 @@ export default class AbTestGroupModel extends MBModel {
         live: number
     ) {
         const queryStrings: string[] = [];
+
         queryStrings.push(`name LIKE '${name}_%'`);
         queryStrings.push(`versionGroupId = '${versionGroupId}'`);
 
@@ -122,7 +116,6 @@ export default class AbTestGroupModel extends MBModel {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
 
         }
-
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).select() as AbTestGroupVO[];

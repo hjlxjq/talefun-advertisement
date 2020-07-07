@@ -89,15 +89,14 @@ export default class DispatchCacheService extends BaseService {
     }
 
     /**
-     * 获取常量组及关联组下常量数据
-     * <br/>初始化数据库到 redis
+     * 获取常量组及依赖组下常量数据
      * <br/>返回常量相关 redis 哈希表数据
-     * @argument {HashHashVO} configHashHash 常量组表主键映射常量(key value) 哈希表的哈希表
+     * @argument {HashHashVO} configHashHash 常量组表主键映射常量(key value)哈希表的哈希表
      * @argument {HashVO} configGroupHash 常量组表主键映射依赖组主键的哈希表
      * @argument {ConfigCacheVO} configCacheVo redis 哈希表中常量组数据
      * @argument {string} configGroupId 常量组主键
      * @argument {string[]} dependentIdList 所有前置依赖的组主键
-     * @return {ConfigCacheVO} configCacheVo
+     * @return {ConfigCacheVO} redis 哈希表中常量组数据
      */
     private packConfigData(
         configHashHash: HashHashVO,
@@ -181,14 +180,14 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按 native 模板组返回所有待写入 redis 的 native 模板相关数据对象，以 native 模板组 id 为 key
-     * @argument {NativeTmplConfVO[]} nativeTmplConfVoList  native 模板表对象列表
-     * @return {{ [propName: string]: NativeTmplCacheVO[]; }} 所有待写入 redis 的 native 模板相关数据对象
+     * <br/>按应用 native 模板组返回所有待写入 redis 的应用 native 模板相关数据对象，以应用 native 模板组主键为 key
+     * @argument {NativeTmplConfVO[]} nativeTmplConfVoList  应用 native 模板表对象列表
+     * @return {{ [propName: string]: NativeTmplCacheVO[]; }} 所有待写入 redis 的应用 native 模板相关数据对象
      */
     private async nativeTmplData(nativeTmplConfVoList: NativeTmplConfVO[]) {
         const nativeTmplModel = this.taleModel('nativeTmpl', 'advertisement') as NativeTmplModel;
 
-        // redis 哈希表中 native 模板组数据
+        // redis 哈希表中应用 native 模板组数据
         const cacheData: {
             [propName: string]: NativeTmplCacheVO[];
         } = {};
@@ -204,7 +203,7 @@ export default class DispatchCacheService extends BaseService {
 
         });
 
-        // 遍历 native 模板对象列表，组装 native 模板相关数据对象，以 native 模板组 id 为 key
+        // 遍历应用 native 模板对象列表，组装应用 native 模板相关数据对象，以应用 native 模板组主键为 key
         _.each(nativeTmplConfVoList, (nativeTmplConfVo) => {
             const { weight, clickArea, isFull, nativeTmplId, nativeTmplConfGroupId } = nativeTmplConfVo;
 
@@ -230,7 +229,7 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按广告组返回所有待写入 redis 的广告相关数据对象，以广告组 id 为 key
+     * <br/>按广告组返回所有待写入 redis 的广告相关数据对象，以广告组主键为 key
      * @argument {AdVO[]} adVoList 广告表对象列表
      * @return {{ [propName: string]: AdCacheVO[]; }} 所有待写入 redis 的广告相关数据对象
      */
@@ -266,7 +265,7 @@ export default class DispatchCacheService extends BaseService {
 
         });
 
-        // 遍历广告对象列表，组装广告相关数据对象，以广告组 id 为 key
+        // 遍历广告对象列表，组装广告相关数据对象，以广告组主键为 key
         _.each(adVoList, (adVo) => {
             const {
                 adGroupId, adChannelId, adTypeId,
@@ -311,7 +310,7 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis,
-     * <br/>按常量组返回所有待写入 redis 的常量相关数据对象，以常量组 id 为 key
+     * <br/>按常量组返回所有待写入 redis 的常量相关数据对象，以常量组主键为 key
      * @argument {ConfigVO[]} configVoList 常量表对象列表
      * @argument {ConfigGroupVO[]} configGroupVoList 常量组表对象列表
      * @return {{ [propName: string]: ConfigCacheVO; }} 所有待写入 redis 的常量相关数据对象
@@ -357,8 +356,9 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis,
-     * <br>基础常量
-     * <br/>返回所有待写入 redis 的基础常量相关数据对象，以常量 key 为 key
+     * <br/>返回所有待写入 redis 的基础常量相关数据对象，
+     * <br/> key 分别为 test (测试则包含所有生效的基础常量) 和 live (线上则只包含非测试的基础常量)，
+     * <br/>值为基础常量(key, value)哈希表
      * @return {{ [propName: string]: HashVO; }} 所有待写入 redis 的基础常量相关数据对象
      */
     public async baseConfigData() {
@@ -395,19 +395,21 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis,
-     * <br>应用
-     * <br/>返回所有待写入 redis 的基础常量相关数据对象，以常量 key 为 key
-     * @return {{ [propName: string]: HashVO; }} 所有待写入 redis 的基础常量相关数据对象
+     * <br/>返回所有待写入 redis 的应用生效相关数据对象，
+     * <br/> key 分别为应用平台名，
+     * <br/>值为包名映射是否测试的哈希表
+     * @return {{ [propName: string]: HashVO; }} 所有待写入 redis 的应用生效相关数据对象
      */
     public async productData() {
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
 
-        // redis 哈希表中常量组数据
+        // redis 哈希表中应用生效相关数据
         const cacheData: { [propName: string]: { [propName: string]: number }; } = {};
 
-        // 获取全部基础常量
+        // 获取全部生效应用
         const productVoList = await productModel.getList(1);
 
+        // 遍历全部生效应用，组装应用生效相关数据对象列表
         _.each(productVoList, (productVo) => {
             const { packageName, platform, test } = productVo;
 
@@ -425,7 +427,7 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按广告组返回所有待写入 redis 的广告相关数据对象，以广告组 id 为 key
+     * <br/>按广告组返回所有待写入 redis 的广告相关数据对象，以广告组主键为 key
      * @return {{ [propName: string]: AdCacheVO[]; }} 所有待写入 redis 的广告相关数据对象
      */
     public async allAdGroupData() {
@@ -439,7 +441,7 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按应用 native 模板组返回所有待写入 redis 的应用 native 模板相关数据对象，以应用 native 模板组 id 为 key
+     * <br/>按应用 native 模板组返回所有待写入 redis 的应用 native 模板相关数据对象，以应用 native 模板组主键为 key
      * @return {{ [propName: string]: NativeTmplCacheVO[]; }} 所有待写入 redis 的应用 native 模板相关数据对象
      */
     public async allNativeTmplData() {
@@ -454,7 +456,7 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis,
-     * <br/>按常量组返回所有待写入 redis 的常量相关数据对象，以常量组 id 为 key
+     * <br/>按常量组返回所有待写入 redis 的常量相关数据对象，以常量组主键为 key
      * @return {{ [propName: string]: ConfigCacheVO; }} 所有待写入 redis 的常量相关数据对象
      */
     public async allConfigData() {
@@ -473,9 +475,9 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按包名返回所有待写入 redis 的应用分组相关数据对象，以包名为 key
+     * <br/>按包名返回所有待写入 redis 的应用相关版本条件分组列表，以包名为 key
      * <br/>ios 广告
-     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用分组相关相关数据对象
+     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用相关版本条件分组列表
      */
     public async ios_ad_productData() {
         const cacheData = await this.packageData(0, 'ios');
@@ -486,9 +488,9 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按包名返回所有待写入 redis 的应用分组相关数据对象，以包名为 key
+     * <br/>按包名返回所有待写入 redis 的应用相关版本条件分组列表，以包名为 key
      * <br/>ios 常量
-     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用分组相关相关数据对象
+     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用相关版本条件分组列表
      */
     public async ios_config_productData() {
         const cacheData = await this.packageData(1, 'ios');
@@ -499,9 +501,9 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按包名返回所有待写入 redis 的应用分组相关数据对象，以包名为 key
+     * <br/>按包名返回所有待写入 redis 的应用相关版本条件分组列表，以包名为 key
      * <br/>安卓广告
-     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用分组相关相关数据对象
+     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用相关版本条件分组列表
      */
     public async android_ad_productData() {
         const cacheData = await this.packageData(0, 'android');
@@ -512,9 +514,9 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按包名返回所有待写入 redis 的应用分组相关数据对象，以包名为 key
+     * <br/>按包名返回所有待写入 redis 的应用相关版本条件分组列表，以包名为 key
      * <br/>安卓常量
-     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用分组相关相关数据对象
+     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用相关版本条件分组列表
      */
     public async android_config_productData() {
         const cacheData = await this.packageData(1, 'android');
@@ -525,9 +527,9 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按包名返回所有待写入 redis 的应用分组相关数据对象，以包名为 key
+     * <br/>按包名返回所有待写入 redis 的应用相关版本条件分组列表，以包名为 key
      * <br/>微信 广告
-     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用分组相关相关数据对象
+     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用相关版本条件分组列表
      */
     public async wx_ad_productData() {
         const cacheData = await this.packageData(0, 'weixin');
@@ -538,9 +540,9 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按包名返回所有待写入 redis 的应用分组相关数据对象，以包名为 key
+     * <br/>按包名返回所有待写入 redis 的应用相关版本条件分组列表，以包名为 key
      * <br/>微信 常量
-     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用分组相关相关数据对象
+     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用相关版本条件分组列表
      */
     public async wx_config_productData() {
         const cacheData = await this.packageData(1, 'weixin');
@@ -551,9 +553,9 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按包名返回所有待写入 redis 的应用分组相关数据对象，以包名为 key
+     * <br/>按包名返回所有待写入 redis 的应用相关版本条件分组列表，以包名为 key
      * <br/>instant 广告
-     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用分组相关相关数据对象
+     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用相关版本条件分组列表
      */
     public async instant_ad_productData() {
         const cacheData = await this.packageData(0, 'instant');
@@ -564,9 +566,9 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>按包名返回所有待写入 redis 的应用分组相关数据对象，以包名为 key
+     * <br/>按包名返回所有待写入 redis 的应用相关版本条件分组列表，以包名为 key
      * <br/>instant 常量
-     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用分组相关相关数据对象
+     * @return {{ [propName: string]: VersionGroupCacheVO[]; }} 所有待写入 redis 的应用相关版本条件分组列表
      */
     public async instant_config_productData() {
         const cacheData = await this.packageData(1, 'instant');

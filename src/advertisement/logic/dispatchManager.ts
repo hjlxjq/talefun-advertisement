@@ -226,7 +226,7 @@ export default class DispatchManagerLogic extends AMLogic {
             codeList.toString() !== [].toString()
         ) {
             // 线上或者暂存是否存在默认组，创建之前先保证存在默认组
-            const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, 1, undefined);
+            const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, ucId);
 
             if (_.isEmpty(defaultVersionGroupVo)) {
                 return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
@@ -234,7 +234,13 @@ export default class DispatchManagerLogic extends AMLogic {
             }
             _.assign(defaultVersionGroupVo, cacheVersionGroupVoHash[defaultVersionGroupVo.id]);
 
-            const { begin: defaultBegin, code, include: defaultInclude } = defaultVersionGroupVo;
+            const { begin: defaultBegin, code, include: defaultInclude, active } = defaultVersionGroupVo;
+
+            if (active === 0) {
+                return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
+
+            }
+
             const defaultCodeList = JSON.parse(code);
 
             // 默认组必须，起始版本为 0, 国家全覆盖
@@ -250,7 +256,7 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/>线上是否存在冲突组，一个起始版本和一个国家只能对应一个版本条件分组
          */
-        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1, undefined);
+        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, ucId);
 
         // 是否有重复项
         let isDupli = false;
@@ -259,7 +265,13 @@ export default class DispatchManagerLogic extends AMLogic {
             const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
             // 返回线上数据和未发布的数据，以未发布数据为准
             _.assign(beginVersionGroupVo, cacheVersionGroupVo);
-            const { code, include: beginInclude } = beginVersionGroupVo;
+
+            const { code, include: beginInclude, active } = beginVersionGroupVo;
+
+            if (active === 0) {
+                continue;
+
+            }
 
             const beginCodeList = JSON.parse(code);
 
@@ -311,7 +323,7 @@ export default class DispatchManagerLogic extends AMLogic {
          * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
          */
         const versionGroupVo =
-            await versionGroupModel.getByName(name, type, productId, 1, 1);
+            await versionGroupModel.getByName(name, type, productId, undefined, 1);
 
         if (!_.isEmpty(versionGroupVo) && versionGroupVo.id) {
             const cacheVersionGroupVo = cacheVersionGroupVoHash[versionGroupVo.id];
@@ -443,7 +455,7 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/>线上是否存在冲突组，一个起始版本和一个国家只能对应一个版本条件分组
          */
-        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1, undefined);
+        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, ucId);
 
         // 是否有重复项
         let isDupli = false;
@@ -452,8 +464,13 @@ export default class DispatchManagerLogic extends AMLogic {
             const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
             // 返回线上数据和未发布的数据，以未发布数据为准
             _.assign(beginVersionGroupVo, cacheVersionGroupVo);
-            const { code, include: beginInclude } = beginVersionGroupVo;
 
+            const { code, include: beginInclude, active } = beginVersionGroupVo;
+
+            if (active === 0) {
+                continue;
+
+            }
             const beginCodeList = JSON.parse(code);
 
             // 空数组表示都包含，肯定重复
@@ -505,7 +522,7 @@ export default class DispatchManagerLogic extends AMLogic {
          * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
          */
         const versionGroupVo =
-            await versionGroupModel.getByName(name, type, productId, 1, 1);
+            await versionGroupModel.getByName(name, type, productId, undefined, 1);
 
         if (!_.isEmpty(versionGroupVo) && versionGroupVo.id) {
             const cacheVersionGroupVo = cacheVersionGroupVoHash[versionGroupVo.id];
@@ -620,7 +637,7 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/>线上是否存在冲突组，一个起始版本和一个国家只能对应一个版本条件分组
          */
-        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1, undefined);
+        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, ucId);
         // 是否有重复项
         let isDupli = false;
         for (const beginVersionGroupVo of beginVersionGroupVoList) {
@@ -628,7 +645,13 @@ export default class DispatchManagerLogic extends AMLogic {
             const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
             // 返回线上数据和未发布的数据，以未发布数据为准
             _.assign(beginVersionGroupVo, cacheVersionGroupVo);
-            const { code, include: beginInclude } = beginVersionGroupVo;
+
+            const { code, include: beginInclude, active } = beginVersionGroupVo;
+
+            if (active === 0) {
+                continue;
+
+            }
 
             const beginCodeList = JSON.parse(code);
 

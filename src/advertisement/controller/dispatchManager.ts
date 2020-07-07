@@ -534,6 +534,7 @@ export default class DispatchManagerController extends BaseController {
                         return updateCacheServer.setCacheData(
                             ucId, 'abTestGroup', abTestGroupVo.id, updateAbTestGroupVo
                         );
+
                     });
 
                 }

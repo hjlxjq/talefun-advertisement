@@ -512,7 +512,7 @@ export default class ProductManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                regexp: /^[a-z0-9\-_]+$/,    // 字段值要匹配给出的正则
+                regexp: /^[a-zA-Z][a-zA-Z0-9\s\-_]*[a-zA-Z0-9\-_]+$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
