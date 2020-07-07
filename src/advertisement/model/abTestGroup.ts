@@ -83,7 +83,9 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 根据 ab 测试名获取 ab 测试分组列表
+     * 根据 ab 测试名获取 ab 测试分组列表,
+     * <br/> creatorId 和 active=1 联合控制数据库中，
+     * <br/>线上和用户当前发布节点新创建的 ab 测试分组列表(一组测试)
      * @argument {string} versionGroupId 版本分组条件表主键;
      * @argument {string} name ab 测试分组名;
      * @argument {string} creatorId 创建者主键
@@ -94,9 +96,9 @@ export default class AbTestGroupModel extends MBModel {
     public async getListByName(
         versionGroupId: string,
         name: string,
-        creatorId: string,
-        active: number,
-        live: number
+        creatorId?: string,
+        active?: number,
+        live?: number
     ) {
         const queryStrings: string[] = [];
 
@@ -123,13 +125,14 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 根据主键 获取 ab 测试分组信息
+     * 根据主键获取 ab 测试分组信息
      * @argument {string} id ab 测试分组表主键;
      * @argument {string} creatorId 创建者主键
      * @returns {Promise<AbTestGroupVO>} ab 测试分组信息;
      */
     public async getVo(id: string, creatorId: string) {
         const queryStrings: string[] = [];
+
         queryStrings.push(`id = '${id}'`);
 
         if (!_.isUndefined(creatorId)) {
@@ -152,6 +155,7 @@ export default class AbTestGroupModel extends MBModel {
 
         return _.map(abTestGroupVoList, (abTestGroupVo) => {
             return abTestGroupVo.id;
+
         });
 
     }
@@ -177,7 +181,7 @@ export default class AbTestGroupModel extends MBModel {
     }
 
     /**
-     * 获取 ab 测试分组信息列表,
+     * 根据版本分组条件表主键获取 ab 测试分组信息列表,
      * @argument {string} versionGroupId 分组条件表主键;
      * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效
@@ -202,7 +206,6 @@ export default class AbTestGroupModel extends MBModel {
             queryStrings.push(`activeTime = '${LiveActiveTime}'`);
 
         }
-
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).order('begin').select() as AbTestGroupVO[];
@@ -214,7 +217,7 @@ export default class AbTestGroupModel extends MBModel {
      *  @argument {string} versionGroupId 分组条件表主键;
      */
     public async getDefault(versionGroupId: string) {
-        return await this.where({ name: 'default',  versionGroupId}).find() as AbTestGroupVO;
+        return await this.where({ name: 'default', versionGroupId }).find() as AbTestGroupVO;
 
     }
 

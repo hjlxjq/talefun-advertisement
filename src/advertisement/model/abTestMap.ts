@@ -24,7 +24,6 @@ export default class AbTestMapModel extends MBModel {
      */
     public async addVo(abTestMapVo: AbTestMapVO) {
         await this.add(abTestMapVo);
-
         return this.ID[0];
 
     }
@@ -41,8 +40,8 @@ export default class AbTestMapModel extends MBModel {
         if (!_.isEmpty(abTestMapVoList)) {
             await this.addMany(abTestMapVoList);
             idList = this.ID;
-        }
 
+        }
         return idList;
 
     }
@@ -64,7 +63,7 @@ export default class AbTestMapModel extends MBModel {
 
     /**
      * 删除广告位表对象
-     * @argument {string} abTestGroupId 分组表主键;
+     * @argument {string} abTestGroupId ab 测试分组表主键;
      * @argument {string} place 广告位;
      * @returns {Promise<number>} 删除行数;
      */
@@ -74,8 +73,8 @@ export default class AbTestMapModel extends MBModel {
     }
 
     /**
-     * 根据 ab 分组主键列表删除广告位表对象列表
-     * @argument {string[]} abTestGroupIdList ab 分组条件表主键列表;
+     * 根据 ab 测试分组主键列表删除广告位表对象列表
+     * @argument {string[]} abTestGroupIdList ab 测试分组条件表主键列表;
      * @returns {Promise<number>} 删除行数;
      */
     public async delList(abTestGroupIdList: string[]) {
@@ -86,18 +85,14 @@ export default class AbTestMapModel extends MBModel {
     }
 
     /**
-     * 根据主键 获取广告位信息,
+     * 根据 ab 测试分组条件表主键获取广告位信息,
      * <br/> 广告位表不需要判断是否开启
      * @argument {string} abTestGroupId ab 测试分组表主键;
      * @argument {string} place 广告位;
      * @argument {string} creatorId 创建者主键
      * @returns {Promise<AbTestMapVO>} 广告位信息;
      */
-    public async getVo(
-        abTestGroupId: string,
-        place: string,
-        creatorId: string
-    ) {
+    public async getVo(abTestGroupId: string, place: string, creatorId: string) {
         const queryStrings: string[] = [];
 
         queryStrings.push(`abTestGroupId = '${abTestGroupId}'`);
@@ -133,7 +128,7 @@ export default class AbTestMapModel extends MBModel {
     }
 
     /**
-     * 根据 ab 测试分组表主键 获取广告位表列表
+     * 根据 ab 测试分组表主键获取广告位表列表
      * @argument {string} abTestGroupId ab 测试分组表主键;
      * @argument {string} creatorId 创建者主键
      * @argument {number} active 是否生效;
@@ -159,10 +154,10 @@ export default class AbTestMapModel extends MBModel {
     }
 
     /**
-     * 根据广告组表主键 获取 ab 测试分组主键 列表
+     * 根据广告组表主键获取 ab 测试分组主键列表
      * @argument {string} adGroupId 广告组表主键;
      * @argument {string} creatorId 创建者主键
-     * @returns {Promise<AbTestMapVO>} ab 测试分组主键 列表
+     * @returns {Promise<AbTestMapVO>} ab 测试分组主键列表
      */
     public async getAbTestGroupIdByAdGroup(adGroupId: string, creatorId: string) {
         const queryStrings: string[] = [];
@@ -178,6 +173,7 @@ export default class AbTestMapModel extends MBModel {
 
         return _.map(abTestMapVoList, (abTestMapVo) => {
             return abTestMapVo.abTestGroupId;
+
         });
 
     }

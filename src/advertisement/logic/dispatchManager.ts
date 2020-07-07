@@ -1019,7 +1019,7 @@ export default class DispatchManagerLogic extends AMLogic {
          * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
          */
         const abTestGroupVoList =
-            await abTestGroupModel.getListByName(versionGroupId, name, ucId, 1, 1);
+            await abTestGroupModel.getListByName(versionGroupId, name, undefined, undefined, 1);
 
         const abTestGroupVo = abTestGroupVoList[0];
         if (!_.isEmpty(abTestGroupVo) && abTestGroupVo.id) {

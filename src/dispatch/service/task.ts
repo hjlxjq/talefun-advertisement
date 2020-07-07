@@ -1,12 +1,17 @@
+/**
+ * dispatch taskService Service
+ * @module dispatch/service/taskService
+ * @see module:../../common/tale/BaseService
+ */
 import { think } from 'thinkjs';
 import * as _ from 'lodash';
+import * as Redis from 'ioredis';
+import Bluebird = require('bluebird');
+
 const ipdb = require('ipdb');
 const hash = require('hash-code');
 
 import BaseService from '../../common/tale/BaseService';
-
-import * as Redis from 'ioredis';
-import Utils from '../../advertisement/utils';
 
 import {
     AdCacheVO,
@@ -17,8 +22,13 @@ import {
     AbTestMapCacheVO,
     RequestParamVO
 } from '../../advertisement/defines';
-import Bluebird = require('bluebird');
 
+/**
+ * 从 redis 缓存中获取下发数据相关 service
+ * @class TaskService
+ * @extends @link:common/tale/BaseService
+ * @author jianlong <jianlong@talefun.com>
+ */
 export default class TaskService extends BaseService {
     private redis: Redis.Redis;
     private ipService: any;
@@ -59,19 +69,27 @@ export default class TaskService extends BaseService {
      */
     private async getArrCache(redisKey: string, fileds: string[]) {
         const list = await this.redis.hmget(redisKey, ...fileds);
-        return _.map(list, (json) => {
-            return JSON.parse(json);
 
-        });
+        if (_.isEmpty(list)) {
+
+            return _.compact(_.map(list, (json) => {
+                if (json) {
+                    return JSON.parse(json);
+
+                }
+
+            }));
+
+        }
 
     }
 
     /**
-     * 获取分组信息，
+     * 获取版本条件分组主键，
      * <br/>必须配置无国家控制的分组，
      * <br/>任何国家分组和无国家分组都需要配置无版本控制的分组
      * @argument {RequestParamVO} params 请求参数
-     * @argument {number} type 类型，广告/常量
+     * @argument {number} type 类型，0 广告 1 游戏常量 2 商店
      */
     private async getVersionGroupId(params: RequestParamVO, type: number) {
         const { platform, packageName } = params;
@@ -107,6 +125,7 @@ export default class TaskService extends BaseService {
                 redisKey = this.keyPrefix + 'Instant_Ad_Product';
 
             }
+
         }
         if (type === 1) {
             if (platform === 'ios') {
@@ -132,11 +151,10 @@ export default class TaskService extends BaseService {
         // 全部版本条件分组数据
         const allVersionGroupList: VersionGroupCacheVO[] = await this.getOneCache(redisKey, packageName);
 
-        // 查询 符合的版本分组主键
+        // 查询符合的版本分组主键
         let versionGroupId: string;
 
         if (allVersionGroupList) {
-
             const nationVersionGroupList: VersionGroupCacheVO[] = [];    // 国家相关全部分组数据
             const noNationVersionGroupList: VersionGroupCacheVO[] = [];    // 非国家全部分组数据
             // 查出该国家所在分组和不含国家的全部分组
@@ -163,8 +181,11 @@ export default class TaskService extends BaseService {
                     noNationVersionGroupList.push(allVersionGroupList[i]);
 
                 }
+
             }
+            // 查询符合的版本分组列表
             let versionGroupList: VersionGroupCacheVO[] = [];
+            // 国家相关全部分组数据不为空，则表示该国家代码存在配置
             if (!_.isEmpty(nationVersionGroupList)) {
                 versionGroupList = nationVersionGroupList;
 
@@ -173,6 +194,7 @@ export default class TaskService extends BaseService {
 
             }
 
+            // 从版本开始范围最大开始匹配，符合则跳出循环
             for (let i = versionGroupList.length - 1; i > 0; i--) {
                 const { id, begin } = versionGroupList[i];
 

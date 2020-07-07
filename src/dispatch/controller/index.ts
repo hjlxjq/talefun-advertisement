@@ -1,20 +1,28 @@
 /**
  * IndexController module.
+ * <br/>下发到 app 相关 api，与原广告分发接口一致，数据一致
  * @module dispatch/controller/index
  * @see dispatch/controller/index;
  * @debugger
  */
 import { think } from 'thinkjs';
-const ipdb = require('ipdb');
+import * as _ from 'lodash';
+
 import BaseController from '../../common/tale/BaseController';
 import TaskService from '../service/task';
-import * as _ from 'lodash';
 import Utils from '../utils';
+
 import { RequestParamVO } from '../../advertisement/defines';
 
+const ipdb = require('ipdb');
+
 export default class IndexController extends BaseController {
+    /**
+     * default
+     */
     public async indexAction() {
         this.success();
+
     }
 
     /**
@@ -77,6 +85,7 @@ export default class IndexController extends BaseController {
 
         for (const devName of Object.keys(interfaces)) {
             const iface = interfaces[devName];
+
             for (const alias of iface) {
                 if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
                     return alias.address;

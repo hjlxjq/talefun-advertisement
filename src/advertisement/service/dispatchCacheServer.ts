@@ -579,7 +579,7 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>返回所有待写入 redis 的 ab 测试分组相关数据对象，以版本条件分组表主键 为 key
+     * <br/>返回所有待写入 redis 的 ab 测试分组相关数据对象，以版本条件分组表主键为 key
      * @return {{ [propName: string]: AbTestGroupCacheVO[]; }} 所有待写入 redis 的 ab 测试分组相关数据对象
      */
     public async abTestGroupData() {
@@ -591,6 +591,7 @@ export default class DispatchCacheService extends BaseService {
 
         _.each(abTestGroupVoList, (abTestGroupVo) => {
             const { id, versionGroupId, name, begin, end, nativeTmplConfGroupId, configGroupId } = abTestGroupVo;
+
             if (!cacheData[versionGroupId]) {
                 cacheData[versionGroupId] = [];
 
@@ -614,7 +615,7 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 从 mysql 刷新数据，组装到 redis，
-     * <br/>返回所有待写入 redis 的 ab 测试分组广告位相关数据对象，以 ab 测试分组表主键 为 key
+     * <br/>返回所有待写入 redis 的 ab 测试分组广告位相关数据对象，以 ab 测试分组表主键为 key
      * @return {{ [propName: string]: AbTestMapCacheVO[] }} 所有待写入 redis 的 ab 测试分组广告位相关数据对象
      */
     public async abTestMapData() {
@@ -626,6 +627,7 @@ export default class DispatchCacheService extends BaseService {
 
         _.each(abTestMapVoList, (abTestMapVo) => {
             const { abTestGroupId, place, adGroupId } = abTestMapVo;
+
             if (!cacheData[abTestGroupId]) {
                 cacheData[abTestGroupId] = [];
 
@@ -644,17 +646,16 @@ export default class DispatchCacheService extends BaseService {
     /**
      * <br/>初始化缓存
      * @argument {string} redisKey redis key
-     * @argument {Promise<{[propName: string]: object}>} queryMethod 从 mysql 查询 redis 哈希表数据的函数
+     * @argument {Promise<any>} queryMethod 从 mysql 查询 redis 哈希表数据的函数
      */
     private async initOneCache(redisKey: string, queryMethod: () => Promise<any>) {
         // 首先判断 redis 里面是否有，如果 redis 里面没有的话，则从数据库查询
         const result = await this.redis.exists(redisKey);
         if (result === 0) {
             const cacheData = await queryMethod();
+
             if (!_.isEmpty(cacheData)) {
                 const redisHash = Utils.getRedisHash(cacheData);
-                // think.logger.debug(`redisKey: ${redisKey}`);
-                // think.logger.debug(`redisHash: ${JSON.stringify(redisHash)}`);
                 // 更新到 redis 中
                 return this.redis.hmset(redisKey, redisHash);
 
@@ -682,12 +683,12 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * *****************************************************************************************************************
-     * 发布应用相关
+     * 发布应用更新该应用下的下发数据
      * *****************************************************************************************************************
      */
 
     /**
-     * <br/>获取所有和类型和平台相关的 redis key
+     * <br/>根据 版本条件分组类型和应用平台 获取所有下发相关的 redis key，
      * @argument {string} platform 平台
      * @argument {string} type 类型，0 广告 1 游戏常量 2 商店
      */
@@ -745,7 +746,7 @@ export default class DispatchCacheService extends BaseService {
     }
 
     /**
-     * 发布应用,
+     * 根据版本条件分组类型和应用平台发布应用
      * <br/>即从 mysql 数据库刷新应用信息到 redis
      * @argument {number} type 类型，0 广告 1 游戏常量 2 商店
      * @argument {string} productId 应用主键
@@ -767,15 +768,15 @@ export default class DispatchCacheService extends BaseService {
 
         if (type === 0) {
             const {
-                productCacheData, abGroupCacheData, abMapCacheData, adGroupCacheData, nativeTmplCacheData
+                productCacheData, abTestGroupCacheData, abTestMapCacheData, adGroupCacheData, nativeTmplCacheData
             } = await this.refreshAdDispatch(productId, packageName);
 
             await this.redis.multi([
-                ['hset', appPackageKey, packageName, Utils.getRedisHash(productCacheData)],
+                ['hset', appPackageKey, Utils.getRedisHash(productCacheData)],
                 // @ts-ignore
-                ['hmset', abTestGroupKey, Utils.getRedisHash(abGroupCacheData)],
+                ['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)],
                 // @ts-ignore
-                ['hmset', abTestMapKey, Utils.getRedisHash(abMapCacheData)],
+                ['hmset', abTestMapKey, Utils.getRedisHash(abTestMapCacheData)],
                 // @ts-ignore
                 ['hmset', adGroupKey, Utils.getRedisHash(adGroupCacheData)],
                 // @ts-ignore
@@ -785,13 +786,13 @@ export default class DispatchCacheService extends BaseService {
         }
         if (type === 1) {
             const {
-                productCacheData, abGroupCacheData, configCacheData
+                productCacheData, abTestGroupCacheData, configCacheData
             } = await this.refreshConfigDispatch(productId, packageName);
 
             await this.redis.multi([
-                ['hset', appPackageKey, packageName, Utils.getRedisHash(productCacheData)],
+                ['hset', appPackageKey, Utils.getRedisHash(productCacheData)],
                 // @ts-ignore
-                ['hmset', abTestGroupKey, Utils.getRedisHash(abGroupCacheData)],
+                ['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)],
                 // @ts-ignore
                 ['hmset', configKey, Utils.getRedisHash(configCacheData)]
             ], { pipeline: true }).exec();
@@ -803,7 +804,7 @@ export default class DispatchCacheService extends BaseService {
 
     /**
      * 获取广告分发相关缓存
-     * <br/>返回常量相关 redis 哈希表数据
+     * <br/>返回广告下发相关 redis 哈希表数据
      * @argument {string} productId 应用主键
      * @argument {string} packageName 包名
      */
@@ -816,13 +817,14 @@ export default class DispatchCacheService extends BaseService {
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
 
-        // 应用包名 对应 应用相关版本条件分组列表
+        // 应用包名对应 应用相关版本条件分组列表
         const productCacheData: { [propName: string]: VersionGroupCacheVO[] } = {};
-        // 版本条件分组表主键 对应 ab 测试分组列表
-        const abGroupCacheData: { [propName: string]: AbTestGroupCacheVO[] } = {};
-        // ab 测试分组表主键 对应 ab 测试分组下广告位列表
-        const abMapCacheData: { [propName: string]: AbTestMapCacheVO[] } = {};
+        // 版本条件分组表主键对应 ab 测试分组列表
+        const abTestGroupCacheData: { [propName: string]: AbTestGroupCacheVO[] } = {};
+        // ab 测试分组表主键对应 ab 测试分组下广告位列表
+        const abTestMapCacheData: { [propName: string]: AbTestMapCacheVO[] } = {};
 
+        // 获取应用下广告分发相关的版本条件分组列表，广告列表，native 模板列表
         const [
             versionGroupVoList, adVoList, nativeTmplConfGroupVoList
         ] = await Promise.all([
@@ -831,13 +833,15 @@ export default class DispatchCacheService extends BaseService {
             nativeTmplConfGroupModel.getListByProduct(productId, undefined, 1)
         ]);
 
-        const nativeTmplConfGroupVoIdList = _.map(nativeTmplConfGroupVoList, (nativeTmplConfGroupVo) => {
+        // 获取应用下 native 模板组主键列表
+        const nativeTmplConfGroupIdList = _.map(nativeTmplConfGroupVoList, (nativeTmplConfGroupVo) => {
             return nativeTmplConfGroupVo.id;
 
         });
-        const nativeTmplConfVoList = await nativeTmplConfModel.getListByGroupList(nativeTmplConfGroupVoIdList, 1);
+        // 获取应用下 native 模板列表
+        const nativeTmplConfVoList = await nativeTmplConfModel.getListByGroupList(nativeTmplConfGroupIdList, 1);
 
-        // 广告组表主键 对应 广告列表
+        // 广告组表主键对应 广告列表
         const adGroupCacheData = await this.adGroupData(adVoList);
         // native 模板组主键对应 native 模板列表
         const nativeTmplCacheData = await this.nativeTmplData(nativeTmplConfVoList);
@@ -849,10 +853,18 @@ export default class DispatchCacheService extends BaseService {
             const versionGroupCacheVo: VersionGroupCacheVO = {
                 id, begin, include, code
             };
+
+            // 应用相关版本条件分组列表
+            if (!productCacheData[packageName]) {
+                productCacheData[packageName] = [];
+
+            }
             productCacheData[packageName].push(versionGroupCacheVo);
 
+            // 版本条件分组下的 ab 测试分组列表
             const abTestGroupVoList = await abTestGroupModel.getListByVersionGroup(id, undefined, undefined, 1);
 
+            // 遍历 ab 测试分组列表, 获取待更新的 redis 缓存的 ab 测试分组列表和 ab 测试分组列表下广告位数据
             await Bluebird.map(abTestGroupVoList, async (abTestGroupVo) => {
                 const {
                     id: abTestGroupId, versionGroupId, name, begin: abTestGroupBegin, end: abTestGroupEnd,
@@ -862,24 +874,35 @@ export default class DispatchCacheService extends BaseService {
                 const abTestGroupCacheVo: AbTestGroupCacheVO = {
                     id: abTestGroupId, name, begin: abTestGroupBegin, end: abTestGroupEnd, nativeTmplConfGroupId
                 };
-                abGroupCacheData[versionGroupId].push(abTestGroupCacheVo);
+                // ab 测试分组相关数据对象
+                if (!abTestGroupCacheData[versionGroupId]) {
+                    abTestGroupCacheData[versionGroupId] = [];
+
+                }
+                abTestGroupCacheData[versionGroupId].push(abTestGroupCacheVo);
 
                 const abTestMapVoList = await abTestMapModel.getListByAbTestGroup(abTestGroupId, undefined, 1);
 
-                await Bluebird.map(abTestMapVoList, async (abTestMapVo) => {
+                _.map(abTestMapVoList, async (abTestMapVo) => {
                     const { place, adGroupId } = abTestMapVo;
 
                     const abTestMapCacheVo: AbTestMapCacheVO = {
                         place, adGroupId
                     };
-                    abMapCacheData[abTestGroupId].push(abTestMapCacheVo);
+                    // ab 测试分组广告位相关数据对象
+                    if (!abTestMapCacheData[abTestGroupId]) {
+                        abTestMapCacheData[abTestGroupId] = [];
+
+                    }
+                    abTestMapCacheData[abTestGroupId].push(abTestMapCacheVo);
                 });
 
-            });
+            }, { concurrency: 3 });
 
         }, { concurrency: 3 });
+
         return {
-            productCacheData, abGroupCacheData, abMapCacheData, adGroupCacheData, nativeTmplCacheData
+            productCacheData, abTestGroupCacheData, abTestMapCacheData, adGroupCacheData, nativeTmplCacheData
         };
 
     }
@@ -899,8 +922,9 @@ export default class DispatchCacheService extends BaseService {
         // 应用包名 对应 应用相关版本条件分组列表
         const productCacheData: { [propName: string]: VersionGroupCacheVO[] } = {};
         // 版本条件分组表主键 对应 ab 测试分组列表
-        const abGroupCacheData: { [propName: string]: AbTestGroupCacheVO[] } = {};
+        const abTestGroupCacheData: { [propName: string]: AbTestGroupCacheVO[] } = {};
 
+        // 获取应用下游戏常量分发相关的版本条件分组列表，游戏常量列表
         const [
             versionGroupVoList, configGroupVoList
         ] = await Promise.all([
@@ -908,21 +932,29 @@ export default class DispatchCacheService extends BaseService {
             configGroupModel.getListByProductAndType(productId, 1, undefined, 1),
         ]);
 
-        const configGroupVoIdList = _.map(configGroupVoList, (configGroupVo) => {
+        // 获取应用下游戏常量组主键列表
+        const configGroupIdList = _.map(configGroupVoList, (configGroupVo) => {
             return configGroupVo.id;
 
         });
-        const configVoList = await configModel.getListByGroupList(configGroupVoIdList, 1);
+        // 获取应用下游戏常量列表
+        const configVoList = await configModel.getListByGroupList(configGroupIdList, 1);
 
         // 游戏常量组表主键 对应 游戏常量列表
         const configCacheData = await this.configData(configVoList, configGroupVoList);
 
+        // 遍历刷新应用下的数据到正式缓存中来
         await Bluebird.map(versionGroupVoList, async (versionGroupVo) => {
             const { id, begin, include, code } = versionGroupVo;
 
             const versionGroupCacheVo: VersionGroupCacheVO = {
                 id, begin, include, code
             };
+            // 应用相关版本条件分组列表
+            if (!productCacheData[packageName]) {
+                productCacheData[packageName] = [];
+
+            }
             productCacheData[packageName].push(versionGroupCacheVo);
 
             const abTestGroupVoList = await abTestGroupModel.getListByVersionGroup(id, undefined, undefined, 1);
@@ -936,13 +968,18 @@ export default class DispatchCacheService extends BaseService {
                 const abTestGroupCacheVo: AbTestGroupCacheVO = {
                     id: abTestGroupId, name, begin: abTestGroupBegin, end: abTestGroupEnd, nativeTmplConfGroupId
                 };
-                abGroupCacheData[versionGroupId].push(abTestGroupCacheVo);
+                // ab 测试分组相关数据对象
+                if (!abTestGroupCacheData[versionGroupId]) {
+                    abTestGroupCacheData[versionGroupId] = [];
+
+                }
+                abTestGroupCacheData[versionGroupId].push(abTestGroupCacheVo);
 
             });
 
         }, { concurrency: 3 });
         return {
-            productCacheData, abGroupCacheData, configCacheData
+            productCacheData, abTestGroupCacheData, configCacheData
         };
 
     }

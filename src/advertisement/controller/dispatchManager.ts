@@ -510,7 +510,7 @@ export default class DispatchManagerController extends BaseController {
             nativeTmplConfGroupId: undefined, configGroupId: undefined, creatorId: undefined
         };
 
-        const abTestGroupVoList = await abTestGroupModel.getListByName(versionGroupId, name, ucId, 1, undefined);
+        const abTestGroupVoList = await abTestGroupModel.getListByName(versionGroupId, name, ucId, 1);
 
         try {
             if (!_.isEmpty(abTestGroupVoList)) {
@@ -548,6 +548,7 @@ export default class DispatchManagerController extends BaseController {
         } catch (e) {
             think.logger.debug(e);
             this.fail(TaleCode.DBFaild, 'delete fail!!!');
+
         }
 
     }

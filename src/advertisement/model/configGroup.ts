@@ -44,13 +44,14 @@ export default class ConfigGroupModel extends MBModel {
     }
 
     /**
-     * 按常量组 id 获取常量组
-     * @argument {string} id 常量组 id;
+     * 按常量组主键获取常量组
+     * @argument {string} id 常量组主键;
      * @argument {string} creatorId 创建者主键
      * @returns {Promise<ConfigGroupVO>} 常量组数据;
      */
     public async getVo(id: string, creatorId?: string) {
         const queryStrings: string[] = [];
+
         queryStrings.push(`id='${id}'`);
 
         if (!_.isUndefined(creatorId)) {
@@ -83,8 +84,7 @@ export default class ConfigGroupModel extends MBModel {
     }
 
     /**
-     * 根据应用主键 获取常量组列表
-     * </br> 按常量组名称从小到大排序
+     * 根据应用主键获取常量组列表
      * @argument {string} productId 应用表主键;
      * @argument {number} type 0 广告 1 游戏常量
      * @argument {string} creatorId 创建者主键
