@@ -2524,6 +2524,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
                 if (editAd === 0) {
                     throw new Error('没有权限！！！');
+
                 }
             }
         } catch (e) {

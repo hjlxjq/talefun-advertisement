@@ -26,18 +26,8 @@ import NativeTmplConfGroupModel from '../model/nativeTmplConfGroup';
 import ProductModel from '../model/product';
 
 import {
-    HashVO, HashHashVO,
-    NativeTmplCacheVO,
-    AdCacheVO,
-    ConfigCacheVO,
-    VersionGroupCacheVO,
-    AbTestGroupCacheVO,
-    AbTestMapCacheVO,
-    RedisKeyVO,
-    NativeTmplConfVO,
-    AdVO,
-    ConfigVO,
-    ConfigGroupVO
+    HashVO, HashHashVO, NativeTmplCacheVO, AdCacheVO, ConfigCacheVO, VersionGroupCacheVO, AbTestGroupCacheVO,
+    AbTestMapCacheVO, RedisKeyVO, NativeTmplConfVO, AdVO, ConfigVO, ConfigGroupVO
 } from '../defines';
 
 // 默认间隔
@@ -49,6 +39,7 @@ const defaultInterval = 60;
  */
 function formatAdTypeName(adType: string) {
     return _.replace(adType.toLowerCase(), 'adexchange', 'admob');
+
 }
 
 /**
@@ -56,11 +47,12 @@ function formatAdTypeName(adType: string) {
  */
 function beginSort(groupVo1: any, groupVo2: any) {
     return (groupVo1.begin - groupVo2.begin);
+
 }
 
 /**
  * 下发数据，保存在 redis 缓存中，
- * <br/>从 mysql 刷新数据，组装到 redis
+ * <br/>从 mysql 刷新全部下发的数据，组装到 redis
  * @class DispatchCacheService
  * @extends @link:common/tale/BaseService
  * @author jianlong <jianlong@talefun.com>
