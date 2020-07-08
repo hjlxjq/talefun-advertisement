@@ -241,6 +241,10 @@ export default class DispatchCacheService extends BaseService {
         const cacheData: {
             [propName: string]: AdCacheVO[];
         } = {};
+        // 按广告平台分类，最终返回 cacheData 广告平台顺序添加后缀
+        const preCacheData: {
+            [propName: string]: { [propName: string]: AdCacheVO[] };
+        } = {};
 
         // 获取全部广告类型列表和广告平台列表
         const [
@@ -296,13 +300,46 @@ export default class DispatchCacheService extends BaseService {
                 channel, ecpm, loader, subloader, weight
             };
 
+            if (!preCacheData[adGroupId]) {
+                preCacheData[adGroupId] = {};
+
+            }
+            if (!preCacheData[adGroupId][channel]) {
+                preCacheData[adGroupId][channel] = [];
+
+            }
+            preCacheData[adGroupId][channel].push(adCacheVo);
+
+        });
+
+        // 广告平台添加后缀,同一广告平台的后缀连续且顺序
+        for (const adGroupId of _.keys(preCacheData)) {
+
+            // 按广告组主键分别初始化 cacheData
             if (!cacheData[adGroupId]) {
                 cacheData[adGroupId] = [];
 
             }
-            cacheData[adGroupId].push(adCacheVo);
+            const channelCacheData = preCacheData[adGroupId];
 
-        });
+            for (const channel of _.keys(channelCacheData)) {
+                const adCacheVoList = channelCacheData[channel];
+
+                // 广告平台添加后缀
+                let suffix = 1;
+
+                for (const adCacheVo of adCacheVoList) {
+                    adCacheVo.channel = channel + suffix;
+                    // 添加后缀则加入返回 cacheData 哈希表广告组主键映射的列表
+                    cacheData[adGroupId].push(adCacheVo);
+                    suffix++;
+
+                }
+
+            }
+
+        }
+
         // think.logger.debug(`adCacheData: ${JSON.stringify(cacheData[_.keys(cacheData)[0]])}`);
         return cacheData;
 

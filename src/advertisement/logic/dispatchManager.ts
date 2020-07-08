@@ -848,18 +848,23 @@ export default class DispatchManagerLogic extends AMLogic {
 
                 if (viewAd === 0 && type === 0) {
                     throw new Error('没有权限！！！');
+
                 }
                 if (viewGameConfig === 0 && type === 1) {
                     throw new Error('没有权限！！！');
+
                 }
                 if (viewPurchase === 0 && type === 2) {
                     throw new Error('没有权限！！！');
+
                 }
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+            
         }
 
     }

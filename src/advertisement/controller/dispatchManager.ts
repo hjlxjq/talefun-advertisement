@@ -13,6 +13,8 @@ import * as moment from 'moment-mini-ts';
 import { TaleCode } from '../../common/tale/TaleDefine';
 import BaseController from '../../common/tale/BaseController';
 
+import BaseConfigModel from '../model/baseConfig';
+import ProductModel from '../model/product';
 import VersionGroupModel from '../model/versionGroup';
 import NationDefineModel from '../model/nationDefine';
 import AbTestGroupModel from '../model/abTestGroup';
@@ -358,6 +360,9 @@ export default class DispatchManagerController extends BaseController {
     public async configGroupInAbAction() {
         const ucId: string = this.ctx.state.userId;
         const abTestGroupId: string = this.post('id');
+        const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
+        const productModel = this.taleModel('product', 'advertisement') as ProductModel;
+        const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
         const modelServer = this.taleService('modelServer', 'advertisement') as ModelServer;
@@ -368,9 +373,11 @@ export default class DispatchManagerController extends BaseController {
         const cacheAbTestGroupVo = await updateCacheServer.fetchCacheData(ucId, 'abTestGroup', abTestGroupId);
 
         // 返回线上数据和未发布的数据，以未发布数据为准
-        const abTestGroupResVo = _.assign(abTestGroupVo, cacheAbTestGroupVo);
+        const abTestGroupResVo: AbTestGroupVO = _.assign(abTestGroupVo, cacheAbTestGroupVo);
+        const { configGroupId, versionGroupId } = abTestGroupResVo;
 
-        const { configGroupId } = abTestGroupResVo;
+        // 获取版本条件分组类型
+        const { type, productId } = await versionGroupModel.getVo(versionGroupId, ucId);
 
         // 获取 ab 分组下的常量组及常量组下的常量列表数据
         let configGroupResVo: ConfigGroupResVO = null;
@@ -379,6 +386,26 @@ export default class DispatchManagerController extends BaseController {
             const configResVoList = await modelServer.getConfigList(configGroupId, ucId);
 
             configGroupResVo = _.defaults({ configList: configResVoList }, configGroupVo);
+
+            // 广告常量没有配置默认返回基础常量
+        } else if (type === 0) {
+            const { test } = await productModel.getVo(productId);
+            const baseConfigVoList = await baseConfigModel.getList(1, test);
+
+            const baseConfigResVoList = _.map(baseConfigVoList, (baseConfigVo) => {
+                delete baseConfigVo.test;
+                delete baseConfigVo.createAt;
+                delete baseConfigVo.updateAt;
+
+                return baseConfigVo;
+            });
+
+            const configGroupVo: ConfigGroupResVO = {
+                dependent: undefined, versionGroup: undefined, configList: undefined, type: undefined,
+                active: undefined, creatorId: undefined, dependentId: undefined, productId: undefined,
+                name: '基础常量', description: '基础常量'
+            };
+            configGroupResVo = _.defaults({ configList: baseConfigResVoList }, configGroupVo);
         }
 
         return this.success(configGroupResVo);

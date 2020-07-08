@@ -576,7 +576,6 @@ export interface AdControlVO {
     adList: AdCacheVO[];    // redis AdGroup_cache 数据
 }
 
-
 /**
  * redis key
  */
