@@ -14,13 +14,8 @@ const hash = require('hash-code');
 import BaseService from '../../common/tale/BaseService';
 
 import {
-    AdCacheVO,
-    NativeTmplCacheVO,
-    ConfigCacheVO,
-    VersionGroupCacheVO,
-    AbTestGroupCacheVO,
-    AbTestMapCacheVO,
-    RequestParamVO
+    AdCacheVO, NativeTmplCacheVO, ConfigCacheVO, VersionGroupCacheVO, AbTestGroupCacheVO, AbTestMapCacheVO,
+    RequestParamVO, AdControlVO, AppAllAdControlVO, InstantAdControlVO
 } from '../../advertisement/defines';
 
 /**
@@ -86,8 +81,7 @@ export default class TaskService extends BaseService {
 
     /**
      * 获取版本条件分组主键，
-     * <br/>必须配置无国家控制的分组，
-     * <br/>任何国家分组和无国家分组都需要配置无版本控制的分组
+     * <br/>必须配置与国家无关的分组和该分组下的默认组
      * @argument {RequestParamVO} params 请求参数
      * @argument {number} type 类型，0 广告 1 游戏常量 2 商店
      */
@@ -107,6 +101,7 @@ export default class TaskService extends BaseService {
 
         }
 
+        // 获取 redis 哈希表的 key
         let redisKey;
         if (type === 0) {
             if (platform === 'ios') {
@@ -156,8 +151,8 @@ export default class TaskService extends BaseService {
 
         if (allVersionGroupList) {
             const nationVersionGroupList: VersionGroupCacheVO[] = [];    // 国家相关全部分组数据
-            const noNationVersionGroupList: VersionGroupCacheVO[] = [];    // 非国家全部分组数据
-            // 查出该国家所在分组和不含国家的全部分组
+            const noNationVersionGroupList: VersionGroupCacheVO[] = [];    // 与国家无关全部分组数据
+            // 查出该国家所在分组和与国家无关全部分组
             for (let i = 0, l = allVersionGroupList.length; i < l; i++) {
                 const {
                     include, code
@@ -183,24 +178,33 @@ export default class TaskService extends BaseService {
                 }
 
             }
-            // 查询符合的版本分组列表
-            let versionGroupList: VersionGroupCacheVO[] = [];
+
             // 国家相关全部分组数据不为空，则表示该国家代码存在配置
             if (!_.isEmpty(nationVersionGroupList)) {
-                versionGroupList = nationVersionGroupList;
+                // 从版本开始范围最大开始匹配，符合则跳出循环
+                for (let i = nationVersionGroupList.length - 1; i > 0; i--) {
+                    const { id, begin } = nationVersionGroupList[i];
 
-            } else {
-                versionGroupList = noNationVersionGroupList;
+                    if (versionCode >= begin) {
+                        versionGroupId = id;
+                        break;
+
+                    }
+
+                }
 
             }
+            // 国家相关全部分组中找不到符合的版本范围，则到与国家无关全部分组数据中查找
+            if (!versionGroupId) {
+                // 从版本开始范围最大开始匹配，符合则跳出循环
+                for (let i = noNationVersionGroupList.length - 1; i > 0; i--) {
+                    const { id, begin } = noNationVersionGroupList[i];
 
-            // 从版本开始范围最大开始匹配，符合则跳出循环
-            for (let i = versionGroupList.length - 1; i > 0; i--) {
-                const { id, begin } = versionGroupList[i];
+                    if (versionCode >= begin) {
+                        versionGroupId = id;
+                        break;
 
-                if (versionCode >= begin) {
-                    versionGroupId = id;
-                    break;
+                    }
 
                 }
 
@@ -222,30 +226,38 @@ export default class TaskService extends BaseService {
             // 全部版本 ab 测试分组数据
             const abTestGroupList: AbTestGroupCacheVO[] = await this.getOneCache(redisKey, versionGroupId);
 
-            // 获取具体的 ab  测试分组
-            let abTestGroupCacheVo = abTestGroupList[0];
-            if (!idfa || _.isEqual(idfa, '00000000-0000-0000-0000-000000000000')) {
-                return abTestGroupCacheVo;
+            if (!_.isEmpty(abTestGroupList)) {
 
-            }
+                // 获取具体的 ab 测试分组
+                let abTestGroupCacheVo = abTestGroupList[0];
 
-            const max = 100;
-            const userCode = Math.abs(hash.hashCode(idfa)) % max;
+                if (!idfa || _.isEqual(idfa, '00000000-0000-0000-0000-000000000000')) {
+                    return abTestGroupCacheVo;
 
-            if (abTestGroupList.length > 1) {
-                for (let i = 1, l = abTestGroupList.length; i < l; i++) {
-                    const { begin } = abTestGroupList[i];
+                }
 
-                    if (userCode >= begin) {
-                        abTestGroupCacheVo = abTestGroupList[i];
-                        break;
+                // ab 测试分组默认组除外即真正的 ab 测试
+                if (abTestGroupList.length > 1) {
+                    const max = 100;
+                    const userCode = Math.abs(hash.hashCode(idfa)) % max;
+
+                    // 遍历 ab 分组查询匹配的用户范围
+                    for (let i = abTestGroupList.length - 1; i > 0; i--) {
+                        const { begin, end } = abTestGroupList[i];
+
+                        // 用户范围前后都包含
+                        if (_.inRange(userCode, begin, end) || userCode === end) {
+                            abTestGroupCacheVo = abTestGroupList[i];
+                            break;
+
+                        }
 
                     }
 
                 }
+                return abTestGroupCacheVo;
 
             }
-            return abTestGroupCacheVo;
 
         }
 
@@ -269,13 +281,15 @@ export default class TaskService extends BaseService {
 
     /**
      * 获取广告组下广告信息，
-     * @argument {AbTestMapCacheVO[]} abTestMapList 广告组主键id
+     * @argument {AbTestMapCacheVO[]} abTestMapList 广告位表数据列表
      */
     private async getAdList(abTestMapList: AbTestMapCacheVO[]) {
+        let adControlVoList: AdControlVO[] = [];
+
         if (!_.isEmpty(abTestMapList)) {
             const redisKey = this.keyPrefix + 'AdGroup';
 
-            const AdControl = await Bluebird.map(abTestMapList, async (abTestMapCacheVo) => {
+            adControlVoList = await Bluebird.map(abTestMapList, async (abTestMapCacheVo) => {
                 const { adGroupId, place } = abTestMapCacheVo;
                 if (!adGroupId) {
                     return;
@@ -283,12 +297,18 @@ export default class TaskService extends BaseService {
                 }
                 const adList: AdCacheVO[] = await this.getOneCache(redisKey, adGroupId);
                 // think.logger.debug(`adList: ${JSON.stringify(adList)}`);
-                return { adList, place };
+                const adControlVo: AdControlVO = {
+                    adList, place
+                };
+
+                return adControlVo;
 
             });
-            return _.compact(AdControl);
+            // 删除空项
+            adControlVoList = _.compact(adControlVoList);
 
         }
+        return adControlVoList;
 
     }
 
@@ -297,40 +317,46 @@ export default class TaskService extends BaseService {
      * @argument {string} nativeTmplConfGroupId native 模板组主键
      */
     private async getNativeTmpl(nativeTmplConfGroupId: string) {
+        let nativeTmplCacheVo: NativeTmplCacheVO[] = [];
+
         if (nativeTmplConfGroupId) {
             const redisKey = this.keyPrefix + 'NativeTmpl';
 
             if (nativeTmplConfGroupId) {
-                const nativeTmpl: NativeTmplCacheVO[] = await this.getOneCache(redisKey, nativeTmplConfGroupId);
-                return nativeTmpl;
+                nativeTmplCacheVo = await this.getOneCache(redisKey, nativeTmplConfGroupId) || [];
 
             }
 
         }
+        return nativeTmplCacheVo;
 
     }
 
     /**
      * 获取常量组下常量数据信息，
-     * @argument {string} configGroupId 常量组主键id
+     * @argument {string} configGroupId 常量组主键
      */
     private async getConfig(configGroupId: string) {
+        let configCacheVo: ConfigCacheVO = { weightGroup: undefined };
+
         if (configGroupId) {
             const redisKey = this.keyPrefix + 'Config';
-            const config: ConfigCacheVO = await this.getOneCache(redisKey, configGroupId);
-            return config;
+            configCacheVo = await this.getOneCache(redisKey, configGroupId) || {};
 
         }
+        return configCacheVo;
 
     }
 
     /**
-     * 返回所有的广告常量到 app
+     * 返回所有的广告，native 模板和常量数据到 app
      * @argument {RequestParamVO} params 请求参数
      */
     public async getAppAllAdControlInfo(params: RequestParamVO) {
+        // idfa
         const idfa = params.idfa || params.dId;
 
+        // 分别获取广告版本条件分组和游戏常量版本条件分组主键
         const [adVersionGroupId, configVersionGroupId] = await Promise.all([
             this.getVersionGroupId(params, 0),
             this.getVersionGroupId(params, 1)
@@ -339,6 +365,7 @@ export default class TaskService extends BaseService {
         // think.logger.debug(`adVersionGroupId: ${adVersionGroupId}`);
         // think.logger.debug(`configVersionGroupId: ${configVersionGroupId}`);
 
+        // 分别获取广告 ab 测试分组和游戏常量 ab 测试分组
         const [adAbTestGroupCacheVo, configAbTestGroupCacheVo] = await Promise.all([
             this.getAbTestGroup(adVersionGroupId, idfa),
             this.getAbTestGroup(configVersionGroupId, idfa)
@@ -349,6 +376,7 @@ export default class TaskService extends BaseService {
         let weightGroup;
         let configGroupId;
 
+        // 广告相关
         if (adAbTestGroupCacheVo) {
             weightGroup = adAbTestGroupCacheVo.name;
             nativeTmplConfGroupId = adAbTestGroupCacheVo.nativeTmplConfGroupId;
@@ -357,52 +385,53 @@ export default class TaskService extends BaseService {
             abTestMapList = await this.getAbTestMapList(adAbTestGroupId);
 
         }
+        // 游戏常量相关
         if (configAbTestGroupCacheVo) {
             ({ configGroupId } = configAbTestGroupCacheVo);
 
         }
 
         const [
-            nativeAdTemplate,
-            AdControl,
-            ConfigConstant
+            nativeAdTemplateList,
+            adControlList,
+            configConstant
         ] = await Promise.all([
             this.getNativeTmpl(nativeTmplConfGroupId),
             this.getAdList(abTestMapList),
             this.getConfig(configGroupId)
         ]);
 
-        // think.logger.debug(`AdControl: ${JSON.stringify(AdControl[0])}`);
-        // think.logger.debug(`ConfigConstant: ${JSON.stringify(ConfigConstant)}`);
-        // think.logger.debug(`nativeAdTemplate: ${JSON.stringify(nativeAdTemplate)}`);
-        // think.logger.debug(`weightGroup: ${weightGroup}`);
-
-        return {
-            AdControl: AdControl || {},
-            ConfigConstant: ConfigConstant || {},
-            nativeAdTemplate: nativeAdTemplate || [],
+        const appAllAdControlVo: AppAllAdControlVO = {
+            adControlList,
+            configConstant,
+            nativeAdTemplateList,
             config: {
                 weightGroup
             }
         };
 
+        return appAllAdControlVo;
+
     }
 
     /**
-     * 返回 facebook 小游戏所有的广告常量到 app
+     * 返回 facebook 小游戏所有的广告和常量数据到 app
      * @argument {RequestParamVO} params 请求参数
      */
-    public async getInstanAdControlInfo(params: RequestParamVO) {
+    public async getInstantAdControlInfo(params: RequestParamVO) {
+        // idfa
         const idfa = params.idfa || params.dId;
 
+        // 分别获取广告 ab 测试分组和游戏常量 ab 测试分组
         const [adVersionGroupId, configVersionGroupId] = await Promise.all([
             this.getVersionGroupId(params, 0),
             this.getVersionGroupId(params, 1)
         ]);
 
-        think.logger.debug(`adVersionGroupId: ${adVersionGroupId}`);
-        think.logger.debug(`configVersionGroupId: ${configVersionGroupId}`);
+        // think.logger.debug(`adVersionGroupId: ${adVersionGroupId}`);
+        // think.logger.debug(`configVersionGroupId: ${configVersionGroupId}`);
 
+        // 分别获取广告 ab 测试分组和游戏常量 ab 测试分组
         const [adAbTestGroupCacheVo, configAbTestGroupCacheVo] = await Promise.all([
             this.getAbTestGroup(adVersionGroupId, idfa),
             this.getAbTestGroup(configVersionGroupId, idfa)
@@ -411,43 +440,48 @@ export default class TaskService extends BaseService {
         let abTestMapList: AbTestMapCacheVO[];
         let configGroupId;
 
+        // 广告相关
         if (adAbTestGroupCacheVo) {
-
             const adAbTestGroupId = adAbTestGroupCacheVo.id;
             abTestMapList = await this.getAbTestMapList(adAbTestGroupId);
 
         }
+        // 游戏常量相关
         if (configAbTestGroupCacheVo) {
             ({ configGroupId } = configAbTestGroupCacheVo);
 
         }
 
         const [
-            AdControl,
-            ConfigConstantGroup
+            adControlList,
+            configConstant
         ] = await Promise.all([
             this.getAdList(abTestMapList),
             this.getConfig(configGroupId)
         ]);
-        delete ConfigConstantGroup.weightGroup;
+        delete configConstant.weightGroup;
 
-        return {
-            AdControl: AdControl || {},
-            ConfigConstantGroup: ConfigConstantGroup || {},
+        const instantAdControlVo: InstantAdControlVO = {
+            adControlList,
+            configConstant
         };
+
+        return instantAdControlVo;
 
     }
 
     /**
-     * 返回所有的常量到app
+     * 返回所有的常量到 app
      * @argument {RequestParamVO} params 请求参数
      */
     public async getConfigConstantInfo(params: RequestParamVO) {
+        // idfa
         const idfa = params.idfa || params.dId;
 
         const configVersionGroupId = await this.getVersionGroupId(params, 1);
         const configAbTestGroupCacheVo = await this.getAbTestGroup(configVersionGroupId, idfa);
 
+        // 常量组主键
         let configGroupId;
 
         if (configAbTestGroupCacheVo) {
@@ -455,9 +489,7 @@ export default class TaskService extends BaseService {
 
         }
 
-        const ConfigConstant = await this.getConfig(configGroupId);
-
-        return ConfigConstant || {};
+        return await this.getConfig(configGroupId);
 
     }
 

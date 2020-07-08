@@ -99,8 +99,8 @@ export default class IndexController extends BaseController {
     }
 
     /**
-     * 返回所有的广告常量到 app
-     * <br/> 兼容云函数版本
+     * 返回广告，native 模板和常量数据到 app,
+     * <br/>兼容云函数版本
      * @argument {number} _cloudApiVersion _cloudApiVersion 版本
      * @argument {string} packageName 包名
      * @argument {string} platform 平台名
@@ -111,7 +111,7 @@ export default class IndexController extends BaseController {
      * @debugger yes
      */
     public async adControlInfoAction() {
-        const apiVersion: number = this.post('_cloudApiVersion') || 2;
+        const apiVersion: number = this.post('_cloudApiVersion');
         const countryCode: string = this.post('countryCode');
         const versionCode: number = Number(this.post('versionCode'));
         const packageName: string = this.post('packageName');
@@ -120,6 +120,7 @@ export default class IndexController extends BaseController {
         const dId: string = this.post('dId');
         const platform: string = this.post('platform');
 
+        // 返回 app 的数据
         let result: any = {
             AdControl: {
                 interstitial: {
@@ -130,6 +131,7 @@ export default class IndexController extends BaseController {
                     Facebook: 1,
                 }
             }
+
         };
         if (apiVersion && apiVersion > 1) {
             const taskService = this.taleService('task') as TaskService;
@@ -142,12 +144,14 @@ export default class IndexController extends BaseController {
                 countryCode,
                 ip
             };
-            const cacheData = await taskService.getAppAllAdControlInfo(requestParamVo);
-            const resultData = Utils.rebuildAdInfoV1(cacheData.AdControl);
+            const appAllAdControlVo = await taskService.getAppAllAdControlInfo(requestParamVo);
+            // 重新组装 AdControl
+            const resultData = Utils.rebuildAdInfoV1(appAllAdControlVo.adControlList);
 
-            result = _.defaults({ AdControl: resultData }, cacheData);
+            result = _.defaults({ AdControl: resultData }, appAllAdControlVo);
 
         }
+
         this.ctx.body = {
             result
         };
@@ -155,7 +159,7 @@ export default class IndexController extends BaseController {
     }
 
     /**
-     * 返回所有的广告常量到 app
+     * 返回广告，native 模板和常量数据到 app,
      * @argument {number} _cloudApiVersion _cloudApiVersion 版本
      * @argument {string} packageName 包名
      * @argument {string} platform 平台名
@@ -166,51 +170,31 @@ export default class IndexController extends BaseController {
      * @debugger yes
      */
     public async adInfoAction() {
-        const apiVersion: number = this.post('_cloudApiVersion') || 2;
         const countryCode: string = this.post('countryCode');
         const versionCode: number = Number(this.post('versionCode'));
         const packageName: string = this.post('packageName');
         const ip: string = this.post('ip') || this.getClientIp(this.ctx.req); // 获取用户的 IP
-        // think.logger.debug(`getClientIP: ${ip}`);
-        // const ip = this.ip; // 获取用户的 IP
         const idfa: string = this.post('idfa');
         const dId: string = this.post('dId');
         const platform: string = this.post('platform');
+        const taskService = this.taleService('task') as TaskService;
 
-        let result: any = {
-            AdControl: {
-                interstitial: [],
-                banner: []
-            }
+        // 请求参数
+        const requestParamVo: RequestParamVO = {
+            packageName,
+            platform,
+            idfa,
+            dId,
+            versionCode,
+            countryCode,
+            ip
         };
-        if (apiVersion && apiVersion > 1) {
-            const taskService = this.taleService('task') as TaskService;
-            const requestParamVo: RequestParamVO = {
-                packageName,
-                platform,
-                idfa,
-                dId,
-                versionCode,
-                countryCode,
-                ip
-            };
-            const cacheData = await taskService.getAppAllAdControlInfo(requestParamVo);
-            const resultData = Utils.rebuildAdInfoV2(cacheData.AdControl);
-            // think.logger.debug(`resultData: ${JSON.stringify(resultData)}`);
-
-            result = _.defaults({ AdControl: resultData }, cacheData);
-
-        }
-        if (!packageName || !platform) {
-            result = {
-                code: 2502,
-                message: 'not find group name info'
-            };
-
-        }
+        const appAllAdControlVo = await taskService.getAppAllAdControlInfo(requestParamVo);
+        const resultData = Utils.rebuildAdInfoV2(appAllAdControlVo.adControlList);
+        // think.logger.debug(`resultData: ${JSON.stringify(resultData)}`);
 
         this.header('N', 1);
-        this.ctx.body = result;
+        this.ctx.body = _.defaults({ AdControl: resultData }, appAllAdControlVo);
 
     }
 
@@ -231,54 +215,32 @@ export default class IndexController extends BaseController {
         const versionCode: number = Number(this.post('versionCode'));
         const packageName: string = this.post('packageName');
         const ip: string = this.post('ip') || this.getClientIp(this.ctx.req); // 获取用户的 IP
-        // think.logger.debug(`getClientIP: ${ip}`);
-        // const ip = this.ip; // 获取用户的 IP
         const idfa: string = this.post('idfa');
         const dId: string = this.post('dId');
         const platform: string = this.post('platform');
+        const taskService = this.taleService('task') as TaskService;
 
-        let result: any = {
-            AdControl: {
-                interstitial: [],
-                banner: []
-            }
+        // 请求参数
+        const requestParamVo: RequestParamVO = {
+            packageName,
+            platform,
+            idfa,
+            dId,
+            versionCode,
+            countryCode,
+            ip
         };
-        if (apiVersion && apiVersion > 1) {
-            const taskService = this.taleService('task') as TaskService;
-            const requestParamVo: RequestParamVO = {
-                packageName,
-                platform,
-                idfa,
-                dId,
-                versionCode,
-                countryCode,
-                ip
-            };
-            const cacheData = await taskService.getAppAllAdControlInfo(requestParamVo);
-            const resultData = Utils.rebuildAdInfoV2(cacheData.AdControl);
-            // think.logger.debug(`resultData: ${JSON.stringify(resultData)}`);
+        const appAllAdControlVo = await taskService.getAppAllAdControlInfo(requestParamVo);
+        const resultData = Utils.rebuildAdInfoV2(appAllAdControlVo.adControlList);
+        // think.logger.debug(`resultData: ${JSON.stringify(resultData)}`);
 
-            result = _.defaults({ AdControl: resultData }, cacheData);
-
-        }
-        if (!packageName || !platform) {
-            result = {
-                code: 2502,
-                message: 'not find group name info'
-            };
-
-        }
-        this.ctx.body = result;
+        this.ctx.body = _.defaults({ AdControl: resultData }, appAllAdControlVo);
 
     }
 
     /**
+     * GET
      * 返回服务器 ip
-     * @argument {string} packageName 包名
-     * @argument {string} platform 平台名
-     * @argument {string} idfa idfa
-     * @argument {string} dId 设备 id
-     * @argument {number} versionCode app 版本
      * @debugger yes
      */
     public async getIPAdressAction() {
@@ -288,12 +250,8 @@ export default class IndexController extends BaseController {
     }
 
     /**
+     * GET
      * 返回客户端 ip
-     * @argument {string} packageName 包名
-     * @argument {string} platform 平台名
-     * @argument {string} idfa idfa
-     * @argument {string} dId 设备 id
-     * @argument {number} versionCode app 版本
      * @debugger yes
      */
     public async getClientIpAction() {
@@ -304,4 +262,5 @@ export default class IndexController extends BaseController {
         this.ctx.body = { clientIp: ip, countryCode };
 
     }
+
 }

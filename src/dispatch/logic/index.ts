@@ -1,5 +1,5 @@
 import BaseLogic from '../../common/tale/BaseLogic';
-import { TaleCode, TokenExemptVO } from '../../common/tale/TaleDefine';
+import { TokenExemptVO } from '../../common/tale/TaleDefine';
 import * as _ from 'lodash';
 
 export default class WebhookLogic extends BaseLogic {

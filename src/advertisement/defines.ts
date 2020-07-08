@@ -143,8 +143,8 @@ export interface AdGroupVO extends BaseVO {
     description: string; // 广告组描述
     active: number;    // 是否生效
     creatorId: string;    // 创建者主键
-    adTypeId?: string;    // 广告类型表主键
-    productId?: string;    // 应用表主键
+    adTypeId: string;    // 广告类型表主键
+    productId: string;    // 应用表主键
 }
 
 /**
@@ -285,7 +285,7 @@ export interface UserVO extends BaseVO {
     // avatar: string;    // 头像
     // telephone: string;    // 手机号
     active: number;    // 控制生效
-    password?: string;    // 密码
+    password: string;    // 密码
 }
 
 /**
@@ -296,7 +296,7 @@ export interface UserAuthVO extends BaseVO {
     viewComConf: number;    // 查看常规配置权限
     createProductGroup: number;    // 创建项目组权限
     master: number;    // 是否管理员
-    userId?: string;    // 用户表主键
+    userId: string;    // 用户表主键
 }
 
 /**
@@ -459,8 +459,8 @@ export interface AdResVO extends AdVO {
 
 export interface AbTestGroupResVO extends AbTestGroupVO {
     configGroup: ConfigGroupResVO;
-    placeGroup?: PlaceResVO[];
-    nativeTmplConfGroup?: NativeTmplConfGroupResVO;
+    placeGroup: PlaceResVO[];
+    nativeTmplConfGroup: NativeTmplConfGroupResVO;
 }
 
 export interface UserResVO extends UserVO {
@@ -526,8 +526,8 @@ export interface AbTestGroupCacheVO {
     name: string;    // ab 测试组名
     begin: number;    // 开始范围
     end: number;    // 结束范围
-    nativeTmplConfGroupId?: string;    // native 模板组表主键
-    configGroupId?: string;    // 常量组表主键
+    nativeTmplConfGroupId: string;    // native 模板组表主键
+    configGroupId: string;    // 常量组表主键
 }
 
 /**
@@ -537,6 +537,45 @@ export interface AbTestMapCacheVO {
     place: string; // 广告位
     adGroupId: string;    // 广告组表主键
 }
+
+/**
+ * redis 组装的下发广告数据
+ */
+export interface AdControlVO {
+    place: string;    // 广告位（广告类型）
+    adList: AdCacheVO[];    // redis AdGroup_cache 数据
+}
+
+/**
+ * redis 组装的所有的广告，native 模板和常量数据
+ */
+export interface AppAllAdControlVO {
+    adControlList: AdControlVO[];    // redis 组装的下发广告数据
+    configConstant: ConfigCacheVO;    // redis Config_cache 数据
+    nativeAdTemplateList: NativeTmplCacheVO[];    // redis Native_cache 数据
+    config: {
+        weightGroup: string;    // ab 测试分到的具体哪一组
+    };
+
+}
+
+/**
+ * redis 组装的所有的广告和常量数据
+ */
+export interface InstantAdControlVO {
+    adControlList: AdControlVO[];    // redis 组装的下发广告数据
+    configConstant: ConfigCacheVO;    // redis Config_cache 数据
+
+}
+
+/**
+ * redis 组装的下发广告数据
+ */
+export interface AdControlVO {
+    place: string;    // 广告位（广告类型）
+    adList: AdCacheVO[];    // redis AdGroup_cache 数据
+}
+
 
 /**
  * redis key
@@ -556,11 +595,11 @@ export interface RedisKeyVO {
  * 请求参数
  */
 export interface RequestParamVO {
-    countryCode?: string;    // 国家代码
     ip: string;    // ip地址
-    idfa?: string;    // idfa
-    dId?: string;    // 设备id
     packageName: string;    // 包名
     platform: string;    // 平台名
     versionCode: number;    // 版本号
+    countryCode?: string;    // 国家代码
+    idfa?: string;    // idfa
+    dId?: string;    // 设备id
 }
