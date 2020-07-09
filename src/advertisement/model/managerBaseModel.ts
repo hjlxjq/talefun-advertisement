@@ -43,6 +43,7 @@ export default class ManagerBaseModel extends BaseModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateModelVoList(modelVoList: any[]) {
+        think.logger.debug(`modelVoList: ${JSON.stringify(modelVoList)}`);
         return await this.updateMany(modelVoList);
 
     }
