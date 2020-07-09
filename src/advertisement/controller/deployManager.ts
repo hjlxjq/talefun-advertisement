@@ -60,6 +60,9 @@ export default class DeployManagerController extends BaseController {
 
                 }
 
+                const abTestMapCacheVoList = await updateCacheServer.fetchCacheDataHash(ucId, 'abTestMap');
+                think.logger.debug(`abTestMapCacheVoList: ${JSON.stringify(abTestMapCacheVoList)}`);
+
                 // 初始化数据表 model
                 const deployModel = this.taleModel(tableName, 'advertisement') as MBModel;
                 // 数据表中更新，更新缓存数据到数据表到正式

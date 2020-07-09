@@ -1266,12 +1266,6 @@ export default class DispatchManagerController extends BaseController {
                 } else {
                     await updateCacheServer.setCacheData(ucId, 'abTestMap', id, updateAbTestMapVo);
 
-                    const abTestMapCacheVo = await updateCacheServer.fetchCacheData(ucId, 'abTestMap', id);
-                    think.logger.debug(`abTestMapCacheVo: ${JSON.stringify(abTestMapCacheVo)}`);
-
-                    const abTestMapCacheVoList = await updateCacheServer.fetchCacheDataHash(ucId, 'abTestMap');
-                    think.logger.debug(`abTestMapCacheVoList: ${JSON.stringify(abTestMapCacheVoList)}`);
-
                 }
 
             }
