@@ -76,10 +76,11 @@ export default class DeployManagerController extends BaseController {
                     await deployModel.deployVo(ucId);
 
                 }
-                // 从缓存中删除（数据表中更新成功再删除）
-                await updateCacheServer.delCacheDataList(tableNameList, ucId);
 
             }, { concurrency: 3 });
+
+            // 从缓存中删除（数据表中更新成功再删除）
+            await updateCacheServer.delCacheDataList(tableNameList, ucId);
 
             // 从缓存中删除用户发布状态
             await updateCacheServer.delDeployStatus(ucId);
