@@ -1243,7 +1243,6 @@ export default class DispatchManagerController extends BaseController {
         };
 
         try {
-            think.logger.debug(`abTestMapVo1: ${JSON.stringify(abTestMapVo)}`);
             // 数据库中不存在，则直接插入数据库
             if (_.isEmpty(abTestMapVo)) {
                 updateAbTestMapVo.creatorId = ucId;    // 更新需要更改 creatorId 为 ucId
@@ -1253,7 +1252,15 @@ export default class DispatchManagerController extends BaseController {
                 const { id, creatorId } = abTestMapVo;
                 // 本账户创建的直接数据库操作
                 if (creatorId === ucId) {
-                    await abTestMapModel.updateVo(id, updateAbTestMapVo);
+                    // 本账户创建的 active 为 0 直接删除
+                    if (active === 0) {
+                        await abTestMapModel.delVo(id);
+
+                        // 本账户创建的 active 为 1 直接更新
+                    } else {
+                        await abTestMapModel.updateVo(id, updateAbTestMapVo);
+
+                    }
 
                     // 线上数据更新到缓存
                 } else {
@@ -1264,14 +1271,6 @@ export default class DispatchManagerController extends BaseController {
             }
             // 缓存用户发布状态
             await updateCacheServer.setDeployStatus(ucId);
-
-            const abTestMapVo2 = await abTestMapModel.getVo(abTestGroupId, place, ucId);
-            think.logger.debug(`abTestMapVo2: ${JSON.stringify(abTestMapVo2)}`);
-
-            if (!_.isEmpty(abTestMapVo)) {
-                const abTestMapVo3 = await updateCacheServer.fetchCacheData(ucId, 'abTestMap', abTestMapVo.id);
-                think.logger.debug(`abTestMapVo3: ${JSON.stringify(abTestMapVo3)}`);
-            }
 
             this.success('updated');
 

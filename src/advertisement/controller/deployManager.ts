@@ -32,6 +32,11 @@ export default class DeployManagerController extends BaseController {
             'abTestMap', 'abTestGroup', 'versionGroup',
         ];
 
+        // 数据表中没有暂存所有数据表
+        const NoTableNameList = [
+            'adGroup', 'configGroup', 'nativeTmplConfGroup', 'abTestMap'
+        ];
+
         try {
             // 所有数据表都发布
             await Bluebird.map(tableNameList, async (tableName) => {
@@ -49,15 +54,19 @@ export default class DeployManagerController extends BaseController {
                     }
 
                 }
-                // think.logger.debug(`modelVoList: ${JSON.stringify(modelVoList)}`);
-                // think.logger.debug(`tableName: ${tableName}`);
                 // 初始化数据表 model
                 const deployModel = this.taleModel(tableName, 'advertisement') as MBModel;
-                // 数据表中更新，更新缓存数据到数据表中 和 数据表中暂存更新到正式
-                await Promise.all([
-                    deployModel.updateModelVoList(modelVoList),
-                    deployModel.deployVo(ucId)
-                ]);
+                // 数据表中更新，更新缓存数据到数据表到正式
+                await deployModel.updateModelVoList(modelVoList);
+
+                // 数据表中暂存更新到正式
+                if (_.indexOf(NoTableNameList, tableName) === -1) {
+                    await deployModel.deployVo(ucId, 1);
+
+                } else {
+                    await deployModel.deployVo(ucId);
+
+                }
                 // 从缓存中删除（数据表中更新成功再删除）
                 await updateCacheServer.delCacheDataList(tableNameList, ucId);
 

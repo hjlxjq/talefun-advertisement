@@ -864,7 +864,7 @@ export default class DispatchManagerLogic extends AMLogic {
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
-            
+
         }
 
     }

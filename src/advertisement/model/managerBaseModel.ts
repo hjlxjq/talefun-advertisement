@@ -43,7 +43,7 @@ export default class ManagerBaseModel extends BaseModel {
      * @returns {Promise<number>} 返回影响的行数
      */
     public async updateModelVoList(modelVoList: any[]) {
-        return await this.updateMany(modelVoList) as number;
+        return await this.updateMany(modelVoList);
 
     }
 
@@ -61,16 +61,22 @@ export default class ManagerBaseModel extends BaseModel {
      * 发布数据库暂存的数据到正式环境,
      * <br/>即删除创建者主键和更新 activeTime 为线上固定时间
      * @argument {string} creatorId 创建者主键;
+     * @argument {number} live 是否线上已发布数据
      * @returns {Promise<number>} 返回影响的行数
      */
-    public async deployVo(creatorId: string) {
+    public async deployVo(creatorId: string, live?: number) {
         // 线上的 activeTime 值
         const LiveActiveTime = think.config('LiveActiveTime');
 
-        return await this.where({ creatorId }).update({
+        const updateVo: any = {
             creatorId: null,
-            activeTime: LiveActiveTime
-        });
+        };
+        if (live === 1) {
+            updateVo.activeTime = LiveActiveTime;
+
+        }
+
+        return await this.where({ creatorId }).update(updateVo);
 
     }
 

@@ -63,12 +63,11 @@ export default class AbTestMapModel extends MBModel {
 
     /**
      * 删除广告位表对象
-     * @argument {string} abTestGroupId ab 测试分组表主键;
-     * @argument {string} place 广告位;
+     * @argument {string} id 广告位表主键;
      * @returns {Promise<number>} 删除行数;
      */
-    public async delVo(abTestGroupId: string, place: string) {
-        return await this.where({ abTestGroupId, place }).delete();
+    public async delVo(id: string) {
+        return await this.where({ id }).delete();
 
     }
 
