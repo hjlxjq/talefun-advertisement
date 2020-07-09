@@ -44,6 +44,16 @@ export default class NativeTmplConfGroupModel extends MBModel {
     }
 
     /**
+     * 删除应用下的 native 模板组
+     * @argument {string} id 应用下的 native 模板组表主键;
+     * @returns {Promise<number>} 删除行数;
+     */
+    public async delVo(id: string) {
+        return await this.where({ id }).delete();
+
+    }
+
+    /**
      * 根据主键 获取应用下的 native 模板组信息
      * @argument {string} id 应用下的 native 模板组表主键;
      * @argument {string} creatorId 创建者主键
@@ -68,7 +78,7 @@ export default class NativeTmplConfGroupModel extends MBModel {
 
     /**
      * 线上正式数据,
-     * <br/>获取 native 模板组信息列表
+     * <br/>获取应用 native 模板组信息列表
      * @argument {number} active 是否生效;
      */
     public async getList(active: number) {

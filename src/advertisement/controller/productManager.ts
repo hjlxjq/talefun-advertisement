@@ -83,8 +83,8 @@ export default class ProductManagerController extends BaseController {
 
             // 删除不必要的字段
             delete productResVo.productGroupId;
-            delete productResVo.createAt;
-            delete productResVo.updateAt;
+            delete productResVo.createdAt;
+            delete productResVo.updatedAt;
 
             return productResVo;
 
@@ -119,8 +119,8 @@ export default class ProductManagerController extends BaseController {
 
         // 删除不必要的字段
         delete productResVo.productGroupId;
-        delete productResVo.createAt;
-        delete productResVo.updateAt;
+        delete productResVo.createdAt;
+        delete productResVo.updatedAt;
 
         return this.success(productResVo);
 
@@ -306,8 +306,8 @@ export default class ProductManagerController extends BaseController {
         }, productGroupVo);
 
         // 删除不必要的字段
-        delete productGroupResVo.createAt;
-        delete productGroupResVo.updateAt;
+        delete productGroupResVo.createdAt;
+        delete productGroupResVo.updatedAt;
 
         return this.success(productGroupResVo);
 
@@ -383,8 +383,8 @@ export default class ProductManagerController extends BaseController {
         const productResVoList = _.map(productVoList, (productVo) => {
             // 删除不必要的字段
             delete productVo.productGroupId;
-            delete productVo.createAt;
-            delete productVo.updateAt;
+            delete productVo.createdAt;
+            delete productVo.updatedAt;
 
             return productVo;
 

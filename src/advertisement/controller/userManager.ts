@@ -206,8 +206,8 @@ export default class UserController extends BaseController {
             }, userVo);
 
             // 删除不必要的字段
-            delete userResVo.createAt;
-            delete userResVo.updateAt;
+            delete userResVo.createdAt;
+            delete userResVo.updatedAt;
 
             return userResVo;
 
@@ -252,8 +252,8 @@ export default class UserController extends BaseController {
         }, userVo);
 
         // 删除不必要的字段
-        delete userResVo.createAt;
-        delete userResVo.updateAt;
+        delete userResVo.createdAt;
+        delete userResVo.updatedAt;
 
         return this.success(userResVo);
 
@@ -278,8 +278,8 @@ export default class UserController extends BaseController {
         }, userVo);
 
         // 删除不必要的字段
-        delete userResVo.createAt;
-        delete userResVo.updateAt;
+        delete userResVo.createdAt;
+        delete userResVo.updatedAt;
 
         return this.success(userResVo);
 
@@ -386,8 +386,8 @@ export default class UserController extends BaseController {
             delete userResVo.productGroupAuth.id;
             delete userResVo.productGroupAuth.userId;
             delete userResVo.productGroupAuth.productGroupId;
-            delete userResVo.productGroupAuth.createAt;
-            delete userResVo.updateAt;
+            delete userResVo.productGroupAuth.createdAt;
+            delete userResVo.updatedAt;
 
             return userResVo;
 
@@ -423,8 +423,8 @@ export default class UserController extends BaseController {
             delete userResVo.productAuth.id;
             delete userResVo.productAuth.userId;
             delete userResVo.productAuth.productId;
-            delete userResVo.productAuth.createAt;
-            delete userResVo.productAuth.updateAt;
+            delete userResVo.productAuth.createdAt;
+            delete userResVo.productAuth.updatedAt;
 
             return userResVo;
 

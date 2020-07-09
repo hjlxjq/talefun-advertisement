@@ -62,8 +62,8 @@ export default class ProductGroupModel extends MBModel {
 
         return _.map(productGroupVoList, (productGroupVo) => {
             // 删除不必要的字段
-            delete productGroupVo.createAt;
-            delete productGroupVo.updateAt;
+            delete productGroupVo.createdAt;
+            delete productGroupVo.updatedAt;
 
             return productGroupVo;
         });

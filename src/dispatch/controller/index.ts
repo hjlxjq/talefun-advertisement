@@ -227,7 +227,6 @@ export default class IndexController extends BaseController {
      * @debugger yes
      */
     public async acigAction() {
-        const apiVersion: number = this.post('_cloudApiVersion') || 2;
         const countryCode: string = this.post('countryCode');
         const versionCode: number = Number(this.post('versionCode'));
         const packageName: string = this.post('packageName');

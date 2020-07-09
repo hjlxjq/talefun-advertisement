@@ -133,6 +133,16 @@ export default class ConfigModel extends MBModel {
     }
 
     /**
+     * 批量删除常量组下所有常量
+     * @argument {string} configGroupId 常量组表主键;
+     * @returns {Promise<number>} 删除行数;
+     */
+    public async delList(configGroupId: string) {
+        return await this.where({ configGroupId }).delete();
+
+    }
+
+    /**
      * 线上正式数据,
      * <br/>获取常量信息列表
      * @argument {number} live 是否线上已发布数据

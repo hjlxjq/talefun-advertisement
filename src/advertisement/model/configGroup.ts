@@ -44,6 +44,16 @@ export default class ConfigGroupModel extends MBModel {
     }
 
     /**
+     * 删除常量组
+     * @argument {string} id 常量组表主键;
+     * @returns {Promise<number>} 删除行数;
+     */
+    public async delVo(id: string) {
+        return await this.where({ id }).delete();
+
+    }
+
+    /**
      * 按常量组主键获取常量组
      * @argument {string} id 常量组主键;
      * @argument {string} creatorId 创建者主键

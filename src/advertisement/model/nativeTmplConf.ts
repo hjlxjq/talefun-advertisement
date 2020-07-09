@@ -91,6 +91,16 @@ export default class NativeTmplConfModel extends MBModel {
     }
 
     /**
+     * 批量删除应用 native 模板组下所有应用 native 模板
+     * @argument {string} nativeTmplConfGroupId 应用 native 模板组表主键;
+     * @returns {Promise<number>} 删除行数;
+     */
+    public async delList(nativeTmplConfGroupId: string) {
+        return await this.where({ nativeTmplConfGroupId }).delete();
+
+    }
+
+    /**
      * <br/>根据应用 native 模板组表主键和 native 模板表主键获取应用 native 模板信息
      * @argument {string} nativeTmplId native 模板表主键;
      * @argument {string} nativeTmplConfGroupId 应用下的 native 模板组表主键;

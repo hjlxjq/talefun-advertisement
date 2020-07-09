@@ -595,7 +595,7 @@ export interface UpdateVersionGroupResVO extends ResVO {
 }
 
 /**
- * 获取 ab 分组列表 /advertisement/dispatchManager/abTestGroupList
+ * 获取 ab 测试分组列表 /advertisement/dispatchManager/abTestGroupList
  */
 export interface AbTestGroupListReqVO {
     id: string;    // 版本条件分组表主键
@@ -603,7 +603,7 @@ export interface AbTestGroupListReqVO {
 
 export interface AbTestGroupListResVO extends ResVO {
     data: Array<{
-        id: string;    // ab 分组表主键
+        id: string;    // ab 测试分组表主键
         name: string;    // ab 组名
         description: string;    // 描述
         begin: number;    // 用户开始范围
@@ -612,7 +612,7 @@ export interface AbTestGroupListResVO extends ResVO {
 }
 
 /**
- * 获取 ab 分组下广告位配置 /advertisement/dispatchManager/placeGroupListInAb
+ * 获取 ab 测试分组下广告位配置 /advertisement/dispatchManager/placeGroupListInAb
  */
 export interface PlaceGroupListInAbReqVO {
     id: string;    // ab 测试分组表主键
@@ -635,7 +635,7 @@ export interface PlaceGroupListInAbResVO extends ResVO {
 }
 
 /**
- * 获取 ab 分组下的常量组及常量组下常量列表配置 /advertisement/dispatchManager/configGroupInAb
+ * 获取 ab 测试分组下的常量组及常量组下常量列表配置 /advertisement/dispatchManager/configGroupInAb
  */
 export interface ConfigGroupInAbReqVO {
     id: string;    // ab 测试分组表主键
@@ -655,7 +655,7 @@ export interface ConfigGroupInAbResVO extends ResVO {
 }
 
 /**
- * 获取 ab 分组下的 native 模板组及包含的 native 模板列表 /advertisement/dispatchManager/nativeTmplConfGroupInAb
+ * 获取 ab 测试分组下的 native 模板组及包含的 native 模板列表 /advertisement/dispatchManager/nativeTmplConfGroupInAb
  */
 export interface NativeTmplConfGroupInAbReqVO {
     id: string;    // ab 测试分组表主键
@@ -672,11 +672,11 @@ export interface NativeTmplConfGroupInAbResVO extends ResVO {
 }
 
 /**
- * 创建 ab 分组 /advertisement/dispatchManager/createAbTestGroup
+ * 创建 ab 测试分组 /advertisement/dispatchManager/createAbTestGroup
  */
 export interface CreateAbTestGroupReqVO {
     id: string;    // 版本条件分组表主键
-    name: string;    // 创建的 ab 分组名
+    name: string;    // 创建的 ab 测试分组名
     description: string;    // 描述
     groupNum: number;    // 测试组数
     begin: number;    // 开始用户范围
@@ -692,7 +692,7 @@ export interface CreateAbTestGroupResVO extends ResVO {
  */
 export interface DeleteABTestGroupReqVO {
     id: string;    // 版本条件分组表主键
-    name: string;    // 创建的 ab 分组名
+    name: string;    // 创建的 ab 测试分组名
 }
 
 export interface DeleteABTestGroupResVO extends ResVO {
@@ -700,10 +700,10 @@ export interface DeleteABTestGroupResVO extends ResVO {
 }
 
 /**
- * 向 ab 分组绑定常量组 /advertisement/dispatchManager/bindConfigGroup
+ * 向 ab 测试分组绑定常量组 /advertisement/dispatchManager/bindConfigGroup
  */
 export interface BindConfigGroupReqVO {
-    id: string;    // ab 分组表主键
+    id: string;    // ab 测试分组表主键
     configGroupId: string;    // 常量组主键
 }
 
@@ -827,10 +827,10 @@ export interface UpdateConfigResVO extends ResVO {
 }
 
 /**
- * 向 ab 分组绑定 native 组 /advertisement/dispatchManager/bindNativeTmplConfGroup
+ * 向 ab 测试分组绑定 native 组 /advertisement/dispatchManager/bindNativeTmplConfGroup
  */
 export interface BindNativeTmplConfGroupReqVO {
-    id: string;    // ab 分组表主键
+    id: string;    // ab 测试分组表主键
     nativeTmplConfGroupId: string;    // native 模板配置组表主键
 }
 
@@ -869,7 +869,6 @@ export interface CopyNativeTmplConfGroupResVO extends ResVO {
  */
 export interface UpdateNativeTmplConfGroupReqVO {
     id: string;    // 应用 native 模板组配置表主键
-    name?: string;    // 应用 native 模板配置组名称
     description?: string;    // 应用 native 模板配置组描述
     active?: number;    // 控制生效
 }
@@ -939,10 +938,10 @@ export interface NativeTmplConfListResVO extends ResVO {
 }
 
 /**
- * 向 ab 分组创建广告位(绑定广告组) /advertisement/dispatchManager/bindAdGroup
+ * 向 ab 测试分组创建广告位(绑定广告组) /advertisement/dispatchManager/bindAdGroup
  */
 export interface BindAdGroupReqVO {
-    id: string;    // ab 分组表主键
+    id: string;    // ab 测试分组表主键
     place: string;    // 广告位
     active: number;    // 是否生效
     adGroupId?: string;    // 广告组表主键
@@ -953,10 +952,10 @@ export interface BindAdGroupResVO extends ResVO {
 }
 
 /**
- * 全量 ab 分组下广告位到默认组 /advertisement/dispatchManager/completePlace
+ * 全量 ab 测试分组下广告位到默认组 /advertisement/dispatchManager/completePlace
  */
 export interface CompletePlaceReqVO {
-    id: string;    // ab 分组表主键
+    id: string;    // ab 测试分组表主键
     place: string;    // 广告位
 }
 

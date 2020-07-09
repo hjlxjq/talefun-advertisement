@@ -210,6 +210,7 @@ export default class VersionGroupModel extends MBModel {
         // 为空数组直接返回空
         if (_.isEmpty(idList)) {
             return [];
+
         }
 
         const queryStrings: string[] = [];
@@ -217,8 +218,8 @@ export default class VersionGroupModel extends MBModel {
         // 条件单字段查询
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
-        }
 
+        }
         // in 查询逻辑
         const idListString = _.map(idList, (id) => {
             return `'${id}'`;
@@ -235,6 +236,7 @@ export default class VersionGroupModel extends MBModel {
 
         const versionGroupNameList = _.map(versionGroupVoList, (versionGroupVo) => {
             return versionGroupVo.name;
+
         });
 
         return versionGroupNameList;

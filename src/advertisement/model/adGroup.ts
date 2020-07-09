@@ -44,7 +44,17 @@ export default class AdGroupModel extends MBModel {
     }
 
     /**
-     * 根据主键 获取广告组信息
+     * 删除广告组
+     * @argument {string} id 广告组表主键;
+     * @returns {Promise<number>} 删除行数;
+     */
+    public async delVo(id: string) {
+        return await this.where({ id }).delete();
+
+    }
+
+    /**
+     * 根据主键获取广告组信息
      * @argument {string} id 广告组表主键;
      * @argument {string} creatorId 创建者主键
      * @returns {Promise<AdGroupVO>} 广告组信息;

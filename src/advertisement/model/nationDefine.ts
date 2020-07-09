@@ -26,8 +26,8 @@ export default class NationDefineModel extends MBModel {
         return _.map(nationDefineVOList, (nationDefineVo) => {
             // 删除不需要返回的数据
             delete nationDefineVo.id;
-            delete nationDefineVo.createAt;
-            delete nationDefineVo.updateAt;
+            delete nationDefineVo.createdAt;
+            delete nationDefineVo.updatedAt;
 
             return nationDefineVo;
         });

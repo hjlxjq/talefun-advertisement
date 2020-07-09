@@ -17,13 +17,12 @@ import AdChannelModel from '../model/adChannel';
 
 import UpdateCacheServer from '../service/updateCacheServer';
 
-import { ProductAuthVO, AbTestGroupVO, VersionGroupVO } from '../defines';
+import { AbTestGroupVO, VersionGroupVO } from '../defines';
 
 import * as _ from 'lodash';
 import { think } from 'thinkjs';
 
 export default class DispatchManagerLogic extends AMLogic {
-
     /**
      * 权限认证，
      * <br/>应用下的权限
@@ -78,18 +77,23 @@ export default class DispatchManagerLogic extends AMLogic {
 
                 if (viewAd === 0 && type === 0) {
                     throw new Error('没有权限！！！');
+
                 }
                 if (viewGameConfig === 0 && type === 1) {
                     throw new Error('没有权限！！！');
+
                 }
                 if (viewPurchase === 0 && type === 2) {
                     throw new Error('没有权限！！！');
+
                 }
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -178,11 +182,6 @@ export default class DispatchManagerLogic extends AMLogic {
         const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
-
-        // 国家代码为空，则肯定包含
-        if (_.isEmpty(codeList) && include === 0) {
-            this.fail(TaleCode.DBFaild, '国家代码为空，则肯定包含!!!');
-        }
 
         // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键
         const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(ucId, 'versionGroup');
@@ -421,7 +420,7 @@ export default class DispatchManagerLogic extends AMLogic {
             copyedAbTestGroupVo
         ] = await Promise.all([
             versionGroupModel.getVo(copyId, ucId),
-            abTestGroupModel.getDefault(copyId)
+            abTestGroupModel.getDefaultVo(copyId)
         ]);
         // 复制组不存在
         if (_.isEmpty(copyedVersionGroupVo) || _.isEmpty(copyedAbTestGroupVo)) {
@@ -703,7 +702,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>获取版本条件分组下 ab 分组列表
+     * <br/>获取版本条件分组下 ab 测试分组列表
      */
     public async abTestGroupListAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -755,7 +754,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>获取 ab 分组下广告位配置
+     * <br/>获取 ab 测试分组下广告位配置
      */
     public async placeGroupListInAbAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -810,7 +809,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>获取 ab 分组下的常量组及常量组下常量列表配置
+     * <br/>获取 ab 测试分组下的常量组及常量组下常量列表配置
      */
     public async configGroupInAbAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -870,7 +869,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>获取 ab 分组下的 native 模板组及包含的 native 模板列表
+     * <br/>获取 ab 测试分组下的 native 模板组及包含的 native 模板列表
      */
     public async nativeTmplConfGroupInAbAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -925,7 +924,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>向版本条件分组下创建 ab 分组
+     * <br/>向版本条件分组下创建 ab 测试分组
      */
     public async createAbTestGroupAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -1043,9 +1042,11 @@ export default class DispatchManagerLogic extends AMLogic {
          * <br/> ab 测试分组范围检测
          */
         const currentAbTestGroupVoList = await abTestGroupModel.getListByVersionGroup(versionGroupId, undefined, 1);
+        // 移除默认 ab 测试分组组
+        currentAbTestGroupVoList.shift();
         // 终止判断条件
         currentAbTestGroupVoList[currentAbTestGroupVoList.length] = {
-            begin: 100, end: 100, nativeTmplConfGroupId: undefined, configGroupId: undefined, versionGroupId: undefined,
+            begin: 100, end: 101, nativeTmplConfGroupId: undefined, configGroupId: undefined, versionGroupId: undefined,
             name: undefined, description: undefined, creatorId: undefined, active: undefined, activeTime: undefined
         };
 
@@ -1053,16 +1054,19 @@ export default class DispatchManagerLogic extends AMLogic {
         for (let i = 0, l = currentAbTestGroupVoList.length; i < l; i++) {
             const currentAbTestGroupVo = currentAbTestGroupVoList[i];
             // 上一个 ab 测试用户范围，第一个 ab 测试默认上一个用户范围
-            let lastAbTestGroupVo = { begin: 1, end: 1 };
+            let lastAbTestGroupVo = { begin: 0, end: 0 };
 
             if (i > 0) {
                 lastAbTestGroupVo = currentAbTestGroupVoList[i - 1];
+
             }
             // 范围正确，跳出循环
             if (end < currentAbTestGroupVo.begin && begin > lastAbTestGroupVo.end) {
                 correct = true;
                 break;
+
             }
+
         }
 
         // 未找到合适的用户范围
@@ -1133,7 +1137,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>向 ab 分组绑定常量组
+     * <br/>向 ab 测试分组绑定常量组
      */
     public async bindConfigGroupAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -1789,7 +1793,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>向 ab 分组绑定 native 组
+     * <br/>向 ab 测试分组绑定 native 组
      */
     public async bindNativeTmplConfGroupAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -2322,7 +2326,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>向 ab 分组绑定广告组
+     * <br/>向 ab 测试分组绑定广告组
      */
     public async bindAdGroupAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -2397,7 +2401,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>全量 ab 分组下广告位到默认组
+     * <br/>全量 ab 测试分组下广告位到默认组
      */
     public async completePlaceAction() {
         const ucId: string = this.ctx.state.user.id;

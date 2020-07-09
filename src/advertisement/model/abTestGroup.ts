@@ -214,9 +214,9 @@ export default class AbTestGroupModel extends MBModel {
 
     /**
      * 获取默认 ab 测试分组信息列表
-     *  @argument {string} versionGroupId 分组条件表主键;
+     *  @argument {string} versionGroupId 版本条件分组表主键;
      */
-    public async getDefault(versionGroupId: string) {
+    public async getDefaultVo(versionGroupId: string) {
         return await this.where({ name: 'default', versionGroupId }).find() as AbTestGroupVO;
 
     }

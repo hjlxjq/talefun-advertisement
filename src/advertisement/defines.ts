@@ -10,8 +10,8 @@ import { Context } from 'thinkjs';
  */
 export interface BaseVO {
     id?: string;    // 主键, 唯一 id
-    createAt?: string;    // 创建时间
-    updateAt?: string;    // 修改时间
+    createdAt?: string;    // 创建时间
+    updatedAt?: string;    // 修改时间
 }
 
 /**
@@ -244,7 +244,7 @@ export interface NationDefineVO extends BaseVO {
 }
 
 /**
- * ab 分组测试表基本字段
+ * ab 测试分组测试表基本字段
  */
 export interface AbTestGroupVO extends BaseVO {
     name: string;    // ab 测试组名
@@ -260,13 +260,13 @@ export interface AbTestGroupVO extends BaseVO {
 }
 
 /**
- * ab 分组测试与广告组关系表基本字段
+ * ab 测试分组测试与广告组关系表基本字段
  */
 export interface AbTestMapVO extends BaseVO {
     place: string; // 广告位
     active: number;    // 控制生效
     creatorId: string;    // 创建者主键
-    abTestGroupId: string;    // ab 分组测试表主键
+    abTestGroupId: string;    // ab 测试分组测试表主键
     adGroupId: string;    // 广告组表主键
 }
 
@@ -445,7 +445,7 @@ export interface AdGroupResVO extends AdGroupVO {
 // ab 测试分组下广告位列表信息
 export interface PlaceResVO extends AbTestMapVO {
     type: string;    // 广告类型显示名称
-    adGroup: AdGroupResVO;    // ab 分组下的广告组及广告组下广告列表
+    adGroup: AdGroupResVO;    // ab 测试分组下的广告组及广告组下广告列表
 }
 
 export interface AdResVO extends AdVO {
@@ -583,8 +583,8 @@ export interface RedisKeyVO {
     // baseConfigKey: string;    // 基础常量 key
     // productKey: string;    // 应用 key
     appPackageKey: string;    // 下发缓存中应用的 key
-    abTestGroupKey: string;    // ab 分组 key
-    abTestMapKey: string;    // ab 分组下广告位 key
+    abTestGroupKey: string;    // ab 测试分组 key
+    abTestMapKey: string;    // ab 测试分组下广告位 key
     adGroupKey: string;    // 广告 key
     nativeTmplKey: string;    // native 模板 key
     configKey: string;    // 常量 key

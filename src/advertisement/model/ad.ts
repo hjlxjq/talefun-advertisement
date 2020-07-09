@@ -71,6 +71,16 @@ export default class AdModel extends MBModel {
     }
 
     /**
+     * 批量删除广告组下所有广告
+     * @argument {string} adGroupId 广告组表主键;
+     * @returns {Promise<number>} 删除行数;
+     */
+    public async delList(adGroupId: string) {
+        return await this.where({ adGroupId }).delete();
+
+    }
+
+    /**
      * 根据广告表主键获取广告信息，
      * <br/>ecpm 返回正常数字
      * @argument {string} id 广告表主键;

@@ -55,8 +55,8 @@ export default class CommonManagerController extends BaseController {
 
         const adTypeResVoList = _.map(adTypeVoList, (adTypeVo) => {
             // 删除不必要的字段
-            delete adTypeVo.createAt;
-            delete adTypeVo.updateAt;
+            delete adTypeVo.createdAt;
+            delete adTypeVo.updatedAt;
 
             return adTypeVo;
 
@@ -78,8 +78,8 @@ export default class CommonManagerController extends BaseController {
 
         const adTypeVo = await adTypeModel.getByName(name);
         // 删除不必要的字段
-        delete adTypeVo.createAt;
-        delete adTypeVo.updateAt;
+        delete adTypeVo.createdAt;
+        delete adTypeVo.updatedAt;
 
         return this.success(adTypeVo);
 
@@ -246,8 +246,8 @@ export default class CommonManagerController extends BaseController {
 
         const nativeTmplResVoList = _.map(nativeTmplVoList, (nativeTmplVo) => {
             // 删除不必要的字段
-            delete nativeTmplVo.createAt;
-            delete nativeTmplVo.updateAt;
+            delete nativeTmplVo.createdAt;
+            delete nativeTmplVo.updatedAt;
 
             return nativeTmplVo;
 
@@ -364,8 +364,8 @@ export default class CommonManagerController extends BaseController {
 
         const baseConfigResVoList = _.map(baseConfigVoList, (baseConfigVo) => {
             // 删除不必要的字段
-            delete baseConfigVo.createAt;
-            delete baseConfigVo.updateAt;
+            delete baseConfigVo.createdAt;
+            delete baseConfigVo.updatedAt;
 
             return baseConfigVo;
 
@@ -436,8 +436,8 @@ export default class CommonManagerController extends BaseController {
 
         const packParamResVoList = _.map(packParamVoList, (packParamVo) => {
             // 删除不必要的字段
-            delete packParamVo.createAt;
-            delete packParamVo.updateAt;
+            delete packParamVo.createdAt;
+            delete packParamVo.updatedAt;
 
             return packParamVo;
 

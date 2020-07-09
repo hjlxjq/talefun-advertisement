@@ -25,7 +25,7 @@ export default class ManagerBaseModel extends BaseModel {
     }
 
     /**
-     * 为需要创建的新数据增加主键 以及 createAt 和 updateAt 字段
+     * 为需要创建的新数据增加主键 以及 createdAt 和 updatedAt 字段
      * @argument {any} modelVo 需要创建的表数据;
      */
     protected beforeAdd(modelVo: any) {

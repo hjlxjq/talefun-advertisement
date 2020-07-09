@@ -55,8 +55,8 @@ export default class UserAuthModel extends MBModel {
         // 删除不必要的字段
         delete userAuthVo.id;
         delete userAuthVo.userId;
-        delete userAuthVo.createAt;
-        delete userAuthVo.updateAt;
+        delete userAuthVo.createdAt;
+        delete userAuthVo.updatedAt;
 
         return userAuthVo;
 

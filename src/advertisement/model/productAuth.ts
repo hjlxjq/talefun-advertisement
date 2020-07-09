@@ -95,8 +95,8 @@ export default class ProductAuthModel extends MBModel {
         delete productAuthVo.id;
         delete productAuthVo.userId;
         delete productAuthVo.productId;
-        delete productAuthVo.createAt;
-        delete productAuthVo.updateAt;
+        delete productAuthVo.createdAt;
+        delete productAuthVo.updatedAt;
 
         return productAuthVo;
 

@@ -221,7 +221,7 @@ export default class TaskService extends BaseService {
     }
 
     /**
-     * 根据 idfa，将产品进行 ab 分组
+     * 根据 idfa，将产品进行 ab 测试分组
      * @argument {string} versionGroupId 版本条件分组表主键
      * @argument {string} idfa idfa
      */
@@ -246,7 +246,7 @@ export default class TaskService extends BaseService {
                     const max = 100;
                     const userCode = Math.abs(hash.hashCode(idfa)) % max;
 
-                    // 遍历 ab 分组查询匹配的用户范围
+                    // 遍历 ab 测试分组查询匹配的用户范围
                     for (let i = abTestGroupList.length - 1; i >= 0; i--) {
                         const { begin, end } = abTestGroupList[i];
 
