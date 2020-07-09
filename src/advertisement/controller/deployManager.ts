@@ -54,14 +54,6 @@ export default class DeployManagerController extends BaseController {
                     }
 
                 }
-                if (tableName === 'abTestMap') {
-                    const abTestMapCacheVoList = await updateCacheServer.fetchCacheDataHash(ucId, 'abTestMap');
-
-                    think.logger.debug(`abTestMapCacheVoList: ${JSON.stringify(abTestMapCacheVoList)}`);
-                    think.logger.debug(`modelVohash: ${JSON.stringify(modelVohash)}`);
-                    think.logger.debug(`modelVoList: ${JSON.stringify(modelVoList)}`);
-
-                }
 
                 // 初始化数据表 model
                 const deployModel = this.taleModel(tableName, 'advertisement') as MBModel;
