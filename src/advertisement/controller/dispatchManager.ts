@@ -1264,9 +1264,13 @@ export default class DispatchManagerController extends BaseController {
 
                     // 线上数据更新到缓存
                 } else {
-                    think.logger.debug(`id: ${id}`);
-                    think.logger.debug(`updateAbTestMapVo: ${JSON.stringify(updateAbTestMapVo)}`);
                     await updateCacheServer.setCacheData(ucId, 'abTestMap', id, updateAbTestMapVo);
+
+                    const abTestMapCacheVo = await updateCacheServer.fetchCacheData(ucId, 'abTestMap', id);
+                    think.logger.debug(`abTestMapCacheVo: ${JSON.stringify(abTestMapCacheVo)}`);
+
+                    const abTestMapCacheVoList = await updateCacheServer.fetchCacheDataHash(ucId, 'abTestMap');
+                    think.logger.debug(`abTestMapCacheVoList: ${JSON.stringify(abTestMapCacheVoList)}`);
 
                 }
 
