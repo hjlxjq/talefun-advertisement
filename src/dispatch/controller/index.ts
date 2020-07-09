@@ -144,11 +144,19 @@ export default class IndexController extends BaseController {
                 countryCode,
                 ip
             };
-            const appAllAdControlVo = await taskService.getAppAllAdControlInfo(requestParamVo);
-            // 重新组装 AdControl
-            const resultData = Utils.rebuildAdInfoV1(appAllAdControlVo.adControlList);
+            const {
+                adControlList, configConstant, nativeAdTemplateList, config
+            } = await taskService.getAppAllAdControlInfo(requestParamVo);
+            // 重新组装 AdControl，返回原接口一致的数据
+            const resultData = Utils.rebuildAdInfoV1(adControlList);
 
-            result = _.defaults({ AdControl: resultData }, appAllAdControlVo);
+            result = {
+                AdControl: resultData,
+                ConfigConstant: configConstant,
+                nativeAdTemplate: nativeAdTemplateList,
+                config
+            };
+            // think.logger.debug(`resultData: ${JSON.stringify(resultData)}`);
 
         }
 
@@ -189,12 +197,21 @@ export default class IndexController extends BaseController {
             countryCode,
             ip
         };
-        const appAllAdControlVo = await taskService.getAppAllAdControlInfo(requestParamVo);
-        const resultData = Utils.rebuildAdInfoV2(appAllAdControlVo.adControlList);
+
+        const {
+            adControlList, configConstant, nativeAdTemplateList, config
+        } = await taskService.getAppAllAdControlInfo(requestParamVo);
+        // 重新组装 AdControl，返回原接口一致的数据
+        const resultData = Utils.rebuildAdInfoV2(adControlList);
         // think.logger.debug(`resultData: ${JSON.stringify(resultData)}`);
 
         this.header('N', 1);
-        this.ctx.body = _.defaults({ AdControl: resultData }, appAllAdControlVo);
+        this.ctx.body = {
+            AdControl: resultData,
+            ConfigConstant: configConstant,
+            nativeAdTemplate: nativeAdTemplateList,
+            config
+        };
 
     }
 
@@ -230,11 +247,21 @@ export default class IndexController extends BaseController {
             countryCode,
             ip
         };
-        const appAllAdControlVo = await taskService.getAppAllAdControlInfo(requestParamVo);
-        const resultData = Utils.rebuildAdInfoV2(appAllAdControlVo.adControlList);
+
+        const {
+            adControlList, configConstant, nativeAdTemplateList, config
+        } = await taskService.getAppAllAdControlInfo(requestParamVo);
+
+        // 重新组装 AdControl，返回原接口一致的数据
+        const resultData = Utils.rebuildAdInfoV2(adControlList);
         // think.logger.debug(`resultData: ${JSON.stringify(resultData)}`);
 
-        this.ctx.body = _.defaults({ AdControl: resultData }, appAllAdControlVo);
+        this.ctx.body = {
+            AdControl: resultData,
+            ConfigConstant: configConstant,
+            nativeAdTemplate: nativeAdTemplateList,
+            config
+        };
 
     }
 
