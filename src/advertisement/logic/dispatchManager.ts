@@ -1046,7 +1046,7 @@ export default class DispatchManagerLogic extends AMLogic {
         currentAbTestGroupVoList.shift();
         // 终止判断条件
         currentAbTestGroupVoList[currentAbTestGroupVoList.length] = {
-            begin: 100, end: 101, nativeTmplConfGroupId: undefined, configGroupId: undefined, versionGroupId: undefined,
+            begin: 101, end: 101, nativeTmplConfGroupId: undefined, configGroupId: undefined, versionGroupId: undefined,
             name: undefined, description: undefined, creatorId: undefined, active: undefined, activeTime: undefined
         };
 
