@@ -100,6 +100,7 @@ export default class TaskService extends BaseService {
             versionCode = 0;
 
         }
+        // think.logger.debug(`versionCode: ${versionCode}`);
 
         // 获取 redis 哈希表的 key
         let redisKey;
@@ -145,6 +146,7 @@ export default class TaskService extends BaseService {
 
         // 全部版本条件分组数据
         const allVersionGroupList: VersionGroupCacheVO[] = await this.getOneCache(redisKey, packageName);
+        think.logger.debug(`allVersionGroupList: ${JSON.stringify(allVersionGroupList)}`);
 
         // 查询符合的版本分组主键
         let versionGroupId: string;
@@ -178,11 +180,13 @@ export default class TaskService extends BaseService {
                 }
 
             }
+            // think.logger.debug(`nationVersionGroupList: ${JSON.stringify(nationVersionGroupList)}`);
+            think.logger.debug(`noNationVersionGroupList: ${JSON.stringify(noNationVersionGroupList)}`);
 
             // 国家相关全部分组数据不为空，则表示该国家代码存在配置
             if (!_.isEmpty(nationVersionGroupList)) {
                 // 从版本开始范围最大开始匹配，符合则跳出循环
-                for (let i = nationVersionGroupList.length - 1; i > 0; i--) {
+                for (let i = nationVersionGroupList.length - 1; i >= 0; i--) {
                     const { id, begin } = nationVersionGroupList[i];
 
                     if (versionCode >= begin) {
@@ -197,7 +201,7 @@ export default class TaskService extends BaseService {
             // 国家相关全部分组中找不到符合的版本范围，则到与国家无关全部分组数据中查找
             if (!versionGroupId) {
                 // 从版本开始范围最大开始匹配，符合则跳出循环
-                for (let i = noNationVersionGroupList.length - 1; i > 0; i--) {
+                for (let i = noNationVersionGroupList.length - 1; i >= 0; i--) {
                     const { id, begin } = noNationVersionGroupList[i];
 
                     if (versionCode >= begin) {
@@ -211,6 +215,7 @@ export default class TaskService extends BaseService {
             }
 
         }
+        think.logger.debug(`versionGroupId: ${versionGroupId}`);
         return versionGroupId;
 
     }
@@ -242,7 +247,7 @@ export default class TaskService extends BaseService {
                     const userCode = Math.abs(hash.hashCode(idfa)) % max;
 
                     // 遍历 ab 分组查询匹配的用户范围
-                    for (let i = abTestGroupList.length - 1; i > 0; i--) {
+                    for (let i = abTestGroupList.length - 1; i >= 0; i--) {
                         const { begin, end } = abTestGroupList[i];
 
                         // 用户范围前后都包含
