@@ -37,6 +37,7 @@ export default class UpdateCacheServer extends BaseService {
         const deployKey = this.deployKeyPrefix + userId;
 
         // redis 记录用户更新状态为 true
+        // @ts-ignore
         await this.redis.set(deployKey, true);
 
     }
@@ -184,50 +185,6 @@ export default class UpdateCacheServer extends BaseService {
         });
         return await pipeline.exec();
         // return await this.redis.del(cachetKeyList);
-    }
-
-    /**
-     * 批量获取用户缓存的更新数据
-     *  @argument {string} userId 用户表主键;
-     */
-    public async fetchDeployModelList(
-        userId: string,
-    ): Promise<{ tableNameList: string[], cachetKeyList: string[] }> {
-        // 模糊查询 pattern
-        const pattern = this.cacheKeyPrefix + userId + ':' + '*';
-        think.logger.debug(`pattern: ${pattern}`);
-
-        const stream = this.redis.scanStream({
-            // only returns keys following the pattern
-            match: pattern,
-            // returns approximately 9 elements per call
-            count: 9,
-        });
-
-        // 返回组装成 promise
-        return new Promise((resolve, reject) => {
-            stream.on('data', (cachetKeyList: string[]) => {
-                // `resultKeys` is an array of strings representing key names.
-                // Note that resultKeys may contain 0 keys, and that it will sometimes
-                // contain duplicates due to SCAN's implementation in Redis.
-                const tableNameList = _.map(cachetKeyList, (resultKey) => {
-                    // cacheKeyPrefix 长度为 12， userId 长度为 36
-                    return resultKey.substr(49);
-
-                });
-                think.logger.debug(`fetchDeployModelList: ${JSON.stringify(tableNameList)}`);
-
-                resolve({ tableNameList, cachetKeyList });
-
-            });
-
-            stream.on('end', () => {
-                think.logger.debug('all keys have been visited');
-
-            });
-
-        });
-
     }
 
 }

@@ -808,7 +808,9 @@ export default class DispatchCacheService extends BaseService {
                 productCacheData, abTestGroupCacheData, abTestMapCacheData, adGroupCacheData, nativeTmplCacheData
             } = await this.refreshAdDispatch(productId, packageName);
 
+            // @ts-ignore
             await this.redis.multi([
+                // @ts-ignore
                 ['hset', appPackageKey, Utils.getRedisHash(productCacheData)],
                 // @ts-ignore
                 ['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)],
@@ -826,7 +828,9 @@ export default class DispatchCacheService extends BaseService {
                 productCacheData, abTestGroupCacheData, configCacheData
             } = await this.refreshConfigDispatch(productId, packageName);
 
+            // @ts-ignore
             await this.redis.multi([
+                // @ts-ignore
                 ['hset', appPackageKey, Utils.getRedisHash(productCacheData)],
                 // @ts-ignore
                 ['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)],
@@ -905,11 +909,12 @@ export default class DispatchCacheService extends BaseService {
             await Bluebird.map(abTestGroupVoList, async (abTestGroupVo) => {
                 const {
                     id: abTestGroupId, versionGroupId, name, begin: abTestGroupBegin, end: abTestGroupEnd,
-                    nativeTmplConfGroupId
+                    nativeTmplConfGroupId, configGroupId
                 } = abTestGroupVo;
 
                 const abTestGroupCacheVo: AbTestGroupCacheVO = {
-                    id: abTestGroupId, name, begin: abTestGroupBegin, end: abTestGroupEnd, nativeTmplConfGroupId
+                    id: abTestGroupId, name, begin: abTestGroupBegin, end: abTestGroupEnd,
+                    nativeTmplConfGroupId, configGroupId
                 };
                 // ab 测试分组相关数据对象
                 if (!abTestGroupCacheData[versionGroupId]) {
@@ -999,11 +1004,12 @@ export default class DispatchCacheService extends BaseService {
             _.each(abTestGroupVoList, (abTestGroupVo) => {
                 const {
                     id: abTestGroupId, versionGroupId, name, begin: abTestGroupBegin, end: abTestGroupEnd,
-                    nativeTmplConfGroupId
+                    nativeTmplConfGroupId, configGroupId
                 } = abTestGroupVo;
 
                 const abTestGroupCacheVo: AbTestGroupCacheVO = {
-                    id: abTestGroupId, name, begin: abTestGroupBegin, end: abTestGroupEnd, nativeTmplConfGroupId
+                    id: abTestGroupId, name, begin: abTestGroupBegin, end: abTestGroupEnd,
+                    nativeTmplConfGroupId, configGroupId
                 };
                 // ab 测试分组相关数据对象
                 if (!abTestGroupCacheData[versionGroupId]) {

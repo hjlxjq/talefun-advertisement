@@ -16,10 +16,9 @@
     "lint": "tslint \"src/**/*.ts\""
   },
   "dependencies": {
-    "@alicloud/log": "git+https://github.com/hjlxjq/aliyun-log-nodejs-sdk.git",
     "@alicloud/sms-sdk": "^1.1.6",
     "@types/bluebird": "^3.5.27",
-    "@types/ioredis": "git+https://github.com/hjlxjq/types-ioredis.git",
+    "@types/ioredis": "^4.17.0",
     "@types/lodash": "^4.14.109",
     "@types/request-promise": "^4.1.44",
     "@types/shelljs": "^0.8.5",
