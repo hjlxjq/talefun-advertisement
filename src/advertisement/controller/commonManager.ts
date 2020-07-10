@@ -383,7 +383,7 @@ export default class CommonManagerController extends BaseController {
     public async createBaseConfigAction() {
         const ucId: string = this.ctx.state.user.id;
         const key: string = this.post('key');
-        const value: string = this.post('value');
+        const value: string = this.post('value') || '';
         const description: string = this.post('description');
         const test: number = this.post('test');
         const active: number = this.post('active');

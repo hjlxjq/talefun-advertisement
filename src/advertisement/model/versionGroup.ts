@@ -116,16 +116,14 @@ export default class VersionGroupModel extends MBModel {
      * @argument {number} begin 版本条件分组的开始版本;
      * @argument {number} type 版本条件分组表类型;
      * @argument {string} productId 应用表主键;
-     * @argument {string} creatorId 创建者主键;
-     * @argument {number} live 是否线上已发布数据;
+     * @argument {number} active 是否生效;
      * @returns {Promise<string[]>} 版本条件分组列表;
      */
     public async getByBegin(
         begin: number,
         type: number,
         productId: string,
-        creatorId?: string,
-        live?: number
+        active: number,
     ) {
         const queryStrings: string[] = [];
 
@@ -133,13 +131,8 @@ export default class VersionGroupModel extends MBModel {
         queryStrings.push(`begin = '${begin}'`);
         queryStrings.push(`productId = '${productId}'`);
 
-        if (!_.isUndefined(creatorId)) {
-            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
-
-        }
-        if (live === 1) {
-            const LiveActiveTime = think.config('LiveActiveTime');
-            queryStrings.push(`activeTime = '${LiveActiveTime}'`);
+        if (!_.isUndefined(active)) {
+            queryStrings.push(`active = '${active}'`);
 
         }
         const queryString: string = queryStrings.join(' AND ');

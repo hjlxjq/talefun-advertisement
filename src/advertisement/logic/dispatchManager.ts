@@ -177,6 +177,9 @@ export default class DispatchManagerLogic extends AMLogic {
         const productId: string = this.post('id');
         const type: number = this.post('type');    // 0 广告 1 游戏常量 2 商店
         const name: string = this.post('name');
+        const begin: number = this.post('begin');
+        const include: number = this.post('include');
+        const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
@@ -224,6 +227,93 @@ export default class DispatchManagerLogic extends AMLogic {
                 return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
 
             }
+
+            /**
+             * <br/>数据库是否存在生效冲突组，一个起始版本和一个国家只能对应一个版本条件分组
+             */
+            const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1);
+            // 未发布更新在缓存里的版本条件分组对象哈希表，键值为主键
+            const cacheVersionGroupVoHash = await updateCacheServer.fetchCacheDataHash(ucId, 'versionGroup');
+
+            // 是否有重复项
+            let isDupli = false;
+
+            // 遍历版本条件分组
+            for (const beginVersionGroupVo of beginVersionGroupVoList) {
+                // 更新的缓存数据
+                const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
+                // 返回线上数据和未发布的数据，以未发布数据为准
+                _.assign(beginVersionGroupVo, cacheVersionGroupVo);
+
+                const { code, include: beginInclude, active } = beginVersionGroupVo;
+
+                // 已经不生效的不考虑
+                if (active === 0) {
+                    continue;
+
+                }
+                const beginCodeList = JSON.parse(code);
+
+                // 空数组表示都包含，肯定重复
+                if (_.isEmpty(codeList) && _.isEmpty(beginCodeList)) {
+                    isDupli = true;
+                    break;
+
+                    // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
+                } else if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
+                    continue;
+
+                }
+
+                // 判断 codeList 和线上相同开始版本的 codeList 是否有重复项
+                const concatCodeList = _.concat(codeList, beginCodeList);
+                const isCross = new Set(concatCodeList).size !== concatCodeList.length;
+                // 国家都包含或者不包含，则不能有有交叉
+                if ((include === beginInclude) && isCross) {
+                    isDupli = true;
+                    break;
+
+                }
+                let isSubArr = true;
+                // 创建时选择包含，则必须是线上国家代码列表的子数组
+                if (include === 1) {
+                    isSubArr = _.isEmpty(_.difference(codeList, beginCodeList));
+
+                    // 创建时选择不包含，线上的国家代码列表则必须是创建的子数组
+                } else {
+                    isSubArr = _.isEmpty(_.difference(beginCodeList, codeList));
+
+                }
+                // 创建的和线上的国家代码一个包含和一个不包含
+                if ((include !== beginInclude) && !isSubArr) {
+                    isDupli = true;
+                    break;
+
+                }
+
+            }
+
+            // 一个起始版本和一个国家只能对应一个版本条件分组
+            if (isDupli) {
+                return this.fail(TaleCode.DBFaild, '一个起始版本和一个国家只能对应一个版本条件分组！！！');
+
+            }
+
+            /**
+             * <br/>线上存在，则看缓存里是否禁用了，未禁用则报唯一性错误
+             */
+            const versionGroupVo =
+                await versionGroupModel.getByName(name, type, productId, undefined, 1);
+
+            if (!_.isEmpty(versionGroupVo) && versionGroupVo.id) {
+                const cacheVersionGroupVo = cacheVersionGroupVoHash[versionGroupVo.id];
+
+                // 未更新（不存在）或者未禁用则报唯一性错误
+                if (_.isEmpty(cacheVersionGroupVo) || cacheVersionGroupVo.active !== 0) {
+                    return this.fail(TaleCode.DBFaild, '版本条件分组名重复！！！');
+                }
+            }
+            // 请求参数 id 重新指向默认组的主键
             this.post('id', defaultVersionGroupVo.id);
 
             // name = 'default',则创建默认组，并返回
@@ -335,11 +425,6 @@ export default class DispatchManagerLogic extends AMLogic {
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
-        // 国家代码为空，则肯定包含
-        if (_.isEmpty(codeList) && include === 0) {
-            this.fail(TaleCode.DBFaild, '国家代码为空，则肯定包含!!!');
-        }
-
         // 被复制组的默认配置
         const [
             copyedVersionGroupVo,
@@ -374,16 +459,20 @@ export default class DispatchManagerLogic extends AMLogic {
                 (editPurchase === 0 && type === 2)
             ) {
                 return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
             }
+
         }
 
         /**
-         * <br/>线上是否存在冲突组，一个起始版本和一个国家只能对应一个版本条件分组
+         * <br/>数据库是否存在生效冲突组，一个起始版本和一个国家只能对应一个版本条件分组
          */
-        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, ucId);
+        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1);
 
         // 是否有重复项
         let isDupli = false;
+
+        // 遍历版本条件分组
         for (const beginVersionGroupVo of beginVersionGroupVoList) {
             // 更新的缓存数据
             const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
@@ -392,6 +481,7 @@ export default class DispatchManagerLogic extends AMLogic {
 
             const { code, include: beginInclude, active } = beginVersionGroupVo;
 
+            // 已经不生效的不考虑
             if (active === 0) {
                 continue;
 
@@ -418,18 +508,18 @@ export default class DispatchManagerLogic extends AMLogic {
                 break;
 
             }
-            let isContain = true;
-            // 创建时选择包含，则必须是线上的子数组
+            let isSubArr = true;
+            // 创建时选择包含，则必须是线上国家代码列表的子数组
             if (include === 1) {
-                isContain = _.isEmpty(_.difference(codeList, beginCodeList));
+                isSubArr = _.isEmpty(_.difference(codeList, beginCodeList));
 
-                // 创建时选择不包含，线上的国家到吗则必须是创建的子数组
+                // 创建时选择不包含，线上的国家代码列表则必须是创建的子数组
             } else {
-                isContain = _.isEmpty(_.difference(beginCodeList, codeList));
+                isSubArr = _.isEmpty(_.difference(beginCodeList, codeList));
 
             }
             // 创建的和线上的国家代码一个包含和一个不包含
-            if (include !== beginInclude && !isContain) {
+            if ((include !== beginInclude) && !isSubArr) {
                 isDupli = true;
                 break;
 
@@ -566,13 +656,14 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         /**
-         * <br/>线上是否存在冲突组，一个起始版本和一个国家只能对应一个版本条件分组
+         * <br/>数据库是否存在生效冲突组，一个起始版本和一个国家只能对应一个版本条件分组
          */
-        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, ucId);
+        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1);
 
         // 是否有重复项
         let isDupli = false;
 
+        // 遍历版本条件分组
         for (const beginVersionGroupVo of beginVersionGroupVoList) {
             // 更新的缓存数据
             const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
@@ -609,18 +700,18 @@ export default class DispatchManagerLogic extends AMLogic {
                 break;
 
             }
-            let isContain = true;
+            let isSubArr = true;
             // 创建时选择包含，则必须是线上的子数组
             if (include === 1) {
-                isContain = _.isEmpty(_.difference(codeList, beginCodeList));
+                isSubArr = _.isEmpty(_.difference(codeList, beginCodeList));
 
                 // 创建时选择不包含，线上的国家到吗则必须是创建的子数组
             } else {
-                isContain = _.isEmpty(_.difference(beginCodeList, codeList));
+                isSubArr = _.isEmpty(_.difference(beginCodeList, codeList));
 
             }
             // 创建的和线上的国家代码一个包含和一个不包含
-            if (include !== beginInclude && !isContain) {
+            if ((include !== beginInclude) && !isSubArr) {
                 isDupli = true;
                 break;
 
@@ -672,18 +763,23 @@ export default class DispatchManagerLogic extends AMLogic {
 
                 if (viewAd === 0 && type === 0) {
                     throw new Error('没有权限！！！');
+
                 }
                 if (viewGameConfig === 0 && type === 1) {
                     throw new Error('没有权限！！！');
+
                 }
                 if (viewPurchase === 0 && type === 2) {
                     throw new Error('没有权限！！！');
+
                 }
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -725,20 +821,21 @@ export default class DispatchManagerLogic extends AMLogic {
 
             if (master === 0) {
 
+                if (type !== 0) {
+                    throw new Error('没有权限！！！');
+
+                }
                 if (viewAd === 0 && type === 0) {
                     throw new Error('没有权限！！！');
+
                 }
-                if (viewGameConfig === 0 && type === 1) {
-                    throw new Error('没有权限！！！');
-                }
-                if (viewPurchase === 0 && type === 2) {
-                    throw new Error('没有权限！！！');
-                }
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -780,15 +877,15 @@ export default class DispatchManagerLogic extends AMLogic {
 
             if (master === 0) {
 
+                if (type !== 0 && type !== 1) {
+                    throw new Error('没有权限！！！');
+
+                }
                 if (viewAd === 0 && type === 0) {
                     throw new Error('没有权限！！！');
 
                 }
                 if (viewGameConfig === 0 && type === 1) {
-                    throw new Error('没有权限！！！');
-
-                }
-                if (viewPurchase === 0 && type === 2) {
                     throw new Error('没有权限！！！');
 
                 }
@@ -804,7 +901,7 @@ export default class DispatchManagerLogic extends AMLogic {
     }
 
     /**
-     * <br/>获取 ab 测试分组下的 native 模板组及包含的 native 模板列表
+     * <br/>获取 ab 测试分组下的应用 native 模板组及包含的应用 native 模板列表
      */
     public async nativeTmplConfGroupInAbAction() {
         const ucId: string = this.ctx.state.user.id;
@@ -840,20 +937,19 @@ export default class DispatchManagerLogic extends AMLogic {
 
             if (master === 0) {
 
+                if (type !== 0) {
+                    throw new Error('没有权限！！！');
+                }
                 if (viewAd === 0 && type === 0) {
                     throw new Error('没有权限！！！');
                 }
-                if (viewGameConfig === 0 && type === 1) {
-                    throw new Error('没有权限！！！');
-                }
-                if (viewPurchase === 0 && type === 2) {
-                    throw new Error('没有权限！！！');
-                }
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -919,11 +1015,12 @@ export default class DispatchManagerLogic extends AMLogic {
         // 用户范围结束大于开始
         if (begin >= end) {
             return this.fail(TaleCode.ValidData, '分组失败，结束范围必须大于开始范围！！！');
-        }
 
+        }
         // 分组要均分，整除
         if ((end - begin + 1) % groupNum !== 0) {
             return this.fail(TaleCode.ValidData, '分组失败，分组范围不能均分！！！');
+
         }
 
         /**
@@ -940,18 +1037,23 @@ export default class DispatchManagerLogic extends AMLogic {
 
                 if (editAd === 0 && type === 0) {
                     throw new Error('没有权限！！！');
+
                 }
                 if (editGameConfig === 0 && type === 1) {
                     throw new Error('没有权限！！！');
+
                 }
                 if (editPurchase === 0 && type === 2) {
                     throw new Error('没有权限！！！');
+
                 }
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
         /**
@@ -960,6 +1062,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const abTestGroupVoList =
             await abTestGroupModel.getListByName(versionGroupId, name, undefined, undefined, 1);
 
+        // ab 测试组同时操作，所以只需要根据第一个判断
         const abTestGroupVo = abTestGroupVoList[0];
         if (!_.isEmpty(abTestGroupVo) && abTestGroupVo.id) {
             // 缓存中个更新
@@ -974,9 +1077,12 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         /**
-         * <br/> ab 测试分组范围检测
+         * <br/>生效的 ab 测试分组范围检测
          */
         const currentAbTestGroupVoList = await abTestGroupModel.getListByVersionGroup(versionGroupId, undefined, 1);
+        // 未发布更新在缓存里的 ab 测试分组对象哈希表，键值为主键
+        const cacheAbTestGroupVoHash = await updateCacheServer.fetchCacheDataHash(ucId, 'abTestGroup');
+
         // 移除默认 ab 测试分组组
         currentAbTestGroupVoList.shift();
         // 终止判断条件
@@ -988,6 +1094,17 @@ export default class DispatchManagerLogic extends AMLogic {
         let correct = false;
         for (let i = 0, l = currentAbTestGroupVoList.length; i < l; i++) {
             const currentAbTestGroupVo = currentAbTestGroupVoList[i];
+            // 更新的缓存数据
+            const cacheAbTestGroupVo = cacheAbTestGroupVoHash[currentAbTestGroupVo.id] as AbTestGroupVO;
+            // 返回线上数据和未发布的数据，以未发布数据为准
+            _.assign(currentAbTestGroupVo, cacheAbTestGroupVo);
+
+            // 已经不生效的不考虑
+            if (currentAbTestGroupVo.active === 0) {
+                continue;
+
+            }
+
             // 上一个 ab 测试用户范围，第一个 ab 测试默认上一个用户范围
             let lastAbTestGroupVo = { begin: 0, end: 0 };
 
@@ -1007,6 +1124,7 @@ export default class DispatchManagerLogic extends AMLogic {
         // 未找到合适的用户范围
         if (!correct) {
             return this.fail(TaleCode.ValidData, '分组失败，范围重叠！！！');
+
         }
 
     }

@@ -616,7 +616,6 @@ export default class DispatchManagerController extends BaseController {
         const abTestGroupVoList = await abTestGroupModel.getListByName(versionGroupId, name, ucId, 1);
 
         try {
-
             if (!_.isEmpty(abTestGroupVoList)) {
                 const { creatorId } = abTestGroupVoList[0];
                 // 本账户创建的直接数据库删除
