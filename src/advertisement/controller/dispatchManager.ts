@@ -97,36 +97,86 @@ export default class DispatchManagerController extends BaseController {
      */
     public async createVersionGroupAction() {
         const ucId: string = this.ctx.state.userId;
-        const productId: string = this.post('id');
+        const copyId: string = this.post('id');
         const name: string = this.post('name');
         const begin: number = this.post('begin');
         const description: string = this.post('description');
         const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
-        const type: number = this.post('type');
         const include: number = this.post('include');
         const active: number = this.post('active');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
+        const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
         const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
+        // 创建，先在数据库中暂存，待发布再更新上线， activeTime 标识
+        const CacheActiveTime = think.config('CacheActiveTime');
+
         try {
-            // 创建，先在数据库中暂存，待发布再更新上线， activeTime 标识
-            const CacheActiveTime = think.config('CacheActiveTime');
-            // 版本条件分组表对象
+            // 获取数据库中被复制组和被复制组的默认 ab 测试分组的配置
+            const [
+                copyedVersionGroupVo, copyedAbTestGroupVo
+            ] = await Promise.all([
+                versionGroupModel.getVo(copyId, ucId),
+                abTestGroupModel.getDefaultVo(copyId)
+            ]);
+
+            // 被复制组的 ab 测试分组主键
+            const { id: copyedAbTestGroupId } = copyedAbTestGroupVo;
+
+            // 未发布的数据表更新，在缓存里的默认 ab 测试分组对象和广告位对象哈希
+            const [
+                copyedCacheAbTestGroupVo, copyedCacheAbTestMapVoHash
+            ] = await Promise.all([
+                updateCacheServer.fetchCacheData(ucId, 'abTestGroup', copyedAbTestGroupVo.id),
+                updateCacheServer.fetchCacheDataHash(ucId, 'abTestMap'),
+            ]);
+
+            // 版本条件分组类型和应用主键，和被复制组一样
+            const { type, productId } = copyedVersionGroupVo;
+
+            // 返回线上数据和未发布的数据，以未发布数据为准
+            _.assign(copyedAbTestGroupVo, copyedCacheAbTestGroupVo);
+            // 被复制组的 ab 测试分组信息
+            const { configGroupId, nativeTmplConfGroupId } = copyedAbTestGroupVo;
+
+            // 版本条件分组对象
             const createVersionGroupVo: VersionGroupVO = {
                 name, begin, description, type, code: JSON.stringify(codeList), include,
                 active, activeTime: CacheActiveTime, creatorId: ucId, productId
             };
-
+            // 先创建版本条件分组表
             const versionGroupId = await versionGroupModel.addVo(createVersionGroupVo);
 
-            // 默认 ab 测试分组对象
-            const abTestGroupVo: AbTestGroupVO = {
-                versionGroupId, active, name: 'default', begin: -1, end: -1, description: '默认组',
-                creatorId: ucId, configGroupId: undefined, nativeTmplConfGroupId: undefined, activeTime: CacheActiveTime
+            // 默认 ab 测试对象
+            const defaultAbTestGroupVo: AbTestGroupVO = {
+                name: 'default', begin: -1, end: -1, description: '默认组', active, activeTime: CacheActiveTime,
+                creatorId: ucId, nativeTmplConfGroupId, configGroupId, versionGroupId
             };
-            // 向版本条件分组下创建默认 ab 测试分组
-            await abTestGroupModel.addVo(abTestGroupVo);
+            // 再创建版本条件分组下默认 ab 测试
+            const defaultAbTestGroupId = await abTestGroupModel.addVo(defaultAbTestGroupVo);
+
+            // 被复制组的默认 ab 测试下的广告位信息列表
+            const copyedAbTestMapVoList = await abTestMapModel.getListByAbTestGroup(copyedAbTestGroupId, ucId);
+            // 复制组的默认 ab 测试下的广告位信息列表
+            const defaultAbTestMapVoList = _.map(copyedAbTestMapVoList, (copyedAbTestMapVo) => {
+                // 未发布的数据表更新对象
+                const copyedCacheAbTestMapVo = copyedCacheAbTestMapVoHash[copyedAbTestMapVo.id] as AbTestMapVO;
+                // 返回线上数据和未发布的数据，以未发布数据为准
+                _.assign(copyedAbTestMapVo, copyedCacheAbTestMapVo);
+
+                const { place, adGroupId } = copyedAbTestMapVo;
+
+                // 默认 ab 测试下的广告位信息
+                const defaultAbTestMapVo: AbTestMapVO = {
+                    place, adGroupId, abTestGroupId: defaultAbTestGroupId, creatorId: ucId, active: 1
+                };
+                return defaultAbTestMapVo;
+
+            });
+
+            // 再创建版本条件分组下默认 ab 测试下的广告位测试
+            await abTestMapModel.addList(defaultAbTestMapVoList);
 
             // 缓存用户发布状态
             await updateCacheServer.setDeployStatus(ucId);

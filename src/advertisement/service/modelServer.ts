@@ -54,13 +54,13 @@ export default class ModelService extends BaseService {
 
         const adChannelVoList = await adChannelModel.getList();
         const adChannelResVoList = await Bluebird.map(adChannelVoList, async (adChannelVo) => {
-            const { id, test } = adChannelVo;
+            const { id } = adChannelVo;
             const adTypeIdList = await adChannelMapModel.getAdTypeIdList(id);
 
             // 获取支持的广告类型
             const adTypeList = await Bluebird.map(adTypeIdList, async (adTypeId) => {
                 // 只返回启用的，如果平台为正式，则只返回正式的广告类型
-                const adTypeVo = await adTypeModel.getVo(adTypeId, 1, test);
+                const adTypeVo = await adTypeModel.getVo(adTypeId, 1);
 
                 if (adTypeVo) {
                     return adTypeVo.name;
@@ -92,13 +92,13 @@ export default class ModelService extends BaseService {
         const adChannelMapModel = this.taleModel('adChannelMap', 'advertisement') as AdChannelMapModel;
 
         const adChannelVo = await adChannelModel.getByChannel(channel);
-        const { id, test } = adChannelVo;
+        const { id } = adChannelVo;
 
         const adTypeIdList = await adChannelMapModel.getAdTypeIdList(id);
 
         // 获取支持的广告类型
         const adTypeList = await Bluebird.map(adTypeIdList, async (adTypeId) => {
-            const adTypeVo = await adTypeModel.getVo(adTypeId, 1, test);
+            const adTypeVo = await adTypeModel.getVo(adTypeId, 1);
 
             if (adTypeVo) {
                 return adTypeVo.name;
@@ -241,7 +241,7 @@ export default class ModelService extends BaseService {
     /**
      * <br/>获取版本条件分组列表信息;
      * @argument {string} productId 应用表主键;
-     * @argument {string} type 版本条件分组类型;
+     * @argument {number} type 版本条件分组类型;
      * @argument {string} creatorId 创建者主键;
      */
     public async getVersionGroupList(productId: string, type: number, creatorId: string) {

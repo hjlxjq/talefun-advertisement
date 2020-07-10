@@ -77,7 +77,7 @@ export default class VersionGroupModel extends MBModel {
     /**
      * 根据 版本条件分组名称 获取版本条件分组
      * @argument {string} name 版本条件分组名;
-     * @argument {string} type 版本条件分组表类型;
+     * @argument {number} type 版本条件分组表类型;
      * @argument {string} productId 应用表主键;
      * @argument {string} creatorId 创建者主键
      * @argument {number} live 是否线上已发布数据
@@ -114,7 +114,7 @@ export default class VersionGroupModel extends MBModel {
     /**
      * 根据 版本条件分组的开始版本 获取版本条件分组列表
      * @argument {number} begin 版本条件分组的开始版本;
-     * @argument {string} type 版本条件分组表类型;
+     * @argument {number} type 版本条件分组表类型;
      * @argument {string} productId 应用表主键;
      * @argument {string} creatorId 创建者主键;
      * @argument {number} live 是否线上已发布数据;
@@ -151,7 +151,7 @@ export default class VersionGroupModel extends MBModel {
     /**
      * 线上正式数据,
      * <br/>获取版本条件分组信息列表
-     * @argument {string} type 版本条件分组表类型;
+     * @argument {number} type 版本条件分组表类型;
      * @argument {number} live 是否线上已发布数据
      */
     public async getList(type: number, live: number) {
@@ -173,7 +173,7 @@ export default class VersionGroupModel extends MBModel {
     /**
      * 获取版本条件分组信息列表
      * @argument {string} productId 应用表主键;
-     * @argument {string} type 版本条件分组表类型;
+     * @argument {number} type 版本条件分组表类型;
      * @argument {string} creatorId 创建者主键
      */
     public async getListByProduct(

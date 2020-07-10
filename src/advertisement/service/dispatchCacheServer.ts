@@ -727,7 +727,7 @@ export default class DispatchCacheService extends BaseService {
     /**
      * <br/>根据 版本条件分组类型和应用平台 获取所有下发相关的 redis key，
      * @argument {string} platform 平台
-     * @argument {string} type 类型，0 广告 1 游戏常量 2 商店
+     * @argument {number} type 类型，0 广告 1 游戏常量 2 商店
      */
     private getCacheKey(type: number, platform: string) {
         let appPackageKey: string;
