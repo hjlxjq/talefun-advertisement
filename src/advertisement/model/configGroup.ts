@@ -107,7 +107,7 @@ export default class ConfigGroupModel extends MBModel {
         const queryStrings: string[] = [];
 
         queryStrings.push(`productId='${productId}'`);
-        queryStrings.push(`type='${type}'`);
+        queryStrings.push(`type=${type}`);
 
         if (!_.isUndefined(creatorId)) {
             queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);

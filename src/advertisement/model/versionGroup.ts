@@ -92,7 +92,7 @@ export default class VersionGroupModel extends MBModel {
     ) {
         const queryStrings: string[] = [];
 
-        queryStrings.push(`type = '${type}'`);
+        queryStrings.push(`type = ${type}`);
         queryStrings.push(`name = '${name}'`);
         queryStrings.push(`productId = '${productId}'`);
 
@@ -128,12 +128,12 @@ export default class VersionGroupModel extends MBModel {
     ) {
         const queryStrings: string[] = [];
 
-        queryStrings.push(`type = '${type}'`);
+        queryStrings.push(`type = ${type}`);
         queryStrings.push(`begin = '${begin}'`);
         queryStrings.push(`productId = '${productId}'`);
 
         if (!_.isUndefined(active)) {
-            queryStrings.push(`active = '${active}'`);
+            queryStrings.push(`active = ${active}`);
 
         }
         const queryString: string = queryStrings.join(' AND ');
@@ -151,7 +151,7 @@ export default class VersionGroupModel extends MBModel {
     public async getList(type: number, live: number) {
         const queryStrings: string[] = [];
 
-        queryStrings.push(`type = '${type}'`);
+        queryStrings.push(`type = ${type}`);
 
         if (live === 1) {
             const LiveActiveTime = think.config('LiveActiveTime');
@@ -175,7 +175,7 @@ export default class VersionGroupModel extends MBModel {
     ) {
         const queryStrings: string[] = [];
 
-        queryStrings.push(`type = '${type}'`);
+        queryStrings.push(`type = ${type}`);
         queryStrings.push(`productId = '${productId}'`);
 
         if (!_.isUndefined(creatorId)) {

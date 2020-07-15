@@ -198,7 +198,7 @@ export default class AbTestGroupModel extends MBModel {
 
         }
         if (!_.isUndefined(active)) {
-            queryStrings.push(`active='${active}'`);
+            queryStrings.push(`active=${active}`);
 
         }
         if (live === 1) {
