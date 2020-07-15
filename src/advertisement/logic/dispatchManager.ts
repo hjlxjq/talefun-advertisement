@@ -222,7 +222,6 @@ export default class DispatchManagerLogic extends AMLogic {
         if (name !== 'default') {
             // 线上或者暂存是否存在默认组，创建之前先保证存在默认组
             const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, ucId);
-            think.logger.debug(`defaultVersionGroupVo: ${JSON.stringify(defaultVersionGroupVo)}`);
             if (_.isEmpty(defaultVersionGroupVo)) {
                 return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
 
