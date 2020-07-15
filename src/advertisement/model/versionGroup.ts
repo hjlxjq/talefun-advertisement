@@ -106,6 +106,7 @@ export default class VersionGroupModel extends MBModel {
 
         }
         const queryString: string = queryStrings.join(' AND ');
+        think.logger.debug(`queryString: ${queryString}`);
 
         return await this.where(queryString).find() as VersionGroupVO;
 
