@@ -177,9 +177,10 @@ export default class DispatchManagerLogic extends AMLogic {
         const productId: string = this.post('id');
         const type: number = this.post('type');    // 0 广告 1 游戏常量 2 商店
         const name: string = this.post('name');
+        const description: string = this.post('description');
         const begin: number = this.post('begin');
         const include: number = this.post('include');
-        const codeList: string[] = this.post('codeList') || [];    // 没有选择国家代码默认为空数组
+        let codeList: string[] = this.post('codeList');    // 没有选择国家代码默认为空数组
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
@@ -219,13 +220,17 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/>默认组必须，起始版本为 0, 国家全覆盖
          */
-        if (name !== 'default') {
+        if (codeList !== [] || begin !== 0) {
             // 线上或者暂存是否存在默认组，创建之前先保证存在默认组
-            const defaultVersionGroupVo = await versionGroupModel.getByName('default', type, productId, ucId);
+            const defaultVersionGroupVo = await versionGroupModel.getDefault(type, productId, ucId);
+
             if (_.isEmpty(defaultVersionGroupVo)) {
                 return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
 
             }
+
+            // 不存在传空数组
+            codeList = codeList || [];
 
             /**
              * <br/>数据库是否存在生效冲突组，一个起始版本和一个国家只能对应一个版本条件分组
@@ -315,14 +320,14 @@ export default class DispatchManagerLogic extends AMLogic {
             // 请求参数 id 重新指向默认组的主键
             this.post('id', defaultVersionGroupVo.id);
 
-            // name = 'default',则创建默认组，并返回
+            // 创建默认组，并返回
         } else {
             try {
                 // 创建，先在数据库中暂存，待发布再更新上线， activeTime 标识
                 const CacheActiveTime = think.config('CacheActiveTime');
                 // 版本条件分组表对象
                 const createVersionGroupVo: VersionGroupVO = {
-                    name: 'default', begin: 0, description: '默认组', type, code: '[]', include: 1,
+                    name, begin: 0, description, type, code: '[]', include: 1,
                     active: 1, activeTime: CacheActiveTime, creatorId: ucId, productId
                 };
                 // 创建默认组
@@ -460,6 +465,14 @@ export default class DispatchManagerLogic extends AMLogic {
                 return this.fail(TaleCode.AuthFaild, '没有权限！！！');
 
             }
+
+        }
+
+        // 线上或者暂存是否存在默认组，创建之前先保证存在默认组
+        const defaultVersionGroupVo = await versionGroupModel.getDefault(type, productId, ucId);
+
+        if (_.isEmpty(defaultVersionGroupVo)) {
+            return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
 
         }
 
@@ -613,8 +626,18 @@ export default class DispatchManagerLogic extends AMLogic {
             this.fail(TaleCode.DBFaild, '版本条件分组不存在!!!');
 
         }
-        if (versionGroupVo.name === 'default') {
+        if (versionGroupVo.code === '[]' && versionGroupVo.begin === 0) {
             this.fail(TaleCode.DBFaild, '默认版本条件分组不能更新!!!');
+
+        }
+
+        // 线上或者暂存是否存在默认组，创建之前先保证存在默认组
+        const defaultVersionGroupVo = await versionGroupModel.getDefault(
+            versionGroupVo.type, versionGroupVo.productId, ucId
+        );
+
+        if (_.isEmpty(defaultVersionGroupVo)) {
+            return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
 
         }
 

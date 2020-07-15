@@ -128,7 +128,7 @@ export default class VersionGroupModel extends MBModel {
         const queryStrings: string[] = [];
 
         queryStrings.push(`type = ${type}`);
-        queryStrings.push(`begin = '${begin}'`);
+        queryStrings.push(`begin = ${begin}`);
         queryStrings.push(`productId = '${productId}'`);
 
         if (!_.isUndefined(active)) {
@@ -138,6 +138,35 @@ export default class VersionGroupModel extends MBModel {
         const queryString: string = queryStrings.join(' AND ');
 
         return await this.where(queryString).select() as VersionGroupVO[];
+
+    }
+
+    /**
+     * 获取默认版本条件分组
+     * @argument {number} type 版本条件分组表类型;
+     * @argument {string} productId 应用表主键;
+     * @argument {string} creatorId 创建者主键
+     * @returns {Promise<VersionGroupVO>} 版本条件分组;
+     */
+    public async getDefault(
+        type: number,
+        productId: string,
+        creatorId?: string,
+    ) {
+        const queryStrings: string[] = [];
+
+        queryStrings.push(`type = ${type}`);
+        queryStrings.push(`productId = '${productId}'`);
+        queryStrings.push(`begin = 0`);
+        queryStrings.push(`code = '[]'`);
+
+        if (!_.isUndefined(creatorId)) {
+            queryStrings.push(`(creatorId IS NULL OR creatorId = '${creatorId}')`);
+
+        }
+        const queryString: string = queryStrings.join(' AND ');
+
+        return await this.where(queryString).find() as VersionGroupVO;
 
     }
 
