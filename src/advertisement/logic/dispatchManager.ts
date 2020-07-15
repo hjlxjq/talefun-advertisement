@@ -695,6 +695,10 @@ export default class DispatchManagerLogic extends AMLogic {
 
         // 遍历版本条件分组
         for (const beginVersionGroupVo of beginVersionGroupVoList) {
+            // 不必较自身
+            if (beginVersionGroupVo.id === versionGroupId) {
+                continue;
+            }
             // 更新的缓存数据
             const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
             // 返回线上数据和未发布的数据，以未发布数据为准
