@@ -322,6 +322,13 @@ export default class DispatchManagerLogic extends AMLogic {
 
             // 创建默认组，并返回
         } else {
+            // 线上或者暂存是否存在默认组，创建之前先保证存在默认组
+            const defaultVersionGroupVo = await versionGroupModel.getDefaultVo(type, productId);
+
+            if (!_.isEmpty(defaultVersionGroupVo)) {
+                return this.fail(TaleCode.DBFaild, '存在默认条件组！！！');
+
+            }
             try {
                 // 创建，先在数据库中暂存，待发布再更新上线， activeTime 标识
                 const CacheActiveTime = think.config('CacheActiveTime');
@@ -469,7 +476,7 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         // 线上或者暂存是否存在默认组，创建之前先保证存在默认组
-        const defaultVersionGroupVo = await versionGroupModel.getDefault(type, productId, ucId);
+        const defaultVersionGroupVo = await versionGroupModel.getDefaultVo(type, productId, ucId);
 
         if (_.isEmpty(defaultVersionGroupVo)) {
             return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');
@@ -632,7 +639,7 @@ export default class DispatchManagerLogic extends AMLogic {
         }
 
         // 线上或者暂存是否存在默认组，创建之前先保证存在默认组
-        const defaultVersionGroupVo = await versionGroupModel.getDefault(
+        const defaultVersionGroupVo = await versionGroupModel.getDefaultVo(
             versionGroupVo.type, versionGroupVo.productId, ucId
         );
 
