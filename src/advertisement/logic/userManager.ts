@@ -21,6 +21,7 @@ export default class UserManagerLogic extends AMLogic {
 
         if (master === 0) {
             throw new Error('没有权限！！！');
+
         }
 
     }

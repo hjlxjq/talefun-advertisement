@@ -15,7 +15,7 @@ export default class ProductManagerLogic extends AMLogic {
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productAuth = await authServer.fetchProductAuth(ucId, productId);
-        // think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
+        think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
         return productAuth;
 
     }
@@ -29,6 +29,7 @@ export default class ProductManagerLogic extends AMLogic {
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productGroupAuth = await authServer.fetchProductGroupAuth(ucId, productGroupId);
+        think.logger.debug(`productGroupAuth: ${JSON.stringify(productGroupAuth)}`);
         return productGroupAuth;
 
     }
@@ -82,11 +83,13 @@ export default class ProductManagerLogic extends AMLogic {
             const productAuth = await this.productAuth(productId);
             if (think.isEmpty(productAuth)) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -136,11 +139,13 @@ export default class ProductManagerLogic extends AMLogic {
 
             if (master === 0 && editProduct === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -172,11 +177,13 @@ export default class ProductManagerLogic extends AMLogic {
             const productAuth = await this.productAuth(productId);
             if (think.isEmpty(productAuth)) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -222,11 +229,13 @@ export default class ProductManagerLogic extends AMLogic {
 
             if (master === 0 && editProduct === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -263,10 +272,12 @@ export default class ProductManagerLogic extends AMLogic {
             const productAuth = await this.productAuth(productId);
             if (think.isEmpty(productAuth)) {
                 throw new Error('没有权限！！！');
+
             }
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -322,11 +333,13 @@ export default class ProductManagerLogic extends AMLogic {
 
             if (master === 0 && editProduct === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -359,6 +372,22 @@ export default class ProductManagerLogic extends AMLogic {
 
         if (!flag) {
             return this.fail(TaleCode.ValidData, this.validateMsg());
+
+        }
+        const productGroupId: string = this.post('id');
+
+        try {
+            const productGroupAuth = await this.productGroupAuth(productGroupId);
+
+            if (_.isEmpty(productGroupAuth)) {
+                throw new Error('没有权限！！！');
+
+            }
+
+        } catch (e) {
+            think.logger.debug(e);
+            return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -402,11 +431,13 @@ export default class ProductManagerLogic extends AMLogic {
 
             if (master === 0 && createProductGroup === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -450,11 +481,13 @@ export default class ProductManagerLogic extends AMLogic {
 
             if (master === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -487,11 +520,13 @@ export default class ProductManagerLogic extends AMLogic {
 
             if (think.isEmpty(productGroupAuth)) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
@@ -562,11 +597,13 @@ export default class ProductManagerLogic extends AMLogic {
 
             if (master === 0 && createProduct === 0) {
                 throw new Error('没有权限！！！');
+
             }
 
         } catch (e) {
             think.logger.debug(e);
             return this.fail(TaleCode.AuthFaild, '没有权限！！！');
+
         }
 
     }
