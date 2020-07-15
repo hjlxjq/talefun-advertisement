@@ -220,9 +220,9 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/>默认组必须，起始版本为 0, 国家全覆盖
          */
-        if (codeList !== [] || begin !== 0) {
+        if (codeList !== [] && begin !== 0) {
             // 线上或者暂存是否存在默认组，创建之前先保证存在默认组
-            const defaultVersionGroupVo = await versionGroupModel.getDefault(type, productId, ucId);
+            const defaultVersionGroupVo = await versionGroupModel.getDefaultVo(type, productId, ucId);
 
             if (_.isEmpty(defaultVersionGroupVo)) {
                 return this.fail(TaleCode.DBFaild, '不存在默认条件组！！！');

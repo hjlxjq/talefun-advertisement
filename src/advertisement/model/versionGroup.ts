@@ -148,7 +148,7 @@ export default class VersionGroupModel extends MBModel {
      * @argument {string} creatorId 创建者主键
      * @returns {Promise<VersionGroupVO>} 版本条件分组;
      */
-    public async getDefault(
+    public async getDefaultVo(
         type: number,
         productId: string,
         creatorId?: string,
@@ -165,6 +165,7 @@ export default class VersionGroupModel extends MBModel {
 
         }
         const queryString: string = queryStrings.join(' AND ');
+        think.logger.debug(queryString);
 
         return await this.where(queryString).find() as VersionGroupVO;
 
