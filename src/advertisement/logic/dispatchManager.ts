@@ -220,10 +220,7 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/>默认组必须，起始版本为 0, 国家全覆盖
          */
-        if (codeList !== [] || begin !== 0) {
-            think.logger.debug(`codeList: ${codeList}`);
-            think.logger.debug(`codeList: ${JSON.stringify(codeList)}`);
-            think.logger.debug(`begin: ${begin}`);
+        if (_.isEmpty(codeList) || begin !== 0) {
 
             // 线上或者暂存是否存在默认组，创建之前先保证存在默认组
             const defaultVersionGroupVo = await versionGroupModel.getDefaultVo(type, productId, ucId);
