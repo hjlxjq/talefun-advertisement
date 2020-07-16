@@ -447,7 +447,7 @@ export default class DispatchManagerLogic extends AMLogic {
         ]);
         // 复制组不存在
         if (_.isEmpty(copyedVersionGroupVo) || _.isEmpty(copyedAbTestGroupVo)) {
-            this.fail(TaleCode.DBFaild, '被复制组不存在！！！');
+            return this.fail(TaleCode.DBFaild, '被复制组不存在！！！');
 
         }
 
@@ -631,11 +631,11 @@ export default class DispatchManagerLogic extends AMLogic {
         const versionGroupVo = await versionGroupModel.getVo(versionGroupId, ucId);
 
         if (_.isEmpty(versionGroupVo)) {
-            this.fail(TaleCode.DBFaild, '版本条件分组不存在!!!');
+            return this.fail(TaleCode.DBFaild, '版本条件分组不存在!!!');
 
         }
         if (versionGroupVo.code === '[]' && versionGroupVo.begin === 0) {
-            this.fail(TaleCode.DBFaild, '默认版本条件分组不能更新!!!');
+            return this.fail(TaleCode.DBFaild, '默认版本条件分组不能更新!!!');
 
         }
 
@@ -3086,7 +3086,7 @@ export default class DispatchManagerLogic extends AMLogic {
         const adVo = await adModel.getVo(adId, ucId);
 
         if (_.isEmpty(adVo)) {
-            this.fail(TaleCode.DBFaild, '该广告不存在!!!');
+            return this.fail(TaleCode.DBFaild, '该广告不存在!!!');
         }
 
         // ecpm 非负
