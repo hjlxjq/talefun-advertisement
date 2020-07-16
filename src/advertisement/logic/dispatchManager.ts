@@ -688,74 +688,77 @@ export default class DispatchManagerLogic extends AMLogic {
         /**
          * <br/>数据库是否存在生效冲突组，一个起始版本和一个国家只能对应一个版本条件分组
          */
-        const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1);
+        if (!_.isUndefined(begin)) {
+            const beginVersionGroupVoList = await versionGroupModel.getByBegin(begin, type, productId, 1);
 
-        // 是否有重复项
-        let isDupli = false;
+            // 是否有重复项
+            let isDupli = false;
 
-        // 遍历版本条件分组
-        for (const beginVersionGroupVo of beginVersionGroupVoList) {
-            // 不必较自身
-            if (beginVersionGroupVo.id === versionGroupId) {
-                continue;
+            // 遍历版本条件分组
+            for (const beginVersionGroupVo of beginVersionGroupVoList) {
+                // 不必较自身
+                if (beginVersionGroupVo.id === versionGroupId) {
+                    continue;
+                }
+                // 更新的缓存数据
+                const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
+                // 返回线上数据和未发布的数据，以未发布数据为准
+                _.assign(beginVersionGroupVo, cacheVersionGroupVo);
+
+                const { code, include: beginInclude, active } = beginVersionGroupVo;
+
+                // active 为 0，则表示未生效，即线上不重复
+                if (active === 0) {
+                    continue;
+
+                }
+
+                const beginCodeList = JSON.parse(code);
+
+                // 空数组表示都包含，肯定重复
+                if (_.isEmpty(codeList) && _.isEmpty(beginCodeList)) {
+                    isDupli = true;
+                    break;
+
+                    // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
+                } else if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
+                    continue;
+
+                }
+
+                // 判断 codeList 和线上相同开始版本的 codeList 是否有重复项
+                const concatCodeList = _.concat(codeList, beginCodeList);
+                const isCross = new Set(concatCodeList).size !== concatCodeList.length;
+                // 国家都包含或者不包含，则不能有有交叉
+                if ((include === beginInclude) && isCross) {
+                    isDupli = true;
+                    break;
+
+                }
+                let isSubArr = true;
+                // 创建时选择包含，则必须是线上的子数组
+                if (include === 1) {
+                    isSubArr = _.isEmpty(_.difference(codeList, beginCodeList));
+
+                    // 创建时选择不包含，线上的国家到吗则必须是创建的子数组
+                } else {
+                    isSubArr = _.isEmpty(_.difference(beginCodeList, codeList));
+
+                }
+                // 创建的和线上的国家代码一个包含和一个不包含
+                if ((include !== beginInclude) && !isSubArr) {
+                    isDupli = true;
+                    break;
+
+                }
+
             }
-            // 更新的缓存数据
-            const cacheVersionGroupVo = cacheVersionGroupVoHash[beginVersionGroupVo.id] as VersionGroupVO;
-            // 返回线上数据和未发布的数据，以未发布数据为准
-            _.assign(beginVersionGroupVo, cacheVersionGroupVo);
 
-            const { code, include: beginInclude, active } = beginVersionGroupVo;
-
-            // active 为 0，则表示未生效，即线上不重复
-            if (active === 0) {
-                continue;
+            // 一个起始版本和一个国家只能对应一个版本条件分组
+            if (isDupli) {
+                return this.fail(TaleCode.DBFaild, '一个起始版本和一个国家只能对应一个版本条件分组！！！');
 
             }
-
-            const beginCodeList = JSON.parse(code);
-
-            // 空数组表示都包含，肯定重复
-            if (_.isEmpty(codeList) && _.isEmpty(beginCodeList)) {
-                isDupli = true;
-                break;
-
-                // 只有一个为空数组则相当于无国家分组，即相当于默认组，可以创建
-            } else if (_.isEmpty(codeList) || _.isEmpty(beginCodeList)) {
-                continue;
-
-            }
-
-            // 判断 codeList 和线上相同开始版本的 codeList 是否有重复项
-            const concatCodeList = _.concat(codeList, beginCodeList);
-            const isCross = new Set(concatCodeList).size !== concatCodeList.length;
-            // 国家都包含或者不包含，则不能有有交叉
-            if ((include === beginInclude) && isCross) {
-                isDupli = true;
-                break;
-
-            }
-            let isSubArr = true;
-            // 创建时选择包含，则必须是线上的子数组
-            if (include === 1) {
-                isSubArr = _.isEmpty(_.difference(codeList, beginCodeList));
-
-                // 创建时选择不包含，线上的国家到吗则必须是创建的子数组
-            } else {
-                isSubArr = _.isEmpty(_.difference(beginCodeList, codeList));
-
-            }
-            // 创建的和线上的国家代码一个包含和一个不包含
-            if ((include !== beginInclude) && !isSubArr) {
-                isDupli = true;
-                break;
-
-            }
-
-        }
-
-        // 一个起始版本和一个国家只能对应一个版本条件分组
-        if (isDupli) {
-            return this.fail(TaleCode.DBFaild, '一个起始版本和一个国家只能对应一个版本条件分组！！！');
 
         }
 

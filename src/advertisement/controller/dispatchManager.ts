@@ -307,7 +307,7 @@ export default class DispatchManagerController extends BaseController {
         const codeList: string[] = this.post('codeList');
         const include: number = this.post('include');
         const begin: number = this.post('begin');
-        const active: number = this.post('action');
+        const active: number = this.post('active');
         const versionGroupModel = this.taleModel('versionGroup', 'advertisement') as VersionGroupModel;
         const abTestGroupModel = this.taleModel('abTestGroup', 'advertisement') as AbTestGroupModel;
         const abTestMapModel = this.taleModel('abTestMap', 'advertisement') as AbTestMapModel;
