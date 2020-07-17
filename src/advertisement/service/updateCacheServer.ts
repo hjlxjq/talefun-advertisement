@@ -98,7 +98,7 @@ export default class UpdateCacheServer extends BaseService {
             think.logger.debug(preModelVo);
             think.logger.debug(preModelVo);
 
-            cacheVo = _.assign(preModelVo, cacheVo);
+            cacheVo = Object.assign(preModelVo, cacheVo);
             think.logger.debug(`cacheVo: ${JSON.stringify(cacheVo)}`);
 
         }
