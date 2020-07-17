@@ -847,27 +847,53 @@ export default class DispatchCacheService extends BaseService {
             appPackageKey, abTestGroupKey, abTestMapKey, adGroupKey, nativeTmplKey, configKey
         } = this.getCacheKey(type, platform);
 
+        const multiArr = [];
+
         if (type === 0) {
             const {
                 productCacheData, abTestGroupCacheData, abTestMapCacheData,
                 adGroupCacheData, nativeTmplCacheData, adConfigCacheData
             } = await this.refreshAdDispatch(productId, packageName);
 
+            if (_.isEmpty(productCacheData)) {
+                multiArr.push(['hmset', appPackageKey, Utils.getRedisHash(productCacheData)]);
+
+            }
+            if (_.isEmpty(abTestGroupCacheData)) {
+                multiArr.push(['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)]);
+
+            }
+            if (_.isEmpty(abTestMapCacheData)) {
+                multiArr.push(['hmset', abTestMapKey, Utils.getRedisHash(abTestMapCacheData)]);
+
+            }
+            if (_.isEmpty(adGroupCacheData)) {
+                multiArr.push(['hmset', adGroupKey, Utils.getRedisHash(adGroupCacheData)]);
+
+            }
+            if (_.isEmpty(nativeTmplCacheData)) {
+                multiArr.push(['hmset', nativeTmplKey, Utils.getRedisHash(nativeTmplCacheData)]);
+
+            }
+            if (_.isEmpty(adConfigCacheData)) {
+                multiArr.push(['hmset', configKey, Utils.getRedisHash(adConfigCacheData)]);
+
+            }
             // @ts-ignore
-            await this.redis.multi([
-                // @ts-ignore
-                ['hmset', appPackageKey, Utils.getRedisHash(productCacheData)],
-                // @ts-ignore
-                ['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)],
-                // @ts-ignore
-                ['hmset', abTestMapKey, Utils.getRedisHash(abTestMapCacheData)],
-                // @ts-ignore
-                ['hmset', adGroupKey, Utils.getRedisHash(adGroupCacheData)],
-                // @ts-ignore
-                // ['hmset', nativeTmplKey, Utils.getRedisHash(nativeTmplCacheData)],
-                // @ts-ignore
-                ['hmset', configKey, Utils.getRedisHash(adConfigCacheData)]
-            ], { pipeline: true }).exec();
+            // await this.redis.multi([
+            //     // @ts-ignore
+            //     ['hmset', appPackageKey, Utils.getRedisHash(productCacheData)],
+            //     // @ts-ignore
+            //     ['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)],
+            //     // @ts-ignore
+            //     ['hmset', abTestMapKey, Utils.getRedisHash(abTestMapCacheData)],
+            //     // @ts-ignore
+            //     ['hmset', adGroupKey, Utils.getRedisHash(adGroupCacheData)],
+            //     // @ts-ignore
+            //     ['hmset', nativeTmplKey, Utils.getRedisHash(nativeTmplCacheData)],
+            //     // @ts-ignore
+            //     ['hmset', configKey, Utils.getRedisHash(adConfigCacheData)]
+            // ], { pipeline: true }).exec();
 
         }
         if (type === 1) {
@@ -875,17 +901,32 @@ export default class DispatchCacheService extends BaseService {
                 productCacheData, abTestGroupCacheData, configCacheData
             } = await this.refreshConfigDispatch(productId, packageName);
 
+            if (_.isEmpty(productCacheData)) {
+                multiArr.push(['hmset', appPackageKey, Utils.getRedisHash(productCacheData)]);
+
+            }
+            if (_.isEmpty(abTestGroupCacheData)) {
+                multiArr.push(['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)]);
+
+            }
+            if (_.isEmpty(configCacheData)) {
+                multiArr.push(['hmset', configKey, Utils.getRedisHash(configCacheData)]);
+
+            }
             // @ts-ignore
-            await this.redis.multi([
-                // @ts-ignore
-                ['hmset', appPackageKey, Utils.getRedisHash(productCacheData)],
-                // @ts-ignore
-                ['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)],
-                // @ts-ignore
-                ['hmset', configKey, Utils.getRedisHash(configCacheData)]
-            ], { pipeline: true }).exec();
+            // await this.redis.multi([
+            //     // @ts-ignore
+            //     ['hmset', appPackageKey, Utils.getRedisHash(productCacheData)],
+            //     // @ts-ignore
+            //     ['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)],
+            //     // @ts-ignore
+            //     ['hmset', configKey, Utils.getRedisHash(configCacheData)]
+            // ], { pipeline: true }).exec();
 
         }
+        // @ts-ignore
+        await this.redis.multi(multiArr, { pipeline: true }).exec();
+
         return true;
 
     }
