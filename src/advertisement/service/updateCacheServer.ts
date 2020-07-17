@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import * as Redis from 'ioredis';
 
 import BaseService from '../../common/tale/BaseService';
+import Utils from '../utils';
 
 /**
  * 发布之前的数据更新缓存相关 service
@@ -90,15 +91,12 @@ export default class UpdateCacheServer extends BaseService {
         const cacheField = tableId;
 
         let cacheVo = modelVo;
+        Utils.delUndefinedFromObj(cacheVo);
 
         const preJsonStr = await this.redis.hget(cacheKey, cacheField);
         // 覆盖之前的更新
         if (preJsonStr) {
             const preModelVo = JSON.parse(preJsonStr);
-            think.logger.debug(`preModelVo: ${JSON.stringify(preModelVo)}`);
-            think.logger.debug(`cacheVo: ${JSON.stringify(cacheVo)}`);
-            think.logger.debug(`preModelVo keys: ${JSON.stringify(_.keys(preModelVo))}`);
-            think.logger.debug(`cacheVo keys: ${JSON.stringify(_.keys(cacheVo))}`);
 
             cacheVo = _.assign(preModelVo, cacheVo);
             think.logger.debug(`cacheVo: ${JSON.stringify(cacheVo)}`);

@@ -15,6 +15,7 @@ const uuid = require('node-uuid');
 const rp = require('request-promise');
 
 import { HashVO } from './defines';
+import { delete } from 'request-promise';
 
 const fsPromises = fs.promises;
 
@@ -38,6 +39,22 @@ export default class Utils {
 
         }
         return isEmpty;
+
+    }
+
+    /**
+     * 删除对象所有属性值为 undefined,
+     */
+    public static delUndefinedFromObj(obj: object): object {
+        for (const key of _.keys(obj)) {
+
+            if (_.isUndefined(obj[key])) {
+               delete obj[key];
+
+            }
+
+        }
+        return obj;
 
     }
 
