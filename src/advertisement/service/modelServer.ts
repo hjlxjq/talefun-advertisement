@@ -295,9 +295,11 @@ export default class ModelService extends BaseService {
         const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 数据库里的应用 native 模板组对象
-        const nativeTmplConfGroupVoList = await nativeTmplConfGroupModel.getListByProduct(productId, creatorId);
+        const nativeTmplConfGroupVoList =
+            await nativeTmplConfGroupModel.getListByProduct(productId, creatorId);
         // 未发布更新在缓存里的应用 native 模板组对象哈希表
-        const cacheNativeTmplConfGroupVoHash = await updateCacheServer.fetchCacheDataHash(creatorId, 'nativeTmplConfGroup');
+        const cacheNativeTmplConfGroupVoHash =
+            await updateCacheServer.fetchCacheDataHash(creatorId, 'nativeTmplConfGroup');
 
         // 应用 native 模板组列表信息
         const nativeTmplConfGroupResVoList =

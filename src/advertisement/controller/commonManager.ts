@@ -13,7 +13,7 @@ import AdChannelModel from '../model/adChannel';
 import AdChannelMapModel from '../model/adChannelMap';
 import NativeTmplModel from '../model/nativeTmpl';
 import BaseConfigModel from '../model/baseConfig';
-import PackParamModel from '../model/PackParam';
+import PackParamModel from '../model/packParam';
 
 import ModelServer from '../service/modelServer';
 import DispatchCacheServer from '../service/dispatchCacheServer';
