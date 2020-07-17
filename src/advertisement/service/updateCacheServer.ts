@@ -89,24 +89,24 @@ export default class UpdateCacheServer extends BaseService {
         // field 为数据表主键
         const cacheField = tableId;
 
+        let cacheVo = modelVo;
+
         const preJsonStr = await this.redis.hget(cacheKey, cacheField);
         // 覆盖之前的更新
         if (preJsonStr) {
             const preModelVo = JSON.parse(preJsonStr);
-            think.logger.debug(preModelVo);
-            think.logger.debug(preModelVo);
-
-            const cacheVo = Object.assign(preModelVo, modelVo);
+            think.logger.debug(`preModelVo: ${JSON.stringify(preModelVo)}`);
             think.logger.debug(`cacheVo: ${JSON.stringify(cacheVo)}`);
-            const cacheValue = JSON.stringify(cacheVo);    // 哈希表为字符串
-            await this.redis.hset(cacheKey, cacheField, cacheValue);
+            think.logger.debug(`cacheVo keys: ${JSON.stringify(_.keys(cacheVo))}`);
+            think.logger.debug(`cacheVo keys: ${JSON.stringify(_.keys(cacheVo))}`);
 
-        } else {
-
-            const cacheValue = JSON.stringify(modelVo);    // 哈希表为字符串
-            await this.redis.hset(cacheKey, cacheField, cacheValue);
+            cacheVo = _.assign(preModelVo, cacheVo);
+            think.logger.debug(`cacheVo: ${JSON.stringify(cacheVo)}`);
 
         }
+        const cacheValue = JSON.stringify(cacheVo);    // 哈希表为字符串
+
+        await this.redis.hset(cacheKey, cacheField, cacheValue);
 
     }
 
