@@ -425,7 +425,6 @@ export default class CommonManagerController extends BaseController {
         await baseConfigModel.updateVo(id, baseConfigUpdateVo);
 
         // 刷新到 下发 redis
-        think.logger.debug(`baseConfigUpdateVo: ${JSON.stringify(baseConfigUpdateVo)}`);
         await dispatchCacheServer.refreshBaseConfigData();
 
         return this.success('updated');

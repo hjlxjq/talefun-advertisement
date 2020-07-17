@@ -367,6 +367,11 @@ export default class TaskService extends BaseService {
                 this.redis.hgetall(baseConfigKey)
             ]);
 
+            think.logger.debug(`adConfigCacheVo: ${JSON.stringify(adConfigCacheVo)}`);
+            think.logger.debug(`baseConfigVoHash: ${JSON.stringify(baseConfigVoHash)}`);
+            think.logger.debug(`adConfigCacheVo length: ${_.keys(adConfigCacheVo).length}`);
+            think.logger.debug(`baseConfigVoHash length: ${_.keys(baseConfigVoHash).length}`);
+            think.logger.debug(`test: ${test}`);
             const newAdConfigCacheVo = adConfigCacheVo || {};
 
             const baseConfigVo: HashVO = JSON.parse(baseConfigVoHash[test]);
