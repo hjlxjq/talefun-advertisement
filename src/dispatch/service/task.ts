@@ -389,6 +389,9 @@ export default class TaskService extends BaseService {
                 this.redis.hgetall(baseConfigKey)
             ]);
 
+            if (_.isEmpty(baseConfigVoHash[test])) {
+                return {};
+            }
             const baseConfigVo: HashVO = JSON.parse(baseConfigVoHash[test]);
 
             return baseConfigVo;

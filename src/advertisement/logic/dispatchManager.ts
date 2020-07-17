@@ -2981,7 +2981,6 @@ export default class DispatchManagerLogic extends AMLogic {
         if (!_.isEmpty(adByPlacementIDVo) && adByPlacementIDVo.id) {
             const cacheAdByPlacementIDVo = await updateCacheServer.fetchCacheData(ucId, 'ad', adByPlacementIDVo.id);
 
-
             // 未更新（不存在）或者未禁用则报唯一性错误
             if (_.isEmpty(cacheAdByPlacementIDVo) || cacheAdByPlacementIDVo.active !== 0) {
                 return this.fail(TaleCode.DBFaild, '广告 placementID 重复！！！');

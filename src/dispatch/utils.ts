@@ -42,7 +42,11 @@ export default class Utils {
 
                     // bidding
                     if (bidding) {
-                        const headerBiddingVo = { isHeaderBidding: bidding, placementID: adID };
+                        const platformID = (adID.split('_'))[0];
+                        const headerBiddingVo = {
+                            isHeaderBidding: bidding, placementID: adID, platformID, appID: platformID,
+                            customID: 'HB', extraFill: false, hbkey: 'HeaderBidding_1'
+                        };
                         adID = JSON.stringify(headerBiddingVo);
 
                     }
@@ -78,7 +82,11 @@ export default class Utils {
 
                     // bidding
                     if (bidding) {
-                        const headerBiddingVo = { isHeaderBidding: bidding, placementID: adID };
+                        const platformID = (adID.split('_'))[0];
+                        const headerBiddingVo = {
+                            isHeaderBidding: bidding, placementID: adID, platformID, appID: platformID,
+                            customID: 'HB', extraFill: false, hbkey: 'HeaderBidding_1'
+                        };
                         adCacheVo.adID = JSON.stringify(headerBiddingVo);
 
                     }

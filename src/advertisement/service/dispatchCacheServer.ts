@@ -714,6 +714,9 @@ export default class DispatchCacheService extends BaseService {
         const ping = await this.redis.ping();
         think.logger.debug(`test redis: ${ping}`);
 
+        // 清空 redis
+        // await this.redis.flushdb();
+
         const promiseArr = _.map(this.CACHE_DEFINE, (queryMethod, key) => {
             const redisKey = this.keyPrefix + key;
             return this.initOneCache(redisKey, queryMethod);
