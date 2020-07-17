@@ -921,6 +921,7 @@ export default class DispatchCacheService extends BaseService {
 
         // 应用包名对应 应用相关版本条件分组列表
         const productCacheData: { [propName: string]: VersionGroupCacheVO[] } = {};
+        productCacheData[packageName] = [];
         // 版本条件分组表主键对应 ab 测试分组列表
         const abTestGroupCacheData: { [propName: string]: AbTestGroupCacheVO[] } = {};
         // ab 测试分组表主键对应 ab 测试分组下广告位列表
@@ -956,11 +957,6 @@ export default class DispatchCacheService extends BaseService {
                 id, begin, include, code
             };
 
-            // 应用相关版本条件分组列表
-            if (!productCacheData[packageName]) {
-                productCacheData[packageName] = [];
-
-            }
             productCacheData[packageName].push(versionGroupCacheVo);
 
             // 版本条件分组下的 ab 测试分组列表
@@ -1003,6 +999,12 @@ export default class DispatchCacheService extends BaseService {
             }, { concurrency: 3 });
 
         }, { concurrency: 3 });
+
+        think.logger.debug(`productCacheData: ${JSON.stringify(productCacheData)}`);
+        think.logger.debug(`abTestGroupCacheData: ${JSON.stringify(abTestGroupCacheData)}`);
+        think.logger.debug(`abTestMapCacheData: ${JSON.stringify(abTestMapCacheData)}`);
+        think.logger.debug(`adGroupCacheData: ${JSON.stringify(adGroupCacheData)}`);
+        think.logger.debug(`nativeTmplCacheData: ${JSON.stringify(nativeTmplCacheData)}`);
 
         return {
             productCacheData, abTestGroupCacheData, abTestMapCacheData, adGroupCacheData, nativeTmplCacheData

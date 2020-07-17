@@ -49,7 +49,8 @@ export default class DeployManagerController extends BaseController {
 
         try {
             const type = Number(deploystr[0]);
-            const productId = deploystr.substr(2);
+            const productId = deploystr.substr(1);
+            think.logger.debug(`deploystr: ${deploystr}`);
             think.logger.debug(`type: ${type}`);
             think.logger.debug(`productId: ${productId}`);
 
