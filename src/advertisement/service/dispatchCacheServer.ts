@@ -864,7 +864,7 @@ export default class DispatchCacheService extends BaseService {
                 // @ts-ignore
                 ['hmset', adGroupKey, Utils.getRedisHash(adGroupCacheData)],
                 // @ts-ignore
-                ['hmset', nativeTmplKey, Utils.getRedisHash(nativeTmplCacheData)],
+                // ['hmset', nativeTmplKey, Utils.getRedisHash(nativeTmplCacheData)],
                 // @ts-ignore
                 ['hmset', configKey, Utils.getRedisHash(adConfigCacheData)]
             ], { pipeline: true }).exec();
