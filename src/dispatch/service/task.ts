@@ -185,7 +185,6 @@ export default class TaskService extends BaseService {
                     const { id, begin } = nationVersionGroupList[i];
 
                     if (versionCode >= begin) {
-                        think.logger.debug(`id: ${id}`);
                         versionGroupId = id;
                         break;
 
@@ -393,6 +392,7 @@ export default class TaskService extends BaseService {
 
             const baseConfigVo: HashVO = JSON.parse(baseConfigVoHash[test]);
 
+            think.logger.debug(`baseConfigVo: ${JSON.stringify(baseConfigVoHash[test])}`);
             think.logger.debug(`shopUrl: ${baseConfigVo.shopUrl}`);
 
             return baseConfigVo;
