@@ -15,7 +15,6 @@ const uuid = require('node-uuid');
 const rp = require('request-promise');
 
 import { HashVO } from './defines';
-import { delete } from 'request-promise';
 
 const fsPromises = fs.promises;
 

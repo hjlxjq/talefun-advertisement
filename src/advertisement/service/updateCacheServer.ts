@@ -10,6 +10,19 @@ import * as Redis from 'ioredis';
 import BaseService from '../../common/tale/BaseService';
 import Utils from '../utils';
 
+function delUndefinedFromObj(obj: object): object {
+    for (const key of _.keys(obj)) {
+
+        if (_.isUndefined(obj[key])) {
+           delete obj[key];
+
+        }
+
+    }
+    return obj;
+
+}
+
 /**
  * 发布之前的数据更新缓存相关 service
  * @class updateCacheServer
@@ -92,6 +105,7 @@ export default class UpdateCacheServer extends BaseService {
 
         let cacheVo = modelVo;
         Utils.delUndefinedFromObj(cacheVo);
+        delUndefinedFromObj(cacheVo);
 
         const preJsonStr = await this.redis.hget(cacheKey, cacheField);
         // 覆盖之前的更新
