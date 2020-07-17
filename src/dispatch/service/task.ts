@@ -176,7 +176,7 @@ export default class TaskService extends BaseService {
 
             }
 
-            think.logger.debug(`nationVersionGroupList: ${JSON.stringify(nationVersionGroupList)}`);
+            // think.logger.debug(`nationVersionGroupList: ${JSON.stringify(nationVersionGroupList)}`);
             // think.logger.debug(`noNationVersionGroupList: ${JSON.stringify(noNationVersionGroupList)}`);
             // 国家相关全部分组数据不为空，则表示该国家代码存在配置
             if (!_.isEmpty(nationVersionGroupList)) {
@@ -210,7 +210,6 @@ export default class TaskService extends BaseService {
             }
 
         }
-        think.logger.debug(`versionGroupId: ${versionGroupId}`);
         return versionGroupId;
 
     }
@@ -391,9 +390,6 @@ export default class TaskService extends BaseService {
             ]);
 
             const baseConfigVo: HashVO = JSON.parse(baseConfigVoHash[test]);
-
-            think.logger.debug(`baseConfigVo: ${JSON.stringify(baseConfigVoHash[test])}`);
-            think.logger.debug(`shopUrl: ${baseConfigVo.shopUrl}`);
 
             return baseConfigVo;
         }
