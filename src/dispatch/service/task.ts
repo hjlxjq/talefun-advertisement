@@ -141,7 +141,7 @@ export default class TaskService extends BaseService {
 
         // 全部版本条件分组数据
         const allVersionGroupList: VersionGroupCacheVO[] = await this.getOneCache(redisKey, packageName);
-        think.logger.debug(`allVersionGroupList: ${JSON.stringify(allVersionGroupList)}`);
+        // think.logger.debug(`allVersionGroupList: ${JSON.stringify(allVersionGroupList)}`);
 
         // 查询符合的版本分组主键
         let versionGroupId: string;
@@ -176,8 +176,8 @@ export default class TaskService extends BaseService {
 
             }
 
-            think.logger.debug(`nationVersionGroupList: ${JSON.stringify(nationVersionGroupList)}`);
-            think.logger.debug(`noNationVersionGroupList: ${JSON.stringify(noNationVersionGroupList)}`);
+            // think.logger.debug(`nationVersionGroupList: ${JSON.stringify(nationVersionGroupList)}`);
+            // think.logger.debug(`noNationVersionGroupList: ${JSON.stringify(noNationVersionGroupList)}`);
             // 国家相关全部分组数据不为空，则表示该国家代码存在配置
             if (!_.isEmpty(nationVersionGroupList)) {
                 // 从版本开始范围最大开始匹配，符合则跳出循环

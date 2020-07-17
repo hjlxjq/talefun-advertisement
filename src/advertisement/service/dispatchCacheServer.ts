@@ -1003,6 +1003,16 @@ export default class DispatchCacheService extends BaseService {
         think.logger.debug(`adGroupCacheData: ${JSON.stringify(adGroupCacheData)}`);
         think.logger.debug(`nativeTmplCacheData: ${JSON.stringify(nativeTmplCacheData)}`);
 
+        // 版本分组按 begin 排序
+        const versionGroupCacheVoList = productCacheData[packageName];
+        versionGroupCacheVoList.sort(beginSort);
+        // ab 测试分组按 begin 排序
+        for (const versionGroupId of _.keys(abTestGroupCacheData)) {
+            const abTestGroupCacheVoList = abTestGroupCacheData[versionGroupId];
+            abTestGroupCacheVoList.sort(beginSort);
+
+        }
+
         return {
             productCacheData, abTestGroupCacheData, abTestMapCacheData,
             adGroupCacheData, nativeTmplCacheData, adConfigCacheData
@@ -1024,6 +1034,7 @@ export default class DispatchCacheService extends BaseService {
 
         // 应用包名 对应 应用相关版本条件分组列表
         const productCacheData: { [propName: string]: VersionGroupCacheVO[] } = {};
+        productCacheData[packageName] = [];
         // 版本条件分组表主键 对应 ab 测试分组列表
         const abTestGroupCacheData: { [propName: string]: AbTestGroupCacheVO[] } = {};
 
@@ -1053,11 +1064,7 @@ export default class DispatchCacheService extends BaseService {
             const versionGroupCacheVo: VersionGroupCacheVO = {
                 id, begin, include, code
             };
-            // 应用相关版本条件分组列表
-            if (!productCacheData[packageName]) {
-                productCacheData[packageName] = [];
 
-            }
             productCacheData[packageName].push(versionGroupCacheVo);
 
             const abTestGroupVoList = await abTestGroupModel.getListByVersionGroup(id, undefined, undefined, 1);
@@ -1082,6 +1089,17 @@ export default class DispatchCacheService extends BaseService {
             });
 
         }, { concurrency: 3 });
+
+        // 版本分组按 begin 排序
+        const versionGroupCacheVoList = productCacheData[packageName];
+        versionGroupCacheVoList.sort(beginSort);
+        // ab 测试分组按 begin 排序
+        for (const versionGroupId of _.keys(abTestGroupCacheData)) {
+            const abTestGroupCacheVoList = abTestGroupCacheData[versionGroupId];
+            abTestGroupCacheVoList.sort(beginSort);
+
+        }
+
         return {
             productCacheData, abTestGroupCacheData, configCacheData
         };
