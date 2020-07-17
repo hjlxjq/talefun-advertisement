@@ -356,6 +356,7 @@ export default class TaskService extends BaseService {
         const productKey = this.keyPrefix + 'Product';
         const productFiled = platform + packageName;
 
+        think.logger.debug(`configGroupId: ${configGroupId}`);
         // 绑定广告常量，则返回的 key 根据基础常量为准
         if (configGroupId) {
             const redisKey = this.keyPrefix + 'AdConfig';
@@ -368,6 +369,7 @@ export default class TaskService extends BaseService {
             ]);
 
             const newAdConfigCacheVo = adConfigCacheVo || {};
+            think.logger.debug(`newAdConfigCacheVo: ${JSON.stringify(newAdConfigCacheVo)}`);
 
             const baseConfigVo: HashVO = JSON.parse(baseConfigVoHash[test]);
 
