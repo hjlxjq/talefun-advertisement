@@ -95,7 +95,10 @@ export default class UpdateCacheServer extends BaseService {
         // 覆盖之前的更新
         if (preJsonStr) {
             const preModelVo = JSON.parse(preJsonStr);
+            think.logger.debug(`preModelVo: ${JSON.stringify(preModelVo)}`);
+            think.logger.debug(`cacheVo: ${JSON.stringify(cacheVo)}`);
             cacheVo = _.assign(preModelVo, cacheVo);
+            think.logger.debug(`cacheVo: ${JSON.stringify(cacheVo)}`);
 
         }
         const cacheValue = JSON.stringify(cacheVo);    // 哈希表为字符串
