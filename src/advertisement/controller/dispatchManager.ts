@@ -1853,6 +1853,7 @@ export default class DispatchManagerController extends BaseController {
             activeTime: undefined, creatorId: ucId,
             placementID, name, ecpm, interval, subloader, loader, weight, bidding, active
         };
+        think.logger.debug(`updateAdVo: ${JSON.stringify(updateAdVo)}`);
 
         try {
             // 本账户创建的直接数据库操作
