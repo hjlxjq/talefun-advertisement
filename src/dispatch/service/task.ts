@@ -94,12 +94,12 @@ export default class TaskService extends BaseService {
             countryCode = this.ipService.getCountryCodeByIp(ip);
 
         }
-        // think.logger.debug(`countryCode: ${countryCode}`);
+        think.logger.debug(`countryCode: ${countryCode}`);
         if (!versionCode) {
             versionCode = 0;
 
         }
-
+        think.logger.debug(`versionCode: ${versionCode}`);
         // 获取 redis 哈希表的 key
         let redisKey;
         if (type === 0) {
@@ -209,6 +209,7 @@ export default class TaskService extends BaseService {
             }
 
         }
+        think.logger.debug(`versionGroupId: ${versionGroupId}`);
         return versionGroupId;
 
     }
