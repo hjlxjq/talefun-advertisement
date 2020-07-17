@@ -156,16 +156,13 @@ export default class TaskService extends BaseService {
                 } = allVersionGroupList[i];
                 if (code !== '[]') {
                     if (include === 1) {
-                        think.logger.debug(`code: ${code}`);
-                        think.logger.debug(`countryCode: ${countryCode}`);
-                        think.logger.debug(`isCont: ${_.indexOf(code, countryCode)}`);
-                        if (_.indexOf(code, countryCode) !== -1) {
+                        if (code.indexOf(countryCode) !== -1) {
                             nationVersionGroupList.push(allVersionGroupList[i]);
 
                         }
 
                     } else {
-                        if (_.indexOf(code, countryCode) === -1) {
+                        if (code.indexOf(countryCode) === -1) {
                             nationVersionGroupList.push(allVersionGroupList[i]);
 
                         }
