@@ -150,7 +150,7 @@ export default class TaskService extends BaseService {
             const nationVersionGroupList: VersionGroupCacheVO[] = [];    // 国家相关全部分组数据
             const noNationVersionGroupList: VersionGroupCacheVO[] = [];    // 与国家无关全部分组数据
             // 查出该国家所在分组和与国家无关全部分组
-            for (let i = 0, l = allVersionGroupList.length; i < l; i++) {
+            for (let i = allVersionGroupList.length - 1; i >= 0; i--) {
                 const {
                     include, code
                 } = allVersionGroupList[i];
