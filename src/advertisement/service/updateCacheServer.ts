@@ -32,13 +32,13 @@ export default class UpdateCacheServer extends BaseService {
      * <br/>用户在在应用下进行增删改操作的时候记录
      * @argument {string} userId 用户表主键;
      */
-    public async setDeployStatus(userId: string) {
+    public async setDeployStatus(userId: string, type: number, productId: string) {
         //  用户发布状态，redis 哈希表的 key
         const deployKey = this.deployKeyPrefix + userId;
 
         // redis 记录用户更新状态为 true
         // @ts-ignore
-        await this.redis.set(deployKey, true);
+        await this.redis.set(deployKey, type + productId);
 
     }
 

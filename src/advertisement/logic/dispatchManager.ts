@@ -351,7 +351,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 await abTestGroupModel.addVo(abTestGroupVo);
 
                 // 缓存用户发布状态
-                await updateCacheServer.setDeployStatus(ucId);
+                await updateCacheServer.setDeployStatus(ucId, type, productId);
 
                 return this.success('created');
 
@@ -1676,9 +1676,6 @@ export default class DispatchManagerLogic extends AMLogic {
 
         try {
             const configGroupVo = await configGroupModel.getVo(configGroupId, ucId);
-            // think.logger.debug(`configGroupId: ${configGroupId}`);
-            // think.logger.debug(`ucId: ${ucId}`);
-            // think.logger.debug(`configGroupVo: ${JSON.stringify(configGroupVo)}`);
             const { type, productId } = configGroupVo;
 
             const productAuth = await this.productAuth(productId);
@@ -2013,19 +2010,14 @@ export default class DispatchManagerLogic extends AMLogic {
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
         const nativeTmplConfGroupId: string = this.post('id');
 
-        think.logger.debug(`nativeTmplConfGroupId: ${nativeTmplConfGroupId}`);
-
         try {
             const nativeTmplConfGroupVo =
                 await nativeTmplConfGroupModel.getVo(nativeTmplConfGroupId, ucId);
 
-            think.logger.debug(`nativeTmplConfGroupVo: ${JSON.stringify(nativeTmplConfGroupVo)}`);
             const { productId } = nativeTmplConfGroupVo;
-            think.logger.debug(`productId: ${productId}`);
 
             const productAuth = await this.productAuth(productId);
 
-            // think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
             const {
                 viewAd, master
             } = productAuth;
@@ -2986,13 +2978,9 @@ export default class DispatchManagerLogic extends AMLogic {
             adModel.getByName(adGroupId, adChannelId, name, 1)
         ]);
 
-        think.logger.debug(`adByPlacementIDVo: ${JSON.stringify(adByPlacementIDVo)}`);
-        think.logger.debug(`adByNameVo: ${JSON.stringify(adByNameVo)}`);
-
         if (!_.isEmpty(adByPlacementIDVo) && adByPlacementIDVo.id) {
             const cacheAdByPlacementIDVo = await updateCacheServer.fetchCacheData(ucId, 'ad', adByPlacementIDVo.id);
 
-            think.logger.debug(`cacheAdByPlacementIDVo: ${JSON.stringify(cacheAdByPlacementIDVo)}`);
 
             // 未更新（不存在）或者未禁用则报唯一性错误
             if (_.isEmpty(cacheAdByPlacementIDVo) || cacheAdByPlacementIDVo.active !== 0) {
@@ -3002,8 +2990,6 @@ export default class DispatchManagerLogic extends AMLogic {
         }
         if (!_.isEmpty(adByNameVo) && adByNameVo.id) {
             const cacheAdByNameVo = await updateCacheServer.fetchCacheData(ucId, 'ad', adByNameVo.id);
-
-            think.logger.debug(`cacheAdByNameVo: ${JSON.stringify(cacheAdByNameVo)}`);
 
             // 未更新（不存在）或者未禁用则报唯一性错误
             if (_.isEmpty(cacheAdByNameVo) || cacheAdByNameVo.active !== 0) {

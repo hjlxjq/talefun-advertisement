@@ -12,6 +12,7 @@ import * as _ from 'lodash';
 import BaseController from '../../common/tale/BaseController';
 import MBModel from '../model/managerBaseModel';
 import UpdateCacheServer from '../service/updateCacheServer';
+import DispatchCacheServer from '../service/dispatchCacheServer';
 
 import { DeployResVO, RollBackResVO, DeployStatusResVO } from '../interface';
 
@@ -25,6 +26,15 @@ export default class DeployManagerController extends BaseController {
     public async deployAction() {
         const ucId: string = this.ctx.state.userId;
         const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
+        const dispatchCacheServer = this.taleService('dispatchCacheServer', 'advertisement') as DispatchCacheServer;
+
+        // 从缓存中获取用户发布状态
+        const deploystr = await updateCacheServer.fetchDeployStatus(ucId);
+
+        if (_.isEmpty(deploystr)) {
+            return this.fail(10, '没有要发布的更新！！！');
+
+        }
 
         // 下发相关的所有数据表
         const tableNameList = [
@@ -38,6 +48,11 @@ export default class DeployManagerController extends BaseController {
         ];
 
         try {
+            const type = Number(deploystr[0]);
+            const productId = deploystr.substr(2);
+            think.logger.debug(`type: ${type}`);
+            think.logger.debug(`productId: ${productId}`);
+
             // 所有数据表都发布
             await Bluebird.map(tableNameList, async (tableName) => {
                 // 待更新的表数据对象
@@ -70,6 +85,9 @@ export default class DeployManagerController extends BaseController {
                 }
 
             }, { concurrency: 3 });
+
+            // 发布到线上
+            await dispatchCacheServer.refreshCacheData(type, productId);
 
             // 从缓存中删除（数据表中更新成功再删除）
             await updateCacheServer.delCacheDataList(tableNameList, ucId);

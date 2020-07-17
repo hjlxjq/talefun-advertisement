@@ -23,7 +23,7 @@ think.beforeStartServer(async () => {
         think.logger.debug('dispatchCacheManager init completed');
 
     } catch (e) {
-        think.logger.debug('cacheManager init failed: ');
+        think.logger.debug('dispatchCacheManager init failed: ');
         think.logger.debug(e);
 
     }

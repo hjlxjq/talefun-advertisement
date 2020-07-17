@@ -15,7 +15,6 @@ export default class ProductManagerLogic extends AMLogic {
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productAuth = await authServer.fetchProductAuth(ucId, productId);
-        think.logger.debug(`productAuth: ${JSON.stringify(productAuth)}`);
         return productAuth;
 
     }
@@ -29,7 +28,6 @@ export default class ProductManagerLogic extends AMLogic {
         const authServer = this.taleService('authServer', 'advertisement') as AuthServer;
 
         const productGroupAuth = await authServer.fetchProductGroupAuth(ucId, productGroupId);
-        think.logger.debug(`productGroupAuth: ${JSON.stringify(productGroupAuth)}`);
         return productGroupAuth;
 
     }

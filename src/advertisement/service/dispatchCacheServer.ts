@@ -69,11 +69,12 @@ export default class DispatchCacheService extends BaseService {
 
         // 下发 redis 缓存哈希表 key 对应的映射数据获取方法
         this.CACHE_DEFINE = {
-            // BaseConfig: this.baseConfigData.bind(this),
-            // Product: this.productData.bind(this),
+            BaseConfig: this.baseConfigData.bind(this),
+            Product: this.productData.bind(this),
             AdGroup: this.allAdGroupData.bind(this),
             NativeTmpl: this.allNativeTmplData.bind(this),
             Config: this.allConfigData.bind(this),
+            AdConfig: this.allAdConfigData.bind(this),
             Ios_Ad_Product: this.ios_ad_productData.bind(this),
             Ios_Config_Product: this.ios_config_productData.bind(this),
             Android_Ad_Product: this.android_ad_productData.bind(this),
@@ -410,19 +411,19 @@ export default class DispatchCacheService extends BaseService {
         _.each(baseConfigVoList, (baseConfigVo) => {
             const { key, value, test } = baseConfigVo;
 
-            if (!cacheData.test) {
-                cacheData.test = {};
+            if (!cacheData['0']) {
+                cacheData['0'] = {};
 
             }
-            if (!cacheData.live) {
-                cacheData.live = {};
+            if (!cacheData['1']) {
+                cacheData['1'] = {};
 
             }
             if (test === 0) {
-                cacheData.live[key] = value;
+                cacheData['0'][key] = value;
 
             }
-            cacheData.test[key] = value;
+            cacheData['1'][key] = value;
 
         });
         // think.logger.debug(`baseConfigData: ${JSON.stringify(cacheData)}`);
@@ -433,15 +434,15 @@ export default class DispatchCacheService extends BaseService {
     /**
      * 从 mysql 刷新数据，组装到 redis,
      * <br/>返回所有待写入 redis 的应用生效相关数据对象，
-     * <br/> key 分别为应用平台名，
+     * <br/> key 分别为应用平台名 + 包名，
      * <br/>值为包名映射是否测试的哈希表
-     * @return {{ [propName: string]: HashVO; }} 所有待写入 redis 的应用生效相关数据对象
+     * @return {HashVO} 所有待写入 redis 的应用生效相关数据对象
      */
     public async productData() {
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
 
         // redis 哈希表中应用生效相关数据
-        const cacheData: { [propName: string]: { [propName: string]: number }; } = {};
+        const cacheData: HashVO = {};
 
         // 获取全部生效应用
         const productVoList = await productModel.getList(1);
@@ -449,12 +450,9 @@ export default class DispatchCacheService extends BaseService {
         // 遍历全部生效应用，组装应用生效相关数据对象列表
         _.each(productVoList, (productVo) => {
             const { packageName, platform, test } = productVo;
+            const productFiled = platform + packageName;
 
-            if (!cacheData[platform]) {
-                cacheData[platform] = {};
-
-            }
-            cacheData[platform][packageName] = test;
+            cacheData[productFiled] = String(test);
 
         });
         // think.logger.debug(`baseConfigData: ${JSON.stringify(cacheData)}`);
@@ -504,6 +502,25 @@ export default class DispatchCacheService extends BaseService {
         const [configVoList, configGroupVoList] = await Promise.all([
             configModel.getList(1),
             configGroupModel.getList(1)
+        ]);
+
+        return this.configData(configVoList, configGroupVoList);
+
+    }
+
+    /**
+     * 从 mysql 刷新数据，组装到 redis,
+     * <br/>按常量组返回所有待写入 redis 的常量相关数据对象，以常量组主键为 key
+     * @return {{ [propName: string]: ConfigCacheVO; }} 所有待写入 redis 的常量相关数据对象
+     */
+    public async allAdConfigData() {
+        const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
+        const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
+
+        // 获取全部常量和常量组
+        const [configVoList, configGroupVoList] = await Promise.all([
+            configModel.getList(0),
+            configGroupModel.getList(0)
         ]);
 
         return this.configData(configVoList, configGroupVoList);
@@ -692,6 +709,14 @@ export default class DispatchCacheService extends BaseService {
             const cacheData = await queryMethod();
 
             if (!_.isEmpty(cacheData)) {
+                const productKey = this.keyPrefix + 'Product';
+
+                // product 的 cacheData 本来就为哈希，直接更新
+                if (redisKey === productKey) {
+                    // 更新到 redis 中
+                    return this.redis.hmset(redisKey, cacheData);
+
+                }
                 const redisHash = Utils.getRedisHash(cacheData);
                 // 更新到 redis 中
                 return this.redis.hmset(redisKey, redisHash);
@@ -779,6 +804,42 @@ export default class DispatchCacheService extends BaseService {
             appPackageKey, abTestGroupKey, abTestMapKey, adGroupKey, nativeTmplKey, configKey
         };
         return redisKeyVo;
+
+    }
+
+    /**
+     * 基础常量变化，则更新到 redis
+     * <br/>即从 mysql 数据库刷新应用信息到 redis
+     * @return {boolean} 是否发布到线上分发成功
+     */
+    public async refreshBaseConfigData() {
+        const redisKey = this.keyPrefix + 'BaseConfig';
+        const cacheData = await this.baseConfigData();
+
+        const redisHash = Utils.getRedisHash(cacheData);
+        // 更新到 redis 中
+        this.redis.hmset(redisKey, redisHash);
+        return true;
+
+    }
+
+    /**
+     * 应用测试开关，则更新到 redis
+     * <br/>即从 mysql 数据库刷新应用信息到 redis
+     * @argument {string} productId 应用主键
+     * @return {boolean} 是否发布到线上分发成功
+     */
+    public async refreshProductData(productId: string) {
+        const productModel = this.taleModel('product', 'advertisement') as ProductModel;
+
+        const { packageName, platform, test } = await productModel.getVo(productId);
+        const productFiled = platform + packageName;
+
+        const redisKey = this.keyPrefix + 'Product';
+
+        // 更新到 redis 中
+        this.redis.hset(redisKey, productFiled, String(test));
+        return true;
 
     }
 

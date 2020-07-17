@@ -66,7 +66,6 @@ export default class UserController extends BaseController {
             email, name, password, active,
         };
         const userId = await userModel.addVo(userVo);
-        think.logger.debug(`userId: ${userId}`);
 
         const {
             editComConf, viewComConf, createProductGroup, master

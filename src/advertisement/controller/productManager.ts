@@ -21,6 +21,7 @@ import ProductAuthModel from '../model/productAuth';
 
 import ModelServer from '../service/modelServer';
 import AuthServer from '../service/authServer';
+import DispatchCacheServer from '../service/dispatchCacheServer';
 
 import {
     PackParamConfVO, ChannelParamConfVO, ProductVO, ProductGroupVO, ProductResVO, ProductGroupAuthVO,
@@ -139,12 +140,19 @@ export default class ProductManagerController extends BaseController {
         const active: number = this.post('active');
         const test: number = this.post('test');
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
+        const dispatchCacheServer = this.taleService('dispatchCacheServer', 'advertisement') as DispatchCacheServer;
 
         const productVo: ProductVO = {
             name: undefined, packageName: undefined, platform: undefined, pid,
             test, active, productGroupId: undefined
         };
         await productModel.updateProduct(productId, productVo);
+
+        if (!_.isNil(test)) {
+            // 刷新到 下发 redis
+            await dispatchCacheServer.refreshProductData(productId);
+
+        }
 
         return this.success('updated');
 
@@ -186,8 +194,7 @@ export default class ProductManagerController extends BaseController {
                 value, packParamId, productId
             };
 
-            const result = await packParamConfModel.thenUpdateVo(packParamId, productId, packParamConfUpdateVo);
-            think.logger.debug(`updatePackParamConf: ${JSON.stringify(result)}`);
+            await packParamConfModel.thenUpdateVo(packParamId, productId, packParamConfUpdateVo);
 
             // 否者从数据库中删除
         } else {
@@ -410,6 +417,7 @@ export default class ProductManagerController extends BaseController {
         const test: number = this.post('test');
         const productModel = this.taleModel('product', 'advertisement') as ProductModel;
         const productAuthModel = this.taleModel('productAuth', 'advertisement') as ProductAuthModel;
+        const dispatchCacheServer = this.taleService('dispatchCacheServer', 'advertisement') as DispatchCacheServer;
 
         const productVo: ProductVO = {
             productGroupId,
@@ -425,6 +433,9 @@ export default class ProductManagerController extends BaseController {
             editPurchase: 1, viewPurchase: 1, editProduct: 1,
         };
         await productAuthModel.addVo(productAuthVo);
+
+        // 刷新到 下发 redis
+        await dispatchCacheServer.refreshProductData(productId);
 
         this.success('created');
 

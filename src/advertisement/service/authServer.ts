@@ -169,8 +169,6 @@ export default class AuthService extends BaseService {
 
         const productGroupAuthKey = this.productGroupAuthKeyPrefix + userId;
         const field = productGroupId;
-        // think.logger.debug(`productGroupAuthKey: ${productGroupAuthKey}`);
-        // think.logger.debug(`field: ${field}`);
         const productGroupAuthStr = await this.redis.hget(productGroupAuthKey, field);
 
         if (productGroupAuthStr) {

@@ -16,6 +16,7 @@ import BaseConfigModel from '../model/baseConfig';
 import PackParamModel from '../model/PackParam';
 
 import ModelServer from '../service/modelServer';
+import DispatchCacheServer from '../service/dispatchCacheServer';
 
 import Utils from '../utils';
 
@@ -388,11 +389,15 @@ export default class CommonManagerController extends BaseController {
         const test: number = this.post('test');
         const active: number = this.post('active');
         const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
+        const dispatchCacheServer = this.taleService('dispatchCacheServer', 'advertisement') as DispatchCacheServer;
 
         const baseConfigVo: BaseConfigVO = {
             key, value, description, test, active,
         };
         await baseConfigModel.addVo(baseConfigVo);
+
+        // 刷新到 下发 redis
+        await dispatchCacheServer.refreshBaseConfigData();
 
         this.success('created');
 
@@ -412,11 +417,15 @@ export default class CommonManagerController extends BaseController {
         const test: number = this.post('test');
         const active: number = this.post('active');
         const baseConfigModel = this.taleModel('baseConfig', 'advertisement') as BaseConfigModel;
+        const dispatchCacheServer = this.taleService('dispatchCacheServer', 'advertisement') as DispatchCacheServer;
 
         const baseConfigUpdateVo: BaseConfigVO = {
             key: undefined, value, description, test, active
         };
         await baseConfigModel.updateVo(id, baseConfigUpdateVo);
+
+        // 刷新到 下发 redis
+        await dispatchCacheServer.refreshBaseConfigData();
 
         return this.success('updated');
 

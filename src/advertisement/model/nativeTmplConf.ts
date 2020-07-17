@@ -129,7 +129,6 @@ export default class NativeTmplConfModel extends MBModel {
 
         }
         const queryString: string = queryStrings.join(' AND ');
-        // think.logger.debug(`queryString: ${queryString}`);
 
         return await this.where(queryString).find() as NativeTmplConfVO;
 
