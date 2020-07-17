@@ -89,8 +89,6 @@ export default class UpdateCacheServer extends BaseService {
         // field 为数据表主键
         const cacheField = tableId;
 
-        let cacheVo = modelVo;
-
         const preJsonStr = await this.redis.hget(cacheKey, cacheField);
         // 覆盖之前的更新
         if (preJsonStr) {
@@ -98,13 +96,17 @@ export default class UpdateCacheServer extends BaseService {
             think.logger.debug(preModelVo);
             think.logger.debug(preModelVo);
 
-            cacheVo = Object.assign(preModelVo, cacheVo);
+            const cacheVo = Object.assign(preModelVo, modelVo);
             think.logger.debug(`cacheVo: ${JSON.stringify(cacheVo)}`);
+            const cacheValue = JSON.stringify(cacheVo);    // 哈希表为字符串
+            await this.redis.hset(cacheKey, cacheField, cacheValue);
+
+        } else {
+
+            const cacheValue = JSON.stringify(modelVo);    // 哈希表为字符串
+            await this.redis.hset(cacheKey, cacheField, cacheValue);
 
         }
-        const cacheValue = JSON.stringify(cacheVo);    // 哈希表为字符串
-
-        await this.redis.hset(cacheKey, cacheField, cacheValue);
 
     }
 
