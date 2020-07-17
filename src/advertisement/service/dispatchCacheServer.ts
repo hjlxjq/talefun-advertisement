@@ -855,27 +855,27 @@ export default class DispatchCacheService extends BaseService {
                 adGroupCacheData, nativeTmplCacheData, adConfigCacheData
             } = await this.refreshAdDispatch(productId, packageName);
 
-            if (_.isEmpty(productCacheData)) {
+            if (!_.isEmpty(productCacheData)) {
                 multiArr.push(['hmset', appPackageKey, Utils.getRedisHash(productCacheData)]);
 
             }
-            if (_.isEmpty(abTestGroupCacheData)) {
+            if (!_.isEmpty(abTestGroupCacheData)) {
                 multiArr.push(['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)]);
 
             }
-            if (_.isEmpty(abTestMapCacheData)) {
+            if (!_.isEmpty(abTestMapCacheData)) {
                 multiArr.push(['hmset', abTestMapKey, Utils.getRedisHash(abTestMapCacheData)]);
 
             }
-            if (_.isEmpty(adGroupCacheData)) {
+            if (!_.isEmpty(adGroupCacheData)) {
                 multiArr.push(['hmset', adGroupKey, Utils.getRedisHash(adGroupCacheData)]);
 
             }
-            if (_.isEmpty(nativeTmplCacheData)) {
+            if (!_.isEmpty(nativeTmplCacheData)) {
                 multiArr.push(['hmset', nativeTmplKey, Utils.getRedisHash(nativeTmplCacheData)]);
 
             }
-            if (_.isEmpty(adConfigCacheData)) {
+            if (!_.isEmpty(adConfigCacheData)) {
                 multiArr.push(['hmset', configKey, Utils.getRedisHash(adConfigCacheData)]);
 
             }
@@ -901,15 +901,15 @@ export default class DispatchCacheService extends BaseService {
                 productCacheData, abTestGroupCacheData, configCacheData
             } = await this.refreshConfigDispatch(productId, packageName);
 
-            if (_.isEmpty(productCacheData)) {
+            if (!_.isEmpty(productCacheData)) {
                 multiArr.push(['hmset', appPackageKey, Utils.getRedisHash(productCacheData)]);
 
             }
-            if (_.isEmpty(abTestGroupCacheData)) {
+            if (!_.isEmpty(abTestGroupCacheData)) {
                 multiArr.push(['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)]);
 
             }
-            if (_.isEmpty(configCacheData)) {
+            if (!_.isEmpty(configCacheData)) {
                 multiArr.push(['hmset', configKey, Utils.getRedisHash(configCacheData)]);
 
             }
