@@ -156,6 +156,9 @@ export default class TaskService extends BaseService {
                 } = allVersionGroupList[i];
                 if (code !== '[]') {
                     if (include === 1) {
+                        think.logger.debug(`code: ${code}`);
+                        think.logger.debug(`countryCode: ${countryCode}`);
+                        think.logger.debug(`isCont: ${_.indexOf(code, countryCode)}`);
                         if (_.indexOf(code, countryCode) !== -1) {
                             nationVersionGroupList.push(allVersionGroupList[i]);
 
@@ -193,7 +196,6 @@ export default class TaskService extends BaseService {
                 }
 
             }
-            think.logger.debug(`versionGroupId: ${versionGroupId}`);
             // 国家相关全部分组中找不到符合的版本范围，则到与国家无关全部分组数据中查找
             if (!versionGroupId) {
                 // 从版本开始范围最大开始匹配，符合则跳出循环
@@ -428,7 +430,6 @@ export default class TaskService extends BaseService {
         let adConfigGroupId;    // 广告常量组表主键
 
         // 广告相关
-        think.logger.debug(`adAbTestGroupCacheVo: ${JSON.stringify(adAbTestGroupCacheVo)}`);
         if (adAbTestGroupCacheVo) {
             weightGroup = adAbTestGroupCacheVo.name;
             nativeTmplConfGroupId = adAbTestGroupCacheVo.nativeTmplConfGroupId;
