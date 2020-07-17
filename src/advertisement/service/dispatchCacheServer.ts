@@ -872,7 +872,7 @@ export default class DispatchCacheService extends BaseService {
             // @ts-ignore
             await this.redis.multi([
                 // @ts-ignore
-                ['hset', appPackageKey, Utils.getRedisHash(productCacheData)],
+                ['hmset', appPackageKey, Utils.getRedisHash(productCacheData)],
                 // @ts-ignore
                 ['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)],
                 // @ts-ignore
@@ -892,7 +892,7 @@ export default class DispatchCacheService extends BaseService {
             // @ts-ignore
             await this.redis.multi([
                 // @ts-ignore
-                ['hset', appPackageKey, Utils.getRedisHash(productCacheData)],
+                ['hmset', appPackageKey, Utils.getRedisHash(productCacheData)],
                 // @ts-ignore
                 ['hmset', abTestGroupKey, Utils.getRedisHash(abTestGroupCacheData)],
                 // @ts-ignore
