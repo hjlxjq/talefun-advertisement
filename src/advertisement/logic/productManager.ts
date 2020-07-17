@@ -108,7 +108,7 @@ export default class ProductManagerLogic extends AMLogic {
             },
             pid: {
                 string: true,       // 字段类型为 String 类型
-                // cusTrim: true,      // 前后不能有空格
+                // cusTrimed: true,      // 前后不能有空格
                 regexp: /^id[0-9]+$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -209,7 +209,7 @@ export default class ProductManagerLogic extends AMLogic {
             },
             value: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -254,7 +254,7 @@ export default class ProductManagerLogic extends AMLogic {
             },
             type: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -303,17 +303,17 @@ export default class ProductManagerLogic extends AMLogic {
             },
             value1: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             value2: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             value3: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             }
         };
@@ -399,14 +399,14 @@ export default class ProductManagerLogic extends AMLogic {
         const rules = {
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 regexp: /^[a-z][a-z\s]*[a-z]$/,    // 字段值要匹配给出的正则
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -456,7 +456,7 @@ export default class ProductManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
@@ -563,7 +563,7 @@ export default class ProductManagerLogic extends AMLogic {
             },
             pid: {
                 string: true,       // 字段类型为 String 类型
-                // cusTrim: true,      // 前后不能有空格
+                // cusTrimed: true,      // 前后不能有空格
                 regexp: /^id[0-9]+$/,    // 字段值要匹配给出的正则
                 method: 'POST'       // 指定获取数据的方式
             },

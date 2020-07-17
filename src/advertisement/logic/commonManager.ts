@@ -41,7 +41,7 @@ export default class CommonManagerLogic extends AMLogic {
         const rules = {
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -84,7 +84,7 @@ export default class CommonManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -140,7 +140,7 @@ export default class CommonManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
@@ -530,12 +530,12 @@ export default class CommonManagerLogic extends AMLogic {
             },
             value: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -604,12 +604,12 @@ export default class CommonManagerLogic extends AMLogic {
             },
             value: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {
@@ -670,7 +670,7 @@ export default class CommonManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -726,7 +726,7 @@ export default class CommonManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             test: {

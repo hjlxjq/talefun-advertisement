@@ -27,14 +27,14 @@ function genSchemaRule(validator: Ajv.ValidateFunction) {
 module.exports = {
     rules: {
         isAdMap: genSchemaRule(adMapValidator),
-        cusTrim(value: string) {
+        cusTrimed(value: string) {
             if (value.startsWith(' ') || value.endsWith(' ')) {
                 return false;
 
             }
             return true;
         },
-        cusTrimAll(value: string) {
+        cusTrimedAll(value: string) {
             if (value.indexOf(' ') !== -1) {
                 return false;
 
@@ -44,8 +44,8 @@ module.exports = {
 
     },
     messages: {
-        cusTrim: '{name} 前后不能有空格',
-        cusTrimAll: '{name} 不能有空格',
+        cusTrimed: '{name} 前后不能有空格',
+        cusTrimedAll: '{name} 不能有空格',
         regexp: '{name} 数据格式不正确',
 
     }

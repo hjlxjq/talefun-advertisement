@@ -124,7 +124,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -135,7 +135,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -143,7 +143,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 array: true,
                 children: {
                     string: true,       // 字段类型为 String 类型
-                    cusTrim: true,      // 前后不能有空格
+                    cusTrimed: true,      // 前后不能有空格
                     required: true,     // 字段必填
                     length: 2,          // 长度为 2
                 },
@@ -384,7 +384,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -395,7 +395,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -403,7 +403,7 @@ export default class DispatchManagerLogic extends AMLogic {
                 array: true,
                 children: {
                     string: true,       // 字段类型为 String 类型
-                    cusTrim: true,      // 前后不能有空格
+                    cusTrimed: true,      // 前后不能有空格
                     required: true,     // 字段必填
                     length: 2,          // 长度为 2
                 },
@@ -587,14 +587,14 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             codeList: {
                 array: true,
                 children: {
                     string: true,       // 字段类型为 String 类型
-                    cusTrim: true,      // 前后不能有空格
+                    cusTrimed: true,      // 前后不能有空格
                     required: true,     // 字段必填
                     length: 2,          // 长度为 2
                 },
@@ -1008,13 +1008,13 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                cusTrimedAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1183,7 +1183,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                cusTrimedAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             }
@@ -1411,7 +1411,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1423,7 +1423,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1486,13 +1486,13 @@ export default class DispatchManagerLogic extends AMLogic {
         const rules = {
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1571,7 +1571,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
@@ -1648,13 +1648,13 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             value: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1725,13 +1725,13 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             value: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -1826,12 +1826,12 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             value: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
@@ -2049,13 +2049,13 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -2110,13 +2110,13 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -2176,7 +2176,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
@@ -2596,7 +2596,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -2609,7 +2609,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -2665,13 +2665,13 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -2728,7 +2728,7 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             description: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             active: {
@@ -2877,13 +2877,13 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
             placementID: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 不能有空格
+                cusTrimedAll: true,      // 不能有空格
                 required: true,     // 字段必填
                 method: 'POST'       // 指定获取数据的方式
             },
@@ -3016,12 +3016,12 @@ export default class DispatchManagerLogic extends AMLogic {
             },
             name: {
                 string: true,       // 字段类型为 String 类型
-                cusTrim: true,      // 前后不能有空格
+                cusTrimed: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             placementID: {
                 string: true,       // 字段类型为 String 类型
-                cusTrimAll: true,      // 前后不能有空格
+                cusTrimedAll: true,      // 前后不能有空格
                 method: 'POST'       // 指定获取数据的方式
             },
             loader: {
