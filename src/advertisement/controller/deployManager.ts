@@ -155,9 +155,9 @@ export default class DeployManagerController extends BaseController {
         const updateCacheServer = this.taleService('updateCacheServer', 'advertisement') as UpdateCacheServer;
 
         // 从缓存中获取用户发布状态
-        const deployStatus = await updateCacheServer.fetchDeployStatus(ucId);
+        const deploystr = await updateCacheServer.fetchDeployStatus(ucId);
 
-        if (deployStatus) {
+        if (deploystr) {
             return this.success({ deployStatus: 1 });
 
         }

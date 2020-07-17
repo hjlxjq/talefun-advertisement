@@ -817,6 +817,7 @@ export default class DispatchCacheService extends BaseService {
         const cacheData = await this.baseConfigData();
 
         const redisHash = Utils.getRedisHash(cacheData);
+        think.logger.debug(`refreshBaseConfigData: ${JSON.stringify(redisHash)}`);
         // 更新到 redis 中
         this.redis.hmset(redisKey, redisHash);
         return true;
