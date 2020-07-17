@@ -359,7 +359,7 @@ export default class TaskService extends BaseService {
         think.logger.debug(`configGroupId: ${configGroupId}`);
         // 绑定广告常量，则返回的 key 根据基础常量为准
         if (configGroupId) {
-            const redisKey = this.keyPrefix + 'AdConfig';
+            const redisKey = this.keyPrefix + 'Config';
             const [
                 adConfigCacheVo, test, baseConfigVoHash
             ] = await Promise.all([

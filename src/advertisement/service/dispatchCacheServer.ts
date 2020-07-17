@@ -74,7 +74,6 @@ export default class DispatchCacheService extends BaseService {
             AdGroup: this.allAdGroupData.bind(this),
             NativeTmpl: this.allNativeTmplData.bind(this),
             Config: this.allConfigData.bind(this),
-            AdConfig: this.allAdConfigData.bind(this),
             Ios_Ad_Product: this.ios_ad_productData.bind(this),
             Ios_Config_Product: this.ios_config_productData.bind(this),
             Android_Ad_Product: this.android_ad_productData.bind(this),
@@ -509,25 +508,6 @@ export default class DispatchCacheService extends BaseService {
     }
 
     /**
-     * 从 mysql 刷新数据，组装到 redis,
-     * <br/>按常量组返回所有待写入 redis 的常量相关数据对象，以常量组主键为 key
-     * @return {{ [propName: string]: ConfigCacheVO; }} 所有待写入 redis 的常量相关数据对象
-     */
-    public async allAdConfigData() {
-        const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
-        const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
-
-        // 获取全部常量和常量组
-        const [configVoList, configGroupVoList] = await Promise.all([
-            configModel.getList(0),
-            configGroupModel.getList(0)
-        ]);
-
-        return this.configData(configVoList, configGroupVoList);
-
-    }
-
-    /**
      * 从 mysql 刷新数据，组装到 redis，
      * <br/>按包名返回所有待写入 redis 的应用相关版本条件分组列表，以包名为 key
      * <br/>ios 广告
@@ -866,7 +846,8 @@ export default class DispatchCacheService extends BaseService {
 
         if (type === 0) {
             const {
-                productCacheData, abTestGroupCacheData, abTestMapCacheData, adGroupCacheData, nativeTmplCacheData
+                productCacheData, abTestGroupCacheData, abTestMapCacheData,
+                adGroupCacheData, nativeTmplCacheData, adConfigCacheData
             } = await this.refreshAdDispatch(productId, packageName);
 
             // @ts-ignore
@@ -880,7 +861,9 @@ export default class DispatchCacheService extends BaseService {
                 // @ts-ignore
                 ['hmset', adGroupKey, Utils.getRedisHash(adGroupCacheData)],
                 // @ts-ignore
-                ['hmset', nativeTmplKey, Utils.getRedisHash(nativeTmplCacheData)]
+                ['hmset', nativeTmplKey, Utils.getRedisHash(nativeTmplCacheData)],
+                // @ts-ignore
+                ['hmset', configKey, Utils.getRedisHash(adConfigCacheData)]
             ], { pipeline: true }).exec();
 
         }
@@ -918,6 +901,8 @@ export default class DispatchCacheService extends BaseService {
         const nativeTmplConfGroupModel =
             this.taleModel('nativeTmplConfGroup', 'advertisement') as NativeTmplConfGroupModel;
         const nativeTmplConfModel = this.taleModel('nativeTmplConf', 'advertisement') as NativeTmplConfModel;
+        const configGroupModel = this.taleModel('configGroup', 'advertisement') as ConfigGroupModel;
+        const configModel = this.taleModel('config', 'advertisement') as ConfigModel;
 
         // 应用包名对应 应用相关版本条件分组列表
         const productCacheData: { [propName: string]: VersionGroupCacheVO[] } = {};
@@ -927,14 +912,26 @@ export default class DispatchCacheService extends BaseService {
         // ab 测试分组表主键对应 ab 测试分组下广告位列表
         const abTestMapCacheData: { [propName: string]: AbTestMapCacheVO[] } = {};
 
-        // 获取应用下广告分发相关的版本条件分组列表，广告列表，native 模板列表
+        // 获取应用下广告分发相关的版本条件分组列表，广告列表，native 模板列表, 广告常量
         const [
-            versionGroupVoList, adVoList, nativeTmplConfGroupVoList
+            versionGroupVoList, adVoList, nativeTmplConfGroupVoList, configGroupVoList
         ] = await Promise.all([
             versionGroupModel.getListByProduct(productId, 0, undefined, 1),
             adModel.getListByProduct(productId, undefined, 1),
-            nativeTmplConfGroupModel.getListByProduct(productId, undefined, 1)
+            nativeTmplConfGroupModel.getListByProduct(productId, undefined, 1),
+            configGroupModel.getListByProductAndType(productId, 0, undefined, 1),
         ]);
+
+        // 获取应用下广告常量组主键列表
+        const configGroupIdList = _.map(configGroupVoList, (configGroupVo) => {
+            return configGroupVo.id;
+
+        });
+        // 获取应用下广告常量列表
+        const configVoList = await configModel.getListByGroupList(configGroupIdList, 1);
+
+        // 广告常量组表主键 对应 广告常量列表
+        const adConfigCacheData = await this.configData(configVoList, configGroupVoList);
 
         // 获取应用下 native 模板组主键列表
         const nativeTmplConfGroupIdList = _.map(nativeTmplConfGroupVoList, (nativeTmplConfGroupVo) => {
@@ -1007,7 +1004,8 @@ export default class DispatchCacheService extends BaseService {
         think.logger.debug(`nativeTmplCacheData: ${JSON.stringify(nativeTmplCacheData)}`);
 
         return {
-            productCacheData, abTestGroupCacheData, abTestMapCacheData, adGroupCacheData, nativeTmplCacheData
+            productCacheData, abTestGroupCacheData, abTestMapCacheData,
+            adGroupCacheData, nativeTmplCacheData, adConfigCacheData
         };
 
     }
