@@ -82,7 +82,7 @@
     "mocha": "^6.0.2",
     "mochawesome": "^3.1.1",
     "mockjs": "^1.0.1-beta3",
-    "node-notifier": "^5.0.2",
+    "node-notifier": "^8.0.1",
     "supertest": "^4.0.2",
     "think-inspect": "0.0.2",
     "think-typescript": "^1.0.4",
