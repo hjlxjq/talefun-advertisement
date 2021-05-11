@@ -46,7 +46,7 @@
     "jsdoc": "^3.5.5",
     "jsonwebtoken": "^8.2.1",
     "koa-cors": "0.0.16",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "make-dir": "^3.0.0",
     "moment-mini-ts": "^2.20.1",
     "node-json-rpc": "0.0.1",
