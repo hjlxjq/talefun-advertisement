@@ -23,7 +23,7 @@
     "@types/lodash": "^4.14.109",
     "@types/request-promise": "^4.1.44",
     "@types/shelljs": "^0.8.5",
-    "ajv": "^6.10.0",
+    "ajv": "^6.12.3",
     "archive-type": "^4.0.0",
     "bluebird": "^3.5.5",
     "caw": "^2.0.1",
