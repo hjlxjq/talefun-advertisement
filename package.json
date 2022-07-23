@@ -31,7 +31,7 @@
     "decompress": "^4.2.0",
     "delay": "^4.2.0",
     "ext-name": "^5.0.0",
-    "file-type": "^10.11.0",
+    "file-type": "^16.5.4",
     "filenamify": "^4.0.0",
     "get-stream": "^5.1.0",
     "got": "^9.6.0",
