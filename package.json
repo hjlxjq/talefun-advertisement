@@ -35,7 +35,7 @@
     "filenamify": "^4.0.0",
     "get-stream": "^5.1.0",
     "got": "^9.6.0",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "hash-code": "^1.0.1",
     "hash-files": "^1.1.1",
     "i18n-iso-countries": "^3.7.8",
